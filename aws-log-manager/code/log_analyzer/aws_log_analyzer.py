@@ -1,5 +1,5 @@
 from aws_log_utils import *
-from message_analyzer import *
+from request_analyzer import *
 
 # Define the list of keywords for filtering
 keywords = ["RequestId:"]  # Add your keywords here
@@ -27,28 +27,16 @@ for line in data:
 # filtered_logs = filter_logs_by_keywords(log_stream_dict, keywords)
 # print_logs_to_console(filtered_logs)
 
-for log_stream_name, logs in log_stream_dict.items():
-        for log in logs:
-            
-            log_type = re.search('^\\w+', message).group(0)
-            match log_type:
-                case 'INIT_START':
-                    init_start_analyzer(message, log_stream_name, timestamp)
 
-                case 'START':
-                    start_analyzer(message)
-                
-                case 'FILE_DOWNLOAD' | 'FILE_UPLOAD':
-                    file_download_analyzer(message)
-                
-                case 'END':
-                    end_analyzer(message)
-                
-                case 'REPORT':
-                    report_analyzer(message)
-                
-                # Code for invalid log types
-                case _:
-                    print(f'Invalid Log Type: {log_type}!!!!')
+for log_stream_name, logs in log_stream_dict.items():
+    
+    request_analyzer = RequestAnalyzer(log_stream_name)
+    
+    for log in logs:
+        request_analyzer.process_log(log)
+    
+    request_analyzer.request_log.print()
+
+    # request_analyzer.save_to_database()
 
 # log_str = json.dumps(log)
