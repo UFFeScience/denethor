@@ -4,11 +4,11 @@ conn = connect()
 
 def connect():
     # Parâmetros de conexão
-    host = 'myinstance.123456789012.us-west-2.rds.amazonaws.com'
+    host = 'mribeiro-pg-database.ca8aozgznnhf.sa-east-1.rds.amazonaws.com'
     port = 5432
-    database = 'mydatabase'
-    user = 'myusername'
-    password = 'mypassword'
+    database = 'postgres'
+    user = 'postgres'
+    password = 'postgres'
 
     try:
         # Conectando ao banco de dados

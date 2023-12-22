@@ -26,8 +26,8 @@ CREATE TABLE workflow (
 );
 
 CREATE TABLE file (
-    id SERIAL  PRIMARY KEY,
-    name VARCHAR,
+    id SERIAL PRIMARY KEY,
+    name VARCHAR UNIQUE,
     size FLOAT,
     path VARCHAR
 );
@@ -43,6 +43,7 @@ CREATE TABLE service_execution (
     id SERIAL  PRIMARY KEY,
     start_time TIMESTAMP,
     end_time TIMESTAMP,
+    duration INTEGER,
     error_message VARCHAR,
     activity_id INTEGER,
     service_id INTEGER,
@@ -64,3 +65,6 @@ CREATE TABLE execution_statistics (
     CONSTRAINT fk_execution_statistics_service_execution FOREIGN KEY (service_execution_id) REFERENCES service_execution(id),
     CONSTRAINT fk_execution_statistics_statistics FOREIGN KEY (statistics_id) REFERENCES statistics(id)
 );
+
+
+

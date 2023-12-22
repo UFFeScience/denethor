@@ -6,7 +6,7 @@ keywords = ["RequestId:"]  # Add your keywords here
 
 
 
-with open('logs_tree_constructor.json') as f:
+with open('aws-log-manager/logs/logs_tree_constructor.json') as f:
     data = f.readlines()
 
 log_stream_dict = {}
