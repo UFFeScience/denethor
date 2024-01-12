@@ -5,32 +5,6 @@ import time
 import boto3
 import re
 
-
-# Function to retrieve AWS Lambda logs
-def retrieve_lambda_logs(start_time, end_time, function_name):
-    client = boto3.client('logs')
-    log_group_name = f"/aws/lambda/{function_name}"
-
-    start_timestamp = int(time.mktime(time.strptime(start_time, "%Y-%m-%dT%H:%M:%SZ")))
-    end_timestamp = int(time.mktime(time.strptime(end_time, "%Y-%m-%dT%H:%M:%SZ")))
-
-    response = client.filter_log_events(
-        logGroupName=log_group_name,
-        startTime=start_timestamp * 1000,  # in milliseconds
-        endTime=end_timestamp * 1000  # in milliseconds
-    )
-
-    logs = response['events']
-    logs_by_stream = defaultdict(list)
-
-    for log in logs:
-        log_stream_name = log['logStreamName']
-        logs_by_stream[log_stream_name].append(log)
-
-    return logs_by_stream
-    
-    
-    
 # Function to filter AWS Lambda logs by keywords
 def filter_logs_by_keywords(logs_by_stream, keywords):
     
