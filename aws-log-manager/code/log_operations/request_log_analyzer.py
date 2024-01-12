@@ -11,25 +11,6 @@ def main():
     with open('aws-log-manager/logs/logs_tree_constructor.json') as f:
         data = f.readlines()
 
-    # log_stream_dict = {}
-
-    # for line in data:
-    #     item = json.loads(line)
-    #     log_stream_name = item['logStreamName']
-    #     if log_stream_name not in log_stream_dict:
-    #         log_stream_dict[log_stream_name] = []
-    #     log_stream_dict[log_stream_name].append(item)
-    
-    # for log_stream_name, logs in log_stream_dict.items():
-    #     for log in logs:
-    #         request_log = RequestLogModel(log)
-
-    #         if request_log.log_type == None:
-    #             continue
-    #         request_log.print()
-        
-
-    
     request_id_dict = {}
 
     # iterando sobre todo o conjunto de logs recuperados para separar por request_id
