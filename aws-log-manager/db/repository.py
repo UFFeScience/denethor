@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db_model import *
+from .db_model import *
 
 class GenericRepository:
     def __init__(self, db: Session, model: type):
@@ -33,19 +33,37 @@ class GenericRepository:
         self.db.delete(db_obj)
         self.db.commit()
 
+
+
 class FileRepository(GenericRepository):
     def __init__(self, db: Session):
         super().__init__(db, File)
-
+    
     def get_by_name(self, name: str) -> File:
         return self.db.query(self.model).filter_by(name=name).first()
+    
+    def get_by_name_and_path(self, name: str, path: str) -> File:
+        return self.db.query(self.model).filter_by(name=name, path=path).first()
+
+
+
+class StatisticsRepository(GenericRepository):
+    def __init__(self, db: Session):
+        super().__init__(db, Statistics)
+    
+    def get_by_name(self, name: str) -> Statistics:
+        return self.db.query(self.model).filter_by(name=name).first()
+
+
 
 class ServiceProviderRepository(GenericRepository):
     def __init__(self, db: Session):
         super().__init__(db, ServiceProvider)
-
+    
     def get_by_name(self, name: str) -> ServiceProvider:
         return self.db.query(self.model).filter_by(name=name).first()
+
+
 
 class WorkflowActivityRepository(GenericRepository):
     def __init__(self, db: Session):
@@ -53,6 +71,15 @@ class WorkflowActivityRepository(GenericRepository):
 
     def get_by_name(self, name: str) -> WorkflowActivity:
         return self.db.query(self.model).filter_by(name=name).first()
+
+
+
+class ServiceExecutionRepository(GenericRepository):
+    def __init__(self, db: Session):
+        super().__init__(db, ServiceExecution)
+
+    def get_by_activity_id(self, activity_id: int) -> ServiceExecution:
+        return self.db.query(self.model).filter_by(activity_id=activity_id).all()
 
 
 

@@ -37,6 +37,16 @@ class File(Base):
     size = Column(Float)
     path = Column(String)
 
+    def __str__(self):
+        return (
+            f"ID: {self.id}\n"
+            f"Name: {self.name}\n"
+            f"Size: {self.size}\n"
+            f"Path: {self.path}"
+        )
+    
+    
+
 class WorkflowActivity(Base):
     __tablename__ = 'workflow_activity'
 
@@ -57,6 +67,19 @@ class ServiceExecution(Base):
     service_id = Column(Integer, ForeignKey('service_provider.id'))
     consumed_file_id = Column(Integer, ForeignKey('file.id'))
     produced_file_id = Column(Integer, ForeignKey('file.id'))
+
+    def __str__(self):
+        return (
+            f"ID: {self.id}\n"
+            f"Start Time: {self.start_time}\n"
+            f"End Time: {self.end_time}\n"
+            f"Duration: {self.duration}\n"
+            f"Error Message: {self.error_message}\n"
+            f"Activity ID: {self.activity_id}\n"
+            f"Service ID: {self.service_id}\n"
+            f"Consumed File ID: {self.consumed_file_id}\n"
+            f"Produced File ID: {self.produced_file_id}"
+        )
 
 class ExecutionStatistics(Base):
     __tablename__ = 'execution_statistics'

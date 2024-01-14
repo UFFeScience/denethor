@@ -6,25 +6,8 @@ DROP TABLE IF EXISTS service_provider CASCADE;
 DROP TABLE IF EXISTS workflow CASCADE;
 DROP TABLE IF EXISTS statistics CASCADE;
 
-CREATE TABLE file (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR UNIQUE,
-    size FLOAT,
-    path VARCHAR
-);
 
-CREATE TABLE statistics (
-    id SERIAL  PRIMARY KEY,
-    name VARCHAR
-);
 
-CREATE TABLE service_provider (
-    id SERIAL  PRIMARY KEY,
-    name VARCHAR,
-    memory INTEGER,
-    timeout INTEGER,
-    cpu INTEGER
-);
 
 CREATE TABLE workflow (
     id SERIAL  PRIMARY KEY,
@@ -38,6 +21,21 @@ CREATE TABLE workflow_activity (
     description VARCHAR,
     workflow_id INTEGER,
     CONSTRAINT fk_workflow_activity_workflow FOREIGN KEY (workflow_id) REFERENCES workflow(id)
+);
+
+CREATE TABLE service_provider (
+    id SERIAL  PRIMARY KEY,
+    name VARCHAR,
+    memory INTEGER,
+    timeout INTEGER,
+    cpu INTEGER
+);
+
+CREATE TABLE file (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR UNIQUE,
+    size FLOAT,
+    path VARCHAR
 );
 
 CREATE TABLE service_execution (
@@ -54,6 +52,12 @@ CREATE TABLE service_execution (
     CONSTRAINT fk_service_execution_workflow_activity FOREIGN KEY (activity_id) REFERENCES workflow_activity(id),
     CONSTRAINT fk_service_execution_consumed_file_id FOREIGN KEY (consumed_file_id) REFERENCES file(id),
     CONSTRAINT fk_service_execution_produced_file_id FOREIGN KEY (produced_file_id) REFERENCES file(id)
+);
+
+
+CREATE TABLE statistics (
+    id SERIAL  PRIMARY KEY,
+    name VARCHAR
 );
 
 CREATE TABLE execution_statistics (

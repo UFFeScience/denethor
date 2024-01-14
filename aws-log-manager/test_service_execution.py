@@ -1,7 +1,12 @@
 from sqlalchemy.orm import Session
-from db_model import *
-from repository import GenericRepository, FileRepository, ServiceProviderRepository, WorkflowActivityRepository
-from connection import Connection
+from datetime import datetime, timezone
+import random
+from db.db_model import *
+from db.repository import *
+from db.conn import Connection
+from utils import util
+
+
 
 session = Connection().get_session()
 # Create an instance of GenericRepository for the ServiceExecution table
@@ -14,11 +19,24 @@ workflow_activity_repo = WorkflowActivityRepository(session)
 service_provider = service_provider_repo.get_by_name(name='AWS Lambda')
 workflow_activity = workflow_activity_repo.get_by_name(name='tree_constructor')
 
-# Insert test records (replace with actual IDs)
-record1 = {
-    'start_time': '2024-01-13 10:00:00',
-    'end_time': '2024-01-13 10:00:10',
-    'duration': 600,
+# Example: Milliseconds representing start and end times
+start_time_ms = int(datetime.now().timestamp() * 1000)
+duration = random.randint(1000, 20000)
+end_time_ms   = int(datetime.now().timestamp() * 1000) + duration
+
+# Convert milliseconds to seconds
+start_time_seconds = start_time_ms / 1000.0
+end_time_seconds   = end_time_ms / 1000.0
+
+# Create datetime objects from the timestamps (in UTC)
+start_dt = datetime.fromtimestamp(start_time_seconds, tz=timezone.utc)
+end_dt   = datetime.fromtimestamp(end_time_seconds, tz=timezone.utc)
+
+# Insert test record
+record = {
+    'start_time': start_dt,
+    'end_time': end_dt,
+    'duration': duration,
     'error_message': None,
     'activity_id': workflow_activity.id,
     'service_id': service_provider.id,
@@ -27,13 +45,14 @@ record1 = {
 }
 
 # Create the record
-created_record = service_execution_repo.create(record1)
+created_record = service_execution_repo.create(record)
 print("Created record:", created_record)
 
 # Query the record (by ID)
 record_id = created_record.id
+# record_id = 4
 queried_record = service_execution_repo.get_by_id(record_id)
-print(f"Queried record with ID {record_id}:", queried_record)
+print(f"Queried record with ", queried_record)
 
 # Delete the record (by ID)
 service_execution_repo.delete(record_id)

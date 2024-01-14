@@ -1,4 +1,4 @@
-from log_utils import *
+from utils.log_utils import * 
 
 # Define your start and end dates along with the Lambda function name
 # start_time = "2023-11-27T14:25:00Z"
