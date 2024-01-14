@@ -42,6 +42,7 @@ class WorkflowActivity(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
+    description = Column(String)
     workflow_id = Column(Integer, ForeignKey('workflow.id'))
 
 class ServiceExecution(Base):

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import *
+from db_model import *
 
 class GenericRepository:
     def __init__(self, db: Session, model: type):
@@ -32,6 +32,27 @@ class GenericRepository:
         db_obj = self.get_by_id(id)
         self.db.delete(db_obj)
         self.db.commit()
+
+class FileRepository(GenericRepository):
+    def __init__(self, db: Session):
+        super().__init__(db, File)
+
+    def get_by_name(self, name: str) -> File:
+        return self.db.query(self.model).filter_by(name=name).first()
+
+class ServiceProviderRepository(GenericRepository):
+    def __init__(self, db: Session):
+        super().__init__(db, ServiceProvider)
+
+    def get_by_name(self, name: str) -> ServiceProvider:
+        return self.db.query(self.model).filter_by(name=name).first()
+
+class WorkflowActivityRepository(GenericRepository):
+    def __init__(self, db: Session):
+        super().__init__(db, WorkflowActivity)
+
+    def get_by_name(self, name: str) -> WorkflowActivity:
+        return self.db.query(self.model).filter_by(name=name).first()
 
 
 

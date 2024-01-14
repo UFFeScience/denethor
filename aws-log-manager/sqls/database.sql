@@ -6,6 +6,13 @@ DROP TABLE IF EXISTS service_provider CASCADE;
 DROP TABLE IF EXISTS workflow CASCADE;
 DROP TABLE IF EXISTS statistics CASCADE;
 
+CREATE TABLE file (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR UNIQUE,
+    size FLOAT,
+    path VARCHAR
+);
+
 CREATE TABLE statistics (
     id SERIAL  PRIMARY KEY,
     name VARCHAR
@@ -25,16 +32,10 @@ CREATE TABLE workflow (
     description VARCHAR
 );
 
-CREATE TABLE file (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR UNIQUE,
-    size FLOAT,
-    path VARCHAR
-);
-
 CREATE TABLE workflow_activity (
     id SERIAL  PRIMARY KEY,
     name VARCHAR,
+    description VARCHAR,
     workflow_id INTEGER,
     CONSTRAINT fk_workflow_activity_workflow FOREIGN KEY (workflow_id) REFERENCES workflow(id)
 );
