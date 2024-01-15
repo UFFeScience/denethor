@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import re
 
 class RequestLogModel:
@@ -38,10 +39,10 @@ class RequestLogModel:
 
     
     def print(self):
-        print(f"--------------------")
+        print(f"---------------------------------")
         for key, value in vars(self).items():
             print(f"{key}: {value}".strip())
-        print(f"--------------------\n")
+        print(f"---------------------------------\n")
 
 
     def process(self, log_item):
@@ -112,3 +113,15 @@ class RequestLogModel:
     # "END RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c\n"
     def process_end(self, timestamp):
         self.endTime = timestamp
+
+    # Create datetime objects (in UTC) from the timestamps in milliseconds
+    def start_time_date(self):
+        if self.startTime:
+            return datetime.fromtimestamp((self.startTime / 1000.0), tz=timezone.utc)
+        return None
+    
+    # Create datetime objects (in UTC) from the timestamps in milliseconds 
+    def end_time_date(self):
+        if self.endTime:
+            return datetime.fromtimestamp((self.endTime / 1000.0), tz=timezone.utc)
+        return None

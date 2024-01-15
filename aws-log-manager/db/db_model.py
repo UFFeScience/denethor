@@ -38,12 +38,7 @@ class File(Base):
     path = Column(String)
 
     def __str__(self):
-        return (
-            f"ID: {self.id}\n"
-            f"Name: {self.name}\n"
-            f"Size: {self.size}\n"
-            f"Path: {self.path}"
-        )
+        return (f"[{self.id}]={self.name} ({self.size} bytes)")
     
     
 
@@ -61,7 +56,7 @@ class ServiceExecution(Base):
     id = Column(Integer, primary_key=True)
     start_time = Column(TIMESTAMP)
     end_time = Column(TIMESTAMP)
-    duration = Column(Integer)
+    duration = Column(Float)
     error_message = Column(String)
     activity_id = Column(Integer, ForeignKey('workflow_activity.id'))
     service_id = Column(Integer, ForeignKey('service_provider.id'))
@@ -70,7 +65,7 @@ class ServiceExecution(Base):
 
     def __str__(self):
         return (
-            f"ID: {self.id}\n"
+            f"Id: {self.id}\n"
             f"Start Time: {self.start_time}\n"
             f"End Time: {self.end_time}\n"
             f"Duration: {self.duration}\n"

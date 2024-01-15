@@ -11,7 +11,10 @@ class GenericRepository:
 
     def get_by_id(self, id: int):
         return self.db.query(self.model).filter_by(id=id).first()
-
+    
+    def get_by_attributes(self, obj: dict):
+        return self.db.query(self.model).filter_by(**obj).first()
+    
     # ex. pessoa_repo.create({'nome': 'João', 'idade': 30})
     def create(self, obj: dict):
         db_obj = self.model(**obj)
@@ -42,9 +45,6 @@ class FileRepository(GenericRepository):
     def get_by_name(self, name: str) -> File:
         return self.db.query(self.model).filter_by(name=name).first()
     
-    def get_by_name_and_path(self, name: str, path: str) -> File:
-        return self.db.query(self.model).filter_by(name=name, path=path).first()
-
 
 
 class StatisticsRepository(GenericRepository):
@@ -80,6 +80,14 @@ class ServiceExecutionRepository(GenericRepository):
 
     def get_by_activity_id(self, activity_id: int) -> ServiceExecution:
         return self.db.query(self.model).filter_by(activity_id=activity_id).all()
+
+
+class ExecutionStatisticsRepository(GenericRepository):
+    def __init__(self, db: Session):
+        super().__init__(db, ExecutionStatistics)
+
+    def get_by_service_execution_id(self, service_execution_id: int) -> ExecutionStatistics:
+        return self.db.query(self.model).filter_by(service_execution_id=service_execution_id).all()
 
 
 

@@ -42,7 +42,7 @@ CREATE TABLE service_execution (
     id SERIAL  PRIMARY KEY,
     start_time TIMESTAMP,
     end_time TIMESTAMP,
-    duration INTEGER,
+    duration FLOAT,
     error_message VARCHAR,
     activity_id INTEGER,
     service_id INTEGER,
