@@ -1,9 +1,10 @@
+from typing import Tuple, Any
 from sqlalchemy.orm import Session
 from .db_model import *
 
 class GenericRepository:
-    def __init__(self, db: Session, model: type):
-        self.db = db
+    def __init__(self, session: Session, model: type):
+        self.db = session
         self.model = model
 
     def get_all(self):
@@ -15,79 +16,60 @@ class GenericRepository:
     def get_by_attributes(self, obj: dict):
         return self.db.query(self.model).filter_by(**obj).first()
     
-    # ex. pessoa_repo.create({'nome': 'João', 'idade': 30})
     def create(self, obj: dict):
-        db_obj = self.model(**obj)
-        self.db.add(db_obj)
+        instance = self.model(**obj)
+        self.db.add(instance)
         self.db.commit()
-        self.db.refresh(db_obj)
-        return db_obj
+        self.db.refresh(instance)
+        return instance
 
+    def get_or_create(self, obj: dict) -> Tuple[Any, bool]:
+        instance = self.get_by_attributes(obj)
+        if instance:
+            return instance, False
+        else:
+            return self.create(obj), True
+    
     def update(self, id: int, obj: dict):
-        db_obj = self.get_by_id(id)
+        instance = self.get_by_id(id)
         for key, value in obj.items():
-            setattr(db_obj, key, value)
+            setattr(instance, key, value)
         self.db.commit()
-        self.db.refresh(db_obj)
-        return db_obj
+        self.db.refresh(instance)
+        return instance
 
     def delete(self, id: int):
-        db_obj = self.get_by_id(id)
-        self.db.delete(db_obj)
+        instance = self.get_by_id(id)
+        self.db.delete(instance)
         self.db.commit()
-
-
-
-class FileRepository(GenericRepository):
-    def __init__(self, db: Session):
-        super().__init__(db, File)
-    
-    def get_by_name(self, name: str) -> File:
-        return self.db.query(self.model).filter_by(name=name).first()
-    
-
-
-class StatisticsRepository(GenericRepository):
-    def __init__(self, db: Session):
-        super().__init__(db, Statistics)
-    
-    def get_by_name(self, name: str) -> Statistics:
-        return self.db.query(self.model).filter_by(name=name).first()
 
 
 
 class ServiceProviderRepository(GenericRepository):
-    def __init__(self, db: Session):
-        super().__init__(db, ServiceProvider)
+    def __init__(self, session: Session):
+        super().__init__(session=session, model=ServiceProvider)
+
+class WorkflowRepository(GenericRepository):
+    def __init__(self, session: Session):
+        super().__init__(session=session, model=Workflow)
     
-    def get_by_name(self, name: str) -> ServiceProvider:
-        return self.db.query(self.model).filter_by(name=name).first()
-
-
-
 class WorkflowActivityRepository(GenericRepository):
-    def __init__(self, db: Session):
-        super().__init__(db, WorkflowActivity)
+    def __init__(self, session: Session):
+        super().__init__(session, WorkflowActivity)
 
-    def get_by_name(self, name: str) -> WorkflowActivity:
-        return self.db.query(self.model).filter_by(name=name).first()
-
-
-
+class FileRepository(GenericRepository):
+    def __init__(self, session: Session):
+        super().__init__(session=session, model=File)
+    
 class ServiceExecutionRepository(GenericRepository):
-    def __init__(self, db: Session):
-        super().__init__(db, ServiceExecution)
+    def __init__(self, session: Session):
+        super().__init__(session, ServiceExecution)
 
-    def get_by_activity_id(self, activity_id: int) -> ServiceExecution:
-        return self.db.query(self.model).filter_by(activity_id=activity_id).all()
-
+class StatisticsRepository(GenericRepository):
+    def __init__(self, session: Session):
+        super().__init__(session, Statistics)
 
 class ExecutionStatisticsRepository(GenericRepository):
-    def __init__(self, db: Session):
-        super().__init__(db, ExecutionStatistics)
-
-    def get_by_service_execution_id(self, service_execution_id: int) -> ExecutionStatistics:
-        return self.db.query(self.model).filter_by(service_execution_id=service_execution_id).all()
-
-
+    def __init__(self, session: Session):
+        super().__init__(session, ExecutionStatistics)
 

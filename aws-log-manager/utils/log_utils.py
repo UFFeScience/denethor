@@ -26,7 +26,17 @@ def filter_logs_by_keywords(logs_by_stream, keywords):
 
 
 # Save logs to a single file ordered by logStreamName
-def save_logs_to_single_file(logs_by_stream, file_path, file_prefix):
+def save_logs_to_single_file(logs, file_path, file_prefix):
+    file_path = f"{file_path}/{file_prefix}.json"
+    file_path = sanitize_filename(file_path)
+    with open(file_path, 'w') as file:
+        for log_stream_name, logs in logs_by_stream.items():
+            for log in logs:
+                file.write(json.dumps(log) + '\n')
+    print(f"Logs saved to {file_path} in json format")
+
+# Save logs to a single file ordered by logStreamName
+def save_logs_to_single_file_ordered_by_stream_name(logs_by_stream, file_path, file_prefix):
     file_path = f"{file_path}/{file_prefix}.json"
     file_path = sanitize_filename(file_path)
     with open(file_path, 'w') as file:

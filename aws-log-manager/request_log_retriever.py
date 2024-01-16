@@ -7,7 +7,7 @@ start_time = "2023-12-04T15:40:00Z"
 end_time = "2023-12-31T23:59:59Z"
 function_name = "tree_constructor"
 
-file_path = "aws-log-manager/logs"
+file_path = "aws-log-manager/_logs_temp"
 
 # Retrieve logs from AWS Lambda organized by logStreamName
 def main():

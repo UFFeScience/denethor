@@ -1,13 +1,9 @@
 from db.db_model import *
 from db.repository import *
 from db.conn import Connection
-from utils.request_log_model import RequestLogModel
+from utils.request_log_dto import RequestLogDTO
 import json
 import re
-
-# Define the list of keywords for filtering
-# keywords = ["RequestId:"]  # Add your keywords here
-# keywords = ["INIT", "START", "s3_bucket", "s3_key", "END:", "REPORT"]  # Add your keywords here
 
 
 def main():
@@ -34,7 +30,7 @@ def main():
     # iterando sobre o conjunto de logs de um request_id (cada chamda da função lambda)
     # esse conjunto representa uma execução completa da atividade "tree_constructor" para um arquivo de entrada
     for request_id, log_items in request_id_dict.items():
-        request_log = RequestLogModel(request_id)
+        request_log = RequestLogDTO(request_id)
         for log_item in log_items:
             request_log.process(log_item)
         
@@ -45,7 +41,7 @@ def main():
     
 
 
-def save_to_database(req : RequestLogModel):
+def save_to_database(req : RequestLogDTO):
     
     print(f"--------------------------------------------")
     print(f'Saving Execution info to Database...')
@@ -54,89 +50,63 @@ def save_to_database(req : RequestLogModel):
    
     # Instânciando as classes de repositórios
     file_repo = FileRepository(session)
-    statistics_repo = StatisticsRepository(session)
     service_provider_repo = ServiceProviderRepository(session)
     workflow_activity_repo = WorkflowActivityRepository(session)
     service_execution_repo = ServiceExecutionRepository(session)
-    execution_statistics_repo = ExecutionStatisticsRepository(session)
 
 
     # Buscando no banco os dados básicos do modelo (dados pré-existentes)
-    service_provider = service_provider_repo.get_by_name(name='AWS Lambda')
-    workflow_activity = workflow_activity_repo.get_by_name(name='tree_constructor')
-    upload_duration_statistics   = statistics_repo.get_by_name(name='upload_duration')
-    download_duration_statistics = statistics_repo.get_by_name(name='download_duration')
+    service_provider = service_provider_repo.get_by_attributes({'name': 'AWS Lambda'})
+    workflow_activity = workflow_activity_repo.get_by_attributes({'name': 'tree_constructor'})
 
     
-    # verificar se os arquivos presentes no registro de Log já estão cadastrados na base
-    # caso positivo -> apenas recuperar seus ids
-    # caso negativo -> realizar a inclusão antes
+    # verificar se os registros presentes no Log já estão cadastrados na base
+    # caso positivo -> apenas recupera o registro
+    # caso negativo -> realiza a inclusão e retorna o novo registro
     
     # arquivo "consumido" pela atividade
     consumed_file_data = {
-        'name': req.download_file_name,
-        'size': req.download_file_size,
-        'path': req.download_file_path
+        'name': req.consumed_file_name,
+        'size': req.consumed_file_size,
+        'path': req.consumed_file_path,
+        'bucket': req.consumed_file_bucket
     }
-    consumed_file = file_repo.get_by_attributes(consumed_file_data)
-    if not consumed_file:
-        consumed_file = file_repo.create(consumed_file_data)
-        print(f'Saving Consumed File info: {consumed_file}')
-
+    consumed_file, created = file_repo.get_or_create(consumed_file_data)
+    print(f'{'Saving' if created else 'Retrieving'} Consumed File info: {consumed_file}')
 
     # arquivo "produzido" pela atividade
     produced_file_data = {
-        'name': req.upload_file_name,
-        'size': req.upload_file_size,
-        'path': req.upload_file_path
+        'name': req.produced_file_name,
+        'size': req.produced_file_size,
+        'path': req.produced_file_path,
+        'bucket': req.produced_file_bucket
     }
-    produced_file = file_repo.get_by_attributes(produced_file_data)
-    if not produced_file:
-        produced_file = file_repo.create(produced_file_data)
-        print(f'Saving Produced File info: {produced_file}')
+    produced_file, created = file_repo.get_or_create(produced_file_data)
+    print(f'{'Saving' if created else 'Retrieving'} Produced File info: {produced_file}')
 
-    
-   
-    # incluir as estatísticas em service_execution
+
+    # estatísticas da execução do serviço
     service_execution_data = {
-        'start_time': req.start_time_date(),
-        'end_time': req.end_time_date(),
+        'request_id': req.request_id,
+        'log_stream_name': req.log_stream_name,
+        'start_time': req.get_start_time_as_date(),
+        'end_time': req.get_end_time_as_date(),
         'duration': req.duration,
+        'billed_duration': req.billed_duration,
+        'init_duration': req.init_duration,
+        'consumed_file_download_duration': req.consumed_file_download_duration,
+        'produced_file_upload_duration': req.produced_file_upload_duration,
+        'memory_size': req.memory_size,
+        'max_memory_used': req.max_memory_used,
         'error_message': '',
         'activity_id': workflow_activity.id,
         'service_id': service_provider.id,
         'consumed_file_id': consumed_file.id,
         'produced_file_id': produced_file.id
     }
-    service_execution = service_execution_repo.get_by_attributes(service_execution_data)
-    if not service_execution:
-        service_execution = service_execution_repo.create(service_execution_data)
-        print(f'Saving Service Execution info: [{service_execution.id}]={workflow_activity.name} ({service_execution.duration} ms)')
-
-
-    # incluir as estatísticas extras em execution_statistics
-    # upload_duration
-    execution_statistics_upload_data = {
-        'value_float': req.upload_duration,
-        'service_execution_id': service_execution.id,
-        'statistics_id': upload_duration_statistics.id
-    }
-    execution_statistics_upload = execution_statistics_repo.get_by_attributes(execution_statistics_upload_data)
-    if not execution_statistics_upload:
-        execution_statistics_upload = execution_statistics_repo.create(execution_statistics_upload_data)
-        print(f'Saving Upload Execution Statistics info: [{execution_statistics_upload.id}]')
-
-    # download_duration
-    execution_statistics_download_data = {
-        'value_float': req.download_duration,
-        'service_execution_id': service_execution.id,
-        'statistics_id': download_duration_statistics.id
-    }
-    execution_statistics_download = execution_statistics_repo.get_by_attributes(execution_statistics_download_data)
-    if not execution_statistics_download:
-        execution_statistics_download = execution_statistics_repo.create(execution_statistics_download_data)
-        print(f'Saving Download Execution Statistics info: [{execution_statistics_download.id}]')
-
+    
+    service_execution, created = service_execution_repo.get_or_create(service_execution_data)
+    print(f'{'Saving' if created else 'Retrieving'} Service Execution info: [{service_execution.id}]={workflow_activity.name} ({service_execution.duration} ms)')
 
     print(f'Finished saving Service Execution info to Database: [{service_execution.id}]={workflow_activity.name}')
     print(f'\n\n')
