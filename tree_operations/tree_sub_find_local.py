@@ -1,9 +1,12 @@
-from tree_operations.tree_sub_find_core import *
+from tree_sub_find_core import *
 import boto3
 
 # Substitua pelo caminho de entrada dos aquivos
-PATH_INPUT = '_data/out/trees' # Local doas arquivos de entrada
-PATH_OUTPUT = '_data/out/subtrees'  # Armazena os arquivos de subárvores finais
+PATH_BASE = 'tree_operations'
+PATH_DATA = '_data'
+PATH_LIB  = '_lib'
+PATH_INPUT  = os.path.join(PATH_BASE, PATH_DATA, 'out', 'trees') # Localização dos arquivos de entrada
+PATH_OUTPUT = os.path.join(PATH_BASE, PATH_DATA, 'out', 'subtrees') # Localização dos arquivos de árvores finais
 
 DATA_FORMAT = 'nexus' # newick ou nexus
 

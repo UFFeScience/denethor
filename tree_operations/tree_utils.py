@@ -16,7 +16,7 @@ def remove_files(dir_path):
             print("Removed the file %s" % file_path)     
     else:
         print("Sorry, directory %s did not exist." % dir_path)
-        os.mkdir(dir_path) # cria o diretório, caso não exista
+        os.makedirs(dir_path, exist_ok=True) # cria o diretório, caso não exista
         print("Directory %s was created!" % dir_path)
 
 

@@ -33,19 +33,19 @@ CREATE TABLE workflow_activity (
 
 CREATE TABLE file (
     id SERIAL PRIMARY KEY,
-    name VARCHAR UNIQUE,
+    name VARCHAR,
     size FLOAT,
     path VARCHAR,
-    bucket VARCHAR
-
+    bucket VARCHAR,
+    CONSTRAINT uk_file_data UNIQUE (name, size, path, bucket)
 );
 
 CREATE TABLE service_execution (
     id SERIAL  PRIMARY KEY,
     request_id VARCHAR,
     log_stream_name VARCHAR,
-    start_time TIMESTAMP,
-    end_time TIMESTAMP,
+    start_time TIMESTAMP WITH TIME ZONE,
+    end_time TIMESTAMP WITH TIME ZONE,
     duration FLOAT,
     billed_duration FLOAT,
     init_duration FLOAT,

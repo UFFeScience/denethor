@@ -11,7 +11,7 @@
 from Bio.Align.Applications import ClustalwCommandline
 from Bio import AlignIO, Phylo, SeqIO
 from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor
-from tree_operations.tree_utils import *
+from tree_utils import *
 import os
 
        
@@ -96,6 +96,9 @@ def constructor_tree(name_file, path_input, path_tmp, path_output, path_clustalw
         path_in_fasta = remove_pipe(name_file, path_in_fasta, path_tmp)
 
     # Executa o programa Clustalw para alinhar as sequências sem precisar da linha de comando.
+    if not os.path.exists(path_clustalw):
+        print("Sorry, directory %s do not exist." % path_clustalw)
+        
     clustalw_bin = os.path.join(path_clustalw,'clustalw2')
     clustalw_cline = ClustalwCommandline(clustalw_bin, infile=path_in_fasta, outfile=path_out_aln)
     

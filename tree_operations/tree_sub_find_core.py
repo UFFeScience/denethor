@@ -4,7 +4,7 @@
 from Bio import Phylo
 from dendropy import Tree
 import os
-from tree_operations.tree_utils import *
+from tree_utils import *
 
 
 #
@@ -67,8 +67,8 @@ def grade_maf(path_1, path_2, path_output, data_format):
         return -1
     grau = 0
 
-    subtree_1 = Phylo.read(os.path.join(path_output,path_1), data_format)
-    subtree_2 = Phylo.read(os.path.join(path_output,path_2), data_format)
+    subtree_1 = Phylo.read(os.path.join(path_output, path_1), data_format)
+    subtree_2 = Phylo.read(os.path.join(path_output, path_2), data_format)
 
     # Lista todas as clades ( folhas )
     list_1 = [i.name for i in subtree_1.get_terminals()]

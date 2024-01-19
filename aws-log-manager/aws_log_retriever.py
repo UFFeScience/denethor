@@ -6,8 +6,10 @@ import boto3
 # Define your start and end dates along with the Lambda function name
 # start_time = "2023-11-27T14:25:00Z"
 # end_time = "2023-12-31T23:59:59Z"
-start_time = '2024-01-16T18:56:00Z'
-end_time = '2024-01-16T18:59:59Z'
+# start_time = '2024-01-16T18:56:00Z'
+# end_time = '2024-01-16T18:59:59Z'
+start_time = '2024-01-18T14:44:00Z'
+end_time = '2024-01-18T14:59:59Z'
 function_name = 'tree_constructor'
 file_name = "logs_" + function_name
 file_path = os.path.join('aws-log-manager', '_logs')
@@ -30,8 +32,10 @@ def main():
 
     if logs == None:
         raise ValueError("No log records were found!")
-
-    save_to_file(logs, file_path, file_name)
+    
+    logs_sorted = sort_by_stream_and_timestamp(logs)
+    
+    save_to_file(logs_sorted, file_path, file_name)
 
 
 

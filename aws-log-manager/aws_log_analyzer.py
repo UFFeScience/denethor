@@ -16,6 +16,9 @@ def main():
 
     # iterando sobre todo o conjunto de logs recuperados para separar por request_id
     for line in data:
+        line = line.strip('\n\t,[]')
+        if not line:
+            continue
         log_item = json.loads(line)
         message = log_item.get('message')
         if message:
