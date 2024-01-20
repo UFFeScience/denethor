@@ -3,16 +3,17 @@ import boto3
 
 # Substitua pelo caminho de entrada dos aquivos
 PATH_BASE = 'tree_operations'
-PATH_DATA = '_data'
-PATH_LIB  = '_lib'
-PATH_INPUT  = os.path.join(PATH_BASE, PATH_DATA, 'testset') # Localização dos arquivos de entrada
-PATH_OUTPUT = os.path.join(PATH_BASE, PATH_DATA, 'out', 'trees') # Localização dos arquivos de árvores finais
+PATH_DATA = os.path.join(PATH_BASE, 'data')
+PATH_LIB  = os.path.join(PATH_BASE, 'lib')
+
+PATH_INPUT  = os.path.join(PATH_DATA, 'testset') # Localização dos arquivos de entrada
+PATH_OUTPUT = os.path.join(PATH_DATA, 'out', 'trees') # Localização dos arquivos de árvores finais
 
 # Usado para escrever arquivos 'nopipe' durante o processo de validação
-PATH_TMP = os.path.join(PATH_BASE, PATH_DATA, 'tmp')  # '/tmp' is lambda local folder
+PATH_TMP = os.path.join(PATH_DATA, 'tmp')  # '/tmp' is lambda local folder
 
-# PATH_CLUSTALW = os.path.join(PATH_BASE, PATH_LIB, 'opt', 'python', 'clustalw-2.1-linux-x86_64-libcppstatic')
-PATH_CLUSTALW = os.path.join(PATH_BASE, PATH_LIB, 'opt', 'python', 'ClustalW2')
+# PATH_CLUSTALW = os.path.join(PATH_LIB, 'opt', 'python', 'clustalw-2.1-linux-x86_64-libcppstatic')
+PATH_CLUSTALW = os.path.join(PATH_LIB, 'opt', 'python', 'ClustalW2')
 
 # Formato das sequências
 DATA_FORMAT = 'nexus' # newick ou nexus

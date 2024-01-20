@@ -1,19 +1,25 @@
-from tree_operations.tree_sub_find_core import *
+from tree_sub_find_core import *
 import boto3
+import time
+import timeit
 
-# Substitua pelo caminho de entrada dos aquivos
-# O bucket e path de entrada dos arquivos de subárvore
+
+# Substitua pelo caminho de entrada dos arquivos
+PATH_BASE = 'tmp' # '/tmp' is lambda local folder
+PATH_DATA = os.path.join(PATH_BASE, 'data')
+
+# O bucket de entrada dos arquivos gerados pelo tree_constructor
 BUCKET_INPUT = 'mribeiro-bucket-output-tree'
-PATH_INPUT  = ''
 
+# O bucket de saída dos arquivos gerados nesta etapa
 BUCKET_OUTPUT = 'mribeiro-bucket-output-subtree'
-PATH_OUTPUT = '' # Armazena os arquivos de subárvores finais na raiz do bucket
+S3_KEY_OUTPUT = ''
 
-# Armazena arquivos de entrada que chegam no S3
-PATH_TMP_INPUT = '/tmp/input'
+# Localização dos arquivos de entrada utilizados pela função
+PATH_INPUT_LOCAL = os.path.join(PATH_DATA, 'input', 'trees')
 
-# Armazena os arquivos de árvores finais que serão copiados para o S3
-PATH_TMP_OUTPUT = '/tmp/subtrees'
+# Localização dos arquivos gerados nesta etapa
+PATH_OUTPUT_LOCAL = os.path.join(PATH_DATA, 'output', 'subtrees')
 
 DATA_FORMAT = 'nexus' # newick ou nexus
 
@@ -21,28 +27,27 @@ s3 = boto3.client('s3')
 
 def lambda_handler(event, context):
 
+    request_id = context.aws_request_id
+
     print("******* Estado do ambiente de execução *******")
     print('pwd:', os.getcwd())
-    print('/:', os.listdir("/"))
-    print('/opt: ', os.listdir("/opt"))
-    print('/opt/python: ', os.listdir("/opt/python"))
-    print('/var/task: ', os.listdir("/var/task"))
+    # print('/:', os.listdir("/"))
+    # print('/opt: ', os.listdir("/opt"))
+    # print('/opt/python: ', os.listdir("/opt/python"))
+    # print('/var/task: ', os.listdir("/var/task"))
 
     #
     # ## Limpeza arquivos temporários ##
     #
-    remove_files(PATH_TMP_OUTPUT)
-    remove_files(PATH_TMP_INPUT) #comentar na execução local
+    remove_files(PATH_INPUT_LOCAL) #comentar na execução local
+    remove_files(PATH_OUTPUT_LOCAL)
 
 
     #
     # ## PERCORRER E MANIPULAR DIRETORIO ##
     # 
-    # get your bucket and key from event data
-    data_rec = event['Records'][0]['s3']
-    s3_bucket = data_rec['bucket']['name']
-    print("s3_bucket_input:", s3_bucket)
-
+    
+    s3_bucket = BUCKET_INPUT # por enquanto esse bucket está fixo, depois tentar passar via request
     
     #
     # List the tree files from bucket
@@ -54,91 +59,42 @@ def lambda_handler(event, context):
         s3_key = s3_file["Key"]
         print('file from s3:', s3_key)
 
-        # basename representa o nome do arquivo
-        name_file = os.path.basename(s3_key)
-        name_file_path = os.path.join(PATH_TMP_INPUT, name_file)
-        s3.download_file(s3_bucket, s3_key, name_file_path)
+        # download files from s3 into lambda function
+        file_name = download_and_log_from_s3(request_id, s3, s3_bucket, s3_key, PATH_INPUT_LOCAL)
+
     
-    
-    
-    # Diretório de entrada de árvores
-    files = os.listdir(PATH_TMP_INPUT)
+    #
+    # ## PERCORRER E MANIPULAR DIRETORIO ##
+    # 
 
     # matriz com todas as subárvores
-    matriz_subtree = []
+    subtree_matrix = []
 
-    for name_file in files:
+    # Diretório de entrada de árvores
+    files = os.listdir(PATH_INPUT_LOCAL)
 
-        print("Reading file %s" % name_file)     
-
-        file_path = os.path.join(PATH_TMP_INPUT,name_file)
-        matriz_subtree.append(sub_tree(file_path, name_file, PATH_TMP_OUTPUT, DATA_FORMAT))
+    for file_name in files:
+        print("Reading file %s" % file_name)     
+        file_path = os.path.join(PATH_INPUT_LOCAL, file_name)
+        
+        subtree = sub_tree_constructor(file_path, file_name, PATH_OUTPUT_LOCAL, DATA_FORMAT)
+        subtree_matrix.append(subtree)
     
-    # máximo de colunas
-    max_columns = max(len(row) for row in matriz_subtree)
-    
-    # máximo de linhas
-    max_rows = len(matriz_subtree)
+    # para evitar: "PermissionError: [Errno 13] Permission denied" ao tentar abrir os arquivos logo após terem sido escritos
+    time.sleep(0.100)
 
-    print('max_rows=', max_rows, ' | ', 'max_columns=', max_columns)
-    # matriz_subtree = preencher_matriz(matriz_subtree,None)
-    preencher_matriz(matriz_subtree, max_columns, None)
+    subtree_matrix = fill_matrix(subtree_matrix, value=None)
 
-    # for linha in matriz_subtree:
-    #     print(linha)
-    
-    dict_maf_database = {}
+    dict_maf_database, max_maf = create_maf_database(subtree_matrix, PATH_OUTPUT_LOCAL, DATA_FORMAT)
 
-    # dict_maf_database = fill_dict(dict_maf_database, max_columns)
-    fill_dict(dict_maf_database, max_columns)
-    print('dict_maf_database:', dict_maf_database)
-    
-    max_maf = 0
-    for i in range(max_rows):
-        for j in range(max_columns):
-            dict_aux = {}
-            for k in range(max_rows):
-                for l in range(max_columns):
-                    if i != k:
+    print('max_maf:', max_maf)
+    print('Final dict_maf_database:', dict_maf_database)
 
-                        g_maf = grade_maf(matriz_subtree[i][j], matriz_subtree[k][l], PATH_TMP_OUTPUT, DATA_FORMAT)
-                        # print('g_maf=',g_maf)
-
-                        if max_maf <= g_maf:
-                            max_maf = g_maf
-
-                        if g_maf is not False and g_maf >= 1:
-                            if g_maf not in dict_maf_database:
-                                dict_maf_database[g_maf] = {}
-                            if matriz_subtree[i][j] not in dict_maf_database[g_maf]:
-                                dict_maf_database[g_maf][matriz_subtree[i][j]] = []
-                            dict_maf_database[g_maf][matriz_subtree[i][j]].append(matriz_subtree[k][l])
-
-    print('max_maf:',max_maf)
-
-    print('dict_maf_database:', dict_maf_database)
-    # for i, j in dict_maf_database.items():
-    #     print(i,j)
-    #     for key, val in j.items():
-    #         # print(i, key, val)
-    #         continue
-
-    
     #
     # ## Copiar arquivos tree para o S3 ##
     #
-    dir_trees = os.path.join(PATH_TMP_OUTPUT)
-    
-    for tree_file_name in os.listdir(dir_trees):
-        tree_file_path = os.path.join(dir_trees, tree_file_name)
-        s3_output_key = os.path.join(PATH_OUTPUT, tree_file_name)
+    for file_name in os.listdir(PATH_OUTPUT_LOCAL):
+        # upload files from lambda function into s3
+        upload_and_log_to_s3(request_id, s3, BUCKET_OUTPUT, S3_KEY_OUTPUT, file_name, PATH_OUTPUT_LOCAL)
         
-        # print('tree_file_name:' , tree_file_name)
-        print('tree_file_path:' , tree_file_path)
-
-        
-        url = upload_file_to_S3(tree_file_path, BUCKET_OUTPUT, s3_output_key, s3)
-        
-        print("url:", url)
-
     return "OK"

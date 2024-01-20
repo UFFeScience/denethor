@@ -23,7 +23,7 @@ def print_trees_in_directory(directory, data_format):
 #
 # Construtor de subárvores
 #
-def sub_tree(path_file, name_subtree, path_output, data_format):
+def sub_tree_constructor(path_file, name_subtree, path_output, data_format):
     
     match data_format:
         case 'nexus':
@@ -52,12 +52,16 @@ def sub_tree(path_file, name_subtree, path_output, data_format):
 #
 # Preencher as células vazias com o valor de preenchimento
 #
-def preencher_matriz(matriz, max_columns, valor_preenchimento):
-    for row in matriz:
+def fill_matrix(matrix, value):
+    max_rows = len(matrix)
+    max_columns = max(len(row) for row in matrix)
+    for row in matrix:
         while len(row) < max_columns:
-            row.append(valor_preenchimento)
+            row.append(value)
+    print('max_rows=', max_rows, ' | ', 'max_columns=', max_columns)
+    
+    return matrix
 
-    return matriz
 
 #
 # Comparação das subárvores
@@ -84,9 +88,40 @@ def grade_maf(path_1, path_2, path_output, data_format):
     return grau
 
 
-def fill_dict(dict, max_columns):
-    for i in range(max_columns):
-        dict[i+1] = {}
+def create_maf_database(subtree_matrix, path_output, data_format):
 
-    # return dict_maf_database
+    max_rows = len(subtree_matrix)
+    max_columns = max(len(row) for row in subtree_matrix)
+
+    dict_maf_database = {i: {} for i in range(1, max_columns)}
+    print('Empty dict_maf_database:', dict_maf_database)
+    
+    max_maf = 0
+    for i in range(max_rows):
+        for j in range(max_columns):
+            dict_aux = {}
+            for k in range(max_rows):
+                for l in range(max_columns):
+                    if i != k:
+                        g_maf = grade_maf(subtree_matrix[i][j], subtree_matrix[k][l], path_output, data_format)
+                        # print('g_maf=',g_maf)
+
+                        if max_maf <= g_maf:
+                            max_maf = g_maf
+
+                        if g_maf >= 1:
+                            if g_maf not in dict_maf_database:
+                                dict_maf_database[g_maf] = {}
+                            if subtree_matrix[i][j] not in dict_maf_database[g_maf]:
+                                dict_maf_database[g_maf][subtree_matrix[i][j]] = []
+                            dict_maf_database[g_maf][subtree_matrix[i][j]].append(subtree_matrix[k][l])
+    
+    # for i, j in dict_maf_database.items():
+    #     print(i,j)
+    #     for key, val in j.items():
+    #         # print(i, key, val)
+    #         continue
+    
+    return dict_maf_database, max_maf
+
 
