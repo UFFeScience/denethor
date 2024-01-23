@@ -4,14 +4,15 @@ import boto3
 
 
 # Define your start and end dates along with the Lambda function name
-# start_time = "2023-11-27T14:25:00Z"
-# end_time = "2023-12-31T23:59:59Z"
-# start_time = '2024-01-16T18:56:00Z'
-# end_time = '2024-01-16T18:59:59Z'
-start_time = '2024-01-18T14:44:00Z'
-end_time = '2024-01-18T14:59:59Z'
-function_name = 'tree_constructor'
+# start_time = '2024-01-18T14:44:00Z'
+# end_time   = '2024-01-18T14:59:59Z'
+# function_name = 'tree_constructor'
+start_time = '2024-01-22T20:53:00Z'
+end_time   = '2024-01-22T21:02:59Z'
+
+function_name = 'tree_sub_find'
 file_name = "logs_" + function_name
+
 file_path = os.path.join('aws-log-manager', '_logs')
 
 # Retrieve logs from AWS Lambda organized by logStreamName

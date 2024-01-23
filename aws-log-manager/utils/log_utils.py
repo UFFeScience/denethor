@@ -50,3 +50,11 @@ def filter_logs_by_keywords(logs, keywords):
                     filtered_logs.append(log)
                     break
     return filtered_logs
+
+
+# Create datetime objects (in UTC) from the timestamps in milliseconds
+def convert_to_datetime(time: float):
+    if time:
+        return datetime.fromtimestamp((time / 1000.0), tz=timezone.utc)
+    return None
+

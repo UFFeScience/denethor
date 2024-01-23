@@ -5,7 +5,7 @@ import timeit
 
 
 # Substitua pelo caminho de entrada dos arquivos
-PATH_BASE = 'tmp' # '/tmp' is lambda local folder
+PATH_BASE = '/tmp' # '/tmp' is lambda local folder
 PATH_DATA = os.path.join(PATH_BASE, 'data')
 
 # O bucket de entrada dos arquivos gerados pelo tree_constructor
@@ -26,15 +26,15 @@ DATA_FORMAT = 'nexus' # newick ou nexus
 s3 = boto3.client('s3')
 
 def lambda_handler(event, context):
-
+    
     request_id = context.aws_request_id
 
     print("******* Estado do ambiente de execução *******")
     print('pwd:', os.getcwd())
-    # print('/:', os.listdir("/"))
-    # print('/opt: ', os.listdir("/opt"))
-    # print('/opt/python: ', os.listdir("/opt/python"))
-    # print('/var/task: ', os.listdir("/var/task"))
+    print('/tmp:', os.listdir("/tmp"))
+    print('/opt: ', os.listdir("/opt"))
+    print('/opt/python: ', os.listdir("/opt/python"))
+    print('/var/task: ', os.listdir("/var/task"))
 
     #
     # ## Limpeza arquivos temporários ##
@@ -43,58 +43,89 @@ def lambda_handler(event, context):
     remove_files(PATH_OUTPUT_LOCAL)
 
 
-    #
-    # ## PERCORRER E MANIPULAR DIRETORIO ##
-    # 
-    
     s3_bucket = BUCKET_INPUT # por enquanto esse bucket está fixo, depois tentar passar via request
     
     #
-    # List the tree files from bucket
+    # List and downloads the tree files from bucket
     #
-    response = s3.list_objects_v2(Bucket=s3_bucket, Prefix='', StartAfter='')
+    start_time = timeit.default_timer()
+    
+    response = s3.list_objects_v2(Bucket=s3_bucket, Prefix='', StartAfter='', Delimiter='/')
     s3_files = response["Contents"]
     for s3_file in s3_files:
         # key representa o path + nome do arquivo do s3
         s3_key = s3_file["Key"]
-        print('file from s3:', s3_key)
+        print('downloading file from s3:', s3_key)
 
         # download files from s3 into lambda function
-        file_name = download_and_log_from_s3(request_id, s3, s3_bucket, s3_key, PATH_INPUT_LOCAL)
+        tree_file = download_and_log_from_s3(request_id, s3, s3_bucket, s3_key, PATH_INPUT_LOCAL)
 
+    end_time = timeit.default_timer()
+    download_total_time_ms = (end_time - start_time) * 1000
     
+    total_file, total_file_size = get_num_files_and_size(PATH_INPUT_LOCAL)
+
+    print(f"CONSUMED_FILES_INFO RequestId: {request_id}\t NumFiles: {total_file} files\t TotalFilesSize: {total_file_size} bytes\t Duration: {download_total_time_ms} ms")
+
+    ###########
+
+
     #
-    # ## PERCORRER E MANIPULAR DIRETORIO ##
+    # ## Construção dos arquivos de subárvores ##
     # 
+    start_time = timeit.default_timer()
 
-    # matriz com todas as subárvores
     subtree_matrix = []
-
-    # Diretório de entrada de árvores
-    files = os.listdir(PATH_INPUT_LOCAL)
-
-    for file_name in files:
-        print("Reading file %s" % file_name)     
-        file_path = os.path.join(PATH_INPUT_LOCAL, file_name)
-        
-        subtree = sub_tree_constructor(file_path, file_name, PATH_OUTPUT_LOCAL, DATA_FORMAT)
+    for tree_file in os.listdir(PATH_INPUT_LOCAL):
+        subtree = subtree_constructor(tree_file, PATH_INPUT_LOCAL, PATH_OUTPUT_LOCAL, DATA_FORMAT)
         subtree_matrix.append(subtree)
+    
+    end_time = timeit.default_timer()
+    subtree_time_ms = (end_time - start_time) * 1000
+    
+    print(f"SUBTREE_FILES_CREATE RequestId: {request_id}\t Duration: {subtree_time_ms} ms")
+
+    ###########
+    
     
     # para evitar: "PermissionError: [Errno 13] Permission denied" ao tentar abrir os arquivos logo após terem sido escritos
     time.sleep(0.100)
 
-    subtree_matrix = fill_matrix(subtree_matrix, value=None)
 
+    #
+    # ## Criação do dicionário de similariadades de subárvore ##
+    #
+    start_time = timeit.default_timer()
+    
     dict_maf_database, max_maf = create_maf_database(subtree_matrix, PATH_OUTPUT_LOCAL, DATA_FORMAT)
-
+    
+    end_time = timeit.default_timer()
+    maf_time_ms = (end_time - start_time) * 1000
+    
+    print("Tempo de criação do maf_database:", maf_time_ms, "milissegundos")
     print('max_maf:', max_maf)
-    print('Final dict_maf_database:', dict_maf_database)
+
+    print(f"MAF_DATABASE_CREATE RequestId: {request_id}\t MaxMaf: {max_maf}\t Duration: {maf_time_ms} ms\t MafDatabase: {dict_maf_database}")
+
+    ###########
+
 
     #
     # ## Copiar arquivos tree para o S3 ##
     #
-    for file_name in os.listdir(PATH_OUTPUT_LOCAL):
+    start_time = timeit.default_timer()
+
+    for tree_file in os.listdir(PATH_OUTPUT_LOCAL):
         # upload files from lambda function into s3
-        upload_and_log_to_s3(request_id, s3, BUCKET_OUTPUT, S3_KEY_OUTPUT, file_name, PATH_OUTPUT_LOCAL)
+        upload_and_log_to_s3(request_id, s3, BUCKET_OUTPUT, S3_KEY_OUTPUT, tree_file, PATH_OUTPUT_LOCAL)
         
+    end_time = timeit.default_timer()
+    upload_total_time_ms = (end_time - start_time) * 1000
+    
+    total_file, total_file_size = get_num_files_and_size(PATH_OUTPUT_LOCAL)
+    
+    print(f"PRODUCED_FILES_INFO RequestId: {request_id}\t NumFiles: {total_file} files\t TotalFilesSize: {total_file_size} bytes\t Duration: {upload_total_time_ms} ms")
+
+    ###########
+    
     return "OK"

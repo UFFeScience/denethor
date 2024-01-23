@@ -57,13 +57,17 @@ class WorkflowActivityRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session, WorkflowActivity)
 
+class ServiceExecutionRepository(GenericRepository):
+    def __init__(self, session: Session):
+        super().__init__(session, ServiceExecution)
+
 class FileRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=File)
     
-class ServiceExecutionRepository(GenericRepository):
+class ExecutionFilesRepository(GenericRepository):
     def __init__(self, session: Session):
-        super().__init__(session, ServiceExecution)
+        super().__init__(session, ExecutionFiles)
 
 class StatisticsRepository(GenericRepository):
     def __init__(self, session: Session):

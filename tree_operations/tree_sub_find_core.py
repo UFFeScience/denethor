@@ -23,7 +23,7 @@ def print_trees_in_directory(directory, data_format):
 #
 # Construtor de subárvores
 #
-def sub_tree_constructor(path_file, name_subtree, path_output, data_format):
+def subtree_constructor(tree_name, path_input, path_output, data_format):
     
     match data_format:
         case 'nexus':
@@ -31,22 +31,28 @@ def sub_tree_constructor(path_file, name_subtree, path_output, data_format):
         case 'newick':
             EXTENTION_FORMAT = 'nwk' # Newick: 'nwk'
     
-    # Salva a árvore
-    tree = Phylo.read(path_file, data_format)
-    name_subtree = name_subtree.rsplit(".", 1)[0]
+    # Leitura do arquido da árvore
+    print(f"\nReading tree file {tree_name}")
+    tree_path = os.path.join(path_input, tree_name)            
+    tree = Phylo.read(tree_path, data_format)
 
     #Lista caminhos das subárvores (que posteriormente serão utilizadas para compor a matriz de subárvores)
-    row_subtree = []
+    list_subtree = []
+
+    # Salva o arquivo da subárvore
+    tree_name_prefix = tree_name.rsplit(".", 1)[0]
 
     for clade in tree.find_clades():
         subtree = Phylo.BaseTree.Tree(clade)
         if subtree.count_terminals() > 1:
-            name_file_out = f'{name_subtree}_{clade.name}.{EXTENTION_FORMAT}'
-            file_path_out = os.path.join(path_output, name_file_out)
-            Phylo.write(subtree, file_path_out, data_format)
-            row_subtree.append(name_file_out)
+            subtree_name = f'{tree_name_prefix}_{clade.name}.{EXTENTION_FORMAT}'
+            subtree_path = os.path.join(path_output, subtree_name)
+            Phylo.write(subtree, subtree_path, data_format)
+            list_subtree.append(subtree_name)
+            print(f"Subtree file {subtree_name} was created!")
 
-    return row_subtree
+
+    return list_subtree
 
 
 #
@@ -66,13 +72,13 @@ def fill_matrix(matrix, value):
 #
 # Comparação das subárvores
 #
-def grade_maf(path_1, path_2, path_output, data_format):
-    if(path_1 is None or path_2 is None):
+def grade_maf(file_1, file_2, path, data_format):
+    if(file_1 is None or file_2 is None):
         return -1
     grau = 0
 
-    subtree_1 = Phylo.read(os.path.join(path_output, path_1), data_format)
-    subtree_2 = Phylo.read(os.path.join(path_output, path_2), data_format)
+    subtree_1 = Phylo.read(os.path.join(path, file_1), data_format)
+    subtree_2 = Phylo.read(os.path.join(path, file_2), data_format)
 
     # Lista todas as clades ( folhas )
     list_1 = [i.name for i in subtree_1.get_terminals()]
@@ -88,11 +94,14 @@ def grade_maf(path_1, path_2, path_output, data_format):
     return grau
 
 
-def create_maf_database(subtree_matrix, path_output, data_format):
+def create_maf_database(subtree_matrix, path, data_format):
+
+    subtree_matrix = fill_matrix(subtree_matrix, value=None)
 
     max_rows = len(subtree_matrix)
     max_columns = max(len(row) for row in subtree_matrix)
 
+    # inicializando dict_maf_database com espaços vazios
     dict_maf_database = {i: {} for i in range(1, max_columns)}
     print('Empty dict_maf_database:', dict_maf_database)
     
@@ -103,7 +112,7 @@ def create_maf_database(subtree_matrix, path_output, data_format):
             for k in range(max_rows):
                 for l in range(max_columns):
                     if i != k:
-                        g_maf = grade_maf(subtree_matrix[i][j], subtree_matrix[k][l], path_output, data_format)
+                        g_maf = grade_maf(subtree_matrix[i][j], subtree_matrix[k][l], path, data_format)
                         # print('g_maf=',g_maf)
 
                         if max_maf <= g_maf:
@@ -123,5 +132,3 @@ def create_maf_database(subtree_matrix, path_output, data_format):
     #         continue
     
     return dict_maf_database, max_maf
-
-

@@ -24,15 +24,25 @@ def remove_files(dir_path):
 def directory_has_single_file(directory_path):
     if not os.path.isdir(directory_path):
         return False
-
     files = os.listdir(directory_path)
     if len(files) != 1:
         return False
-
     return True
 
 
-def upload_and_log_to_s3(request_id, s3, s3_bucket, s3_keys, file_name, file_path):
+def get_num_files_and_size(path):
+    num_files = 0
+    total_size = 0
+    for file in os.listdir(path):
+        fp = os.path.join(path, file)
+        if os.path.isfile(fp):
+            num_files += 1
+            total_size += os.path.getsize(fp)
+    
+    return num_files, total_size
+
+
+def upload_and_log_to_s3(request_id, s3, s3_bucket, s3_key, file_name, file_path):
     # basename representa o nome do arquivo
     s3_key_upload = os.path.join(s3_key, file_name)
     file_name_with_path = os.path.join(file_path, file_name)

@@ -1,10 +1,11 @@
-DROP TABLE IF EXISTS execution_statistics CASCADE;
-DROP TABLE IF EXISTS service_execution CASCADE;
-DROP TABLE IF EXISTS workflow_activity CASCADE;
-DROP TABLE IF EXISTS file CASCADE;
-DROP TABLE IF EXISTS service_provider CASCADE;
-DROP TABLE IF EXISTS workflow CASCADE;
-DROP TABLE IF EXISTS statistics CASCADE;
+DROP TABLE IF EXISTS execution_statistics;
+DROP TABLE IF EXISTS execution_files;
+DROP TABLE IF EXISTS service_execution;
+DROP TABLE IF EXISTS workflow_activity;
+DROP TABLE IF EXISTS file;
+DROP TABLE IF EXISTS service_provider;
+DROP TABLE IF EXISTS workflow;
+DROP TABLE IF EXISTS statistics;
 
 
 
@@ -31,6 +32,31 @@ CREATE TABLE workflow_activity (
     CONSTRAINT fk_workflow_activity_workflow FOREIGN KEY (workflow_id) REFERENCES workflow(id)
 );
 
+CREATE TABLE service_execution (
+    id SERIAL  PRIMARY KEY,
+    activity_id INTEGER,
+    service_id INTEGER,
+    request_id VARCHAR,
+    log_stream_name VARCHAR,
+    start_time TIMESTAMP WITH TIME ZONE,
+    end_time TIMESTAMP WITH TIME ZONE,
+    duration FLOAT,
+    billed_duration FLOAT,
+    init_duration FLOAT,
+    memory_size INTEGER,
+    max_memory_used INTEGER,
+    num_consumed_files INTEGER,
+    num_produced_files INTEGER,
+    total_consumed_files_size INTEGER,
+    total_produced_files_size INTEGER,
+    total_consumed_transfer_duration FLOAT,
+    total_produced_transfer_duration FLOAT,
+    error_message VARCHAR,
+    CONSTRAINT fk_service_execution_service_provider FOREIGN KEY (service_id) REFERENCES service_provider(id),
+    CONSTRAINT fk_service_execution_workflow_activity FOREIGN KEY (activity_id) REFERENCES workflow_activity(id)
+);
+
+
 CREATE TABLE file (
     id SERIAL PRIMARY KEY,
     name VARCHAR,
@@ -40,43 +66,29 @@ CREATE TABLE file (
     CONSTRAINT uk_file_data UNIQUE (name, size, path, bucket)
 );
 
-CREATE TABLE service_execution (
+CREATE TABLE execution_files (
     id SERIAL  PRIMARY KEY,
-    request_id VARCHAR,
-    log_stream_name VARCHAR,
-    start_time TIMESTAMP WITH TIME ZONE,
-    end_time TIMESTAMP WITH TIME ZONE,
-    duration FLOAT,
-    billed_duration FLOAT,
-    init_duration FLOAT,
-    consumed_file_download_duration FLOAT,
-    produced_file_upload_duration FLOAT,
-    memory_size INTEGER,
-    max_memory_used INTEGER,
-    error_message VARCHAR,
-    activity_id INTEGER,
-    service_id INTEGER,
-    consumed_file_id INTEGER,
-    produced_file_id INTEGER,
-    CONSTRAINT fk_service_execution_service_provider FOREIGN KEY (service_id) REFERENCES service_provider(id),
-    CONSTRAINT fk_service_execution_workflow_activity FOREIGN KEY (activity_id) REFERENCES workflow_activity(id),
-    CONSTRAINT fk_service_execution_consumed_file_id FOREIGN KEY (consumed_file_id) REFERENCES file(id),
-    CONSTRAINT fk_service_execution_produced_file_id FOREIGN KEY (produced_file_id) REFERENCES file(id)
+    service_execution_id INTEGER,
+    file_id INTEGER,
+    transfer_duration FLOAT,
+    action_type VARCHAR(10) CONSTRAINT check_action_type CHECK (action_type IN ('produced', 'consumed')),
+    CONSTRAINT fk_execution_files_service_execution FOREIGN KEY (service_execution_id) REFERENCES service_execution(id),
+    CONSTRAINT fk_execution_files_file FOREIGN KEY (file_id) REFERENCES file(id)
 );
-
 
 CREATE TABLE statistics (
     id SERIAL  PRIMARY KEY,
-    name VARCHAR
+    name VARCHAR,
+    description VARCHAR
 );
 
 CREATE TABLE execution_statistics (
     id SERIAL  PRIMARY KEY,
+    service_execution_id INTEGER,
+    statistics_id INTEGER,
     value_float FLOAT,
     value_integer INTEGER,
     value_string VARCHAR,
-    service_execution_id INTEGER,
-    statistics_id INTEGER,
     CONSTRAINT fk_execution_statistics_service_execution FOREIGN KEY (service_execution_id) REFERENCES service_execution(id),
     CONSTRAINT fk_execution_statistics_statistics FOREIGN KEY (statistics_id) REFERENCES statistics(id)
 );
@@ -97,7 +109,12 @@ INSERT INTO workflow_activity (name, description, workflow_id) VALUES
     );
     
 INSERT INTO workflow_activity (name, description, workflow_id) VALUES 
-    ('find_subtree', 
+    ('tree_sub_find', 
     'Geração de subárvores a partir das árvores principais e análise de MAF (matriz de frequência de pares de subárvores)',
     (select id from workflow where name = 'aws_lambda_eval')
     );
+
+INSERT INTO statistics (name, description) VALUES ('subtree_duration', 'Duração do processo de criação de subárvores');
+INSERT INTO statistics (name, description) VALUES ('maf_db_duration', 'Duração do processo de criação do "maf_database"');
+INSERT INTO statistics (name, description) VALUES ('max_maf', 'Valor máximo obtido para "maf"');
+INSERT INTO statistics (name, description) VALUES ('maf_database', 'Valor do dicionário "maf_database" obtido ao término do processo');
