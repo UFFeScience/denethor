@@ -69,12 +69,18 @@ def main():
     
     # iterando sobre o conjunto de logs de um request_id (cada chamda da função lambda)
     # esse conjunto representa uma execução completa da atividade para um conjunto de arquivos de entrada
-    for request_id, logs in request_id_dict.items():
-        for log in logs:
-            process(log)
+    for request_id, logs_list in request_id_dict.items():
+        
+        for log_item in logs_list:
+            process(log_item)
         
         print(execution_info)
         save_to_database()
+        
+        # zerando os dicionários
+        clear(execution_info)
+        clear(tree_sub_find_info)
+        file_info.clear()
 
     # log_str = json.dumps(log)
     
@@ -116,31 +122,35 @@ def process(log):
     log_type = re.search('^\\w+', message).group(0)
 
     match log_type:
-        # "START RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c Version: $LATEST\n"
+        # "message":"START RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c Version: $LATEST\n"
         case 'START':
             execution_info['start_time'] = convert_to_datetime(log.get('timestamp'))
         
-        # "END RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c\n"
+        # "message":"END RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c\n"
         case 'END':
             execution_info['end_time'] = convert_to_datetime(log.get('timestamp'))
         
-        # "FILE_DOWNLOAD RequestId: c3df54b6-1da5-48b2-bec4-093b55c96692\t FileName: ORTHOMCL1\t Bucket: mribeiro-bucket-input\t FilePath: data/testset/ORTHOMCL1\t Duration: 407.83485699999744 ms\t FileSize: 1640 bytes\n"
+        # "message":"FILE_DOWNLOAD RequestId: c3df54b6-1da5-48b2-bec4-093b55c96692\t FileName: ORTHOMCL1\t Bucket: mribeiro-bucket-input\t FilePath: data/testset/ORTHOMCL1\t Duration: 407.83485699999744 ms\t FileSize: 1640 bytes\n"
         case 'FILE_DOWNLOAD':
             process_file_info('consumed', message)
         
-        # "FILE_UPLOAD RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c\t FileName: tree_ORTHOMCL1.nexus\t Bucket: mribeiro-bucket-output-tree\t FilePath: tree_ORTHOMCL1.nexus\t Duration: 292.6312569999965\t FileSize: 339\n"
+        # "message":"FILE_UPLOAD RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c\t FileName: tree_ORTHOMCL1.nexus\t Bucket: mribeiro-bucket-output-tree\t FilePath: tree_ORTHOMCL1.nexus\t Duration: 292.6312569999965\t FileSize: 339\n"
         case 'FILE_UPLOAD':
             process_file_info('produced', message)
         
+        # "message":"CONSUMED_FILES_INFO RequestId: 3fcca4a3-e9e6-44aa-883f-647a0386a31a\t NumFiles: 100 files\t TotalFilesSize: 36777 bytes\t Duration: 6933.13087699994 ms\n"
         case 'CONSUMED_FILES_INFO':
             process_total_file_info('consumed', message)
         
+        # "message": "PRODUCED_FILES_INFO RequestId: 3fcca4a3-e9e6-44aa-883f-647a0386a31a\t NumFiles: 335 files\t TotalFilesSize: 83697 bytes\t Duration: 17168.395734999875 ms\n"
         case 'PRODUCED_FILES_INFO':
             process_total_file_info('produced', message)
         
+        # "message": "SUBTREE_FILES_CREATE RequestId: 3fcca4a3-e9e6-44aa-883f-647a0386a31a\t Duration: 795.8109850000028 ms\n"
         case 'SUBTREE_FILES_CREATE':
             process_subtree_info(message)
         
+        #"message": "MAF_DATABASE_CREATE RequestId: 3fcca4a3-e9e6-44aa-883f-647a0386a31a\t MaxMaf: 5\t Duration: 485681.23013399995 ms\t MafDatabase: {1: {}, 2: {'tree_ORTHOMCL1_Inner3.nexus': ['tree_ORTHOMCL1977_Inner2.nexus', 'tree_ORTHOMCL1977_Inner1.nexus'],      (.......)     , 3: {}, 5: {'tree_ORTHOMCL1_Inner3.nexus': ['tree_ORTHOMCL1977_Inner3.nexus'],) 'tree_ORTHOMCL1977_Inner3.nexus': ['tree_ORTHOMCL1_Inner3.nexus']}}\n"
         case 'MAF_DATABASE_CREATE':
             process_maf_databse_info(message)
         
@@ -232,7 +242,6 @@ def save_to_database():
             'bucket': item['bucket']
         }
         file, created = file_repo.get_or_create(file_dict)
-        print(f'{'Saving' if created else 'Retrieving'} File info: {file}')
 
         execution_file_dict = {
             'service_execution_id': service_execution.id,
@@ -241,7 +250,8 @@ def save_to_database():
             'action_type': item['action_type']
         }
         execution_file, created = execution_files_repo.get_or_create(execution_file_dict)
-        print(f'{'Saving' if created else 'Retrieving'} Execution File info: {execution_file}')
+        
+        print(f'{'Saving' if created else 'Retrieving'} File info: {file} || {'Saving' if created else 'Retrieving'} Execution File info: {execution_file}')
 
 
     # para a execução da função 'tree_sub_find', temos estatísticas adicionais para armazenar

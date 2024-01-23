@@ -57,3 +57,7 @@ def convert_to_datetime(time: float):
         return datetime.fromtimestamp((time / 1000.0), tz=timezone.utc)
     return None
 
+def clear (dicio):
+    for chave in dicio:
+        dicio[chave] = None
+    return dicio

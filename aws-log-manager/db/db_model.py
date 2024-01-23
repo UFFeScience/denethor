@@ -104,7 +104,7 @@ class ExecutionFiles(Base):
     action_type = Column(String)
     
     def __str__(self):
-        return (f"[{self.id}]={self.action_type}_file_id:{self.file_id} ({self.transfer_duration} ms)")
+        return (f"[{self.id}]={self.action_type} {self.transfer_duration} ms")
     
     
 class Statistics(Base):
