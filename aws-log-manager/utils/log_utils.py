@@ -3,25 +3,22 @@ import json
 import os
 import re
 
-# Sort the list by the logStreamName attribute and then by the timestamp attribute
-def sort_by_stream_and_timestamp(logs):
-    return sorted(logs, key=lambda x: (x["logStreamName"], x["timestamp"]))
-
-        
 # Define a regex pattern to match only valid characters in file names or directories
 def sanitize(filename):
     return re.sub(r'[^a-zA-Z0-9\_\-\.\\]', '_', filename).replace("LATEST", '')
 
+
 # Save logs to a single file ordered by logStreamName
-def save_to_file(logs, file_path, file_name):
-    file_path = sanitize(os.path.join(file_path, f'{file_name}.json'))
+def save_to_file(json_logs, file_path):
+    
+    json_logs.sort(key=lambda x: (x['logStreamName'], x['timestamp']))
+    
+    file_path = sanitize(file_path)
     with open(file=file_path, mode='w') as file:
-        file.write('[\n')
-        for i, log in enumerate(logs):
-            last = i == len(logs) - 1
-            file.write('\t' + json.dumps(log) + ('\n' if last else ',\n'))
-        file.write(']\n')
+        json.dump(json_logs, file, indent=2)
+    
     print(f"Logs saved to {file_path} in json format")
+
 
 # Define a function to print logs in an organized manner
 def print_logs_to_console(logs):
@@ -37,20 +34,6 @@ def print_logs_to_console(logs):
     print("-" * 80)
 
 
-# Function to filter AWS Lambda logs by keywords
-def filter_logs_by_keywords(logs, keywords):
-    filtered_logs = []
-    for log in logs:
-        message = log.get('message')
-        if message:
-            encoded_message = message.encode('utf-8', 'ignore').decode('utf-8')
-            for keyword in keywords:
-                if keyword.encode('utf-8', 'ignore').decode('utf-8') in encoded_message:
-                    filtered_logs.append(log)
-                    break
-    return filtered_logs
-
-
 # Create datetime objects (in UTC) from the timestamps in milliseconds
 def convert_to_datetime(time: float):
     if time:
@@ -61,3 +44,126 @@ def clear (dicio):
     for chave in dicio:
         dicio[chave] = None
     return dicio
+
+
+
+# Agrupando logs pelo valor de 'RequestId' no campo 'message' 
+def get_logs_by_request_id(logs: dict) -> dict:
+    
+    # Dicionário para armazenar os logs filtrados
+    request_id_dict = {}
+   
+    # Loop através dos logs
+    for log in logs:
+        # Obter o RequestId do log
+        request_id = get_request_id(log)
+        
+        # Se o RequestId não for None, adicione o log ao dicionário
+        if request_id is not None:
+            if request_id not in request_id_dict:
+                request_id_dict[request_id] = []
+            request_id_dict[request_id].append(log)
+
+    return request_id_dict
+
+
+
+#
+# Funções para extrair os atributos e seus valores da mensagem do log
+#
+
+def get_log_type(log):
+    match = re.search('^\\w+', log['message'])
+    return match.group(0) if match else None
+
+def get_request_id(log):
+    match = re.search('RequestId: (\S+)', log['message'])
+    return match.group(1) if match else None
+
+def get_log_stream_name(log):
+    return log['log_stream_name']
+
+def get_duration(log):
+    match = re.search('Duration: (.+?) ms\\t', log['message'])
+    return match.group(1) if match else None
+
+def get_billed_duration(log):
+    match = re.search('Billed Duration: (.+?) ms\\t', log['message'])
+    return match.group(1) if match else None
+
+def get_memory_size(log):
+    match = re.search('Memory Size: (.+?) MB\\t', log['message'])
+    return match.group(1) if match else None
+
+def get_max_memory_used(log):
+    match = re.search('Max Memory Used: (.+?) MB\\t', log['message'])
+    return match.group(1) if match else None
+
+def get_init_duration(log):
+    match = re.search('Init Duration: (.+?) ms\\t', log['message'])
+    return match.group(1) if match else None
+
+
+# File
+        'name': re.search(, message).group(1),
+        'size': re.search('', message).group(1),
+        'path': re.search('', message).group(1),
+        'bucket': re.search('', message).group(1),
+        'transfer_duration': re.search('', message).group(1),
+        'action_type': action_type
+def get_file_name(log):
+    match = re.search('FileName: (.+?)\\t', log['message'])
+    return match.group(1) if match else None
+
+def get_file_size(log):
+    match = re.search('FileSize: (.+?) bytes\\n', log['message'])
+    return match.group(1) if match else None
+
+def get_file_path(log):
+    match = re.search('FilePath: (.+?)\\t', log['message'])
+    return match.group(1) if match else None
+
+def get_file_bucket(log):
+    match = re.search('Bucket: (.+?)\\t', log['message'])
+    return match.group(1) if match else None
+
+def get_file_transfer_duration(log):
+    match = re.search('Duration: (.+?) ms\\t', log['message'])
+    return match.group(1) if match else None
+
+def get_file_x(log):
+    match = re.search('RequestId: (\S+)', log['message'])
+    return match.group(1) if match else None
+
+def get_file_x(log):
+    match = re.search('RequestId: (\S+)', log['message'])
+    return match.group(1) if match else None
+
+def get_file_x(log):
+    match = re.search('RequestId: (\S+)', log['message'])
+    return match.group(1) if match else None
+
+def get_file_x(log):
+    match = re.search('RequestId: (\S+)', log['message'])
+    return match.group(1) if match else None
+
+def get_file_x(log):
+    match = re.search('RequestId: (\S+)', log['message'])
+    return match.group(1) if match else None
+
+def get_file_x(log):
+    match = re.search('RequestId: (\S+)', log['message'])
+    return match.group(1) if match else None
+
+def get_file_x(log):
+    match = re.search('RequestId: (\S+)', log['message'])
+    return match.group(1) if match else None
+
+def get_file_x(log):
+    match = re.search('RequestId: (\S+)', log['message'])
+    return match.group(1) if match else None
+
+def get_file_x(log):
+    match = re.search('RequestId: (\S+)', log['message'])
+    return match.group(1) if match else None
+

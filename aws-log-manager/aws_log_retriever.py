@@ -4,24 +4,22 @@ import boto3
 
 
 # Define your start and end dates along with the Lambda function name
-# start_time = '2024-01-18T14:44:00Z'
-# end_time   = '2024-01-18T14:59:59Z'
-# function_name = 'tree_constructor'
-start_time = '2024-01-22T20:53:00Z'
-end_time   = '2024-01-22T21:02:59Z'
+START_TIME = '2024-01-18T14:44:00Z'
+END_TIME   = '2024-01-18T14:59:59Z'
+FUNCTION_NAME = 'tree_constructor'
+# START_TIME = '2024-01-22T20:53:00Z'
+# END_TIME   = '2024-01-22T21:02:59Z'
+# FUNCTION_NAME = 'tree_sub_find'
 
-function_name = 'tree_sub_find'
-file_name = "logs_" + function_name
-
-file_path = os.path.join('aws-log-manager', '_logs')
+FILE_PATH = os.path.join('aws-log-manager', '_logs', f'logs_{FUNCTION_NAME}.json')
 
 # Retrieve logs from AWS Lambda organized by logStreamName
 def main():
     client = boto3.client('logs')
-    log_group_name = f"/aws/lambda/{function_name}"
+    log_group_name = f"/aws/lambda/{FUNCTION_NAME}"
 
-    start_timestamp_ms = int(time.mktime(time.strptime(start_time, "%Y-%m-%dT%H:%M:%SZ"))) * 1000
-    end_timestamp_ms = int(time.mktime(time.strptime(end_time, "%Y-%m-%dT%H:%M:%SZ"))) * 1000
+    start_timestamp_ms = int(time.mktime(time.strptime(START_TIME, "%Y-%m-%dT%H:%M:%SZ"))) * 1000
+    end_timestamp_ms = int(time.mktime(time.strptime(END_TIME, "%Y-%m-%dT%H:%M:%SZ"))) * 1000
 
     response = client.filter_log_events(
         logGroupName=log_group_name,
@@ -34,11 +32,7 @@ def main():
     if logs == None:
         raise ValueError("No log records were found!")
     
-    logs_sorted = sort_by_stream_and_timestamp(logs)
-    
-    save_to_file(logs_sorted, file_path, file_name)
-
-
+    save_to_file(logs, FILE_PATH)
 
 if __name__ == "__main__":
     main()
