@@ -5,6 +5,31 @@ from db.conn import *
 from utils.log_utils import *
 
 
+
+def parse_log(log_string):
+    # Separe o tipo de log do restante da string
+    log_type, log_details = log_string.split(' ', 1)
+
+    if log_type == 'START':
+        # regex para encontrar todos os pares chave-valor na string de log
+        # no caso do START, o separador das chaves é um espaço em branco
+        key_value_pairs = re.findall(r'(\w+): ([^\s]+)', log_details)
+    else:
+        # regex para encontrar todos os pares chave-valor na string de log
+        # no caso de outros tipos de log, o separador das chaves é um '\t'
+        key_value_pairs = re.findall(r'([\w\s]+): ([^\t\n]+)', log_details)
+        # Limpar as chaves removendo qualquer coisa até o último '\t' e espaços em branco no início e no final
+        key_value_pairs = [(k.split('\t')[-1].strip(), v) for k, v in key_value_pairs]
+    
+    # Converta a lista de tuplas em um dicionário
+    log_dict = dict(key_value_pairs)
+
+    # Crie um novo dicionário com 'LogType' como o primeiro item e atualize-o com 'log_dict'
+    ordered_dict = {'LogType': log_type}
+    ordered_dict.update(log_dict)
+
+    return ordered_dict
+
 def parse_logs(request_id, logs):
     
     service_executions = []
@@ -87,7 +112,7 @@ def process_report(se, log):
 
 
 # "message": "FILE_DOWNLOAD RequestId: c3df54b6-1da5-48b2-bec4-093b55c96692\t FileName: ORTHOMCL1\t Bucket: mribeiro-bucket-input\t FilePath: data/testset/ORTHOMCL1\t Duration: 407.83485699999744 ms\t FileSize: 1640 bytes\n"
-# "message": "FILE_UPLOAD RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c\t FileName: tree_ORTHOMCL1.nexus\t Bucket: mribeiro-bucket-output-tree\t FilePath: tree_ORTHOMCL1.nexus\t Duration: 292.6312569999965\t FileSize: 339\n"
+# "message": "FILE_UPLOAD RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c\t FileName: tree_ORTHOMCL1.nexus\t Bucket: mribeiro-bucket-output-tree\t FilePath: tree_ORTHOMCL1.nexus\t Duration: 292.6312569999965 ms\t FileSize: 339 ms\n"
 def process_file_info(action_type: str, message):
     file_info.append({
         'name': re.search('FileName: (.+?)\\t', message).group(1),
