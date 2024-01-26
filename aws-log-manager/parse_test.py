@@ -1,5 +1,6 @@
 import unittest
 import re
+from utils.log_parser import parse_log
 
 
 
@@ -34,6 +35,20 @@ class TestLogParser(unittest.TestCase):
             'Memory Size': '128 MB',
             'Max Memory Used': '115 MB',
             'Init Duration': '918.52 ms'
+        }
+        output = parse_log(log_string)
+        self.assertEqual(output, expected_output)
+
+    def test_parse_log_report_sem_init_duration(self):
+        log_string = 'REPORT RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c\tDuration: 1010.14 ms\tBilled Duration: 1011 ms\tMemory Size: 128 MB\tMax Memory Used: 115 MB\t\n'
+        expected_output = {
+            'LogType': 'REPORT',
+            'RequestId': '4f7f240b-e714-464c-b043-c31deef80e6c',
+            'Duration': '1010.14 ms',
+            'Billed Duration': '1011 ms',
+            'Memory Size': '128 MB',
+            'Max Memory Used': '115 MB',
+            'Init Duration': None
         }
         output = parse_log(log_string)
         self.assertEqual(output, expected_output)

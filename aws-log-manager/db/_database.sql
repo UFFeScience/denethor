@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS execution_statistics;
-DROP TABLE IF EXISTS execution_files;
+DROP TABLE IF EXISTS execution_file;
 DROP TABLE IF EXISTS service_execution;
 DROP TABLE IF EXISTS workflow_activity;
 DROP TABLE IF EXISTS file;
@@ -66,14 +66,14 @@ CREATE TABLE file (
     CONSTRAINT uk_file_data UNIQUE (name, size, path, bucket)
 );
 
-CREATE TABLE execution_files (
+CREATE TABLE execution_file (
     id SERIAL  PRIMARY KEY,
     service_execution_id INTEGER,
     file_id INTEGER,
     transfer_duration FLOAT,
     action_type VARCHAR(10) CONSTRAINT check_action_type CHECK (action_type IN ('produced', 'consumed')),
-    CONSTRAINT fk_execution_files_service_execution FOREIGN KEY (service_execution_id) REFERENCES service_execution(id),
-    CONSTRAINT fk_execution_files_file FOREIGN KEY (file_id) REFERENCES file(id)
+    CONSTRAINT fk_execution_file_service_execution FOREIGN KEY (service_execution_id) REFERENCES service_execution(id),
+    CONSTRAINT fk_execution_file_file FOREIGN KEY (file_id) REFERENCES file(id)
 );
 
 CREATE TABLE statistics (

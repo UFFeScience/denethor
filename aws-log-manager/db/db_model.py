@@ -57,6 +57,11 @@ class ServiceExecution(Base):
     total_produced_transfer_duration = Column(Float)
     error_message = Column(String)
 
+    execution_files = relationship('ExecutionFile', backref='service_execution')
+    execution_statistics = relationship('ExecutionStatistics', backref='service_execution')
+    activity = relationship('WorkflowActivity', backref='service_execution')
+    service = relationship('ServiceProvider', backref='service_execution')
+
     def __str__(self):
         return (
             f"Id: {self.id}\n"
@@ -94,14 +99,16 @@ class File(Base):
         return (f"[{self.id}]={self.name} ({self.size} bytes)")
 
 
-class ExecutionFiles(Base):
-    __tablename__ = 'execution_files'
+class ExecutionFile(Base):
+    __tablename__ = 'execution_file'
 
     id = Column(Integer, primary_key=True)
     service_execution_id = Column(Integer, ForeignKey('service_execution.id'))
     file_id = Column(Integer, ForeignKey('file.id'))
     transfer_duration = Column(Float)
     action_type = Column(String)
+
+    file = relationship("File", backref="execution_file")
     
     def __str__(self):
         return (f"[{self.id}]={self.action_type} {self.transfer_duration} ms")
@@ -124,3 +131,5 @@ class ExecutionStatistics(Base):
     value_string = Column(String)
     service_execution_id = Column(Integer, ForeignKey('service_execution.id'))
     statistics_id = Column(Integer, ForeignKey('statistics.id'))
+
+    statistics = relationship("Statistics", backref="execution_statistics")

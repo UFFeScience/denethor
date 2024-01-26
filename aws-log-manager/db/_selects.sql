@@ -27,7 +27,7 @@ from service_execution se
 join workflow_activity wa on se.activity_id = wa.id
 join workflow w on wa.workflow_id = w.id
 join service_provider sp on se.service_id = sp.id
-join execution_files ef on se.id = ef.service_execution_id
+join execution_file ef on se.id = ef.service_execution_id
 join file f on ef.file_id = f.id
 order by se.id asc, f.id asc;
 

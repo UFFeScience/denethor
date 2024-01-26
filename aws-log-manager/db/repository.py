@@ -65,9 +65,9 @@ class FileRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=File)
     
-class ExecutionFilesRepository(GenericRepository):
+class ExecutionFileRepository(GenericRepository):
     def __init__(self, session: Session):
-        super().__init__(session, ExecutionFiles)
+        super().__init__(session, ExecutionFile)
 
 class StatisticsRepository(GenericRepository):
     def __init__(self, session: Session):
