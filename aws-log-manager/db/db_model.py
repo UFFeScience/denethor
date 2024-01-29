@@ -17,12 +17,18 @@ class ServiceProvider(Base):
     timeout = Column(Integer)
     cpu = Column(Integer)
 
+    def __str__(self):
+        return (f"[{self.id}]={self.name}, {self.memory}MB, {self.timeout}s, {self.cpu}vCPU")
+
 class Workflow(Base):
     __tablename__ = 'workflow'
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
     description = Column(String)
+
+    def __str__(self):
+        return (f"[{self.id}]={self.name}")
 
 
 class WorkflowActivity(Base):
@@ -33,6 +39,8 @@ class WorkflowActivity(Base):
     description = Column(String)
     workflow_id = Column(Integer, ForeignKey('workflow.id'))
 
+    def __str__(self):
+        return (f"[{self.id}]={self.name}")
 
 class ServiceExecution(Base):
     __tablename__ = 'service_execution'
@@ -57,10 +65,10 @@ class ServiceExecution(Base):
     total_produced_transfer_duration = Column(Float)
     error_message = Column(String)
 
-    execution_files = relationship('ExecutionFile', backref='service_execution')
-    execution_statistics = relationship('ExecutionStatistics', backref='service_execution')
-    activity = relationship('WorkflowActivity', backref='service_execution')
-    service = relationship('ServiceProvider', backref='service_execution')
+    execution_files = relationship('ExecutionFile')
+    execution_statistics = relationship('ExecutionStatistics')
+    activity = relationship('WorkflowActivity')
+    service = relationship('ServiceProvider')
 
     def __str__(self):
         return (
@@ -109,9 +117,10 @@ class ExecutionFile(Base):
     action_type = Column(String)
 
     file = relationship("File", backref="execution_file")
-    
+    service_execution = relationship("ServiceExecution")
+
     def __str__(self):
-        return (f"[{self.id}]={self.action_type} {self.transfer_duration} ms")
+        return (f"[{self.id}]={self.transfer_duration} ms ({self.action_type})")
     
     
 class Statistics(Base):
@@ -120,16 +129,29 @@ class Statistics(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     description = Column(String)
-
+    
+    def __str__(self):
+        return (f"[{self.id}]={self.name}")
 
 class ExecutionStatistics(Base):
     __tablename__ = 'execution_statistics'
 
     id = Column(Integer, primary_key=True)
+    service_execution_id = Column(Integer, ForeignKey('service_execution.id'))
+    statistics_id = Column(Integer, ForeignKey('statistics.id'))
     value_float = Column(Float)
     value_integer = Column(Integer)
     value_string = Column(String)
-    service_execution_id = Column(Integer, ForeignKey('service_execution.id'))
-    statistics_id = Column(Integer, ForeignKey('statistics.id'))
 
     statistics = relationship("Statistics", backref="execution_statistics")
+    service_execution = relationship("ServiceExecution")
+
+    def __str__(self):
+        if self.value_float is not None:
+            return str(self.value_float)
+        elif self.value_integer is not None:
+            return str(self.value_integer)
+        elif self.value_string is not None:
+            return str(self.value_string)
+        else:
+            return ''

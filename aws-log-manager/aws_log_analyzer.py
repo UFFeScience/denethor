@@ -1,173 +1,85 @@
-import json
-import re
-import os
+from utils.log_utils import *
+from utils.log_parser import *
+from utils.read_config import * 
 from db.db_model import *
 from db.repository import *
 from db.conn import *
-from utils.log_utils import *
-from utils.log_parser import *
+import json
+import os
 
 
-# FUNCTION_NAME = 'tree_constructor'
-FUNCTION_NAME = 'tree_sub_find'
-LOG_FILE_PATH = os.path.join('aws-log-manager', '_logs', f'logs_{FUNCTION_NAME}.json')
+CONFIG = choose_function()
 
-# estatísticas da execução do serviço
-# execution_info = {
-#     'request_id': None,
-#     'activity_id': None,
-#     'service_id': None,
-#     'log_stream_name': None,
-#     'start_time': None,
-#     'end_time': None,
-#     'duration': None,
-#     'billed_duration': None,
-#     'init_duration': None,
-#     'memory_size': None,
-#     'max_memory_used': None,
-#     'num_consumed_files': None,
-#     'num_produced_files': None,
-#     'total_consumed_files_size': None,
-#     'total_produced_files_size': None,
-#     'total_consumed_transfer_duration': None,
-#     'total_produced_transfer_duration': None,
-#     'error_message': None,
-#     'file_info': [],  # arquivos "consumidos" e/ou "produzidos" pela atividade
-#     'other_stats_info': {
-#         'subtree_duration': None,
-#         'max_maf': None,
-#         'maf_db_duration': None,
-#         'maf_database': None
-#     }
-# }
+file_path = os.path.join(CONFIG['base_file_path'], f'logs_{CONFIG['function_name']}_{CONFIG['start_time']}.json')
+file_path = sanitize(file_path)
+# abrindo o arquivo com os logs da AWS salvos no formato json
+with open(file_path) as f:
+    logs_data = json.load(f)
 
 
-def main():
+# filtrar os registros de log que contem um RequestId no campo message
+# para facilitar o tratamento dos dados 
+# cada conjunto de logs com o mesmo RequestId representa uma execução completa 
+# da atividade para um conjunto de arquivos de entrada
+request_id_dict = get_logs_by_request_id(logs_data)
 
-    # abrindo o arquivo com os logs da AWS salvos no formato json
-    with open(LOG_FILE_PATH) as f:
-        logs_data = json.load(f)
-
+# iterando sobre o conjunto de logs  um request_id (uma execução da função lambda)
+for request_id, log_itens in request_id_dict.items():
     
-    # filtrar os registros de log que contem um RequestId no campo message
-    # para facilitar o tratamento dos dados 
-    # cada conjunto de logs com o mesmo RequestId representa uma execução completa 
-    # da atividade para um conjunto de arquivos de entrada
-    request_id_dict = get_logs_by_request_id(logs_data)
+    service_execution = process_logs(request_id, log_itens)
     
-    # iterando sobre o conjunto de logs  um request_id (uma execução da função lambda)
-    for request_id, log_itens in request_id_dict.items():
+    # print(service_execution)
+
+    print(f"--------------------------------------------------------------------------")
+    print(f'Saving Execution info of {CONFIG['function_name']} to Database...')
+    print(f'RequestId: {service_execution.request_id}')
+    print(f"--------------------------------------------------------------------------")
+
+    session = Connection().get_session()
+
+    #Salvando no Banco de Dados
+    # Instânciando as classes de repositórios
+    service_provider_repo = ServiceProviderRepository(session)
+    workflow_activity_repo = WorkflowActivityRepository(session)
+    service_execution_repo = ServiceExecutionRepository(session)
+    file_repo = FileRepository(session)
+    execution_file_repo = ExecutionFileRepository(session)
+    statistics_repo = StatisticsRepository(session)
+    execution_statistics_repo = ExecutionStatisticsRepository(session)
+
+
+    # Buscando no banco os dados básicos do modelo (dados pré-existentes)
+    service_provider = service_provider_repo.get_by_attributes({'name': 'AWS Lambda'})
+    service_execution.service = service_provider
+
+    workflow_activity = workflow_activity_repo.get_by_attributes({'name': CONFIG['function_name']})
+    service_execution.activity = workflow_activity
+
+    # verificar se os registros presentes no Log já estão cadastrados na base
+    # caso positivo -> apenas recupera o registro
+    # caso negativo -> realiza a inclusão e retorna o novo registro
+    service_execution_db, created = service_execution_repo.get_or_create(service_execution)
+    print(f'{'Saving' if created else 'Retrieving'} Service Execution info: [{service_execution_db.id}]={workflow_activity.name} ({service_execution_db.duration} ms)')
+
+    # para cada arquivo de entrada e registro de execução do arquivo,
+    # verificamos se ambos já estão cadastrados na base
+    for  ef in service_execution.execution_files:
+        file_db, file_created = file_repo.get_or_create(ef.file)
         
-        service_execution = process_logs(request_id, log_itens)
+        ef.service_execution = service_execution_db
+        ef.file = file_db
+        ef_db, ef_created = execution_file_repo.get_or_create(ef)
+        print(f'{'Saving' if file_created else 'Retrieving'} File: {file_db} | {'Saving' if ef_created else 'Retrieving'} Execution_File: {ef_db}')
+
+    # para a execução da função verificamos se existem estatísticas adicionais para armazenar
+    for  es in service_execution.execution_statistics:
+        statistics_db, stat_created = statistics_repo.get_or_create(es.statistics)
         
-        print(service_execution)
-        # save_to_database()
-    
-
-
-
-# def save_to_database(service_execution):
-    
-#     print(f"--------------------------------------------")
-#     print(f'Saving Execution info to Database...')
-#     print(f"--------------------------------------------")
-#     session = Connection().get_session()
-   
-#     # Instânciando as classes de repositórios
-#     service_provider_repo = ServiceProviderRepository(session)
-#     workflow_activity_repo = WorkflowActivityRepository(session)
-#     service_execution_repo = ServiceExecutionRepository(session)
-#     file_repo = FileRepository(session)
-#     execution_file_repo = ExecutionFileRepository(session)
-#     statistics_repo = StatisticsRepository(session)
-#     execution_statistics_repo = ExecutionStatisticsRepository(session)
-
-
-#     # Buscando no banco os dados básicos do modelo (dados pré-existentes)
-#     service_provider = service_provider_repo.get_by_attributes({'name': 'AWS Lambda'})
-#     execution_info['service_id'] = service_provider.id
-    
-#     workflow_activity = workflow_activity_repo.get_by_attributes({'name': FUNCTION_NAME})
-#     execution_info['activity_id'] = workflow_activity.id
-
-    
-#     # verificar se os registros presentes no Log já estão cadastrados na base
-#     # caso positivo -> apenas recupera o registro
-#     # caso negativo -> realiza a inclusão e retorna o novo registro
-
-#     service_execution, created = service_execution_repo.get_or_create(execution_info)
-#     print(f'{'Saving' if created else 'Retrieving'} Service Execution info: [{service_execution.id}]={workflow_activity.name} ({service_execution.duration} ms)')
-
-#     for item in file_info:
-#         file_dict = {
-#             'name': item['name'],
-#             'size': item['size'],
-#             'path': item['path'],
-#             'bucket': item['bucket']
-#         }
-#         file, created = file_repo.get_or_create(file_dict)
-
-#         execution_file_dict = {
-#             'service_execution_id': service_execution.id,
-#             'file_id': file.id,
-#             'transfer_duration': item['transfer_duration'],
-#             'action_type': item['action_type']
-#         }
-#         execution_file, created = execution_file_repo.get_or_create(execution_file_dict)
+        es.service_execution = service_execution_db
+        es.statistics = statistics_db
+        es_db, es_created = execution_statistics_repo.get_or_create(es)
+        print(f'{'Saving' if stat_created else 'Retrieving'} Statistics: {statistics_db} | {'Saving' if es_created else 'Retrieving'} Execution Statistics info: {es_db}')
         
-#         print(f'{'Saving' if created else 'Retrieving'} File info: {file} || {'Saving' if created else 'Retrieving'} Execution File info: {execution_file}')
-
-
-#     # para a execução da função 'tree_sub_find', temos estatísticas adicionais para armazenar
-#     if FUNCTION_NAME == 'tree_sub_find':
-#         stat_subtree_duration = statistics_repo.get_by_attributes({'name': 'subtree_duration'})
-#         stat_maf_db_duration = statistics_repo.get_by_attributes({'name': 'maf_db_duration'})
-#         stat_max_maf = statistics_repo.get_by_attributes({'name': 'max_maf'})
-#         stat_maf_database = statistics_repo.get_by_attributes({'name': 'maf_database'})
         
-#         # subtree_duration
-#         subtree_duration, created = execution_statistics_repo.get_or_create(
-#             {
-#                 'service_execution_id': service_execution.id,
-#                 'statistics_id': stat_subtree_duration.id,
-#                 'value_float': other_stats_info['subtree_duration']
-#             }
-#         )
-#         print(f'{'Saving' if created else 'Retrieving'} Subtree Duration info: {subtree_duration.value_float}')
-
-#         # maf_db_duration
-#         maf_db_duration, created = execution_statistics_repo.get_or_create(
-#             {
-#                 'service_execution_id': service_execution.id,
-#                 'statistics_id': stat_maf_db_duration.id,
-#                 'value_float': other_stats_info['maf_db_duration']
-#             }
-#         )
-#         print(f'{'Saving' if created else 'Retrieving'} Maf DB Duration info: {maf_db_duration.value_float}')
-
-#         # max_maf
-#         max_maf, created = execution_statistics_repo.get_or_create(
-#             {
-#                 'service_execution_id': service_execution.id,
-#                 'statistics_id': stat_max_maf.id,
-#                 'value_integer': other_stats_info['max_maf']
-#             }
-#         )
-#         print(f'{'Saving' if created else 'Retrieving'} Maf DB Duration info: {max_maf.value_integer}')
-
-#         # maf_database
-#         maf_database, created = execution_statistics_repo.get_or_create(
-#             {
-#                 'service_execution_id': service_execution.id,
-#                 'statistics_id': stat_maf_database.id,
-#                 'value_string': other_stats_info['maf_database']
-#             }
-#         )
-#         print(f'{'Saving' if created else 'Retrieving'} Maf Database Dict info: {maf_database.value_string}')
-
-
-#     print(f'Finished saving Service Execution info to Database: [{service_execution.id}]={workflow_activity.name}')
-#     print(f'\n\n')
-
-if __name__ == "__main__":
-    main()
+    print(f'Finished saving Service Execution info to Database: {service_execution_db}')
+    print(f'\n\n')

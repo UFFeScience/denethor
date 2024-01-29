@@ -114,7 +114,7 @@ INSERT INTO workflow_activity (name, description, workflow_id) VALUES
     (select id from workflow where name = 'aws_lambda_eval')
     );
 
-INSERT INTO statistics (name, description) VALUES ('subtree_duration', 'Duração do processo de criação de subárvores');
-INSERT INTO statistics (name, description) VALUES ('maf_db_duration', 'Duração do processo de criação do "maf_database"');
-INSERT INTO statistics (name, description) VALUES ('max_maf', 'Valor máximo obtido para "maf"');
+INSERT INTO statistics (name, description) VALUES ('subtree_duration', 'Tempo de execução da atividade de criação de subárvores');
+INSERT INTO statistics (name, description) VALUES ('maf_db_duration', 'Tempo de execução da atividade de criação do banco de dados MAF');
+INSERT INTO statistics (name, description) VALUES ('max_maf', 'Maior valor de MAF encontrado no processamento dos arquivos de entrada');
 INSERT INTO statistics (name, description) VALUES ('maf_database', 'Valor do dicionário "maf_database" obtido ao término do processo');

@@ -2,8 +2,6 @@ import unittest
 import re
 from utils.log_parser import parse_log
 
-
-
 class TestLogParser(unittest.TestCase):
 
     def test_parse_log_start(self):

@@ -40,12 +40,12 @@ def to_datetime(time: float):
         return datetime.fromtimestamp((time / 1000.0), tz=timezone.utc)
     return None
 
-def parse_float(time: str):
-    time_float = time.replace('ms', '').strip()
-    return float(time_float) if time_float else None
+def parse_float(value: str):
+    value_float = value.replace('ms', '').strip() if value else None
+    return float(value_float) if value_float else None
 
 def parse_int(value: str):
-    value_int = value.replace('bytes', '').replace('MB', '').replace('files', '').strip()
+    value_int = value.replace('bytes', '').replace('MB', '').replace('files', '').strip() if value else None
     return int(value_int) if value_int else None
 
 
@@ -69,63 +69,6 @@ def get_logs_by_request_id(logs: dict) -> dict:
     return request_id_dict
 
 
-
-#
-# Funções para extrair os atributos e seus valores da mensagem do log
-#
-
-# def get_log_type(log):
-#     match = re.search('^\\w+', log['message'])
-#     return match.group(0) if match else None
-
 def get_request_id(log):
     match = re.search('RequestId: (\S+)', log['message'])
     return match.group(1) if match else None
-
-# def get_duration(log):
-#     match = re.search('Duration: (.+?) ms\\t', log['message'])
-#     return match.group(1) if match else None
-
-# def get_billed_duration(log):
-#     match = re.search('Billed Duration: (.+?) ms\\t', log['message'])
-#     return match.group(1) if match else None
-
-# def get_memory_size(log):
-#     match = re.search('Memory Size: (.+?) MB\\t', log['message'])
-#     return match.group(1) if match else None
-
-# def get_max_memory_used(log):
-#     match = re.search('Max Memory Used: (.+?) MB\\t', log['message'])
-#     return match.group(1) if match else None
-
-# def get_init_duration(log):
-#     match = re.search('Init Duration: (.+?) ms\\t', log['message'])
-#     return match.group(1) if match else None
-
-
-# # File
-#         'name': re.search(, message).group(1),
-#         'size': re.search('', message).group(1),
-#         'path': re.search('', message).group(1),
-#         'bucket': re.search('', message).group(1),
-#         'transfer_duration': re.search('', message).group(1),
-#         'action_type': action_type
-# def get_file_name(log):
-#     match = re.search('FileName: (.+?)\\t', log['message'])
-#     return match.group(1) if match else None
-
-# def get_file_size(log):
-#     match = re.search('FileSize: (.+?) bytes\\n', log['message'])
-#     return match.group(1) if match else None
-
-# def get_file_path(log):
-#     match = re.search('FilePath: (.+?)\\t', log['message'])
-#     return match.group(1) if match else None
-
-# def get_file_bucket(log):
-#     match = re.search('Bucket: (.+?)\\t', log['message'])
-#     return match.group(1) if match else None
-
-# def get_file_transfer_duration(log):
-#     match = re.search('Duration: (.+?) ms\\t', log['message'])
-#     return match.group(1) if match else None

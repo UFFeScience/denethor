@@ -92,9 +92,8 @@ def process_file(service_execution, log_dict: dict, action_type: str):
 def process_total_file_info(service_execution, log_dict: dict, action_type: str):
     if action_type == 'consumed':
         service_execution.num_consumed_files = parse_int(log_dict['NumFiles'])
-        service_execution.total_consumed_files_size = parse_int(log_dict['TotalFilesSize'])
+        service_execution.total_consumed_files_size = parse_int(log_dict['TotalFileSize'])
         service_execution.total_consumed_transfer_duration = parse_float(log_dict['Duration'])
-    
     elif action_type == 'produced':
         service_execution.num_produced_files = parse_int(log_dict['NumFiles'])
         service_execution.total_produced_files_size = parse_int(log_dict['TotalFilesSize'])

@@ -24,6 +24,7 @@ class GenericRepository:
         return instance
 
     def get_or_create(self, obj: dict) -> Tuple[Any, bool]:
+        obj.pop('_sa_instance_state', None)
         instance = self.get_by_attributes(obj)
         if instance:
             return instance, False
@@ -49,31 +50,79 @@ class ServiceProviderRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=ServiceProvider)
 
+
 class WorkflowRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=Workflow)
-    
+
+
 class WorkflowActivityRepository(GenericRepository):
     def __init__(self, session: Session):
-        super().__init__(session, WorkflowActivity)
+        super().__init__(session=session, model=WorkflowActivity)
+
 
 class ServiceExecutionRepository(GenericRepository):
     def __init__(self, session: Session):
-        super().__init__(session, ServiceExecution)
+        super().__init__(session=session, model=ServiceExecution)
+    
+    def get_or_create(self, obj: ServiceExecution):
+        if obj.activity:
+            obj.activity_id = obj.activity.id
+        if obj.service:
+            obj.service_id = obj.service.id
+        obj_dict = obj.__dict__.copy()
+        obj_dict.pop('execution_files', None)
+        obj_dict.pop('execution_statistics', None)
+        obj_dict.pop('activity', None)
+        obj_dict.pop('service', None)
+        return super().get_or_create(obj_dict)
+
 
 class FileRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=File)
     
+    def get_or_create(self, obj: File):
+        obj_dict = obj.__dict__.copy()
+        obj_dict.pop('execution_file', None)
+        return super().get_or_create(obj_dict)
+
+
 class ExecutionFileRepository(GenericRepository):
     def __init__(self, session: Session):
-        super().__init__(session, ExecutionFile)
+        super().__init__(session=session, model=ExecutionFile)
+
+    def get_or_create(self, obj: ExecutionFile):
+        if obj.file:
+            obj.file_id = obj.file.id
+        if obj.service_execution:  
+            obj.service_execution_id = obj.service_execution.id
+        obj_dict = obj.__dict__.copy()
+        obj_dict.pop('file', None)
+        obj_dict.pop('service_execution', None)
+        return super().get_or_create(obj_dict)
+
 
 class StatisticsRepository(GenericRepository):
     def __init__(self, session: Session):
-        super().__init__(session, Statistics)
+        super().__init__(session=session, model=Statistics)
+    
+    def get_or_create(self, obj: Statistics):
+        obj_dict = obj.__dict__.copy()
+        obj_dict.pop('execution_statistics', None)
+        return super().get_or_create(obj_dict)
 
 class ExecutionStatisticsRepository(GenericRepository):
     def __init__(self, session: Session):
-        super().__init__(session, ExecutionStatistics)
+        super().__init__(session=session, model=ExecutionStatistics)
+
+    def get_or_create(self, obj: ExecutionStatistics):
+        if obj.statistics:
+            obj.statistics_id = obj.statistics.id
+        if obj.service_execution:  
+            obj.service_execution_id = obj.service_execution.id
+        obj_dict = obj.__dict__.copy()
+        obj_dict.pop('statistics', None)
+        obj_dict.pop('service_execution', None)
+        return super().get_or_create(obj_dict)
 
