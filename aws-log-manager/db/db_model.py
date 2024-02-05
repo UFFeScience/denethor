@@ -57,12 +57,12 @@ class ServiceExecution(Base):
     init_duration = Column(Float)
     memory_size = Column(Integer)
     max_memory_used = Column(Integer)
-    num_consumed_files = Column(Integer)
-    num_produced_files = Column(Integer)
-    total_consumed_files_size = Column(Integer)
-    total_produced_files_size = Column(Integer)
-    total_consumed_transfer_duration = Column(Float)
-    total_produced_transfer_duration = Column(Float)
+    consumed_files_count = Column(Integer)
+    produced_files_count = Column(Integer)
+    consumed_files_size = Column(Integer)
+    produced_files_size = Column(Integer)
+    consumed_files_transfer_duration = Column(Float)
+    produced_files_transfer_duration = Column(Float)
     error_message = Column(String)
 
     execution_files = relationship('ExecutionFile')
@@ -84,12 +84,12 @@ class ServiceExecution(Base):
             f"Init Duration: {self.init_duration}\n"
             f"Memory Size: {self.memory_size}\n"
             f"Max Memory Used: {self.max_memory_used}\n"
-            f"Num Consumed Files: {self.num_consumed_files}\n"
-            f"Num Produced Files: {self.num_produced_files}\n"
-            f"Total Consumed Files Size: {self.total_consumed_files_size}\n"
-            f"Total Produced Files Size: {self.total_produced_files_size}\n"
-            f"Total Consumed Transfer Duration: {self.total_consumed_transfer_duration}\n"
-            f"Total Produced Transfer Duration: {self.total_produced_transfer_duration}\n"
+            f"Num Consumed Files: {self.consumed_files_count}\n"
+            f"Num Produced Files: {self.produced_files_count}\n"
+            f"Total Consumed Files Size: {self.consumed_files_size}\n"
+            f"Total Produced Files Size: {self.produced_files_size}\n"
+            f"Total Consumed Transfer Duration: {self.consumed_files_transfer_duration}\n"
+            f"Total Produced Transfer Duration: {self.produced_files_transfer_duration}\n"
             f"Error Message: {self.error_message}\n"
         )
 
@@ -99,9 +99,9 @@ class File(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True)
-    size = Column(Float)
-    path = Column(String)
     bucket = Column(String)
+    path = Column(String)
+    size = Column(Float)
 
     def __str__(self):
         return (f"[{self.id}]={self.name} ({self.size} bytes)")
@@ -114,13 +114,13 @@ class ExecutionFile(Base):
     service_execution_id = Column(Integer, ForeignKey('service_execution.id'))
     file_id = Column(Integer, ForeignKey('file.id'))
     transfer_duration = Column(Float)
-    action_type = Column(String)
+    transfer_type = Column(String)
 
     file = relationship("File", backref="execution_file")
     service_execution = relationship("ServiceExecution")
 
     def __str__(self):
-        return (f"[{self.id}]={self.transfer_duration} ms ({self.action_type})")
+        return (f"[{self.id}]={self.transfer_duration} ms ({self.transfer_type})")
     
     
 class Statistics(Base):

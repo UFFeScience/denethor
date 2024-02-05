@@ -61,13 +61,13 @@ def lambda_handler(event, context):
         tree_file = download_and_log_from_s3(request_id, s3, s3_bucket, s3_key, PATH_INPUT_LOCAL)
 
     end_time = timeit.default_timer()
-    download_total_time_ms = (end_time - start_time) * 1000
+    transfer_duration_ms = (end_time - start_time) * 1000
     
-    total_file, total_file_size = get_num_files_and_size(PATH_INPUT_LOCAL)
+    files_count, files_size = get_num_files_and_size(PATH_INPUT_LOCAL)
 
-    print(f"CONSUMED_FILES_INFO RequestId: {request_id}\t NumFiles: {total_file} files\t TotalFilesSize: {total_file_size} bytes\t Duration: {download_total_time_ms} ms")
+    print(f"CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {files_count} files\t FilesSize: {files_size} bytes\t TransferDuration: {transfer_duration_ms} ms")
 
-    ###########
+    ############################################
 
 
     #
@@ -85,7 +85,7 @@ def lambda_handler(event, context):
     
     print(f"SUBTREE_FILES_CREATE RequestId: {request_id}\t Duration: {subtree_time_ms} ms")
 
-    ###########
+    ############################################
     
     
     # para evitar: "PermissionError: [Errno 13] Permission denied" ao tentar abrir os arquivos logo após terem sido escritos
@@ -107,7 +107,7 @@ def lambda_handler(event, context):
 
     print(f"MAF_DATABASE_CREATE RequestId: {request_id}\t MaxMaf: {max_maf}\t Duration: {maf_time_ms} ms\t MafDatabase: {dict_maf_database}")
 
-    ###########
+    ############################################
 
 
     #
@@ -120,12 +120,12 @@ def lambda_handler(event, context):
         upload_and_log_to_s3(request_id, s3, BUCKET_OUTPUT, S3_KEY_OUTPUT, tree_file, PATH_OUTPUT_LOCAL)
         
     end_time = timeit.default_timer()
-    upload_total_time_ms = (end_time - start_time) * 1000
+    transfer_duration_ms = (end_time - start_time) * 1000
     
-    total_file, total_file_size = get_num_files_and_size(PATH_OUTPUT_LOCAL)
+    files_count, files_size = get_num_files_and_size(PATH_OUTPUT_LOCAL)
     
-    print(f"PRODUCED_FILES_INFO RequestId: {request_id}\t NumFiles: {total_file} files\t TotalFilesSize: {total_file_size} bytes\t Duration: {upload_total_time_ms} ms")
+    print(f"PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {files_count} files\t FilesSize: {files_size} bytes\t TransferDuration: {transfer_duration_ms} ms")
 
-    ###########
+    ############################################
     
     return "OK"

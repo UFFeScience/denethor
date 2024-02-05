@@ -4,18 +4,18 @@ from db.repository import *
 from db.conn import *
 from utils.log_utils import *
 
-def parse_log(message, config_data: dict):
+def parse_log(message, CONFIG: dict):
     
     log_type = message.split()[0]
     parsed_log = {}
     # Check if the log type is in the configuration
-    if log_type in config_data['basicLogTypes']:
+    if log_type in CONFIG['basicLogTypes']:
         
         # Prepare a dictionary to store the parsed attributes
         parsed_attributes = {}
         
         # Iterate over each attribute
-        for attribute in config_data['basicLogTypes'][log_type]:
+        for attribute in CONFIG['basicLogTypes'][log_type]:
             # Use regex to extract the attribute value from the message
             separator = attribute.get('separator', '[\t\n]')
             pattern = f"{attribute['searchKey']}:\s*(.*?){separator}"
@@ -27,10 +27,10 @@ def parse_log(message, config_data: dict):
                 # If the attribute is not found, store None
                 parsed_attributes[attribute['fieldName']] = None
         
-        # Store the parsed log and attributes in the log dictionary
+        # Store the parsed log
         parsed_log = {
             'logType': log_type,
-            **parsed_attributes
+            'attributes': parsed_attributes
         }
 
     return parsed_log
@@ -44,20 +44,20 @@ def process_logs(request_id, logs, config_data: dict):
         
         service_execution.log_stream_name = log['logStreamName']
         
-        parsed_log = parse_log(log['message'], config_data)
+        parsed_log_dict = parse_log(log['message'], config_data)
         
         #   
         # Validations of request_id
         #
-        if parsed_log['request_id'] is None:
-            raise ValueError(f"Invalid request_id:{parsed_log['request_id']}")
+        if parsed_log_dict['request_id'] is None:
+            raise ValueError(f"Invalid request_id:{parsed_log_dict['request_id']}")
         
-        if service_execution.request_id != parsed_log['request_id']:
-            raise ValueError(f"Error! Current request_id:{parsed_log['request_id']} | Expected request_id:{service_execution.request_id}")
+        if service_execution.request_id != parsed_log_dict['request_id']:
+            raise ValueError(f"Error! Current request_id:{parsed_log_dict['request_id']} | Expected request_id:{service_execution.request_id}")
         
         ##########
 
-        match parsed_log['logType']:
+        match parsed_log_dict['LogType']:
             case 'START':
                 process_start(service_execution, log['timestamp'])
             
@@ -65,28 +65,28 @@ def process_logs(request_id, logs, config_data: dict):
                 process_end(service_execution, log['timestamp'])
             
             case 'REPORT':
-                process_report(service_execution, parsed_log)
+                process_report(service_execution, parsed_log_dict)
             
             case 'FILE_DOWNLOAD':
-                process_file(service_execution, parsed_log, 'consumed')
+                process_file(service_execution, parsed_log_dict, 'consumed')
             
             case 'FILE_UPLOAD':
-                process_file(service_execution, parsed_log, 'produced')
+                process_file(service_execution, parsed_log_dict, 'produced')
             
             case 'CONSUMED_FILES_INFO':
-                process_total_file_info(service_execution, parsed_log, 'consumed')
+                process_total_file_info(service_execution, parsed_log_dict, 'consumed')
             
             case 'PRODUCED_FILES_INFO':
-                process_total_file_info(service_execution, parsed_log, 'produced')
+                process_total_file_info(service_execution, parsed_log_dict, 'produced')
             
             case 'SUBTREE_FILES_CREATE':
-                process_subtree_info(service_execution, parsed_log)
+                process_subtree_info(service_execution, parsed_log_dict)
             
             case 'MAF_DATABASE_CREATE':
-                process_maf_databse_info(service_execution, parsed_log)
+                process_maf_databse_info(service_execution, parsed_log_dict)
             
             case _:
-                raise ValueError(f"Invalid log_type:{parsed_log['LogType']}")
+                raise ValueError(f"Invalid log_type:{parsed_log_dict['LogType']}")
 
     return service_execution
 

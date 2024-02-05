@@ -8,9 +8,13 @@ import json
 import os
 
 
-CONFIG = choose_function()
+# Carregar o arquivo JSON
+with open('aws-log-manager/config.json') as f:
+    config_data = json.load(f)
 
-file_path = os.path.join(CONFIG['base_file_path'], f'logs_{CONFIG['function_name']}_{CONFIG['start_time']}.json')
+function_data = choose_function(config_data, pre_choice=1)
+
+file_path = os.path.join(function_data['baseFilePath'], f'logs_{function_data['functionName']}_{function_data['startTime']}.json')
 file_path = sanitize(file_path)
 # abrindo o arquivo com os logs da AWS salvos no formato json
 with open(file_path) as f:
@@ -26,12 +30,12 @@ request_id_dict = get_logs_by_request_id(logs_data)
 # iterando sobre o conjunto de logs  um request_id (uma execução da função lambda)
 for request_id, log_itens in request_id_dict.items():
     
-    service_execution = process_logs(request_id, log_itens)
+    service_execution = process_logs(request_id, log_itens, config_data)
     
     # print(service_execution)
 
     print(f"--------------------------------------------------------------------------")
-    print(f'Saving Execution info of {CONFIG['function_name']} to Database...')
+    print(f'Saving Execution info of {function_data['functionName']} to Database...')
     print(f'RequestId: {service_execution.request_id}')
     print(f"--------------------------------------------------------------------------")
 
@@ -52,7 +56,7 @@ for request_id, log_itens in request_id_dict.items():
     service_provider = service_provider_repo.get_by_attributes({'name': 'AWS Lambda'})
     service_execution.service = service_provider
 
-    workflow_activity = workflow_activity_repo.get_by_attributes({'name': CONFIG['function_name']})
+    workflow_activity = workflow_activity_repo.get_by_attributes({'name': function_data['functionName']})
     service_execution.activity = workflow_activity
 
     # verificar se os registros presentes no Log já estão cadastrados na base

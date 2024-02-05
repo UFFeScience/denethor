@@ -47,28 +47,23 @@ def upload_and_log_to_s3(request_id, s3, s3_bucket, s3_key, file_name, file_path
     s3_key_upload = os.path.join(s3_key, file_name)
     file_name_with_path = os.path.join(file_path, file_name)
 
-    print('=> Upload file to S3')
-    print(f's3_bucket_upload: {s3_bucket}')
-    print(f's3_key_upload: {s3_key_upload}')
-    print(f'file_name_with_path: {file_name_with_path}')
+    print('Uploading file to S3 => s3_bucket: {s3_bucket} | s3_key: {s3_key_upload} | file: {file_name} | local_file_path: {file_name_with_path}')
 
     
     try:
         start_time = timeit.default_timer()
 
         s3.upload_file(file_name_with_path, s3_bucket, s3_key_upload)
-        print("Upload Successful: {file_name}")
 
         end_time = timeit.default_timer()
         upload_time_ms = (end_time - start_time) * 1000
-        
-        print("Tempo de upload do arquivo para o S3:", upload_time_ms, "milissegundos")
 
         file_size = os.stat(file_name_with_path).st_size
 
-        print(f"O tamanho do arquivo {file_name} é: {file_size} bytes")
+        print("Upload Successful to S3! File {file_name} | {file_size} bytes | {upload_time_ms} milissegund")
     
-        print(f"FILE_UPLOAD RequestId: {request_id}\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key_upload}\t Duration: {upload_time_ms} ms\t FileSize: {file_size} bytes")
+        # FILE_UPLOAD
+        print(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: produced\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key_upload}\t Duration: {upload_time_ms} ms\t FileSize: {file_size} bytes")
 
     except FileNotFoundError as e:
         print(f"The local file {file_name_with_path} was not found!")
@@ -87,12 +82,11 @@ def download_and_log_from_s3(request_id, s3, s3_bucket, s3_key, path_input):
     end_time = timeit.default_timer()
     download_time_ms = (end_time - start_time) * 1000
 
-    print("Tempo de download do arquivo a partir o S3:", download_time_ms, "milissegundos")
-
     file_size = os.stat(file_name_with_path).st_size
-
-    print(f"O tamanho do arquivo {file_name} é: {file_size} bytes")
-
-    print(f"FILE_DOWNLOAD RequestId: {request_id}\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key}\t Duration: {download_time_ms} ms\t FileSize: {file_size} bytes")
     
+    print("Download Successful from S3! File {file_name} | {file_size} bytes | {download_time_ms} milissegundos")
+
+    # FILE_DOWNLOAD
+    print(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: consumed\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key}\t TransferDuration: {download_time_ms} ms\t FileSize: {file_size} bytes")
+
     return file_name

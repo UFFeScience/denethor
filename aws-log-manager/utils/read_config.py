@@ -1,22 +1,24 @@
 import json
 
-def choose_function():
-    # Carregue as configurações do arquivo JSON
-    with open('aws-log-manager/config.json', 'r') as f:
-        configs = json.load(f)
+def choose_function(config_data, pre_choice):
+    # Obter a lista de funções
+    functions = config_data['functions']
 
-    # Crie um menu com todos os nomes de funções
-    print("Please choose a function:")
-    for i, config in enumerate(configs, start=1):
-        print(f"{i}. {config['function_name']}")
+    # Perguntar ao usuário qual função ele deseja escolher
+    print("Funções disponíveis:")
+    for i, function in enumerate(functions, start=1):
+        print(f"{i}. {function['functionName']}")
 
-    # Peça ao usuário para escolher uma função
-    choice = int(input("Enter the number of your choice: ")) 
-
-    # Verifique se a escolha do usuário é válida
-    if 1 <= choice <= len(configs):
-        # Retorne a configuração escolhida como um dicionário
-        return configs[choice - 1]
+    if pre_choice:
+        choice = pre_choice
     else:
-        print(f'Invalid choice: {choice}')
+        choice = int(input("Digite o número da função escolhida: "))
+
+    # Verificar se a escolha é válida
+    if 0 <= choice < len(functions):
+        chosen_function = functions[choice -1]
+        print(f"Você escolheu a função {chosen_function['functionName']}")
+        return functions[choice -1]
+    else:
+        print("Escolha inválida")
         return None

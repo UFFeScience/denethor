@@ -6,10 +6,10 @@ select se.id as service_execution_id, sp.name as servide_provider, w.name as wor
 		to_char(se.billed_duration,'fm9999999D99') as billed_duration,
 		to_char(se.init_duration,'fm9999999D99') as init_duration,
 		se.memory_size, se.max_memory_used, 
-		se.num_consumed_files, se.num_produced_files, 
-		se.total_consumed_files_size, se.total_produced_files_size,
-		to_char(se.total_consumed_transfer_duration,'fm9999999D99') total_consumed_transfer_duration,
-		to_char(se.total_produced_transfer_duration,'fm9999999D99') total_produced_transfer_duration
+		se.consumed_files_count, se.produced_files_count, 
+		se.consumed_files_size, se.produced_files_size,
+		to_char(se.consumed_files_transfer_duration,'fm9999999D99') consumed_files_transfer_duration,
+		to_char(se.produced_files_transfer_duration,'fm9999999D99') produced_files_transfer_duration
 from service_execution se
 join workflow_activity wa on se.activity_id = wa.id
 join workflow w on wa.workflow_id = w.id
@@ -22,7 +22,7 @@ order by se.id asc;
 SET lc_numeric = 'pt_BR';
 select se.id as service_execution_id, sp.name as servide_provider, w.name as workflow, wa.name as activity,
 		f.id as file_id, f.name as file_name, f.size, f.path, f.bucket,
-		to_char(ef.transfer_duration,'fm9999999D99') as transfer_duration, ef.action_type
+		to_char(ef.transfer_duration,'fm9999999D99') as transfer_duration, ef.transfer_type
 from service_execution se
 join workflow_activity wa on se.activity_id = wa.id
 join workflow w on wa.workflow_id = w.id

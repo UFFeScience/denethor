@@ -58,14 +58,26 @@ def lambda_handler(event, context):
     # get your bucket and key from event data
     data_rec = event['Records'][0]['s3']
     s3_bucket = data_rec['bucket']['name']
-    print("S3_bucket:", s3_bucket)
 
     # key representa o path + nome do arquivo que acionou o gatilho do lambda
     s3_key = data_rec['object']['key'] 
-    print("S3_key:", s3_key)
+    print(f'S3_bucket: {s3_bucket} | S3_key: {s3_key}')
 
-    # download files from s3 into lambda function
+    #
+    # download files from s3 bucket into lambda function
+    #
+    start_time = timeit.default_timer()
+
     file_name = download_and_log_from_s3(request_id, s3, s3_bucket, s3_key, PATH_INPUT_LOCAL)
+
+    end_time = timeit.default_timer()
+    transfer_duration_ms = (end_time - start_time) * 1000
+    
+    files_count, files_size = get_num_files_and_size(PATH_INPUT_LOCAL)
+
+    print(f"CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {files_count} files\t FilesSize: {files_size} bytes\t TransferDuration: {transfer_duration_ms} ms")
+
+    ############################################
 
     # constructor_tree(path_in_fasta, path_out_aln, path_out_dnd, path_out_tree)
     constructor_tree(file_name, PATH_INPUT_LOCAL, PATH_TMP, PATH_OUTPUT_LOCAL, PATH_CLUSTALW, DATA_FORMAT)
@@ -74,10 +86,20 @@ def lambda_handler(event, context):
     #
     # ## Copiar arquivos tree para o S3 ##
     #
+    start_time = timeit.default_timer()
+    
     for file_name in os.listdir(PATH_OUTPUT_LOCAL):
         # upload files from lambda function into s3
         upload_and_log_to_s3(request_id, s3, BUCKET_OUTPUT, S3_KEY_OUTPUT, file_name, PATH_OUTPUT_LOCAL)
-        
+    
+    end_time = timeit.default_timer()
+    transfer_duration_ms = (end_time - start_time) * 1000
+    
+    files_count, files_size = get_num_files_and_size(PATH_OUTPUT_LOCAL)
+    
+    print(f"PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {files_count} files\t FilesSize: {files_size} bytes\t TransferDuration: {transfer_duration_ms} ms")
+
+    ############################################    
         
 
     return "OK"

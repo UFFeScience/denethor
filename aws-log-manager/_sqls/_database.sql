@@ -45,12 +45,12 @@ CREATE TABLE service_execution (
     init_duration FLOAT,
     memory_size INTEGER,
     max_memory_used INTEGER,
-    num_consumed_files INTEGER,
-    num_produced_files INTEGER,
-    total_consumed_files_size INTEGER,
-    total_produced_files_size INTEGER,
-    total_consumed_transfer_duration FLOAT,
-    total_produced_transfer_duration FLOAT,
+    consumed_files_count INTEGER,
+    produced_files_count INTEGER,
+    consumed_files_size INTEGER,
+    produced_files_size INTEGER,
+    consumed_files_transfer_duration FLOAT,
+    produced_files_transfer_duration FLOAT,
     error_message VARCHAR,
     CONSTRAINT fk_service_execution_service_provider FOREIGN KEY (service_id) REFERENCES service_provider(id),
     CONSTRAINT fk_service_execution_workflow_activity FOREIGN KEY (activity_id) REFERENCES workflow_activity(id)
@@ -60,9 +60,9 @@ CREATE TABLE service_execution (
 CREATE TABLE file (
     id SERIAL PRIMARY KEY,
     name VARCHAR,
-    size FLOAT,
-    path VARCHAR,
     bucket VARCHAR,
+    path VARCHAR,
+    size FLOAT,
     CONSTRAINT uk_file_data UNIQUE (name, size, path, bucket)
 );
 
@@ -71,7 +71,7 @@ CREATE TABLE execution_file (
     service_execution_id INTEGER,
     file_id INTEGER,
     transfer_duration FLOAT,
-    action_type VARCHAR(10) CONSTRAINT check_action_type CHECK (action_type IN ('produced', 'consumed')),
+    transfer_type VARCHAR(10) CONSTRAINT check_action_type CHECK (transfer_type IN ('consumed', 'produced')),
     CONSTRAINT fk_execution_file_service_execution FOREIGN KEY (service_execution_id) REFERENCES service_execution(id),
     CONSTRAINT fk_execution_file_file FOREIGN KEY (file_id) REFERENCES file(id)
 );

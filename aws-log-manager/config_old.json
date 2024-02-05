@@ -1,0 +1,69 @@
+{
+    "functions": [
+        {
+            "functionName": "treeConstructor",
+            "startTime": "2024-01-22T20:53:00Z",
+            "endTime": "2024-01-22T21:02:59Z",
+            "baseFilePath": "aws-log-manager/_logs",
+            "logTypes": {}
+        },
+        {
+            "functionName": "treeSubFind",
+            "startTime": "2024-01-22T20:53:00Z",
+            "endTime": "2024-01-22T21:02:59Z",
+            "baseFilePath": "aws-log-manager/_logs",
+            "logTypes": {
+                "SUBTREE_FILES_CREATE": [
+                    {"searchKey": "RequestId", "separator": "\t", "fieldName": "request_id"},
+                    {"searchKey": "SubtreeId", "separator": "\t", "fieldName": "subtree_id"},
+                    {"searchKey": "FileId", "separator": "\t", "fieldName": "file_id"},
+                    {"searchKey": "FileSize", "separator": "\t", "fieldName": "file_size"}
+                ],
+                "MAF_DATABASE_CREATE": [
+                    {"searchKey": "RequestId", "separator": "\t", "fieldName": "request_id"},
+                    {"searchKey": "DatabaseId", "separator": "\t", "fieldName": "database_id"},
+                    {"searchKey": "FileSize", "separator": "\t", "fieldName": "file_size"}
+                ]
+            }
+        }
+    ],
+    "basicLogTypes": {
+        "START": [
+            {"searchKey": "RequestId", "separator": "\t", "fieldName": "request_id"},
+            {"searchKey": "Version", "separator": "\t", "fieldName": "version"}
+        ],
+        "END": [
+            {"searchKey": "RequestId", "separator": "\t", "fieldName": "request_id"},
+            {"searchKey": "Billed Duration", "separator": "\t", "fieldName": "billed_duration"},
+            {"searchKey": "Memory Size", "separator": "\t", "fieldName": "memory_size"},
+            {"searchKey": "Max Memory Used", "separator": "\t", "fieldName": "max_memory_used"}
+        ],
+        "REPORT": [
+            {"searchKey": "RequestId", "separator": "\t", "fieldName": "request_id"},
+            {"searchKey": "Duration", "separator": "\t", "fieldName": "duration"},
+            {"searchKey": "Billed Duration", "separator": "\t", "fieldName": "billed_duration"},
+            {"searchKey": "Memory Size", "separator": "\t", "fieldName": "memory_size"},
+            {"searchKey": "Max Memory Used", "separator": "\t", "fieldName": "max_memory_used"}
+        ],
+        "FILE_DOWNLOAD": [
+            {"searchKey": "RequestId", "separator": "\t", "fieldName": "request_id"},
+            {"searchKey": "FileId", "separator": "\t", "fieldName": "file_id"},
+            {"searchKey": "FileSize", "separator": "\t", "fieldName": "file_size"}
+        ],
+        "FILE_UPLOAD": [
+            {"searchKey": "RequestId", "separator": "\t", "fieldName": "request_id"},
+            {"searchKey": "FileId", "separator": "\t", "fieldName": "file_id"},
+            {"searchKey": "FileSize", "separator": "\t", "fieldName": "file_size"}
+        ],
+        "CONSUMED_FILES_INFO": [
+            {"searchKey": "RequestId", "separator": "\t", "fieldName": "request_id"},
+            {"searchKey": "TotalFiles", "separator": "\t", "fieldName": "total_files"},
+            {"searchKey": "TotalSize", "separator": "\t", "fieldName": "total_size"}
+        ],
+        "PRODUCED_FILES_INFO": [
+            {"searchKey": "RequestId", "separator": "\t", "fieldName": "request_id"},
+            {"searchKey": "TotalFiles", "separator": "\t", "fieldName": "total_files"},
+            {"searchKey": "TotalSize", "separator": "\t", "fieldName": "total_size"}
+        ]
+    }
+}
