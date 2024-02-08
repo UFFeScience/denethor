@@ -1,42 +1,51 @@
 import re
-from db.db_model import *
-from db.repository import *
-from db.conn import *
+from database.db_model import *
+from database.repository import *
+from database.conn import *
 from utils.log_utils import *
 
-def parse_log(message, config_data: dict):
+def parse_log_message(message, config_analyzer: dict):
     
     log_type = message.split()[0]
-    parsed_log = {}
+    parsed_message = {}
     # Check if the log type is in the configuration
-    if log_type in config_data['basicLogTypes']:
+    if log_type in config_analyzer['basicLogTypes']:
         
         # Prepare a dictionary to store the parsed attributes
         parsed_attributes = {}
-        
+        default_separator = config_analyzer['defaultSeparator']
         # Iterate over each attribute
-        for attribute in config_data['basicLogTypes'][log_type]:
+        for attribute in config_analyzer['basicLogTypes'][log_type]:
+            
+            separator = attribute.get('separator', f'[{default_separator}\n]')
+            
             # Use regex to extract the attribute value from the message
-            separator = attribute.get('separator', '[\t\n]')
-            pattern = f"{attribute['searchKey']}:\s*(.*?){separator}"
+            pattern = f'{attribute['searchKey']}:\\s*(.*?){separator}'
             match = re.search(pattern, message)
+            
             if match:
                 # Store the attribute value in the dictionary
-                parsed_attributes[attribute['fieldName']] = match.group(1).strip()
+                str_val = match.group(1).strip()
+                if attribute['dataType'] == 'integer':
+                    parsed_attributes[attribute['fieldName']] = parse_int(str_val)
+                elif attribute['dataType'] == 'float':
+                    parsed_attributes[attribute['fieldName']] = parse_float(str_val)
+                else:
+                    parsed_attributes[attribute['fieldName']] = str_val
             else:
                 # If the attribute is not found, store None
                 parsed_attributes[attribute['fieldName']] = None
         
         # Store the parsed log and attributes in the log dictionary
-        parsed_log = {
+        parsed_message = {
             'logType': log_type,
             **parsed_attributes
         }
 
-    return parsed_log
+    return parsed_message
 
 
-def process_logs(request_id, logs, config_data: dict):
+def parse_logs(request_id, logs, config_analyzer: dict):
     
     service_execution = ServiceExecution(request_id=request_id)
     
@@ -44,7 +53,7 @@ def process_logs(request_id, logs, config_data: dict):
         
         service_execution.log_stream_name = log['logStreamName']
         
-        parsed_log = parse_log(log['message'], config_data)
+        parsed_log = parse_log_message(log['message'], config_analyzer)
         
         #   
         # Validations of request_id
@@ -59,47 +68,27 @@ def process_logs(request_id, logs, config_data: dict):
 
         match parsed_log['logType']:
             case 'START':
-                process_start(service_execution, log['timestamp'])
+                # "timestamp": 1705599854279, "message": "START RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c Version: $LATEST\n"
+                service_execution.start_time = to_datetime(log['timestamp'])
             
             case 'END':
-                process_end(service_execution, log['timestamp'])
+                # "timestamp": 1705599874327, "message": "END RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c\n"
+                service_execution.end_time = to_datetime(log['timestamp'])
             
             case 'REPORT':
                 process_report(service_execution, parsed_log)
             
-            case 'FILE_DOWNLOAD':
-                process_file(service_execution, parsed_log, 'consumed')
-            
-            case 'FILE_UPLOAD':
-                process_file(service_execution, parsed_log, 'produced')
-            
-            case 'CONSUMED_FILES_INFO':
-                process_total_file_info(service_execution, parsed_log, 'consumed')
-            
-            case 'PRODUCED_FILES_INFO':
-                process_total_file_info(service_execution, parsed_log, 'produced')
-            
-            case 'SUBTREE_FILES_CREATE':
-                process_subtree_info(service_execution, parsed_log)
-            
-            case 'MAF_DATABASE_CREATE':
-                process_maf_databse_info(service_execution, parsed_log)
+            case 'FILE_TRANSFER':
+                process_file_transfer(service_execution, parsed_log)
             
             case _:
-                raise ValueError(f"Invalid log_type:{parsed_log['LogType']}")
+                a = parsed_log
+                print(a)
 
     return service_execution
 
 
 
-# "timestamp": 1705599854279, "message": "START RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c Version: $LATEST\n"
-def process_start(service_execution, timestamp):
-    service_execution.start_time = to_datetime(timestamp)
-
-
-# "timestamp": 1705599874327, "message": "END RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c\n"
-def process_end(service_execution, timestamp):
-    service_execution.end_time = to_datetime(timestamp)
 
 
 # "message": "REPORT RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c\tDuration: 1010.14 ms\tBilled Duration: 1011 ms\tMemory Size: 128 MB\tMax Memory Used: 115 MB\tInit Duration: 918.52 ms\t\n"
@@ -110,12 +99,11 @@ def process_report(service_execution, log_dict: dict):
     service_execution.max_memory_used = parse_int(log_dict['Max Memory Used'])
     service_execution.init_duration = parse_float(log_dict['Init Duration'])
 
-
-# "message": "FILE_DOWNLOAD RequestId: c3df54b6-1da5-48b2-bec4-093b55c96692\t FileName: ORTHOMCL1\t Bucket: mribeiro-bucket-input\t FilePath: data/testset/ORTHOMCL1\t Duration: 407.83485699999744 ms\t FileSize: 1640 bytes\n"
-# "message": "FILE_UPLOAD RequestId: 4f7f240b-e714-464c-b043-c31deef80e6c\t FileName: tree_ORTHOMCL1.nexus\t Bucket: mribeiro-bucket-output-tree\t FilePath: tree_ORTHOMCL1.nexus\t Duration: 292.6312569999965 ms\t FileSize: 339 bytes\n"
-def process_file(service_execution, log_dict: dict, transfer_type: str):
-    file = File(name=log_dict['FileName'], size=parse_int(log_dict['FileSize']), path=log_dict['FilePath'], bucket=log_dict['Bucket'])
-    execution_file = ExecutionFile(transfer_duration=parse_float(log_dict['Duration']), transfer_type=transfer_type, file=file)
+AQUIIIIIIIIIIIIIIIIIIIIII
+# "message": 'FILE_TRANSFER RequestId: efc97200-d2c8-4523-b469-f4ae7292ada7\t TransferType: consumed\t FileName: ORTHOMCL1490\t Bucket: mribeiro-bucket-input\t FilePath: input/ORTHOMCL1490\t TransferDuration: 279.0652149999886 ms\t FileSize: 5128 bytes\n'
+def process_file_transfer(service_execution, log_dict: dict):
+    file = File(name=log_dict['name'], size=parse_int(log_dict['size']), path=log_dict['path'], bucket=log_dict['bucket'])
+    execution_file = ExecutionFile(transfer_duration=parse_float(log_dict['transfer_duration']), transfer_type=log_dict['transfer_type'], file=file)
     service_execution.execution_files.append(execution_file)
     
 

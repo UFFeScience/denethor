@@ -24,7 +24,7 @@ def lambda_handler(event, context):
     
     request_id = context.aws_request_id
     
-    print('******* Estado do ambiente de execução *******')
+    print("******* Estado do ambiente de execução *******")
     print('pwd:', os.getcwd())
     # print('/:', os.listdir('/'))
     # print('/opt: ', os.listdir('/opt'))

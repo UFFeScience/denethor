@@ -1,6 +1,8 @@
 import unittest
 import re
-from utils.log_parser import parse_log
+from src.utils.log_parser import parse_log_message
+from src.utils.log_parser import parse_int
+from src.utils.log_parser import parse_float
 
 class TestLogParser(unittest.TestCase):
 
@@ -72,7 +74,7 @@ class TestLogParser(unittest.TestCase):
                 'version': '$LATEST'
             }
         }
-        output = parse_log(message=log_message, config_data=self.CONFIG)
+        output = parse_log_message(message=log_message, config_analyzer=self.CONFIG)
         self.assertEqual(output, expected_output)
     
     def test_parse_log_end(self):
@@ -83,7 +85,7 @@ class TestLogParser(unittest.TestCase):
                 'request_id': '4f7f240b-e714-464c-b043-c31deef80e6c'
             }
         }
-        output = parse_log(message=log_message, config_data=self.CONFIG)
+        output = parse_log_message(message=log_message, config_analyzer=self.CONFIG)
         self.assertEqual(output, expected_output)
 
     def test_parse_log_report(self):
@@ -99,7 +101,7 @@ class TestLogParser(unittest.TestCase):
                 'init_duration': '918.52 ms'
             }
         }
-        output = parse_log(message=log_message, config_data=self.CONFIG)
+        output = parse_log_message(message=log_message, config_analyzer=self.CONFIG)
         self.assertEqual(output, expected_output)
 
     def test_parse_log_report_sem_init_duration(self):
@@ -115,7 +117,7 @@ class TestLogParser(unittest.TestCase):
                 'init_duration': None
             }
         }
-        output = parse_log(message=log_message, config_data=self.CONFIG)
+        output = parse_log_message(message=log_message, config_analyzer=self.CONFIG)
         self.assertEqual(output, expected_output)
 
     def test_parse_log_file_download(self):
@@ -131,7 +133,7 @@ class TestLogParser(unittest.TestCase):
                 'file_size': '1640 bytes'
             }
         }
-        output = parse_log(message=log_message, config_data=self.CONFIG)
+        output = parse_log_message(message=log_message, config_analyzer=self.CONFIG)
         self.assertEqual(output, expected_output)
 
     def test_parse_log_file_upload(self):
@@ -147,7 +149,7 @@ class TestLogParser(unittest.TestCase):
                 'file_size': '339 bytes'
             }
         }
-        output = parse_log(message=log_message, config_data=self.CONFIG)
+        output = parse_log_message(message=log_message, config_analyzer=self.CONFIG)
         self.assertEqual(output, expected_output)
 
     def test_parse_log_consumed_files_info(self):
@@ -161,7 +163,7 @@ class TestLogParser(unittest.TestCase):
                 'duration': '6933.13087699994 ms'
             }
         }
-        output = parse_log(message=log_message, config_data=self.CONFIG)
+        output = parse_log_message(message=log_message, config_analyzer=self.CONFIG)
         self.assertEqual(output, expected_output)
         
     def test_parse_log_produced_files_info(self):
@@ -175,7 +177,7 @@ class TestLogParser(unittest.TestCase):
                 'duration': '17168.395734999875 ms'
             }
         }
-        output = parse_log(message=log_message, config_data=self.CONFIG)
+        output = parse_log_message(message=log_message, config_analyzer=self.CONFIG)
         self.assertEqual(output, expected_output)
         
     def test_parse_log_subtree_files_create(self):
@@ -187,7 +189,7 @@ class TestLogParser(unittest.TestCase):
                 'duration': '795.8109850000028 ms'
             }
         }
-        output = parse_log(message=log_message, config_data=self.CONFIG)
+        output = parse_log_message(message=log_message, config_analyzer=self.CONFIG)
         self.assertEqual(output, expected_output)
         
     def test_parse_log_maf_database_create(self):
@@ -201,8 +203,37 @@ class TestLogParser(unittest.TestCase):
                 'maf_database': '{"1": {}, "2": {"tree_ORTHOMCL1_Inner3.nexus": ["tree_ORTHOMCL1977_Inner2.nexus", "tree_ORTHOMCL1977_Inner1.nexus"]}, "3": {}, "5": {"tree_ORTHOMCL1_Inner3.nexus": ["tree_ORTHOMCL1977_Inner3.nexus"], "tree_ORTHOMCL1977_Inner3.nexus": ["tree_ORTHOMCL1_Inner3.nexus"]}}'
             }
         }
-        output = parse_log(message=log_message, config_data=self.CONFIG)
+        output = parse_log_message(message=log_message, config_analyzer=self.CONFIG)
         self.assertEqual(output, expected_output)
-        
+    
+
+    def test_parse_int():
+        assert parse_int("123") == 123
+        assert parse_int("  1234   ") == 1234
+        assert parse_int("456 bytes") == 456
+        assert parse_int("789 MB") == 789
+        assert parse_int("10 files") == 10
+        assert parse_int("asdf 10 files") == 10
+        assert parse_int("20 files 2000") == 20
+        assert parse_int("0 files") == 0
+        assert parse_int("123.12 asdf") == 10
+        assert parse_int(" asdf") is None
+        assert parse_int(" ") is None
+        assert parse_int("") is None
+        assert parse_int(None) is None
+
+    def test_parse_float():
+        assert parse_float("123.45") == 123.45
+        assert parse_float("  1234.45   ") == 1234.45
+        assert parse_float("678.90 ms") == 678.90
+        assert parse_float("3009 ms") == 3009.00
+        assert parse_float("asdf 3009 ms") == 3009.00
+        assert parse_float("120 ms 9999") == 678.00
+        assert parse_float("0 ms") == 0.00
+        assert parse_float(" ms") == None
+        assert parse_float("") is None
+        assert parse_float(None) is None
+
+
 if __name__ == '__main__':
     unittest.main()

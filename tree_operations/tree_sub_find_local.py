@@ -10,10 +10,10 @@ import timeit
 # S3_KEY_OUTPUT = ''
 
 # Localização dos arquivos de entrada utilizados pela função
-PATH_INPUT = 'tree_operations\\data\\output\\trees' # na execução local é output do tree_constructor
+PATH_INPUT = 'tree_operations/data/output/trees' # na execução local é output do tree_constructor
 
 # Localização dos arquivos gerados nesta etapa
-PATH_OUTPUT = 'tree_operations\\data\\output\\subtrees'
+PATH_OUTPUT = 'tree_operations/data/output/subtrees'
 
 # Formato das sequências
 DATA_FORMAT = 'nexus' # newick ou nexus

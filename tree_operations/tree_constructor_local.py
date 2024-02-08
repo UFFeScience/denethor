@@ -6,16 +6,16 @@ import timeit
 # S3_KEY_OUTPUT = ''
 
 # Localização dos arquivos de entrada utilizados pela função
-PATH_INPUT = 'tree_operations\\data\\full_dataset' # testset ou full_dataset
+PATH_INPUT = 'tree_operations/data/full_dataset' # testset ou full_dataset
 
 # Localização dos arquivos gerados nesta etapa
-PATH_OUTPUT = 'tree_operations\\data\\output\\trees'
+PATH_OUTPUT = 'tree_operations/data/output/trees'
 
 # Usado para escrever arquivos 'nopipe' durante o processo de validação
-PATH_TMP = 'tree_operations\\data\\tmp'
+PATH_TMP = 'tree_operations/data/tmp'
 
 # Localização do binário do Clustalw
-PATH_CLUSTALW = 'tree_operations\\lib\\opt\\python\ClustalW2'
+PATH_CLUSTALW = 'tree_operations/lib/opt/python/ClustalW2'
 
 # Formato das sequências
 DATA_FORMAT = 'nexus' # newick ou nexus

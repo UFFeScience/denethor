@@ -1,36 +1,43 @@
 from utils.log_utils import *
 from utils.log_parser import *
 from utils.read_config import * 
-from db.db_model import *
-from db.repository import *
-from db.conn import *
+from database.db_model import *
+from database.repository import *
+from database.conn import *
 import json
 import os
 
 
 # Carregar o arquivo JSON
-with open('aws-log-manager/config.json') as f:
-    config_data = json.load(f)
+with open('aws-log-manager/config_analyzer.json') as f:
+    config_analyzer = json.load(f)
 
-function_data = choose_function(config_data, pre_choice=1)
+with open('aws-log-manager/config_retriever.json') as f:
+    config_retriever = json.load(f)
 
-file_path = os.path.join(function_data['baseFilePath'], f'logs_{function_data['functionName']}_{function_data['startTime']}.json')
-file_path = sanitize(file_path)
+function_data = choose_function(config_retriever, pre_choice=1)
+
+file_path = function_data['baseFilePath']
+file_name = f'logs_{function_data['functionName']}_{function_data['startTime']}.json'
+
+file_name = sanitize(file_name)
+complete_file_path = os.path.join(file_path, file_name)
+
 # abrindo o arquivo com os logs da AWS salvos no formato json
-with open(file_path) as f:
-    logs_data = json.load(f)
+with open(complete_file_path) as f:
+    log_data = json.load(f)
 
 
 # filtrar os registros de log que contem um RequestId no campo message
 # para facilitar o tratamento dos dados 
 # cada conjunto de logs com o mesmo RequestId representa uma execução completa 
 # da atividade para um conjunto de arquivos de entrada
-request_id_dict = get_logs_by_request_id(logs_data)
+request_id_dict = get_logs_by_request_id(log_data)
 
 # iterando sobre o conjunto de logs  um request_id (uma execução da função lambda)
-for request_id, log_itens in request_id_dict.items():
+for request_id, logs in request_id_dict.items():
     
-    service_execution = process_logs(request_id, log_itens, config_data)
+    service_execution = parse_logs(request_id, logs, config_analyzer)
     
     # print(service_execution)
 

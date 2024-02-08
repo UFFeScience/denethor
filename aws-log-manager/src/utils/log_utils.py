@@ -9,15 +9,15 @@ def sanitize(filename):
 
 
 # Save logs to a single file ordered by logStreamName
-def save_to_file(json_logs, file_path):
+def save_to_file(json_logs, file_name, file_path):
     
     json_logs.sort(key=lambda x: (x['logStreamName'], x['timestamp']))
     
-    file_path = sanitize(file_path)
-    with open(file=file_path, mode='w') as file:
+    file_name_with_path = os.path.join(file_path, sanitize(file_name))
+    with open(file=file_name_with_path, mode='w') as file:
         json.dump(json_logs, file, indent=2)
     
-    print(f"Logs saved to {file_path} in json format")
+    print(f"Logs saved to {file_name} in json format")
 
 
 # Define a function to print logs in an organized manner
@@ -40,13 +40,19 @@ def to_datetime(time: float):
         return datetime.fromtimestamp((time / 1000.0), tz=timezone.utc)
     return None
 
-def parse_float(value: str):
-    value_float = value.replace('ms', '').strip() if value else None
-    return float(value_float) if value_float else None
+def parse_int(value: str) -> int:
+    # value_int = value.replace('bytes', '').replace('MB', '').replace('files', '').strip() if value else None
+    # return int(value_int) if value_int else None
+    match = re.search(r"\d+", value)
+    value_int = int(match.group()) if match else None
+    return value_int
 
-def parse_int(value: str):
-    value_int = value.replace('bytes', '').replace('MB', '').replace('files', '').strip() if value else None
-    return int(value_int) if value_int else None
+def parse_float(value: str) -> float:
+    # value_float = value.replace('ms', '').strip() if value else None
+    # return float(value_float) if value_float else None
+    match = re.search(r"\d+\.?\d*", value)
+    value_float = float(match.group()) if match else None
+    return value_float
 
 
 # Agrupando logs pelo valor de 'RequestId' no campo 'message' 
@@ -58,7 +64,7 @@ def get_logs_by_request_id(logs: dict) -> dict:
     # Loop através dos logs
     for log in logs:
         # Obter o RequestId do log
-        request_id = get_request_id(log)
+        request_id = get_request_id(log['message'])
         
         # Se o RequestId não for None, adicione o log ao dicionário
         if request_id is not None:
@@ -69,6 +75,7 @@ def get_logs_by_request_id(logs: dict) -> dict:
     return request_id_dict
 
 
-def get_request_id(log):
-    match = re.search('RequestId: (\S+)', log['message'])
-    return match.group(1) if match else None
+def get_request_id(log_message):
+    match = re.search('RequestId: (\\S+)', log_message)
+    request_id = match.group(1) if match else None
+    return request_id
