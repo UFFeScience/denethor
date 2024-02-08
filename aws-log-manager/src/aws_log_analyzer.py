@@ -9,10 +9,10 @@ import os
 
 
 # Carregar o arquivo JSON
-with open('aws-log-manager/config_analyzer.json') as f:
+with open('config/config_analyzer.json') as f: 
     config_analyzer = json.load(f)
 
-with open('aws-log-manager/config_retriever.json') as f:
+with open('config/config_retriever.json') as f:
     config_retriever = json.load(f)
 
 function_data = choose_function(config_retriever, pre_choice=1)
@@ -35,15 +35,28 @@ with open(complete_file_path) as f:
 request_id_dict = get_logs_by_request_id(log_data)
 
 # iterando sobre o conjunto de logs  um request_id (uma execução da função lambda)
-for request_id, logs in request_id_dict.items():
+for request_id, logs_by_request in request_id_dict.items():
     
-    service_execution = parse_logs(request_id, logs, config_analyzer)
+    print(f"--------------------------------------------------------------------------")
+    print(f'Parsing Logs of {function_data['functionName']}')
+    print(f'RequestId: {request_id}')
+    print(f"--------------------------------------------------------------------------")
+    
+    default_separator = config_analyzer['defaultSeparator']
+    function_name = function_data['functionName']
+
+    function_config = next(func for func in config_analyzer['functions'] if func['functionName'] == function_name)
+
+    # União dos conjuntos de estatísticas padrão e adicionais (específicos de cada função)
+    complete_statistics = config_analyzer['defaultStatistics'] | function_config['additionalStatistics']
+
+    service_execution = parse_logs(logs_by_request, complete_statistics, default_separator)
     
     # print(service_execution)
 
     print(f"--------------------------------------------------------------------------")
     print(f'Saving Execution info of {function_data['functionName']} to Database...')
-    print(f'RequestId: {service_execution.request_id}')
+    print(f'RequestId: {request_id}')
     print(f"--------------------------------------------------------------------------")
 
     session = Connection().get_session()

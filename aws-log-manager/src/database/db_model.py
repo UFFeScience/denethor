@@ -7,8 +7,24 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+class BaseModel(Base):
+    __abstract__ = True
 
-class ServiceProvider(Base):
+    @classmethod
+    def create_from_dict(cls, dict_values):
+        filtered_dict = {k: v for k, v in dict_values.items() if hasattr(cls, k)}
+        return cls(**filtered_dict)
+
+    def update_from_dict(self, dict_values):
+        filtered_dict = {k: v for k, v in dict_values.items() if hasattr(self, k)}
+        for key, value in filtered_dict.items():
+            setattr(self, key, value)
+
+            
+# Este método cria todas as tabelas armazenadas na metadata no banco de dados conectado ao engine. As tabelas são criadas no banco de dados usando o engine fornecido. Se uma tabela já existe no banco de dados, o método create_all() irá ignorá-la.
+# Base.metadata.create_all(engine)
+
+class ServiceProvider(BaseModel):
     __tablename__ = 'service_provider'
 
     id = Column(Integer, primary_key=True)
@@ -20,7 +36,7 @@ class ServiceProvider(Base):
     def __str__(self):
         return (f"[{self.id}]={self.name}, {self.memory}MB, {self.timeout}s, {self.cpu}vCPU")
 
-class Workflow(Base):
+class Workflow(BaseModel):
     __tablename__ = 'workflow'
 
     id = Column(Integer, primary_key=True)
@@ -31,7 +47,7 @@ class Workflow(Base):
         return (f"[{self.id}]={self.name}")
 
 
-class WorkflowActivity(Base):
+class WorkflowActivity(BaseModel):
     __tablename__ = 'workflow_activity'
 
     id = Column(Integer, primary_key=True)
@@ -42,7 +58,7 @@ class WorkflowActivity(Base):
     def __str__(self):
         return (f"[{self.id}]={self.name}")
 
-class ServiceExecution(Base):
+class ServiceExecution(BaseModel):
     __tablename__ = 'service_execution'
 
     id = Column(Integer, primary_key=True)
@@ -94,7 +110,7 @@ class ServiceExecution(Base):
         )
 
 
-class File(Base):
+class File(BaseModel):
     __tablename__ = 'file'
 
     id = Column(Integer, primary_key=True)
@@ -107,7 +123,7 @@ class File(Base):
         return (f"[{self.id}]={self.name} ({self.size} bytes)")
 
 
-class ExecutionFile(Base):
+class ExecutionFile(BaseModel):
     __tablename__ = 'execution_file'
 
     id = Column(Integer, primary_key=True)
@@ -123,7 +139,7 @@ class ExecutionFile(Base):
         return (f"[{self.id}]={self.transfer_duration} ms ({self.transfer_type})")
     
     
-class Statistics(Base):
+class Statistics(BaseModel):
     __tablename__ = 'statistics'
 
     id = Column(Integer, primary_key=True)
@@ -133,7 +149,7 @@ class Statistics(Base):
     def __str__(self):
         return (f"[{self.id}]={self.name}")
 
-class ExecutionStatistics(Base):
+class ExecutionStatistics(BaseModel):
     __tablename__ = 'execution_statistics'
 
     id = Column(Integer, primary_key=True)

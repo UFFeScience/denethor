@@ -5,7 +5,7 @@ import boto3
 import json
 
 # Carregar o arquivo JSON
-with open('aws-log-manager/log_retriever_config.json') as f:
+with open('config/config_retriever.json') as f:
     retriever_config = json.load(f)
 
 function_data = choose_function(retriever_config, pre_choice=1)

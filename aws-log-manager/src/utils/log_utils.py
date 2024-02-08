@@ -41,15 +41,15 @@ def to_datetime(time: float):
     return None
 
 def parse_int(value: str) -> int:
-    # value_int = value.replace('bytes', '').replace('MB', '').replace('files', '').strip() if value else None
-    # return int(value_int) if value_int else None
+    if value is None:
+        return None
     match = re.search(r"\d+", value)
     value_int = int(match.group()) if match else None
     return value_int
 
 def parse_float(value: str) -> float:
-    # value_float = value.replace('ms', '').strip() if value else None
-    # return float(value_float) if value_float else None
+    if value is None:
+        return None
     match = re.search(r"\d+\.?\d*", value)
     value_float = float(match.group()) if match else None
     return value_float

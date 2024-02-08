@@ -9,7 +9,7 @@ def parse_log(message, CONFIG: dict):
     log_type = message.split()[0]
     parsed_log = {}
     # Check if the log type is in the configuration
-    if log_type in CONFIG['basicLogTypes']:
+    if log_type in CONFIG['defaultStatistics']:
         
         # Prepare a dictionary to store the parsed attributes
         parsed_attributes = {}
