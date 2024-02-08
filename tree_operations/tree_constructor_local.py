@@ -1,26 +1,28 @@
 from tree_constructor_core import *
-import boto3
+import timeit
 
-# Substitua pelo caminho de entrada dos aquivos
-PATH_BASE = 'tree_operations'
-PATH_DATA = os.path.join(PATH_BASE, 'data')
-PATH_LIB  = os.path.join(PATH_BASE, 'lib')
+# # O bucket e key de saída dos arquivos gerados nesta etapa
+# BUCKET_OUTPUT = 'mribeiro-bucket-output-tree'
+# S3_KEY_OUTPUT = ''
 
-PATH_INPUT  = os.path.join(PATH_DATA, 'testset') # Localização dos arquivos de entrada
-PATH_OUTPUT = os.path.join(PATH_DATA, 'out', 'trees') # Localização dos arquivos de árvores finais
+# Localização dos arquivos de entrada utilizados pela função
+PATH_INPUT = 'tree_operations\\data\\full_dataset' # testset ou full_dataset
+
+# Localização dos arquivos gerados nesta etapa
+PATH_OUTPUT = 'tree_operations\\data\\output\\trees'
 
 # Usado para escrever arquivos 'nopipe' durante o processo de validação
-PATH_TMP = os.path.join(PATH_DATA, 'tmp')  # '/tmp' is lambda local folder
+PATH_TMP = 'tree_operations\\data\\tmp'
 
-# PATH_CLUSTALW = os.path.join(PATH_LIB, 'opt', 'python', 'clustalw-2.1-linux-x86_64-libcppstatic')
-PATH_CLUSTALW = os.path.join(PATH_LIB, 'opt', 'python', 'ClustalW2')
+# Localização do binário do Clustalw
+PATH_CLUSTALW = 'tree_operations\\lib\\opt\\python\ClustalW2'
 
 # Formato das sequências
 DATA_FORMAT = 'nexus' # newick ou nexus
 
-s3 = boto3.client('s3')
+def lambda_handler(event, context):
 
-def main():
+    request_id = None
     
     print("Estado do ambiente de execução")
     print('pwd:', os.getcwd())
@@ -37,10 +39,21 @@ def main():
     # listagem de arquivos
     files = os.listdir(PATH_INPUT)
     
+    #
+    # ## Construção dos arquivos de árvores ##
+    # 
+    start_time = timeit.default_timer()
+
     for name_file in files:
         print("Reading file %s" % name_file)
-        constructor_tree(name_file, PATH_INPUT, PATH_TMP, PATH_OUTPUT, PATH_CLUSTALW, DATA_FORMAT)
+        tree_constructor(name_file, PATH_INPUT, PATH_TMP, PATH_OUTPUT, PATH_CLUSTALW, DATA_FORMAT)
 
+    end_time = timeit.default_timer()
+    tree_time_ms = (end_time - start_time) * 1000
+    
+    print(f"TREE_CONSTRUCTOR RequestId: {request_id}\t Duration: {tree_time_ms} ms")
+
+    ############################################
    
 if __name__ == '__main__':
-    main()
+    lambda_handler(None, None)

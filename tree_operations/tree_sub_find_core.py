@@ -64,7 +64,7 @@ def fill_matrix(matrix, value):
     for row in matrix:
         while len(row) < max_columns:
             row.append(value)
-    print('max_rows=', max_rows, ' | ', 'max_columns=', max_columns)
+    print(f'max_rows= {max_rows} | max_columns= {max_columns}')
     
     return matrix
 
@@ -94,7 +94,7 @@ def grade_maf(file_1, file_2, path, data_format):
     return grau
 
 
-def create_maf_database(subtree_matrix, path, data_format):
+def maf_database_create(subtree_matrix, path, data_format):
 
     subtree_matrix = fill_matrix(subtree_matrix, value=None)
 
@@ -103,7 +103,7 @@ def create_maf_database(subtree_matrix, path, data_format):
 
     # inicializando dict_maf_database com espaços vazios
     dict_maf_database = {i: {} for i in range(1, max_columns)}
-    print('Empty dict_maf_database:', dict_maf_database)
+    print(f'Empty dict_maf_database: {dict_maf_database}')
     
     max_maf = 0
     for i in range(max_rows):
@@ -113,7 +113,7 @@ def create_maf_database(subtree_matrix, path, data_format):
                 for l in range(max_columns):
                     if i != k:
                         g_maf = grade_maf(subtree_matrix[i][j], subtree_matrix[k][l], path, data_format)
-                        # print('g_maf=',g_maf)
+                        # print('g_maf=', g_maf)
 
                         if max_maf <= g_maf:
                             max_maf = g_maf
