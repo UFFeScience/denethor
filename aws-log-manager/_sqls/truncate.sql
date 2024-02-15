@@ -1,0 +1,5 @@
+TRUNCATE TABLE execution_statistics CASCADE;
+TRUNCATE TABLE statistics CASCADE;
+TRUNCATE TABLE execution_file CASCADE;
+TRUNCATE TABLE file CASCADE;
+TRUNCATE TABLE service_execution CASCADE;

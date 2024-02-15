@@ -37,7 +37,7 @@
 #     'duration': duration,
 #     'error_message': None,
 #     'activity_id': workflow_activity.id,
-#     'service_id': service_provider.id,
+#     'provider_id': service_provider.id,
 #     'consumed_file_id': None,
 #     'produced_file_id': None
 # }

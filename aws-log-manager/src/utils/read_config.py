@@ -1,6 +1,6 @@
 import json
 
-def choose_function(config_data, pre_choice):
+def choose_activity(config_data, pre_choice):
     # Obter a lista de funções
     functions = config_data['functions']
 

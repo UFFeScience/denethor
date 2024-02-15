@@ -13,7 +13,7 @@ select se.id as service_execution_id, sp.name as servide_provider, w.name as wor
 from service_execution se
 join workflow_activity wa on se.activity_id = wa.id
 join workflow w on wa.workflow_id = w.id
-join service_provider sp on se.service_id = sp.id
+join service_provider sp on se.provider_id = sp.id
 order by se.id asc;
 
 
@@ -26,7 +26,7 @@ select se.id as service_execution_id, sp.name as servide_provider, w.name as wor
 from service_execution se
 join workflow_activity wa on se.activity_id = wa.id
 join workflow w on wa.workflow_id = w.id
-join service_provider sp on se.service_id = sp.id
+join service_provider sp on se.provider_id = sp.id
 join execution_file ef on se.id = ef.service_execution_id
 join file f on ef.file_id = f.id
 order by se.id asc, f.id asc;

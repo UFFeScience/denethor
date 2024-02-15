@@ -66,7 +66,7 @@ def upload_and_log_to_s3(request_id, s3_bucket, s3_key, file_name, file_path):
         print(f'Upload Successful to S3! File {file_name} | {file_size} bytes | {upload_time_ms} milissegundos')
     
         # FILE_UPLOAD
-        print(f'FILE_TRANSFER RequestId: {request_id}\t TransferType: produced\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key_upload}\t Duration: {upload_time_ms} ms\t FileSize: {file_size} bytes')
+        print(f'FILE_TRANSFER RequestId: {request_id}\t TransferType: produced\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key_upload}\t TransferDuration: {upload_time_ms} ms\t FileSize: {file_size} bytes')
 
     except FileNotFoundError as e:
         print(f'The local file {file_name_with_path} was not found!')

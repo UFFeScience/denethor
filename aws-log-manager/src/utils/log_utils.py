@@ -56,10 +56,10 @@ def parse_float(value: str) -> float:
 
 
 # Agrupando logs pelo valor de 'RequestId' no campo 'message' 
-def get_logs_by_request_id(logs: dict) -> dict:
+def group_logs_by_request(logs: dict) -> dict:
     
     # Dicionário para armazenar os logs filtrados
-    request_id_dict = {}
+    logs_by_request = {}
    
     # Loop através dos logs
     for log in logs:
@@ -68,11 +68,11 @@ def get_logs_by_request_id(logs: dict) -> dict:
         
         # Se o RequestId não for None, adicione o log ao dicionário
         if request_id is not None:
-            if request_id not in request_id_dict:
-                request_id_dict[request_id] = []
-            request_id_dict[request_id].append(log)
+            if request_id not in logs_by_request:
+                logs_by_request[request_id] = []
+            logs_by_request[request_id].append(log)
 
-    return request_id_dict
+    return logs_by_request
 
 
 def get_request_id(log_message):

@@ -1,6 +1,6 @@
 from typing import Tuple, Any
 from sqlalchemy.orm import Session
-from .db_model import *
+from database.db_model import *
 
 class GenericRepository:
     def __init__(self, session: Session, model: type):
@@ -24,6 +24,8 @@ class GenericRepository:
         return instance
 
     def get_or_create(self, obj: dict) -> Tuple[Any, bool]:
+        if type(obj) != dict:
+            raise ValueError("The argument must be a dictionary")
         obj.pop('_sa_instance_state', None)
         instance = self.get_by_attributes(obj)
         if instance:
@@ -49,16 +51,38 @@ class GenericRepository:
 class ServiceProviderRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=ServiceProvider)
+    
+    def get_or_create(self, obj: ServiceProvider):
+        if type(obj) != ServiceProvider:
+            raise ValueError("The argument must be a ServiceProvider object")
+        obj_dict = obj.__dict__.copy()
+        return super().get_or_create(obj_dict)
 
 
 class WorkflowRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=Workflow)
+    
+    def get_or_create(self, obj: Workflow):
+        if type(obj) != Workflow:
+            raise ValueError("The argument must be a Workflow object")
+        obj_dict = obj.__dict__.copy()
+        return super().get_or_create(obj_dict)
 
 
 class WorkflowActivityRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=WorkflowActivity)
+
+    def get_or_create(self, obj: WorkflowActivity):
+        if type(obj) != WorkflowActivity:
+            raise ValueError("The argument must be a WorkflowActivity object")
+        if obj.workflow:
+            obj.workflow_id = obj.workflow.id
+        obj_dict = obj.__dict__.copy()
+        obj_dict.pop('additionalStatistics', None)
+        obj_dict.pop('workflow', None)
+        return super().get_or_create(obj_dict)
 
 
 class ServiceExecutionRepository(GenericRepository):
@@ -66,15 +90,17 @@ class ServiceExecutionRepository(GenericRepository):
         super().__init__(session=session, model=ServiceExecution)
     
     def get_or_create(self, obj: ServiceExecution):
+        if type(obj) != ServiceExecution:
+            raise ValueError("The argument must be a ServiceExecution object")
         if obj.activity:
             obj.activity_id = obj.activity.id
-        if obj.service:
-            obj.service_id = obj.service.id
+        if obj.provider:
+            obj.provider_id = obj.provider.id
         obj_dict = obj.__dict__.copy()
         obj_dict.pop('execution_files', None)
         obj_dict.pop('execution_statistics', None)
         obj_dict.pop('activity', None)
-        obj_dict.pop('service', None)
+        obj_dict.pop('provider', None)
         return super().get_or_create(obj_dict)
 
 
@@ -83,6 +109,8 @@ class FileRepository(GenericRepository):
         super().__init__(session=session, model=File)
     
     def get_or_create(self, obj: File):
+        if type(obj) != File:
+            raise ValueError("The argument must be a File object")
         obj_dict = obj.__dict__.copy()
         obj_dict.pop('execution_file', None)
         return super().get_or_create(obj_dict)
@@ -93,6 +121,8 @@ class ExecutionFileRepository(GenericRepository):
         super().__init__(session=session, model=ExecutionFile)
 
     def get_or_create(self, obj: ExecutionFile):
+        if type(obj) != ExecutionFile:
+            raise ValueError("The argument must be a ExecutionFile object")
         if obj.file:
             obj.file_id = obj.file.id
         if obj.service_execution:  
@@ -108,15 +138,23 @@ class StatisticsRepository(GenericRepository):
         super().__init__(session=session, model=Statistics)
     
     def get_or_create(self, obj: Statistics):
+        if type(obj) != Statistics:
+            raise ValueError("The argument must be a Statistics object")
         obj_dict = obj.__dict__.copy()
         obj_dict.pop('execution_statistics', None)
         return super().get_or_create(obj_dict)
+    
+    def get_by_name(self, name: str):
+        return self.db.query(self.model).filter_by(name=name).first()
+
 
 class ExecutionStatisticsRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=ExecutionStatistics)
 
     def get_or_create(self, obj: ExecutionStatistics):
+        if type(obj) != ExecutionStatistics:
+            raise ValueError("The argument must be a ExecutionStatistics object")
         if obj.statistics:
             obj.statistics_id = obj.statistics.id
         if obj.service_execution:  
@@ -126,3 +164,20 @@ class ExecutionStatisticsRepository(GenericRepository):
         obj_dict.pop('service_execution', None)
         return super().get_or_create(obj_dict)
 
+
+
+
+from database.conn import *
+
+# Instânciando a sessão do banco de dados
+session = Connection().get_session()
+
+# Instânciando as classes de repositórios
+service_provider_repo = ServiceProviderRepository(session)
+workflow_repo = WorkflowRepository(session)
+workflow_activity_repo = WorkflowActivityRepository(session)
+file_repo = FileRepository(session)
+execution_file_repo = ExecutionFileRepository(session)
+statistics_repo = StatisticsRepository(session)
+execution_statistics_repo = ExecutionStatisticsRepository(session)
+service_execution_repo = ServiceExecutionRepository(session)

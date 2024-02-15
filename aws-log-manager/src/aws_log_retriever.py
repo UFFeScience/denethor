@@ -5,10 +5,10 @@ import boto3
 import json
 
 # Carregar o arquivo JSON
-with open('config/config_retriever.json') as f:
+with open('config/execution_config.json') as f:
     retriever_config = json.load(f)
 
-function_data = choose_function(retriever_config, pre_choice=1)
+function_data = choose_activity(retriever_config, pre_choice=1)
 
 # Retrieve logs from AWS Lambda organized by logStreamName
 client = boto3.client('logs')
