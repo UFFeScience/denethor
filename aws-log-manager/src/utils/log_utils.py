@@ -5,19 +5,17 @@ import re
 
 # Define a regex pattern to match only valid characters in file names or directories
 def sanitize(filename):
-    return re.sub(r'[^a-zA-Z0-9\_\-\.\\]', '_', filename).replace("LATEST", '')
+    return re.sub(r'[^a-zA-Z0-9_\-\./]', '_', filename).replace("LATEST", '')
 
 
 # Save logs to a single file ordered by logStreamName
-def save_to_file(json_logs, file_name, file_path):
-    
+def save_to_file(json_logs, file):
     json_logs.sort(key=lambda x: (x['logStreamName'], x['timestamp']))
-    
-    file_name_with_path = os.path.join(file_path, sanitize(file_name))
-    with open(file=file_name_with_path, mode='w') as file:
+    file = sanitize(file)
+    with open(file=file, mode='w') as file:
         json.dump(json_logs, file, indent=2)
     
-    print(f"Logs saved to {file_name} in json format")
+    print(f"Logs saved to {file} in json format")
 
 
 # Define a function to print logs in an organized manner

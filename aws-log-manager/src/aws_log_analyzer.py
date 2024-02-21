@@ -1,6 +1,5 @@
 from utils.log_utils import *
 from utils.log_parser import *
-from utils.read_config import * 
 from database.db_model import *
 from database.repository import *
 
@@ -51,7 +50,8 @@ for log_type in custom_stats:
             print(f'{"Saving" if stat_created else "Retrieving"} Statistics: {stat_db}')
 
 # abrindo o arquivo com os logs da AWS salvos no formato json
-with open(EXECUTION_INFO['logFile']) as f:
+file = sanitize(EXECUTION_INFO['logFile'])
+with open(file) as f:
     log_data = json.load(f)
 
 # filtra e organiza os registros de log por RequestId 

@@ -1,20 +1,23 @@
 from tree_sub_find_core import *
+import fnmatch
 import boto3
 import time
 import timeit
 
 # O bucket de entrada dos arquivos gerados pelo tree_constructor
-BUCKET_INPUT = 'mribeiro-bucket-output-tree'
+# BUCKET_INPUT = 'mribeiro-bucket-output-tree'
 
 # # O bucket e key de saída dos arquivos gerados nesta etapa
-BUCKET_OUTPUT = 'mribeiro-bucket-output-subtree'
-S3_KEY_OUTPUT = ''
+# BUCKET_OUTPUT = 'mribeiro-bucket-output-subtree'
+# S3_KEY_OUTPUT = ''
+
+PATH_TMP = '/tmp'
 
 # Localização dos arquivos de entrada utilizados pela função
-PATH_INPUT = '/tmp/data/input/trees' # na execução local é output do tree_constructor
+PATH_TMP_INPUT = '/tmp/input' # na execução local é output do tree_constructor
 
 # Localização dos arquivos gerados nesta etapa
-PATH_OUTPUT = '/tmp/data/output/subtrees'
+PATH_TMP_OUTPUT = '/tmp/output'
 
 # Formato das sequências
 DATA_FORMAT = 'nexus' # newick ou nexus
@@ -34,34 +37,51 @@ def lambda_handler(event, context):
     #
     # ## Limpeza arquivos temporários ##
     #
-    remove_files(PATH_INPUT) # limpar o input somente na execução via lambda
-    remove_files(PATH_OUTPUT)
+    remove_files(PATH_TMP)
+    remove_files(PATH_TMP_INPUT) # limpar o input somente na execução via lambda
+    remove_files(PATH_TMP_OUTPUT)
 
 
-    s3_bucket = BUCKET_INPUT # por enquanto esse bucket está fixo, depois tentar passar via request
+    # s3_bucket = BUCKET_INPUT # por enquanto esse bucket está fixo, depois tentar passar via request
     
+
+    # Obter o bucket de entrada, a lista de arquivos e o bucket de saída do payload
+    input_bucket = event['inputBucket']
+    output_bucket = event['outputBucket']
+    output_key = event['outputKey']
+    input_files = event['files']
+
     #
     # List and downloads the tree files from bucket
     #
     start_time = timeit.default_timer()
     
     s3 = boto3.client('s3')
-    response = s3.list_objects_v2(Bucket=s3_bucket, Prefix='', StartAfter='', Delimiter='/')
+    response = s3.list_objects_v2(Bucket=input_bucket, Prefix='', StartAfter='', Delimiter='/')
     
-    for s3_file in response['Contents']:
+    all_matching_files = []  # para armazenar todos os objetos correspondentes
+
+    for base_file_name in input_files:
+        pattern = '*{}*'.format(base_file_name)
+        matching_files = [item['Key'] for item in response['Contents'] if fnmatch.fnmatch(item['Key'], pattern)]
+        all_matching_files.extend(matching_files)
+        print(f'pattern: {pattern} | matching_files: {matching_files}')
+    
+    
+    # for s3_file in response['Contents']:
+    for s3_file_key in all_matching_files:
         # key representa o path + nome do arquivo do s3
-        s3_key = s3_file['Key']
-        print(f'downloading file from s3: {s3_key}')
+        print(f'downloading file from s3: {s3_file_key}')
 
         # download files from s3 into lambda function
-        tree_file = download_and_log_from_s3(request_id, s3_bucket, s3_key, PATH_INPUT)
+        tree_file = download_and_log_from_s3(request_id, input_bucket, s3_file_key, PATH_TMP_INPUT)
 
     end_time = timeit.default_timer()
     transfer_duration_ms = (end_time - start_time) * 1000
     
-    files_count, files_size = get_num_files_and_size(PATH_INPUT)
+    files_count, files_size = get_num_files_and_size(PATH_TMP_INPUT)
 
-    print(f'CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {files_count} files\t FilesSize: {files_size} bytes\t TransferDuration: {transfer_duration_ms} ms')
+    print(f'CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {files_count} files\t FilesSize: {files_size} bytes\t TransferDuration: {transfer_duration_ms} ms\t ConsumedFiles: {all_matching_files}')
 
     ############################################
 
@@ -72,8 +92,8 @@ def lambda_handler(event, context):
     start_time = timeit.default_timer()
 
     subtree_matrix = []
-    for tree_file in os.listdir(PATH_INPUT):
-        subtree = subtree_constructor(tree_file, PATH_INPUT, PATH_OUTPUT, DATA_FORMAT)
+    for tree_file in os.listdir(PATH_TMP_INPUT):
+        subtree = subtree_constructor(tree_file, PATH_TMP_INPUT, PATH_TMP_OUTPUT, DATA_FORMAT)
         subtree_matrix.append(subtree)
     
     end_time = timeit.default_timer()
@@ -94,7 +114,7 @@ def lambda_handler(event, context):
     #
     start_time = timeit.default_timer()
     
-    dict_maf_database, max_maf = maf_database_create(subtree_matrix, PATH_OUTPUT, DATA_FORMAT)
+    dict_maf_database, max_maf = maf_database_create(subtree_matrix, PATH_TMP_OUTPUT, DATA_FORMAT)
     
     end_time = timeit.default_timer()
     maf_time_ms = (end_time - start_time) * 1000
@@ -112,16 +132,18 @@ def lambda_handler(event, context):
     #
     start_time = timeit.default_timer()
 
-    for tree_file in os.listdir(PATH_OUTPUT):
+    produced_files = os.listdir(PATH_TMP_OUTPUT)
+
+    for tree_file in produced_files:
         # upload files from lambda function into s3
-        upload_and_log_to_s3(request_id, BUCKET_OUTPUT, S3_KEY_OUTPUT, tree_file, PATH_OUTPUT)
+        upload_and_log_to_s3(request_id, output_bucket, output_key, tree_file, PATH_TMP_OUTPUT)
         
     end_time = timeit.default_timer()
     transfer_duration_ms = (end_time - start_time) * 1000
 
-    files_count, files_size = get_num_files_and_size(PATH_OUTPUT)
+    files_count, files_size = get_num_files_and_size(PATH_TMP_OUTPUT)
     
-    print(f'PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {files_count} files\t FilesSize: {files_size} bytes\t TransferDuration: {transfer_duration_ms} ms')
+    print(f'PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {files_count} files\t FilesSize: {files_size} bytes\t TransferDuration: {transfer_duration_ms} ms\t ProducedFiles: {produced_files}')
 
     ############################################
     

@@ -4,7 +4,7 @@
 from Bio import Phylo
 from dendropy import Tree
 import os
-from tree_utils import *
+from file_operations import *
 
 
 #

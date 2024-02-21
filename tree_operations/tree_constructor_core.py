@@ -11,7 +11,7 @@
 from Bio.Align.Applications import ClustalwCommandline
 from Bio import AlignIO, Phylo, SeqIO
 from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor
-from tree_utils import *
+from file_operations import *
 import os
 
        
@@ -77,7 +77,7 @@ def remove_pipe(name, path_in_fasta, path_tmp):
 # ## CONSTRUTUOR ##
 # 
 # Mais informações sobre aplicações biopython e clustalwcommandline - https://biopython.org/docs/1.76/api/Bio.Align.Applications.html
-def tree_constructor(name_file, path_input, path_tmp, path_output, path_clustalw, data_format):
+def tree_constructor(file_name, path_input, path_tmp, path_output, path_clustalw, data_format):
     
     match data_format:
         case 'nexus':
@@ -86,14 +86,14 @@ def tree_constructor(name_file, path_input, path_tmp, path_output, path_clustalw
             EXTENTION_FORMAT = 'nwk' # Newick: 'nwk'
     
     #configurando caminhos relativos padrões do diretorio
-    path_in_fasta = os.path.join(path_input, name_file)
-    path_out_aln  = os.path.join(path_tmp, f'{name_file}.aln')
-    path_out_dnd  = os.path.join(path_tmp, f'{name_file}.dnd')
-    path_out_tree = os.path.join(path_output, f'tree_{name_file}.{EXTENTION_FORMAT}')
+    path_in_fasta = os.path.join(path_input, file_name)
+    path_out_aln  = os.path.join(path_tmp, f'{file_name}.aln')
+    path_out_dnd  = os.path.join(path_tmp, f'{file_name}.dnd')
+    path_out_tree = os.path.join(path_output, f'tree_{file_name}.{EXTENTION_FORMAT}')
 
     # Em caso de nomes duplicados ou sequências inválidas
     if duplicate_names(path_in_fasta) or not(validate_sequences(path_in_fasta)):
-        path_in_fasta = remove_pipe(name_file, path_in_fasta, path_tmp)
+        path_in_fasta = remove_pipe(file_name, path_in_fasta, path_tmp)
 
     # Executa o programa Clustalw para alinhar as sequências sem precisar da linha de comando.
     if not os.path.exists(path_clustalw):
