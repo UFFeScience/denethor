@@ -14,7 +14,13 @@ def save_to_file(json_logs, file_path, file_name):
     if not all('logStreamName' in log and 'timestamp' in log for log in json_logs):
         raise ValueError("Logs must contain 'logStreamName' and 'timestamp' fields")
     json_logs.sort(key=lambda x: (x['logStreamName'], x['timestamp']))
+    
+    # Sanitize file name
     file_name = sanitize(file_name)
+
+    # Create the directory if it does not exist
+    os.makedirs(file_path, exist_ok=True)
+
     file = os.path.join(file_path, file_name)
     with open(file=file, mode='w') as file:
         json.dump(json_logs, file, indent=2)

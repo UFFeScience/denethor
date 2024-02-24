@@ -12,12 +12,17 @@ workflow_start_time_str = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(workfl
 
 execution_id = 'EXEC_' + workflow_start_time_str.replace(':', '-').replace('T', '_').replace('Z', '') + '_UTC'
 
-execution_params = {
+workflow_params = {
+    "serviceProvider": workflow_model['serviceProvider'],
+    "workflow": {"name": workflow_model['workflow']['name'], "description": workflow_model['workflow']['description']},
     "executionId": execution_id,
     "workflowStartTimeStr": workflow_start_time_str,
     "workflowStartTimeMs": workflow_start_time_ms,
     "dataFiles": workflow_model['workflow']['dataFiles']
 }
+
+# Armarzenar os parâmetros de retorno das funções em tempo de execução
+execution_params = {}
 
 # Para cada etapa no workflow
 for step in workflow_model['workflow']['steps']:
@@ -28,13 +33,15 @@ for step in workflow_model['workflow']['steps']:
         # Obter a função a ser chamada
         function = getattr(module, step['handler'])
         
-        params = execution_params | step['params']
+        params = workflow_params | execution_params | step['params']
         print(f'Calling function {step["handler"]} from module {step["module"]} with params: {params}')
         try:
             # Chamar a função com os parâmetros especificados
-            function(params)
+            return_data = function(params)
+            execution_params[step['handler']] = return_data
         except Exception as e:
             print(f'An error occurred: {str(e)}')
+            raise(e)
 
         print(f'Function {step["handler"]} from module {step["module"]} called successfully')
 
