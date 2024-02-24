@@ -9,9 +9,13 @@ def sanitize(filename):
 
 
 # Save logs to a single file ordered by logStreamName
-def save_to_file(json_logs, file):
+def save_to_file(json_logs, file_path, file_name):
+    # garantir que os logs contenham o campo 'logStreamName' e 'timestamp'
+    if not all('logStreamName' in log and 'timestamp' in log for log in json_logs):
+        raise ValueError("Logs must contain 'logStreamName' and 'timestamp' fields")
     json_logs.sort(key=lambda x: (x['logStreamName'], x['timestamp']))
-    file = sanitize(file)
+    file_name = sanitize(file_name)
+    file = os.path.join(file_path, file_name)
     with open(file=file, mode='w') as file:
         json.dump(json_logs, file, indent=2)
     

@@ -43,56 +43,42 @@ def get_num_files_and_size(path):
 
 
 def upload_and_log_to_s3(request_id, s3_bucket, s3_key, file_name, local_path):
-
     s3 = boto3.client('s3')
-
-    # basename representa o nome do arquivo
     s3_key_upload = os.path.join(s3_key, file_name)
     local_file_path = os.path.join(local_path, file_name)
 
-    print(f'Uploading file to S3 => s3_bucket: {s3_bucket} | s3_key: {s3_key_upload} | file: {file_name} | local_file_path: {local_file_path}')
-
-    
     try:
         start_time = timeit.default_timer()
-
         s3.upload_file(local_file_path, s3_bucket, s3_key_upload)
-
         end_time = timeit.default_timer()
         upload_time_ms = (end_time - start_time) * 1000
-
         file_size = os.stat(local_file_path).st_size
 
         print(f'Upload Successful to S3! File {file_name} | {file_size} bytes | {upload_time_ms} milissegundos')
     
-        # FILE_UPLOAD
         print(f'FILE_TRANSFER RequestId: {request_id}\t TransferType: produced\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key_upload}\t LocalFilePath: {local_file_path}\t TransferDuration: {upload_time_ms} ms\t FileSize: {file_size} bytes')
 
     except FileNotFoundError as e:
         print(f'The local file {local_file_path} was not found!')
         logging.error(e)
         return None
+    return "OK"
+
+
 
 def download_and_log_from_s3(request_id, s3_bucket, s3_key, local_path):
-
     s3 = boto3.client('s3')
-
-    # basename representa o nome do arquivo
-    file_name = os.path.basename(s3_key)
+    file_name = os.path.basename(s3_key) # basename representa o nome do arquivo
     local_file_path = os.path.join(local_path, file_name)
 
     start_time = timeit.default_timer()
-
     s3.download_file(s3_bucket, s3_key, local_file_path)
-
     end_time = timeit.default_timer()
     download_time_ms = (end_time - start_time) * 1000
-
     file_size = os.stat(local_file_path).st_size
     
     print(f'Download Successful from S3! File {file_name} | {file_size} bytes | {download_time_ms} milissegundos')
 
-    # FILE_DOWNLOAD
     print(f'FILE_TRANSFER RequestId: {request_id}\t TransferType: consumed\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key}\t LocalFilePath: {local_file_path}\t TransferDuration: {download_time_ms} ms\t FileSize: {file_size} bytes')
 
     return file_name

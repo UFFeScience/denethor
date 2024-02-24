@@ -38,7 +38,20 @@
    - O CloudWatch armazena e dá acesso aos logs gerados pelas funções Lambda.
    - A "aplicação local de controle" acessa esses logs via API específica.
 
-## 7. **Banco de Dados PostgreSQL no Amazon RDS**:
+
+"CloudWatch é um serviço de monitoramento e observabilidade oferecido pela Amazon Web Services (AWS). Ele permite que você colete e acompanhe métricas, registre arquivos de log e crie alarmes para monitorar o desempenho e a saúde dos recursos da AWS, como instâncias do Amazon EC2, bancos de dados do Amazon RDS, serviços do AWS Lambda, entre outros.
+
+Com o CloudWatch, você pode coletar métricas em tempo real sobre o uso de recursos, como CPU, memória, armazenamento e tráfego de rede. Essas métricas podem ser visualizadas em gráficos e painéis personalizados, permitindo que você monitore o desempenho dos seus recursos e identifique possíveis problemas.
+
+Além disso, o CloudWatch permite que você registre arquivos de log gerados por seus aplicativos e serviços. Esses logs podem ser armazenados e analisados para ajudar na depuração de problemas, no monitoramento de eventos e no cumprimento de requisitos de conformidade.
+
+Você também pode criar alarmes no CloudWatch para ser notificado quando uma métrica ultrapassar um limite definido. Por exemplo, você pode configurar um alarme para ser acionado quando a utilização da CPU de uma instância do EC2 atingir um determinado valor. Isso permite que você tome medidas proativas para resolver problemas antes que eles afetem a disponibilidade ou o desempenho dos seus recursos.
+
+Em resumo, o CloudWatch é uma ferramenta essencial para monitorar e gerenciar recursos da AWS, fornecendo insights valiosos sobre o desempenho e a saúde dos seus sistemas."
+
+
+
+## 7. **Banco de Dados Amazon RDS**:
    - Os logs das funções Lambda são acessados através do CloudWatch, interpretados e agregados pela "aplicação local de controle"
    - Os logs tratados são armazenados no banco de dados **PostgreSQL** hospedado no **Amazon RDS**.
    - O RDS gerencia a infraestrutura do banco de dados, incluindo escalabilidade, backups e alta disponibilidade.

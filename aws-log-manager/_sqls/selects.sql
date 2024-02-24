@@ -44,6 +44,7 @@ join workflow wo on wo.id = wa.workflow_id
 join service_provider sp on sp.id = se.provider_id
 join execution_file ef on ef.service_execution_id = se.id
 join file fi on fi.id = ef.file_id
+where fi.name like '%ORTHOMCL1000%'
 order by se.id asc, fi.id asc;
 
 -- statistics

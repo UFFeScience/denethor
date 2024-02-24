@@ -77,7 +77,10 @@
                 "module": "aws_tasks",
                 "handler": "download_files_from_aws_s3",
                 "params": {
-                    "bucket": "mribeiro-subtree-files"
+                    "bucket": "mribeiro-subtree-files",
+                    "key": "",
+                    "downloadPath": "executions/execution_[executionId]/files"
+
                 },
                 "active": false
             },
@@ -86,8 +89,9 @@
                 "module": "aws_log_retriever",
                 "handler": "retrieve_logs_from_aws",
                 "params": {
-                    "lambdaFunction": ["tree_constructor", "tree_sub_find"],
-                    "logFile": "config/logs/logs_{lamda_function}_{execution_id}.json"
+                    "lambdaFunctions": ["tree_constructor", "tree_sub_find"],
+                    "logPath": "executions/execution_[executionId]/logs",
+                    "logFile": "log_[lambdaFunction]_[executionId].txt"
                 },
                 "active": false
             },
@@ -96,8 +100,9 @@
                 "module": "aws_log_analyzer",
                 "handler": "store_execution_info_in_database",
                 "params": {
-                    "lambdaFunction": ["tree_constructor", "tree_sub_find"],
-                    "logFile": "config/executions/logs/logs_{lamda_function}_{execution_id}.json"
+                    "lambdaFunctions": ["tree_constructor", "tree_sub_find"],
+                    "logPath": "executions/execution_[executionId]/logs",
+                    "logFile": "log_[lambdaFunction]_[executionId].txt"
                 },
                 "active": false
             }
