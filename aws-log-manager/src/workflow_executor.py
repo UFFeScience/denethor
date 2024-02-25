@@ -12,17 +12,22 @@ workflow_start_time_str = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(workfl
 
 execution_id = 'EXEC_' + workflow_start_time_str.replace(':', '-').replace('T', '_').replace('Z', '') + '_UTC'
 
+with open(workflow_model['workflow']['inputFilesList'], 'r') as file:
+    dataFiles = json.load(file)
+
+
 workflow_params = {
     "serviceProvider": workflow_model['serviceProvider'],
     "workflow": {"name": workflow_model['workflow']['name'], "description": workflow_model['workflow']['description']},
     "executionId": execution_id,
     "workflowStartTimeStr": workflow_start_time_str,
     "workflowStartTimeMs": workflow_start_time_ms,
-    "dataFiles": workflow_model['workflow']['dataFiles']
 }
 
 # Armarzenar os parâmetros de retorno das funções em tempo de execução
-execution_params = {}
+execution_params = {
+    "dataFiles": dataFiles
+    }
 
 # Para cada etapa no workflow
 for step in workflow_model['workflow']['steps']:

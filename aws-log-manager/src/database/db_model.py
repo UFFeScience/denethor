@@ -32,9 +32,10 @@ class ServiceProvider(BaseModel):
     memory = Column(Integer)
     timeout = Column(Integer)
     cpu = Column(Integer)
+    storage_mb = Column(Integer)
 
     def __str__(self):
-        return (f"[{self.id}]={self.name}, {self.memory}MB, {self.timeout}s, {self.cpu}vCPU")
+        return (f"[{self.id}]={self.name}, {self.memory}MB, {self.timeout}s, {self.cpu}vCPU, {self.storage_mb}MB")
 
 class Workflow(BaseModel):
     __tablename__ = 'workflow'

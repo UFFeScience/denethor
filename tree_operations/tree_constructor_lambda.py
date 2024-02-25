@@ -50,9 +50,9 @@ def lambda_handler(event, context):
     
     # Obter o bucket de entrada, arquivo e o bucket de saída do payload
     input_bucket = event['inputBucket']
+    input_file = event['file']
     output_bucket = event['outputBucket']
     output_key = event['outputKey']
-    input_file = event['file']
 
     #
     # download files from s3 bucket into lambda function

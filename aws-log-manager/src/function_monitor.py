@@ -17,11 +17,15 @@ def monitor_lambda_execution(params):
     if function_name == 'tree_constructor':
         if len(files) <= 2:
             time.sleep(5)
+        elif len(files) <= 10:
+            time.sleep(60)
         else:
             time.sleep(3*60)
     elif function_name == 'tree_sub_find':
         if len(files) <= 2:
             time.sleep(15)
+        elif len(files) <= 10:
+            time.sleep(5*60)
         else:
             time.sleep(16*60)
         

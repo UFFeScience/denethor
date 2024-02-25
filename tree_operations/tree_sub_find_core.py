@@ -1,6 +1,7 @@
 #
 # O formato das Sequências de proteínas deve ser especificado em `DATA_FORMATT`
 #
+import time
 from Bio import Phylo
 from dendropy import Tree
 import os
@@ -95,6 +96,8 @@ def grade_maf(file_1, file_2, path, data_format):
 
 
 def maf_database_create(subtree_matrix, path, data_format):
+    
+    print(f'maf_database_create start time: {time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}')
 
     subtree_matrix = fill_matrix(subtree_matrix, value=None)
 
@@ -105,13 +108,16 @@ def maf_database_create(subtree_matrix, path, data_format):
     dict_maf_database = {i: {} for i in range(1, max_columns)}
     print(f'Empty dict_maf_database: {dict_maf_database}')
     
+    print(f'subtree_matrix: max_rows= {max_rows} | max_columns= {max_columns}')
     max_maf = 0
     for i in range(max_rows):
+        print(f'subtree_matrix: processing    row {i} of {max_rows}')
         for j in range(max_columns):
-            dict_aux = {}
+            print(f'subtree_matrix: processing column {j} of {max_columns}')
             for k in range(max_rows):
                 for l in range(max_columns):
                     if i != k:
+                        print(f'Comparing [{i}][{j}]={subtree_matrix[i][j]} with [{k}][{l}]={subtree_matrix[k][l]}')
                         g_maf = grade_maf(subtree_matrix[i][j], subtree_matrix[k][l], path, data_format)
                         # print('g_maf=', g_maf)
 

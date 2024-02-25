@@ -1,5 +1,5 @@
 from tree_sub_find_core import *
-import fnmatch
+import re
 import boto3
 import time
 import timeit
@@ -28,6 +28,7 @@ def lambda_handler(event, context):
     request_id = context.aws_request_id
 
     print('******* Estado do ambiente de execução *******')
+    print(f'Start time: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
     print('pwd:', os.getcwd())
     print('/tmp:', os.listdir('/tmp'))
     print('/opt: ', os.listdir('/opt'))
@@ -62,8 +63,8 @@ def lambda_handler(event, context):
     all_matching_files = []  # para armazenar todos os objetos correspondentes
 
     for base_file_name in input_files:
-        pattern = '*{}*'.format(base_file_name)
-        matching_files = [item['Key'] for item in response['Contents'] if fnmatch.fnmatch(item['Key'], pattern)]
+        pattern = r'.*{}(_Inner\d+|)\.{}$'.format(base_file_name, DATA_FORMAT)
+        matching_files = [item['Key'] for item in response['Contents'] if re.match(pattern, item['Key'])]
         all_matching_files.extend(matching_files)
         print(f'pattern: {pattern} | matching_files: {matching_files}')
     
