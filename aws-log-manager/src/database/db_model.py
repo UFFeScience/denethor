@@ -29,44 +29,44 @@ class ServiceProvider(BaseModel):
 
     provider_id = Column(Integer, primary_key=True)
     provider_name = Column(String)
-    provider_memory = Column(Integer)
     provider_timeout = Column(Integer)
     provider_cpu = Column(Integer)
+    provider_ram = Column(Integer)
     provider_storage_mb = Column(Integer)
 
     def __str__(self):
-        return (f"[{self.provider_id}]={self.provider_name}, {self.provider_memory}MB, {self.provider_timeout}s, {self.provider_cpu}vCPU, {self.provider_storage_mb}MB")
+        return (f"[{self.provider_id}]={self.provider_name}, {self.provider_ram}MB, {self.provider_timeout}s, {self.provider_cpu}vCPU, {self.provider_storage_mb}MB")
 
 class Workflow(BaseModel):
     __tablename__ = 'workflow'
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    description = Column(String)
+    workflow_id = Column(Integer, primary_key=True)
+    workflow_name = Column(String)
+    workflow_description = Column(String)
 
     def __str__(self):
-        return (f"[{self.id}]={self.name}")
+        return (f"[{self.workflow_id}]={self.workflow_name}")
 
 
 class WorkflowActivity(BaseModel):
     __tablename__ = 'workflow_activity'
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    description = Column(String)
-    workflow_id = Column(Integer, ForeignKey('workflow.id'))
+    activity_id = Column(Integer, primary_key=True)
+    activity_name = Column(String)
+    activity_description = Column(String)
+    workflow_id = Column(Integer, ForeignKey('workflow.workflow_id'))
 
     workflow = relationship('Workflow')
 
     def __str__(self):
-        return (f"[{self.id}]={self.name}")
+        return (f"[{self.activity_id}]={self.activity_name}")
 
 class ServiceExecution(BaseModel):
     __tablename__ = 'service_execution'
 
-    id = Column(Integer, primary_key=True)
-    activity_id = Column(Integer, ForeignKey('workflow_activity.id'))
-    provider_id = Column(Integer, ForeignKey('service_provider.id'))
+    se_id = Column(Integer, primary_key=True)
+    activity_id = Column(Integer, ForeignKey('workflow_activity.activity_id'))
+    provider_id = Column(Integer, ForeignKey('service_provider.se_id'))
     request_id = Column(String)
     log_stream_name = Column(String)
     start_time = Column(TIMESTAMP)
@@ -91,7 +91,7 @@ class ServiceExecution(BaseModel):
 
     def __str__(self):
         return (
-            f"Id: {self.id}\n"
+            f"Id: {self.se_id}\n"
             f"Activity ID: {self.activity_id}\n"
             f"Provider ID: {self.provider_id}\n"
             f"Request ID: {self.request_id}\n"
@@ -116,22 +116,23 @@ class ServiceExecution(BaseModel):
 class File(BaseModel):
     __tablename__ = 'file'
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String, unique=True)
-    bucket = Column(String)
-    path = Column(String)
-    size = Column(Float)
+    file_id = Column(Integer, primary_key=True)
+    file_name = Column(String, unique=True)
+    file_bucket = Column(String)
+    file_path = Column(String)
+    file_size = Column(Float)
+    file_hash_code = Column(String)
 
     def __str__(self):
-        return (f"[{self.id}]={self.name} ({self.size} bytes)")
+        return (f"[{self.file_id}]={self.file_name} ({self.file_size} bytes)")
 
 
 class ExecutionFile(BaseModel):
     __tablename__ = 'execution_file'
 
-    id = Column(Integer, primary_key=True)
-    service_execution_id = Column(Integer, ForeignKey('service_execution.id'))
-    file_id = Column(Integer, ForeignKey('file.id'))
+    ef_id = Column(Integer, primary_key=True)
+    se_id = Column(Integer, ForeignKey('service_execution.se_id'))
+    file_id = Column(Integer, ForeignKey('file.file_id'))
     transfer_duration = Column(Float)
     transfer_type = Column(String)
 
@@ -139,25 +140,25 @@ class ExecutionFile(BaseModel):
     service_execution = relationship("ServiceExecution")
 
     def __str__(self):
-        return (f"[{self.id}]={self.transfer_duration} ms ({self.transfer_type})")
+        return (f"[{self.ef_id}]={self.transfer_duration} ms ({self.transfer_type})")
     
     
 class Statistics(BaseModel):
     __tablename__ = 'statistics'
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    description = Column(String)
+    statistics_id = Column(Integer, primary_key=True)
+    statistics_name = Column(String)
+    statistics_description = Column(String)
     
     def __str__(self):
-        return (f"[{self.id}]={self.name}")
+        return (f"[{self.statistics_id}]={self.statistics_name}")
 
 class ExecutionStatistics(BaseModel):
     __tablename__ = 'execution_statistics'
 
-    id = Column(Integer, primary_key=True)
-    service_execution_id = Column(Integer, ForeignKey('service_execution.id'))
-    statistics_id = Column(Integer, ForeignKey('statistics.id'))
+    es_id = Column(Integer, primary_key=True)
+    se_id = Column(Integer, ForeignKey('service_execution.se_id'))
+    statistics_id = Column(Integer, ForeignKey('statistics.statistics_id'))
     value_float = Column(Float)
     value_integer = Column(Integer)
     value_string = Column(String)

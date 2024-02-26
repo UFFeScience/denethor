@@ -1,6 +1,6 @@
 -- service_execution
 SET lc_numeric = 'pt_BR';
-select se.id as service_execution_id, 
+select se.id as se_id, 
 		sp.name as servide_provider, 
 		wo.name as workflow, 
 		wa.name as activity, 
@@ -27,7 +27,7 @@ order by se.id asc;
 
 -- files
 SET lc_numeric = 'pt_BR';
-select se.id as service_execution_id,
+select se.id as se_id,
 		sp.name as servide_provider,
 		wo.name as workflow,
 		wa.name as activity,
@@ -42,14 +42,14 @@ from service_execution se
 join workflow_activity wa on wa.id = se.activity_id
 join workflow wo on wo.id = wa.workflow_id
 join service_provider sp on sp.id = se.provider_id
-join execution_file ef on ef.service_execution_id = se.id
+join execution_file ef on ef.se_id = se.id
 join file fi on fi.id = ef.file_id
 where fi.name like '%ORTHOMCL1000%'
 order by se.id asc, fi.id asc;
 
 -- statistics
 SET lc_numeric = 'pt_BR';
-select se.id as service_execution_id,
+select se.id as se_id,
 		sp.name as servide_provider,
 		wo.name as workflow,
 		wa.name as activity,
@@ -61,7 +61,7 @@ from service_execution se
 join workflow_activity wa on wa.id = se.activity_id
 join workflow wo on wo.id = wa.workflow_id
 join service_provider sp on sp.id = se.provider_id
-join execution_statistics es on es.service_execution_id = se.id
+join execution_statistics es on es.se_id = se.id
 join statistics st on st.id = es.statistics_id
 order by se.id, st.id;
 

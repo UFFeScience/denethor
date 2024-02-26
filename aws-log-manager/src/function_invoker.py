@@ -12,7 +12,7 @@ def invoke_lambda_execution(params):
     }
 
     files = params['dataFiles']['files']
-    execution_strategy = params['execution_strategy']
+    execution_strategy = params['executionStrategy']
     function_name = params['functionName']
     
     requests = []

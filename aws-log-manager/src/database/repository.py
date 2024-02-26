@@ -126,7 +126,7 @@ class ExecutionFileRepository(GenericRepository):
         if obj.file:
             obj.file_id = obj.file.id
         if obj.service_execution:  
-            obj.service_execution_id = obj.service_execution.id
+            obj.se_id = obj.service_execution.id
         obj_dict = obj.__dict__.copy()
         obj_dict.pop('file', None)
         obj_dict.pop('service_execution', None)
@@ -158,7 +158,7 @@ class ExecutionStatisticsRepository(GenericRepository):
         if obj.statistics:
             obj.statistics_id = obj.statistics.id
         if obj.service_execution:  
-            obj.service_execution_id = obj.service_execution.id
+            obj.se_id = obj.service_execution.id
         obj_dict = obj.__dict__.copy()
         obj_dict.pop('statistics', None)
         obj_dict.pop('service_execution', None)

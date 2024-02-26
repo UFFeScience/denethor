@@ -13,28 +13,28 @@ DROP TABLE IF EXISTS statistics;
 CREATE TABLE service_provider (
     provider_id SERIAL  PRIMARY KEY,
     provider_name VARCHAR,
-    provider_memory INTEGER,
     provider_timeout INTEGER,
-    provider_cpu INTEGER.
-    provider_storage_mb INTEGER
+    provider_cpu INTEGER,
+    provider_ram INTEGER,
+    provider_storage_mb INTEGERs
 );
 
 CREATE TABLE workflow (
-    id SERIAL  PRIMARY KEY,
-    name VARCHAR,
-    description VARCHAR
+    workflow_id SERIAL  PRIMARY KEY,
+    workflow_name VARCHAR,
+    workflow_description VARCHAR
 );
 
 CREATE TABLE workflow_activity (
-    id SERIAL  PRIMARY KEY,
-    name VARCHAR,
-    description VARCHAR,
+    activity_id SERIAL  PRIMARY KEY,
     workflow_id INTEGER,
-    CONSTRAINT fk_workflow_activity_workflow FOREIGN KEY (workflow_id) REFERENCES workflow(id)
+    activity_name VARCHAR,
+    activity_description VARCHAR,
+    CONSTRAINT fk_workflow_activity_workflow FOREIGN KEY (workflow_id) REFERENCES workflow(workflow_id)
 );
 
 CREATE TABLE service_execution (
-    id SERIAL  PRIMARY KEY,
+    se_id SERIAL  PRIMARY KEY,
     activity_id INTEGER,
     provider_id INTEGER,
     request_id VARCHAR,
@@ -54,42 +54,43 @@ CREATE TABLE service_execution (
     produced_files_transfer_duration FLOAT,
     error_message VARCHAR,
     CONSTRAINT fk_service_execution_service_provider FOREIGN KEY (provider_id) REFERENCES service_provider(provider_id),
-    CONSTRAINT fk_service_execution_workflow_activity FOREIGN KEY (activity_id) REFERENCES workflow_activity(id)
+    CONSTRAINT fk_service_execution_workflow_activity FOREIGN KEY (activity_id) REFERENCES workflow_activity(activity_id)
 );
 
 
 CREATE TABLE file (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR,
-    bucket VARCHAR,
-    path VARCHAR,
-    size FLOAT,
-    CONSTRAINT uk_file_data UNIQUE (name, size, path, bucket)
+    file_id SERIAL PRIMARY KEY,
+    file_name VARCHAR,
+    file_bucket VARCHAR,
+    file_path VARCHAR,
+    file_size FLOAT,
+    file_hash_code VARCHAR,
+    CONSTRAINT uk_file_data UNIQUE (file_name, file_bucket, file_path, file_size)
 );
 
 CREATE TABLE execution_file (
-    id SERIAL  PRIMARY KEY,
-    service_execution_id INTEGER,
+    ef_id SERIAL  PRIMARY KEY,
+    se_id INTEGER,
     file_id INTEGER,
     transfer_duration FLOAT,
-    transfer_type VARCHAR(10) CONSTRAINT check_action_type CHECK (transfer_type IN ('consumed', 'produced')),
-    CONSTRAINT fk_execution_file_service_execution FOREIGN KEY (service_execution_id) REFERENCES service_execution(id),
-    CONSTRAINT fk_execution_file_file FOREIGN KEY (file_id) REFERENCES file(id)
+    transfer_type VARCHAR CONSTRAINT check_action_type CHECK (transfer_type IN ('consumed', 'produced')),
+    CONSTRAINT fk_execution_file_service_execution FOREIGN KEY (se_id) REFERENCES service_execution(se_id),
+    CONSTRAINT fk_execution_file_file FOREIGN KEY (file_id) REFERENCES file(file_id)
 );
 
 CREATE TABLE statistics (
-    id SERIAL  PRIMARY KEY,
-    name VARCHAR,
-    description VARCHAR
+    statistics_id SERIAL  PRIMARY KEY,
+    statistics_name VARCHAR,
+    statistics_description VARCHAR
 );
 
 CREATE TABLE execution_statistics (
-    id SERIAL  PRIMARY KEY,
-    service_execution_id INTEGER,
+    es_id SERIAL  PRIMARY KEY,
+    se_id INTEGER,
     statistics_id INTEGER,
     value_float FLOAT,
     value_integer INTEGER,
     value_string VARCHAR,
-    CONSTRAINT fk_execution_statistics_service_execution FOREIGN KEY (service_execution_id) REFERENCES service_execution(id),
-    CONSTRAINT fk_execution_statistics_statistics FOREIGN KEY (statistics_id) REFERENCES statistics(id)
+    CONSTRAINT fk_execution_statistics_service_execution FOREIGN KEY (se_id) REFERENCES service_execution(se_id),
+    CONSTRAINT fk_execution_statistics_statistics FOREIGN KEY (statistics_id) REFERENCES statistics(statistics_id)
 );

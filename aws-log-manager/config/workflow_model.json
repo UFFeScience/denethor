@@ -1,15 +1,15 @@
 {
     "serviceProvider": {
         "provider_name": "AWS Lambda",
-        "provider_memory": "128",
+        "provider_ram": "128",
         "provider_timeout": "15",
         "provider_cpu": "1",
         "provider_storage_mb": "512"
     },
     
     "workflow": {
-        "name": "aws_lambda_eval",
-        "description": "Performance Evaluation of Lambda Functions in AWS",
+        "workflow_name": "aws_lambda_eval",
+        "workflow_description": "Performance Evaluation of Lambda Functions in AWS",
         
         "inputFilesList": "config/input_010_files.json",
 
@@ -31,7 +31,7 @@
                     "functionName": "tree_constructor",
                     "inputBucket": "mribeiro-input-files", "inputKey": "",
                     "outputBucket": "mribeiro-tree-files", "outputKey": "",
-                    "execution_strategy": "for_each_file"
+                    "executionStrategy": "for_each_file"
                 },
                 "active": true
             },
@@ -52,7 +52,7 @@
                     "functionName": "tree_sub_find",
                     "inputBucket": "mribeiro-tree-files", "inputKey": "",
                     "outputBucket": "mribeiro-subtree-files", "outputKey": "",
-                    "execution_strategy": "for_all_files"
+                    "executionStrategy": "for_all_files"
                 },
                 "active": true
             },
