@@ -27,15 +27,15 @@ class BaseModel(Base):
 class ServiceProvider(BaseModel):
     __tablename__ = 'service_provider'
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    memory = Column(Integer)
-    timeout = Column(Integer)
-    cpu = Column(Integer)
-    storage_mb = Column(Integer)
+    provider_id = Column(Integer, primary_key=True)
+    provider_name = Column(String)
+    provider_memory = Column(Integer)
+    provider_timeout = Column(Integer)
+    provider_cpu = Column(Integer)
+    provider_storage_mb = Column(Integer)
 
     def __str__(self):
-        return (f"[{self.id}]={self.name}, {self.memory}MB, {self.timeout}s, {self.cpu}vCPU, {self.storage_mb}MB")
+        return (f"[{self.provider_id}]={self.provider_name}, {self.provider_memory}MB, {self.provider_timeout}s, {self.provider_cpu}vCPU, {self.provider_storage_mb}MB")
 
 class Workflow(BaseModel):
     __tablename__ = 'workflow'
