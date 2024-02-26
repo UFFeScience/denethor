@@ -11,11 +11,11 @@ DROP TABLE IF EXISTS statistics;
 
 
 CREATE TABLE service_provider (
-    id SERIAL  PRIMARY KEY,
-    name VARCHAR,
-    memory INTEGER,
-    timeout INTEGER,
-    cpu INTEGER
+    provider_id SERIAL  PRIMARY KEY,
+    provider_name VARCHAR,
+    provider_memory INTEGER,
+    provider_timeout INTEGER,
+    provider_cpu INTEGER
 );
 
 CREATE TABLE workflow (
@@ -52,7 +52,7 @@ CREATE TABLE service_execution (
     produced_files_size INTEGER,
     produced_files_transfer_duration FLOAT,
     error_message VARCHAR,
-    CONSTRAINT fk_service_execution_service_provider FOREIGN KEY (provider_id) REFERENCES service_provider(id),
+    CONSTRAINT fk_service_execution_service_provider FOREIGN KEY (provider_id) REFERENCES service_provider(provider_id),
     CONSTRAINT fk_service_execution_workflow_activity FOREIGN KEY (activity_id) REFERENCES workflow_activity(id)
 );
 
