@@ -1,11 +1,8 @@
-#
-# O formato das Sequências de proteínas deve ser especificado em `DATA_FORMATT`
-#
-import time
-from Bio import Phylo
-from dendropy import Tree
-import os
 from file_operations import *
+from dendropy import Tree
+from Bio import Phylo
+import os
+import time
 
 
 #
@@ -24,8 +21,10 @@ def print_trees_in_directory(directory, data_format):
 #
 # Construtor de subárvores
 #
-def subtree_constructor(tree_name, path_input, path_output, data_format):
+def subtree_constructor(tree_name, input_tree_path, output_subtree_path, data_format):
     
+    start_time = timeit.default_timer()
+
     match data_format:
         case 'nexus':
             EXTENTION_FORMAT = 'nexus' # Nexus: 'nexus'
@@ -34,8 +33,8 @@ def subtree_constructor(tree_name, path_input, path_output, data_format):
     
     # Leitura do arquido da árvore
     print(f"\nReading tree file {tree_name}")
-    tree_path = os.path.join(path_input, tree_name)            
-    tree = Phylo.read(tree_path, data_format)
+    tree_file = os.path.join(input_tree_path, tree_name)            
+    tree = Phylo.read(tree_file, data_format)
 
     #Lista caminhos das subárvores (que posteriormente serão utilizadas para compor a matriz de subárvores)
     list_subtree = []
@@ -47,13 +46,16 @@ def subtree_constructor(tree_name, path_input, path_output, data_format):
         subtree = Phylo.BaseTree.Tree(clade)
         if subtree.count_terminals() > 1:
             subtree_name = f'{tree_name_prefix}_{clade.name}.{EXTENTION_FORMAT}'
-            subtree_path = os.path.join(path_output, subtree_name)
-            Phylo.write(subtree, subtree_path, data_format)
+            subtree_file = os.path.join(output_subtree_path, subtree_name)
+            Phylo.write(subtree, subtree_file, data_format)
             list_subtree.append(subtree_name)
             print(f"Subtree file {subtree_name} was created!")
 
+    end_time = timeit.default_timer()
+    subtree_duration_ms = (end_time - start_time) * 1000
+    print(f'Tempo de construção dos arquivos de subárvores de {tree_name}: {subtree_duration_ms} milissegundos')
 
-    return list_subtree
+    return list_subtree, subtree_duration_ms
 
 
 #

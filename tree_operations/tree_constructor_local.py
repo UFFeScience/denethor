@@ -1,59 +1,50 @@
 from tree_constructor_core import *
-import timeit
+from datetime import datetime
 
-# # O bucket e key de saída dos arquivos gerados nesta etapa
-# BUCKET_OUTPUT = 'mribeiro-bucket-output-tree'
-# S3_KEY_OUTPUT = ''
 
-# Localização dos arquivos de entrada utilizados pela função
-PATH_INPUT = 'tree_operations/data/full_dataset' # testset ou full_dataset
+TMP_PATH = 'tree_operations/data/executions/tmp' # Usado para escrever arquivos 'nopipe' durante o processo de validação
 
-# Localização dos arquivos gerados nesta etapa
-PATH_OUTPUT = 'tree_operations/data/output/trees'
+INPUT_PATH = 'tree_operations/data/testset' # testset ou full_dataset
 
-# Usado para escrever arquivos 'nopipe' durante o processo de validação
-PATH_TMP = 'tree_operations/data/tmp'
+OUTPUT_PATH = 'tree_operations/data/executions/trees'
 
-# Localização do binário do Clustalw
-PATH_CLUSTALW = 'tree_operations/lib/opt/python/ClustalW2'
+CLUSTALW_PATH = 'tree_operations/lib/opt/python/ClustalW2' # Windows
+#CLUSTALW_PATH = 'tree_operations/lib/opt/python/clustalw-2.1-linux-x86_64-libcppstatic' # Linux
 
-# Formato das sequências
-DATA_FORMAT = 'nexus' # newick ou nexus
+DATA_FORMAT = 'nexus' # Formato das sequências: newick ou nexus
 
-def lambda_handler(event, context):
+
+def handler(event, context):
 
     request_id = None
     
-    print("Estado do ambiente de execução")
+    print("******* Estado do ambiente de execução *******")
+    print(f'Start time: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
     print('pwd:', os.getcwd())
     
     #
     # ## Limpeza arquivos antigos ##
     #
-    remove_files(PATH_TMP)
-    remove_files(PATH_OUTPUT)
+    remove_files(TMP_PATH)
+    remove_files(OUTPUT_PATH)
 
-    #
-    # ## PERCORRER E MANIPULAR DIRETORIO ##
-    # 
-    # listagem de arquivos
-    files = os.listdir(PATH_INPUT)
-    
     #
     # ## Construção dos arquivos de árvores ##
-    # 
-    start_time = timeit.default_timer()
+    #
+    files = os.listdir(INPUT_PATH) # listagem de arquivos
+    total_tree_duration_ms = 0
+    for input_file in files:
+        print("Reading file %s" % input_file)
+        tree_duration_ms = tree_constructor(input_file, INPUT_PATH, TMP_PATH, OUTPUT_PATH, CLUSTALW_PATH, DATA_FORMAT)
+        total_tree_duration_ms += tree_duration_ms
+        print(f'TREE_CONSTRUCTOR RequestId: {request_id}\t File:{input_file}\t Duration: {tree_duration_ms} ms')
 
-    for name_file in files:
-        print("Reading file %s" % name_file)
-        tree_constructor(name_file, PATH_INPUT, PATH_TMP, PATH_OUTPUT, PATH_CLUSTALW, DATA_FORMAT)
-
-    end_time = timeit.default_timer()
-    tree_time_ms = (end_time - start_time) * 1000
-    
-    print(f"TREE_CONSTRUCTOR RequestId: {request_id}\t Duration: {tree_time_ms} ms")
+    print(f'TREE_CONSTRUCTOR RequestId: {request_id}\t TotalDuration: {total_tree_duration_ms} ms')
 
     ############################################
+
+    return "OK"
+
    
 if __name__ == '__main__':
-    lambda_handler(None, None)
+    handler(None, None)

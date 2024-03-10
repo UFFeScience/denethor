@@ -1,0 +1,66 @@
+\section{Architecture}
+\label{sec:architecture}
+
+
+\subsection{Workflow Specification}
+Para especificar as etapas e atividades do workflow, utilizamos dois arquivos de configuração (.json):
+\begin{itemize}
+    \item workflow\_model.json
+    \item workflow\_activities\_model.json
+\end{itemize}
+
+O arquivo "workflow\_model.json" define o conjunto de etapas que serão executas pelo workflow, inlcuindo a o formato e disparo de chamada das funções AWS Lambda, transferência de arquivos entre as funções Lambda e o AWS S3, processos de recuperação de logs e armazenamento das informações no banco de dados.
+
+Já o arquivo "workflow\_activities\_model.json" define o conjunto de atividades realizadas pelo workflow e as estatísticas que serão coletadas em cada atividade. Na nossa prova de conceito, utilizamos duas atividades: 1) "tree\_constructor": a partir dos arquivos de entrada, criar "árvores filogenéticas" usando o ClustalW; 2) "tree\_sub\_find": a partir do arquivos de "árvore" criados na atividade anterios, gerar subárvores e identificar as que possuem com maior índice de similaridade.
+
+
+
+\subsection{Funções Lambda}
+Utilizamos funções Lambda, com responsabilidades específicas, para processar dados provenientes de arquivos armazenados em buckets do Amazon S3. Essas funções podem ser acionadas por eventos, como o upload de arquivos ou por resquest da "aplicação local de controle". Cada função pode ser invocada de forma independente sobre cada arquivo de entrada (proporcionando um processamento em paralelo dos dados); ou ser invocada sobre um conjunto de arquivos de entrada (processamento sequencial), a depender do requisito específico de cada atividade.
+
+As funções Lambda são "serverless", ou seja, não existe a necessidade de alocação prévia de recursos computacionais, por parte do usuário, para seu funcionamento. O ambiente da AWS se encarrega de prover os recursos necessários de acordo com a demanda de utlização em cada momento. Dessa forma, esse tipo de arquitetura pode ser facilmente escalada para lidar com mais dados ou mais funções.
+
+
+
+\subsection{Amazon S3}
+Utilizamos o serviço de armzenamento de arquivos Amazon S3 para manter os arquivos necessários em cada etapa do workflow. Através dele, as funções Lambda conseguem acessar os arquivos necessários para realizar o processamento e, também, armazenar os arquivos de sáida gerados (em Buckets pré-determinados)
+
+
+\subsection{ClustalW}
+O ClustalW é uma ferramenta utilizada para alinhar sequências biológicas e criar árvores filogenéticas. A atividade "tree\_constructor" utiliza o ClustalW para gerar as árvores filogenéticas a partir dos dados de entrada.
+
+
+\subsection{Amazon CloudWatch}
+O Amazon CloudWatch é um serviço de monitoramento da AWS que permite o acesso, em tempo real, às informações e metricas de diversos recursos disponiveis na plataforma, dentre eles: instâncias EC2, banco de dados RDS, funções Lambda, dentre outros. Sobre as informações coletadas, podemos citar: uso de CPU e memória, espçao de armazenamento, tráfego de rede, registros de execução de funções lambda e mais.
+
+Em nossa solução, utilizamos o CloudWatch para armazenar os logs de cada etapa de etapa do workflow e cada atividade executada pela função Lambda. Esses logs depois são recuperados, tratados, interpretados e salvos em um banco de dados para análise. Dentre as métricas coletadas, podemos destacar:
+
+\begin{itemize}
+\item Tempo de início e fim de cada etapa e atividade.
+\item Nome, local e tamanho de cada arquivo consumido e/ou produzido.
+\item Número e tamanho dos arquivos consumidos e/ou produzidos.
+\item Tempo de transferência dos arquivos de/para o S3.
+\item Resultado encontrado na atividade de busca de similaridade
+\item Duração real, duração "cobrada", tempo de inicialização, memória utilizada de cada execução da função Lambda.
+\end{itemize}
+
+
+\subsection{Banco de Dados Amazon RDS}
+O Amazon RDS é um serviço de banco de dados relacional disponível na AWS. O RDS gerencia a infraestrutura do banco de dados, incluindo escalabilidade, backups e alta disponibilidade, além de permitir a criação e gerenciamento de forma facilitada. Diversos SGBDs amplamente utilizados estão disponíveis, como por exemplo: PostgreSQL, MySQL, MariaDB, Oracle, SQL Server, Amazon Aurora, e outros.
+
+A solução apresentada nesse artigo, armazena as estatísticas provenientes dos logs das atividades em uma instância de um banco de dados RDS na AWS.
+
+
+\subsection{Aplicação Local de Controle}
+A "aplicação local de controle" é responsável por, em cada etapa do workflows, decidir se a execução das atividades se dará localmente ou em funções Lambda (ServerLess). Além disso, fica sob sua responsabilidade monitorar o término das funções que sejam dependência de atividades posterires, acessar os logs gerados, extrair estatísticas definidadas no modelo do workflow e garantir seu armazenamento no serviço de banco de dados designado.
+
+
+\subsection{Workflow}
+
+
+
+
+
+
+
+
