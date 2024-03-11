@@ -1,4 +1,4 @@
-from tree_operations.subtree_mining_core import *
+from subtree_mining_core import *
 from datetime import datetime
 
 TMP_PATH = '/tmp' # '/tmp' is lambda local folder

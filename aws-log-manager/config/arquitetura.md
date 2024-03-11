@@ -7,7 +7,7 @@
       - Recuperar logs das funções Lambda.
       - Armazenar informações de execução no banco de dados.
    
-   - "workflow_activities_model.json": define um modelo de atividades para a execução de funções AWS Lambda e as estatísticas que serão coletadas. As atividades são:
+   - "tree_operations_model.json": define um modelo de atividades para a execução de funções AWS Lambda e as estatísticas que serão coletadas. As atividades são:
       - **tree_constructor**: cria árvores filogenéticas a partir de arquivos de entrada.
       - **tree_sub_find**: busca subárvores e identifica as que possuem com maior índice de similaridade.
 
