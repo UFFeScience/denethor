@@ -45,7 +45,7 @@ def retrieve_logs_from_aws(params):
 #     workflow_model = json.load(f)
 
     
-# #tree_constructor: 1707761189949 / tree_sub_find: 1707955643601
+# #tree_constructor: 1707761189949 / subtree_mining: 1707955643601
 # workflow_start_time_ms = 1707761189949 
 # workflow_start_time_str = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(workflow_start_time_ms/1000))
 

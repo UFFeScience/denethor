@@ -9,14 +9,14 @@
    
    - "tree_operations_model.json": define um modelo de atividades para a execução de funções AWS Lambda e as estatísticas que serão coletadas. As atividades são:
       - **tree_constructor**: cria árvores filogenéticas a partir de arquivos de entrada.
-      - **tree_sub_find**: busca subárvores e identifica as que possuem com maior índice de similaridade.
+      - **subtree_mining**: busca subárvores e identifica as que possuem com maior índice de similaridade.
 
 ## 2. **Funções Lambda**:
    - Utilizamos **duas funções Lambda** para processar dados provenientes de arquivos armazenados no **Amazon S3**.
    - Essas funções podem ser acionadas por eventos, como o upload de arquivos no S3 ou por resquest da "aplicação local de controle".
    - Cada função tem uma **responsabilidade específica**:
      - A função **tree_constructor** lê os arquivos de entrada e cria árvores filogenéticas usando o **ClustalW**.
-     - A função **tree_sub_find** lê os arquivos de árvores gerados na função **tree_constructor**, gera arquivos de subárvores e busca as que possuem com maior índice de similaridade.
+     - A função **subtree_mining** lê os arquivos de árvores gerados na função **tree_constructor**, gera arquivos de subárvores e busca as que possuem com maior índice de similaridade.
 
 ## 3. **Amazon S3**:
    - Os arquivos de entrada são carregados no S3, permitindo que a primeira função Lambda seja acionada.

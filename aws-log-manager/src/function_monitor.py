@@ -21,7 +21,7 @@ def monitor_lambda_execution(params):
             time.sleep(60)
         else:
             time.sleep(3*60)
-    elif function_name == 'tree_sub_find':
+    elif function_name == 'subtree_mining':
         if len(files) <= 2:
             time.sleep(15)
         elif len(files) <= 10:

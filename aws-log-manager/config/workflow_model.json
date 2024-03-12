@@ -49,7 +49,7 @@
                 "module": "function_invoker",
                 "handler": "invoke_lambda_execution",
                 "params": {
-                    "functionName": "tree_sub_find",
+                    "functionName": "subtree_mining",
                     "inputBucket": "mribeiro-tree-files", "inputKey": "",
                     "outputBucket": "mribeiro-subtree-files", "outputKey": "",
                     "executionStrategy": "for_all_files"
@@ -61,7 +61,7 @@
                 "module": "function_monitor",
                 "handler": "monitor_lambda_execution",
                 "params": {
-                    "functionName": "tree_sub_find"
+                    "functionName": "subtree_mining"
                 },
                 "active": true
             },
@@ -82,7 +82,7 @@
                 "module": "provenance_importer",
                 "handler": "import_provenance_from_aws",
                 "params": {
-                    "functions": ["tree_constructor", "tree_sub_find"],
+                    "functions": ["tree_constructor", "subtree_mining"],
                     "logPath": "executions/execution_[executionId]/logs",
                     "logFile": "log_[functionName]_[executionId].json"
                 },
