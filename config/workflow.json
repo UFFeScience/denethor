@@ -1,0 +1,87 @@
+{
+    "workflow": {
+        "workflow_name": "AWS Lambda Evaluation",
+        "workflow_description": "Performance Evaluation of Lambda Functions in AWS",
+        
+        "dataFiles": {
+            "fileListJson": "config/input_files_201.json",
+            "fileLimit": 10
+        },
+
+        "steps": [
+            {
+                "name": "Upload files to AWS S3",
+                "module": "utils.file_utils",
+                "handler": "upload_files_to_aws_s3",
+                "params": {
+                    "bucket": "mribeiro-input-files", "key": ""
+                },
+                "active": true
+            },
+            {
+                "name": "Invoke function execution",
+                "module": "function_invoker",
+                "handler": "invoke_lambda_execution",
+                "params": {
+                    "functionName": "tree_constructor",
+                    "inputBucket": "mribeiro-input-files", "inputKey": "",
+                    "outputBucket": "mribeiro-tree-files", "outputKey": "",
+                    "executionStrategy": "for_each_file"
+                },
+                "active": true
+            },
+            {
+                "name": "Monitor function execution",
+                "module": "function_monitor",
+                "handler": "monitor_lambda_execution",
+                "params": {
+                    "functionName": "tree_constructor"
+                },
+                "active": true
+            },
+            {
+                "name": "Invoke function execution",
+                "module": "function_invoker",
+                "handler": "invoke_lambda_execution",
+                "params": {
+                    "functionName": "subtree_mining",
+                    "inputBucket": "mribeiro-tree-files", "inputKey": "",
+                    "outputBucket": "mribeiro-subtree-files", "outputKey": "",
+                    "executionStrategy": "for_all_files"
+                },
+                "active": true
+            },
+            {
+                "name": "Monitor function execution",
+                "module": "function_monitor",
+                "handler": "monitor_lambda_execution",
+                "params": {
+                    "functionName": "subtree_mining"
+                },
+                "active": true
+            },
+            {
+                "name": "Download produced files from AWS S3",
+                "module": "file_operations",
+                "handler": "download_files_from_aws_s3",
+                "params": {
+                    "bucket": "mribeiro-subtree-files",
+                    "key": "",
+                    "downloadPath": "executions/execution_[executionId]/files"
+                },
+                "active": false
+            },
+            {
+                "name": "Import Provenance from AWS CloudWatch Logs",
+                "module": "provenance_importer",
+                "handler": "import_provenance_from_aws",
+                "params": {
+                    "functions": ["tree_constructor", "subtree_mining"],
+                    "logPath": "executions/execution_[executionId]/logs",
+                    "logFile": "log_[functionName]_[executionId].json"
+                },
+                "active": true
+            }
+        ]
+    }
+}
