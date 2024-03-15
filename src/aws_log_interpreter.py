@@ -48,7 +48,6 @@ def analyze_logs(params):
     print(f'{"Saving" if workflow_created else "Retrieving"} Workflow: {workflow_db}')
 
     # Workflow Activity
-    
     for function_name in functions:
 
         activity = next((act for act in WORKFLOW_INFO['activities'] if act['name'] == function_name), None)

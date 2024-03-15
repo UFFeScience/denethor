@@ -1,0 +1,82 @@
+{
+    "steps": [
+        {
+            "name": "Upload files to AWS S3",
+            "module": "utils.aws_file_operations",
+            "handler": "upload_files_to_aws_s3",
+            "active": true,
+            "params": {
+                "bucket": "mribeiro-input-files",
+                "key": ""
+            }
+        },
+        {
+            "name": "Invoke function execution",
+            "module": "function_invoker",
+            "handler": "invoke_lambda_execution",
+            "active": true,
+            "params": {
+                "functionName": "tree_constructor",
+                "inputBucket": "mribeiro-input-files",
+                "inputKey": "",
+                "outputBucket": "mribeiro-tree-files",
+                "outputKey": "",
+                "executionStrategy": "for_each_file"
+            }
+        },
+        {
+            "name": "Monitor function execution",
+            "module": "function_monitor",
+            "handler": "monitor_lambda_execution",
+            "active": true,
+            "params": {
+                "functionName": "tree_constructor"
+            }
+        },
+        {
+            "name": "Invoke function execution",
+            "module": "function_invoker",
+            "handler": "invoke_lambda_execution",
+            "active": true,
+            "params": {
+                "functionName": "subtree_mining",
+                "inputBucket": "mribeiro-tree-files",
+                "inputKey": "",
+                "outputBucket": "mribeiro-subtree-files",
+                "outputKey": "",
+                "executionStrategy": "for_all_files"
+            }
+        },
+        {
+            "name": "Monitor function execution",
+            "module": "function_monitor",
+            "handler": "monitor_lambda_execution",
+            "active": true,
+            "params": {
+                "functionName": "subtree_mining"
+            }
+        },
+        {
+            "name": "Download produced files from AWS S3",
+            "module": "utils.aws_file_operations",
+            "handler": "download_files_from_aws_s3",
+            "active": false,
+            "params": {
+                "bucket": "mribeiro-subtree-files",
+                "key": "",
+                "downloadPath": "data/executions/subtree_files/[execution_id]"
+            }
+        },
+        {
+            "name": "Import Provenance from AWS CloudWatch Logs",
+            "module": "provenance_importer",
+            "handler": "import_provenance_from_aws",
+            "active": false,
+            "params": {
+                "functions": ["tree_constructor", "subtree_mining"],
+                "logPath": "data/executions/logs",
+                "logFile": "log_[function_name]_[execution_id].json"
+            }
+        }
+    ]
+}

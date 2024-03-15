@@ -115,7 +115,7 @@ def download_and_log_multiple_files_from_s3(request_id, input_bucket, local_path
     matching_files = []  # para armazenar todos os objetos correspondentes
 
     for file_name in files:
-        base_file_name = os.basename(file_name)
+        base_file_name = os.path.basename(file_name)
         pattern = r'.*{}(_Inner\d+|)\.{}$'.format(base_file_name, data_format)
         matching_files = [item['Key'] for item in response['Contents'] if re.match(pattern, item['Key'])]
         matching_files.extend(matching_files)

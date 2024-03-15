@@ -19,8 +19,8 @@ def upload_files_to_aws_s3(params):
     s3 = boto3.client('s3')
     bucket = params['bucket']
     key = params['key']
-    files = params['dataFiles']['files']
-    path = params['dataFiles']['path']
+    files = params['input_files_name']
+    path = params['input_files_path']
     for file_name in files:
         # Full path to the file
         file_path = os.path.join(path, file_name)
@@ -56,7 +56,7 @@ def download_files_from_aws_s3(params):
     s3 = boto3.client('s3')
     bucket = params['bucket']
     key = params['key']
-    files = params['dataFiles']['files']
+    files = params['files']
     downloadPath = params['downloadPath']
     downloadPath.replace('[executionId]', params['executionId'])
     for file_name in files:
