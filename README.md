@@ -1,16 +1,16 @@
-# Pré-requisitos gerais do ambiente de desenvolvimento
+# Environment Setup
 
-Os comandos aqui descritos foram criados com base no sistema operacional Ubuntu 22.04 e podem ter que ser adaptados para outros sistemas operacionais.
+The commands described here were created based on the Ubuntu 22.04 operating system and may need to be adapted for other operating systems.
 
-## Instalação do Python 3.11 e Pip
+## Installation of Python 3.11 and Pip
 
-Para preparar os pacotes de função Lambda, é necessário ter o `Python 3.11` e o gerenciador de pacotes `Pip` instalados na máquina local. Para verificar se o Python 3.11 está instalado, execute o seguinte comando no terminal:
+To prepare Lambda function packages, it is necessary to have `Python 3.11` and the package manager `Pip` installed on your local machine. To check if Python 3.11 is installed, run the following command in the terminal:
 
 ```bash
 python3.11 --version
 ```
 
-Se o Python 3.11 não estiver instalado, é possível realizar a instalação através do seguinte comando:
+If Python 3.11 is not installed, you can install it using the following command:
 
 ```bash
 sudo apt-get install python3.11
@@ -20,13 +20,13 @@ python3.11 --version
 ls /usr/bin/python*
 ```
 
-Para verificar se o Pip está instalado, execute o seguinte comando no terminal:
+To check if Pip is installed, run the following command in the terminal:
 
 ```bash
 pip --version
 ```
 
-Se o Pip não estiver instalado, é possível realizar a instalação através do seguinte comando:
+If Pip is not installed, you can install it using the following command:
 
 ```bash
 sudo apt-get install pip
@@ -34,9 +34,9 @@ pip --version
 # pip 22.0.2 from /usr/lib/python3/dist-packages/pip (python 3.10)
 ```
 
-## Instalação do ClustalW
+## ClustalW Installation
 
-Para a execução do workflow, é necessário ter o [ClustalW](http://www.clustal.org/clustal2/) instalado. O ClustalW é um software de alinhamento múltiplo de sequências de proteínas. Uma das formas de obter este software é descrita a seguir:
+For the execution of the workflow, it is necessary to have [ClustalW](http://www.clustal.org/clustal2/) installed. ClustalW is a software for multiple sequence alignment of protein sequences. One way to obtain this software is as follows:
 
 ```bash
 sudo apt-get install curl
@@ -46,13 +46,17 @@ curl "http://www.clustal.org/download/current/clustalw-2.1-linux-x86_64-libcppst
 tar -xvzf clustalw-2.1-linux-x86_64-libcppstatic.tar.gz
 ```
 
-Caso esteja utilizando o sistema operacional Windows, é possível baixar o instalador do ClustalW neste link: [Download ClustalW para Windows](http://www.clustal.org/download/current/clustalw-2.1-win.msi)
+If you are using the Windows operating system, you can download the ClustalW installer from this link: [Download ClustalW for Windows](http://www.clustal.org/download/current/clustalw-2.1-win.msi)
 
-## Tipos de execução
+## Execution Modes
 
-É possível executar o projeto em dois modos: *local* e *lambda*.
+The project can be executed in two modes: *local* and *lambda*.
 
-- O modo *local* irá executar todo o workflow na máquina local
-- O modo *lambda* deve ser usado para execução utilizando as funções AWS Lambda.
+- The *local* mode will execute the entire workflow on the local machine.
+- The *lambda* mode should be used for execution using AWS Lambda functions.
 
-Cada modo de execução possui suas próprias instruções e configurações específicas. Elas estão detalhadas nos arquivos [local_env](docs/local_env.md) e [lambda_env](docs/lambda_env.md), respectivamente.
+Each execution mode has its own specific instructions and configurations. They are detailed in the files **[local_setup](doc/local_setup.md)** and **[aws_setup](doc\aws_setup.md)**, respectively.
+
+## Denethor
+
+The file **[denethor](doc/denethor.md)** explains how the workflow execution monitoring system was implemented and which configuration files are used in the execution of activities. Execution by `Denethor` assumes that the AWS environment setup steps have already been completed.
