@@ -1,23 +1,21 @@
-import utils.log_utils as log_utils
-import utils.utils as utils
-from src.utils.execution_logs_parser import *
+from utils import log_utils
+from utils import execution_logs_parser  as parser
 from database.db_model import *
 from database.repository import *
 
 import json
 import os
 
-
-def analyze_logs(params):
+def process_and_save_logs(params):
     """
     Analyzes logs based on the provided parameters.
 
     Args:
         params (dict): A dictionary containing the parameters for log analysis.
-            - executionId (str): The execution ID.
+            - execution_id (str): The execution ID.
             - functions (list): A list of function names.
-            - logPath (str): The path to the log files.
-            - logFile (str): The log file name template.
+            - log_path (str): The path to the log files.
+            - log_file (str): The log file name template.
             - serviceProvider (dict): Information about the service provider.
             - workflow (dict): Information about the workflow.
 
@@ -27,68 +25,72 @@ def analyze_logs(params):
     Returns:
         None
     """
-def analyze_logs(params):
+    # Workflow runtime parameters
+    execution_id = params['execution_id']
 
-    execution_id = params['executionId']
+    ############################################################################################################
+    # If the 'override_...' parameters are present, then the respective variables are updated with the new values
+    # It can be used for testing purposes, or to retrieve logs for a specific time range
+    override_execution_id = params['override_execution_id']
+    if override_execution_id is not None:
+        execution_id = override_execution_id
+    ############################################################################################################
+
+    
+    # Step params
     functions = params['functions']
-    log_path = params['logPath']
-    log_file = params['logFile']
+    log_path = params['log_path']
+    log_file = params['log_file']
 
+    workflow_dict = params['workflow']
+    activities_dict = workflow_dict['activities']
+    default_separator = workflow_dict['default_separator']
+    general_statistics = workflow_dict['general_statistics']
 
-    # Service Provider: iterating over the list of service providers and inserting into the database, if not already present
-    provider = params['serviceProvider']
-    provider_model = ServiceProvider.create_from_dict(provider)
-    provider_db, provider_created = service_provider_repo.get_or_create(provider_model)
-    print(f'{"Saving" if provider_created else "Retrieving"} Provider: {provider_db}')
-
-    # Workflow
-    workflow = params['workflow']
-    workflow_model = Workflow.create_from_dict(workflow)
-    workflow_db, workflow_created = workflow_repo.get_or_create(workflow_model)
-    print(f'{"Saving" if workflow_created else "Retrieving"} Workflow: {workflow_db}')
 
     # Workflow Activity
-    for function_name in functions:
+    for func_name in functions:
 
-        activity = next((act for act in WORKFLOW_INFO['activities'] if act['name'] == function_name), None)
-        if activity is None:
-            raise ValueError(f"Activity {function_name} not found in workflow activities json file.")
-        activity_model = WorkflowActivity.create_from_dict(activity)
-        activity_model.workflow = workflow_db
-        activity_db, activity_created = workflow_activity_repo.get_or_create(activity_model)
-        print(f'{"Saving" if activity_created else "Retrieving"} Activity: {activity_db}')
+        # Finding the corresponding activity in the workflow activities JSON file
+        activity = next((act for act in activities_dict if act['activity_name'] == func_name), None)
+        if not activity:
+            raise ValueError(f"Activity {func_name} not found in the workflow activities JSON file")
+        
+        activity_name = activity['activity_name']
 
-        default_statistics = WORKFLOW_INFO['defaultStatistics']
-        activity_statistics = activity['customStatistics']
-        default_sep = WORKFLOW_INFO['defaultLogMessageSeparator']
-
-        # Custom Statistics: iterando sobre as estatísticas customizadas e adicionando ao banco de dados
-        for log_type in activity_statistics:
-            for stat in activity_statistics[log_type]:
-                if stat['fieldName'] != 'request_id':
-                    stat_model = Statistics(name=stat['fieldName'], description=stat['description'])
-                    stat_db, stat_created = statistics_repo.get_or_create(stat_model)
-                    print(f'{"Saving" if stat_created else "Retrieving"} Statistics: {stat_db}')
-
-        # abrindo o arquivo com os logs da atvidade, no formato json
-        file_name = log_file.replace('[functionName]', function_name).replace('[executionId]', execution_id)
-        file_path = log_path.replace('[executionId]', execution_id)
-        file = os.path.join(file_path, file_name)
+        # Retrieving the provider, workflow, and activity from the database and checking if they exist
+        workflow_db = workflow_repo.get_by_name(workflow_dict['workflow_name'])
+        if not workflow_db:
+            raise ValueError(f"Workflow {workflow_dict['workflow_name']} not found in Database!")
+        
+        activity_db = workflow_activity_repo.get_by_name_and_workflow(activity_name, workflow_db)
+        if not activity_db:
+            raise ValueError(f"Activity {activity_name} not found in Database!")
+        
+        provider_db = service_provider_repo.get_by_name(activity['provider_name'])
+        if not provider_db:
+            raise ValueError(f"Provider {activity['provider_name']} not found in Database!")
+        
+        # Opening the log file for the activity, in json format
+        file_name = log_file.replace('[function_name]', activity_name).replace('[execution_id]', execution_id)
+        file = os.path.join(log_path, file_name)
         with open(file) as f:
             log_data = json.load(f)
 
-        # filtra e organiza os registros de log por RequestId 
-        # cada conjunto representa uma execução completa da atividade para um conjunto de arquivos de entrada
+        # Filters and organizes log records by RequestId
+        # Each set represents a complete execution of the activity for a set of input files
         logs_by_request = log_utils.group_logs_by_request(log_data)
 
-        # iterando sobre o conjunto de logs  um request_id (uma execução da função lambda)
+        activity_custom_statistics = activity['custom_statistics']
+        
+        # Iterating over the set of logs for a request_id (an execution of the lambda function)
         for request_id, logs in logs_by_request.items():
             
             print(f"--------------------------------------------------------------------------")
-            print(f'Parsing Logs of {activity_db.name} | RequestId: {request_id}')
+            print(f'Parsing Logs of {activity_db.activity_name} | RequestId: {request_id}')
             print(f"--------------------------------------------------------------------------")
 
-            service_execution = parse_execution_logs(request_id, logs, default_statistics, activity_statistics, default_sep)
+            service_execution = parser.parse_execution_logs(request_id, logs, general_statistics, activity_custom_statistics, default_separator)
             
             service_execution.provider = provider_db
             service_execution.activity = activity_db
@@ -97,7 +99,7 @@ def analyze_logs(params):
 
             
             print(f"--------------------------------------------------------------------------")
-            print(f'Saving Execution info of {activity_db.name} | RequestId: {request_id} to Database...')
+            print(f'Saving Execution info of {activity_db.activity_name} | RequestId: {request_id} to Database...')
             print(f"--------------------------------------------------------------------------")
 
 
@@ -105,7 +107,7 @@ def analyze_logs(params):
             # caso positivo -> apenas recupera o registro
             # caso negativo -> realiza a inclusão e retorna o novo registro
             service_execution_db, provider_created = service_execution_repo.get_or_create(service_execution)
-            print(f'{"Saving" if provider_created else "Retrieving"} Service Execution info: [{service_execution_db.id}]={activity_db.name} ({service_execution_db.duration} ms)')
+            print(f'{"Saving" if provider_created else "Retrieving"} Service Execution info: [{service_execution_db.se_id}]={activity_db.activity_name} ({service_execution_db.duration} ms)')
 
             # para cada arquivo de entrada e registro de execução do arquivo,
             # verificamos se ambos já estão cadastrados na base
@@ -120,7 +122,7 @@ def analyze_logs(params):
             # para a execução da função verificamos se existem estatísticas adicionais para armazenar
             for  exec_stat in service_execution.execution_statistics:
                 # nesse ponto assumimos que a estatística já foi incluída no banco de dados
-                statistics_db = statistics_repo.get_by_name(exec_stat.statistics.name)
+                statistics_db = statistics_repo.get_by_name(exec_stat.statistics.statistics_name)
                 if not statistics_db:
                     raise ValueError(f"Statistics {exec_stat.statistics.name} not found in Database!")
                 exec_stat.statistics = statistics_db

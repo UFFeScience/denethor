@@ -41,7 +41,7 @@ def download_files_from_aws_s3(params):
             - dataFiles (dict): A dictionary containing the list of files to download.
                 - files (list): A list of file names to download.
             - downloadPath (str): The local directory path where the files will be downloaded.
-            - executionId (str): An execution ID used to replace a placeholder in the download path.
+            - execution_id (str): An execution ID used to replace a placeholder in the download path.
 
     Returns:
         None
@@ -58,7 +58,7 @@ def download_files_from_aws_s3(params):
     key = params['key']
     files = params['files']
     downloadPath = params['downloadPath']
-    downloadPath.replace('[executionId]', params['executionId'])
+    downloadPath.replace('[execution_id]', params['execution_id'])
     for file_name in files:
         # Full path to the file
         file_path = os.path.join(downloadPath, file_name)

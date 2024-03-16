@@ -13,8 +13,8 @@ def invoke_lambda_execution(params):
             - outputKey (str): The output key.
             - dataFiles (dict): A dictionary containing the following keys:
                 - files (list): A list of file names.
-            - executionStrategy (str): The execution strategy. Can be either 'for_each_file' or 'for_all_files'.
-            - functionName (str): The name of the Lambda function.
+            - execution_strategy (str): The execution strategy. Can be either 'for_each_file' or 'for_all_files'.
+            - function_name (str): The name of the Lambda function.
 
     Returns:
         dict: A dictionary containing the function name appended with "_requests" as the key and a list of request IDs as the value.
@@ -31,8 +31,8 @@ def invoke_lambda_execution(params):
     }
 
     files = params['input_files_name']
-    execution_strategy = params['executionStrategy']
-    function_name = params['functionName']
+    execution_strategy = params['execution_strategy']
+    function_name = params['function_name']
     
     requests = []
 
@@ -68,7 +68,7 @@ def invoke_async(function_name, payload):
     """
     lambda_client = boto3.client('lambda')
     response = lambda_client.invoke(
-                FunctionName=function_name,
+                function_name=function_name,
                 InvocationType='Event',
                 Payload=json.dumps(payload)
             )

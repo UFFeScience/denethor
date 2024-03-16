@@ -66,7 +66,7 @@ class ServiceExecution(BaseModel):
 
     se_id = Column(Integer, primary_key=True)
     activity_id = Column(Integer, ForeignKey('workflow_activity.activity_id'))
-    provider_id = Column(Integer, ForeignKey('service_provider.se_id'))
+    provider_id = Column(Integer, ForeignKey('service_provider.provider_id'))
     request_id = Column(String)
     log_stream_name = Column(String)
     start_time = Column(TIMESTAMP)

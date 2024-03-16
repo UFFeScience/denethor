@@ -14,7 +14,7 @@
                 "activity_name": "tree_constructor",
                 "activity_description": "Constructing Phylogenetic Trees from Protein Sequences",
                 "provider_name": "AWS Lambda (15)",
-                "customStatistics": {
+                "custom_statistics": {
                     "TREE_CONSTRUCTOR": [
                         {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string"},
                         {"searchKey": "Duration", "fieldName": "tree_duration", "dataType": "float", "description": "Execution time of the tree construction activity"}
@@ -25,7 +25,7 @@
                 "activity_name": "subtree_mining",
                 "activity_description": "Generating Subtrees from Main Trees and MAF Analysis (Subtree Pair Frequency Matrix)",
                 "provider_name": "AWS Lambda (900)",
-                "customStatistics": {
+                "custom_statistics": {
                     "SUBTREE_CONSTRUCTOR": [
                         {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string"},
                         {"searchKey": "Duration", "fieldName": "subtree_duration", "dataType": "float", "description": "Execution time of the subtree creation activity"}
@@ -40,9 +40,9 @@
             }
         ],
 
-        "defaultLogMessageSeparator": "\t",
+        "default_separator": "\t",
         
-        "defaultStatistics": {
+        "general_statistics": {
             "START": [
                 {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string", "separator": " "},
                 {"searchKey": "Version", "fieldName": "version", "dataType": "string"}

@@ -1,9 +1,6 @@
 import re
+from utils import utils
 from database.db_model import *
-from database.repository import *
-from database.conn import *
-import utils.log_utils as log_utils
-import utils.utils as utils
 
 def parse_message(message, stats_attributes, default_sep):
     """
@@ -125,12 +122,12 @@ def process_custom_stats(service_execution, parsed_message: dict):
         service_execution (ServiceExecution): The service execution object.
         parsed_message (dict): The parsed message as a dictionary.
     """
-    # Tratamento de "customStatistics". Elas serão salvas nas tabelas "statistics" e "execution_statistics"
+    # Tratamento de "custom_statistics". Elas serão salvas nas tabelas "statistics" e "execution_statistics"
     # O atributo "fieldName" será usado como o nome da estatística no banco e o "dataType" será usado para determinar o tipo de valor a ser salvo
     # iterar por cada estatística adicional, ignorando o atributo "request_id"
     for field_name, value in parsed_message.items():
         if field_name != 'request_id' and field_name != 'logType':
-            stat = Statistics(name=field_name, description='')
+            stat = Statistics(statistics_name=field_name, statistics_description='')
             execution_stat = ExecutionStatistics(statistics=stat)
             if type(value) == int:
                 execution_stat.value_integer = value

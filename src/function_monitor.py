@@ -3,7 +3,7 @@ import time
 
 def monitor_lambda_execution(params):
 
-    function_name = params['functionName']
+    function_name = params['function_name']
     requests = params.get(f'{function_name}_requests', [])
     
     if not requests: 

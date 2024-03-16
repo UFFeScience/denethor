@@ -4,7 +4,7 @@
             "name": "Upload files to AWS S3",
             "module": "utils.aws_file_operations",
             "handler": "upload_files_to_aws_s3",
-            "active": true,
+            "active": false,
             "params": {
                 "bucket": "mribeiro-input-files",
                 "key": ""
@@ -14,46 +14,46 @@
             "name": "Invoke function execution",
             "module": "function_invoker",
             "handler": "invoke_lambda_execution",
-            "active": true,
+            "active": false,
             "params": {
-                "functionName": "tree_constructor",
+                "function_name": "tree_constructor",
                 "inputBucket": "mribeiro-input-files",
                 "inputKey": "",
                 "outputBucket": "mribeiro-tree-files",
                 "outputKey": "",
-                "executionStrategy": "for_each_file"
+                "execution_strategy": "for_each_file"
             }
         },
         {
             "name": "Monitor function execution",
             "module": "function_monitor",
             "handler": "monitor_lambda_execution",
-            "active": true,
+            "active": false,
             "params": {
-                "functionName": "tree_constructor"
+                "function_name": "tree_constructor"
             }
         },
         {
             "name": "Invoke function execution",
             "module": "function_invoker",
             "handler": "invoke_lambda_execution",
-            "active": true,
+            "active": false,
             "params": {
-                "functionName": "subtree_mining",
+                "function_name": "subtree_mining",
                 "inputBucket": "mribeiro-tree-files",
                 "inputKey": "",
                 "outputBucket": "mribeiro-subtree-files",
                 "outputKey": "",
-                "executionStrategy": "for_all_files"
+                "execution_strategy": "for_all_files"
             }
         },
         {
             "name": "Monitor function execution",
             "module": "function_monitor",
             "handler": "monitor_lambda_execution",
-            "active": true,
+            "active": false,
             "params": {
-                "functionName": "subtree_mining"
+                "function_name": "subtree_mining"
             }
         },
         {
@@ -74,8 +74,8 @@
             "active": false,
             "params": {
                 "functions": ["tree_constructor", "subtree_mining"],
-                "logPath": "data/executions/logs",
-                "logFile": "log_[function_name]_[execution_id].json"
+                "log_path": "data/executions/logs",
+                "log_file": "log_[function_name]_[execution_id].json"
             }
         }
     ]

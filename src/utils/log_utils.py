@@ -2,7 +2,7 @@ from datetime import datetime
 import json
 import os
 import re
-import utils.log_utils as log_utils
+from utils import utils
 
 # Save logs to a single file ordered by logStreamName
 def save_to_file(json_logs, file_path, file_name):
@@ -12,7 +12,7 @@ def save_to_file(json_logs, file_path, file_name):
     json_logs.sort(key=lambda x: (x['logStreamName'], x['timestamp']))
     
     # Sanitize file name
-    file_name = log_utils.sanitize(file_name)
+    file_name = utils.sanitize(file_name)
 
     # Create the directory if it does not exist
     os.makedirs(file_path, exist_ok=True)

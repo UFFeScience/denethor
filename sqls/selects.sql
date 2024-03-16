@@ -44,7 +44,7 @@ JOIN workflow wo ON wo.workflow_id = wa.workflow_id
 JOIN service_provider sp ON sp.provider_id = se.provider_id
 JOIN execution_file ef ON ef.se_id = se.se_id
 JOIN file fi ON fi.file_id = ef.file_id
-WHERE fi.file_name LIKE '%ORTHOMCL1000%'
+--WHERE fi.file_name LIKE '%ORTHOMCL1000%'
 ORDER BY se.se_id ASC, fi.file_id ASC;
 
 -- statistics

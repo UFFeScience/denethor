@@ -4,7 +4,7 @@ from src.utils.execution_logs_parser import parse_message
 class TestLogParser(unittest.TestCase):
 
     CONFIG = { 
-        "defaultStatistics": {
+        "general_statistics": {
             "START": [
                 {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "", "separator": " "},
                 {"searchKey": "Version", "fieldName": "version", "dataType": ""}

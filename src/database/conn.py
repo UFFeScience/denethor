@@ -4,9 +4,9 @@ from sqlalchemy.orm import sessionmaker
 # Parâmetros de conexão
 HOST = 'mribeiro-pg-database.ca8aozgznnhf.sa-east-1.rds.amazonaws.com'
 PORT = 9855
-DATABASE = 'postgres'
+DATABASE = 'denethor'
 USER = 'postgres'
-PASSWORD = 'xxxxxxxxxxxxxxxxxxxxx'
+PASSWORD = 'i4De6wLwAHFYY3FGFdfRR432Ere'
 
 class Connection:
     def __init__(self):

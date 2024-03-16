@@ -10,9 +10,6 @@ class GenericRepository:
     def get_all(self):
         return self.db.query(self.model).all()
 
-    def get_by_id(self, id: int):
-        return self.db.query(self.model).filter_by(id=id).first()
-    
     def get_by_attributes(self, obj: dict):
         return self.db.query(self.model).filter_by(**obj).first()
     
@@ -52,6 +49,12 @@ class ServiceProviderRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=ServiceProvider)
     
+    def get_by_id(self, id: int):
+        return self.db.query(self.model).filter_by(provider_id=id).first()
+
+    def get_by_name(self, name: str):
+        return self.db.query(self.model).filter_by(provider_name=name).first()
+    
     def get_or_create(self, obj: ServiceProvider):
         if type(obj) != ServiceProvider:
             raise ValueError("The argument must be a ServiceProvider object")
@@ -62,6 +65,12 @@ class ServiceProviderRepository(GenericRepository):
 class WorkflowRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=Workflow)
+    
+    def get_by_id(self, id: int):
+        return self.db.query(self.model).filter_by(workflow_id=id).first()
+    
+    def get_by_name(self, name: str):
+        return self.db.query(self.model).filter_by(workflow_name=name).first()
     
     def get_or_create(self, obj: Workflow):
         if type(obj) != Workflow:
@@ -74,11 +83,17 @@ class WorkflowActivityRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=WorkflowActivity)
 
+    def get_by_id(self, id: int):
+        return self.db.query(self.model).filter_by(activity_id=id).first()
+    
+    def get_by_name_and_workflow(self, name: str, workflow: Workflow):
+        return self.db.query(self.model).filter_by(activity_name=name, workflow=workflow).first()
+    
     def get_or_create(self, obj: WorkflowActivity):
         if type(obj) != WorkflowActivity:
             raise ValueError("The argument must be a WorkflowActivity object")
         if obj.workflow:
-            obj.workflow_id = obj.workflow.id
+            obj.workflow_id = obj.workflow.workflow_id
         obj_dict = obj.__dict__.copy()
         obj_dict.pop('additionalStatistics', None)
         obj_dict.pop('workflow', None)
@@ -89,13 +104,16 @@ class ServiceExecutionRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=ServiceExecution)
     
+    def get_by_id(self, id: int):
+        return self.db.query(self.model).filter_by(se_id=id).first()
+    
     def get_or_create(self, obj: ServiceExecution):
         if type(obj) != ServiceExecution:
             raise ValueError("The argument must be a ServiceExecution object")
         if obj.activity:
-            obj.activity_id = obj.activity.id
+            obj.activity_id = obj.activity.activity_id
         if obj.provider:
-            obj.provider_id = obj.provider.id
+            obj.provider_id = obj.provider.provider_id
         obj_dict = obj.__dict__.copy()
         obj_dict.pop('execution_files', None)
         obj_dict.pop('execution_statistics', None)
@@ -107,6 +125,9 @@ class ServiceExecutionRepository(GenericRepository):
 class FileRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=File)
+    
+    def get_by_id(self, id: int):
+        return self.db.query(self.model).filter_by(file_id=id).first()
     
     def get_or_create(self, obj: File):
         if type(obj) != File:
@@ -120,13 +141,16 @@ class ExecutionFileRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=ExecutionFile)
 
+    def get_by_id(self, id: int):
+        return self.db.query(self.model).filter_by(ef_id=id).first()
+    
     def get_or_create(self, obj: ExecutionFile):
         if type(obj) != ExecutionFile:
             raise ValueError("The argument must be a ExecutionFile object")
         if obj.file:
-            obj.file_id = obj.file.id
+            obj.file_id = obj.file.file_id
         if obj.service_execution:  
-            obj.se_id = obj.service_execution.id
+            obj.se_id = obj.service_execution.se_id
         obj_dict = obj.__dict__.copy()
         obj_dict.pop('file', None)
         obj_dict.pop('service_execution', None)
@@ -137,28 +161,34 @@ class StatisticsRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=Statistics)
     
+    def get_by_id(self, id: int):
+        return self.db.query(self.model).filter_by(statistics_id=id).first()
+    
+    def get_by_name(self, name: str):
+        return self.db.query(self.model).filter_by(statistics_name=name).first()
+    
     def get_or_create(self, obj: Statistics):
         if type(obj) != Statistics:
             raise ValueError("The argument must be a Statistics object")
         obj_dict = obj.__dict__.copy()
         obj_dict.pop('execution_statistics', None)
         return super().get_or_create(obj_dict)
-    
-    def get_by_name(self, name: str):
-        return self.db.query(self.model).filter_by(name=name).first()
 
 
 class ExecutionStatisticsRepository(GenericRepository):
     def __init__(self, session: Session):
         super().__init__(session=session, model=ExecutionStatistics)
 
+    def get_by_id(self, id: int):
+        return self.db.query(self.model).filter_by(es_id=id).first()
+    
     def get_or_create(self, obj: ExecutionStatistics):
         if type(obj) != ExecutionStatistics:
             raise ValueError("The argument must be a ExecutionStatistics object")
         if obj.statistics:
-            obj.statistics_id = obj.statistics.id
+            obj.statistics_id = obj.statistics.statistics_id
         if obj.service_execution:  
-            obj.se_id = obj.service_execution.id
+            obj.se_id = obj.service_execution.se_id
         obj_dict = obj.__dict__.copy()
         obj_dict.pop('statistics', None)
         obj_dict.pop('service_execution', None)

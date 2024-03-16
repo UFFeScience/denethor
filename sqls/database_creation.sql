@@ -16,7 +16,7 @@ CREATE TABLE service_provider (
     provider_timeout INTEGER,
     provider_cpu INTEGER,
     provider_ram INTEGER,
-    provider_storage_mb INTEGERs
+    provider_storage_mb INTEGER
 );
 
 CREATE TABLE workflow (
