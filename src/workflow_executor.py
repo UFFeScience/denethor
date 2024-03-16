@@ -12,8 +12,6 @@ print('******* Working directory: ', os.getcwd(), ' *******')
 workflow_start_time_ms = int(time.time() * 1000)
 workflow_start_time_str = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(workflow_start_time_ms/1000))
 
-
-
 # Set the workflow execution ID
 execution_id = 'EXEC_' + workflow_start_time_str.replace(':', '-').replace('T', '_').replace('Z', '') + '_UTC'
 
@@ -33,49 +31,52 @@ override_params = {
 
 #########################################################################
 #########################################################################
+#########################################################################
+#########################################################################
 # FOR LOCAL TESTING!!!!
+# Comment the following lines to run the workflow as usual
+#########################################################################
+#########################################################################
     
-from datetime import datetime, timezone
+# from datetime import datetime, timezone
 
-start_time_human = "2024-03-15 02:52:52Z"
-end_time_human   = "2024-03-15 02:53:26Z"
+# start_time_human = "2024-03-15 02:52:52Z"
+# end_time_human   = "2024-03-15 02:53:26Z"
 
-# Converte a string para um objeto datetime
-start_time_date = datetime.strptime(start_time_human, "%Y-%m-%d %H:%M:%SZ").replace(tzinfo=timezone.utc)
-end_time_date   = datetime.strptime(end_time_human, "%Y-%m-%d %H:%M:%SZ").replace(tzinfo=timezone.utc)
+# # Converte a string para um objeto datetime
+# start_time_date = datetime.strptime(start_time_human, "%Y-%m-%d %H:%M:%SZ").replace(tzinfo=timezone.utc)
+# end_time_date   = datetime.strptime(end_time_human, "%Y-%m-%d %H:%M:%SZ").replace(tzinfo=timezone.utc)
 
-# Converte para milissegundos e acrescenta uma margem de 10 segundos
-# antes e depois do intervalo para garantir que todos os logs sejam capturados
-override_start_time_ms = int(start_time_date.timestamp() * 1000) - (10 * 1000)
-override_end_time_ms = int(end_time_date.timestamp() * 1000) + (10 * 1000)
-override_execution_id = 'EXEC_' + str(start_time_date).replace('T', '_').replace('+00:00', '_UTC').replace('-03:00', '_GMT3').replace(':', '-').replace(' ', '_').replace('Z', '')
+# # Converte para milissegundos e acrescenta uma margem de 10 segundos
+# # antes e depois do intervalo para garantir que todos os logs sejam capturados
+# override_start_time_ms = int(start_time_date.timestamp() * 1000) - (10 * 1000)
+# override_end_time_ms = int(end_time_date.timestamp() * 1000) + (10 * 1000)
+# override_execution_id = 'EXEC_' + str(start_time_date).replace('T', '_').replace('+00:00', '_UTC').replace('-03:00', '_GMT3').replace(':', '-').replace(' ', '_').replace('Z', '')
 
-override_params = {
-    'override_start_time_ms': override_start_time_ms,
-    'override_end_time_ms': override_end_time_ms,
-    'override_execution_id': override_execution_id
-}
+# override_params = {
+#     'override_start_time_ms': override_start_time_ms,
+#     'override_end_time_ms': override_end_time_ms,
+#     'override_execution_id': override_execution_id
+# }
 
-# step_to_execute = "upload_files_to_aws_s3"
-# step_to_execute = "invoke_lambda_execution"
-# step_to_execute = "monitor_lambda_execution"
-# step_to_execute = "invoke_lambda_execution"
-# step_to_execute = "monitor_lambda_execution"
-# step_to_execute = "download_files_from_aws_s3"
-step_to_execute = "import_provenance_from_aws"
+# # step_to_execute = "upload_files_to_aws_s3"
+# # step_to_execute = "invoke_lambda_execution"
+# # step_to_execute = "monitor_lambda_execution"
+# # step_to_execute = "invoke_lambda_execution"
+# # step_to_execute = "monitor_lambda_execution"
+# # step_to_execute = "download_files_from_aws_s3"
+# step_to_execute = "import_provenance_from_aws"
 
-for step in WORKFLOW_STEPS['steps']:
-    if step['handler'] == step_to_execute:
-        step['active'] = True
-    else:
-        step['active'] = False
+# for step in WORKFLOW_STEPS['steps']:
+#     if step['handler'] == step_to_execute:
+#         step['active'] = True
+#     else:
+#         step['active'] = False
 
 #########################################################################
 #########################################################################
-
-
-
-
+#########################################################################
+#########################################################################
 
 
 
