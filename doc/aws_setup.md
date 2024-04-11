@@ -110,7 +110,6 @@ aws lambda create-function --function-name tree_constructor \
 
 ___
 
-
 ### Subtree Mining Function
 
 ___
