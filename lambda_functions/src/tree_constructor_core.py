@@ -70,11 +70,11 @@ def remove_pipe(name, path_in_fasta, path_tmp):
 
 ## CONSTRUTUOR ##
 # Mais informações sobre aplicações biopython e clustalwcommandline - https://biopython.org/docs/1.76/api/Bio.Align.Applications.html
-def tree_constructor(file_name, input_path, tmp_path, output_path, clustalw_path, data_format):
+def tree_constructor(input_file_name, input_path, tmp_path, output_path, clustalw_path, data_format):
     
     start_time = timeit.default_timer()
 
-    file_name = os.path.basename(file_name)
+    input_file_name = os.path.basename(input_file_name)
 
 
     match data_format:
@@ -84,14 +84,14 @@ def tree_constructor(file_name, input_path, tmp_path, output_path, clustalw_path
             EXTENTION_FORMAT = 'nwk' # Newick: 'nwk'
     
     #configurando caminhos relativos padrões do diretorio
-    fasta_file = os.path.join(input_path, file_name)
-    aln_file  = os.path.join(tmp_path, f'{file_name}.aln')
-    dnd_file  = os.path.join(tmp_path, f'{file_name}.dnd')
-    tree_file = os.path.join(output_path, f'tree_{file_name}.{EXTENTION_FORMAT}')
+    fasta_file = os.path.join(input_path, input_file_name)
+    aln_file  = os.path.join(tmp_path, f'{input_file_name}.aln')
+    dnd_file  = os.path.join(tmp_path, f'{input_file_name}.dnd')
+    tree_file = os.path.join(output_path, f'tree_{input_file_name}.{EXTENTION_FORMAT}')
 
     # Em caso de nomes duplicados ou sequências inválidas
     if duplicate_names(fasta_file) or not(validate_sequences(fasta_file)):
-        fasta_file = remove_pipe(file_name, fasta_file, tmp_path)
+        fasta_file = remove_pipe(input_file_name, fasta_file, tmp_path)
 
     # Executa o programa Clustalw para alinhar as sequências sem precisar da linha de comando.
     if not os.path.exists(clustalw_path):
@@ -100,13 +100,6 @@ def tree_constructor(file_name, input_path, tmp_path, output_path, clustalw_path
     clustalw_bin = os.path.join(clustalw_path,'clustalw2')
     clustalw_cline = ClustalwCommandline(clustalw_bin, infile=fasta_file, outfile=aln_file)
     
-    #  Executa o comando ClustalW com base nos parâmetros definidos no objeto ClustalwCommandline e retorna os resultados da execução na forma de uma tupla de strings.
-    clustalw_cline()
-
-    # Mover o arquivo de saída .dnd (gerado no mesmo local do do arquivo de entrada) para o diretório 'resultados'
-    path_curr_dnd = f'{fasta_file}.dnd'
-    os.rename(path_curr_dnd, dnd_file)
-
     '''
     Clustalw_cline() - gera 2 arquivos de saida por padrão
 
@@ -114,6 +107,12 @@ def tree_constructor(file_name, input_path, tmp_path, output_path, clustalw_path
     - ORTHOMCL256.aln: Contendo a sequência de ORTHOMCL256 alinhada em formato clustal
     - ORTHOMCL256.dnd: Contendo informações sobre o agrupamento hierárquico das sequências alinhadas.
     '''
+    #  Executa o comando ClustalW com base nos parâmetros definidos no objeto ClustalwCommandline e retorna os resultados da execução na forma de uma tupla de strings.
+    clustalw_cline()
+
+    # Mover o arquivo de saída .dnd (gerado no mesmo local do do arquivo de entrada) para o diretório 'resultados'
+    path_curr_dnd = f'{fasta_file}.dnd'
+    os.rename(path_curr_dnd, dnd_file)
 
     # Abre o arquivo de alinhamento
     with open(aln_file, 'r') as handle:
@@ -137,4 +136,4 @@ def tree_constructor(file_name, input_path, tmp_path, output_path, clustalw_path
     end_time = timeit.default_timer()
     tree_duration_ms = (end_time - start_time) * 1000
 
-    return tree_duration_ms
+    return tree_file, tree_duration_ms
