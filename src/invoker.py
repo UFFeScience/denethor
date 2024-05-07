@@ -1,5 +1,32 @@
 import boto3
 import json
+import importlib
+import sys
+from utils import utils
+
+
+def invoke_execution(params):
+    """
+    Invokes a function execution based on the provided parameters.
+
+    Args:
+        params (dict): A dictionary containing the following keys:
+    """
+    runtime_params = params['runtime_params']
+    step_params = params['step_params']
+    execution_env = step_params['execution_env']
+
+    
+    if execution_env == 'LOCAL_WIN':
+        return invoke_local_execution(runtime_params, step_params)
+
+    elif execution_env == 'LAMBDA':
+        return invoke_lambda_execution(params)
+
+    
+    else:
+        raise ValueError(f'Invalid execution environment: {execution_env}')
+
 
 def invoke_lambda_execution(params):
     """
@@ -74,3 +101,52 @@ def invoke_async(function_name, payload):
             )
     request_id = response['ResponseMetadata']['RequestId']
     return request_id
+
+
+def invoke_local_execution(runtime_params, step_params):
+    
+    datasets = runtime_params['datasets']
+
+    env_conf = runtime_params['env_conf'] ###### AQUI ######
+    
+    activity_name = step_params['activity']    
+    execution_strategy = step_params['execution_strategy']
+    execution_env = step_params['execution_env']
+    module_name = step_params['activity_module_name']
+    module_path = step_params['activity_module_path']
+
+    sys.path.append(module_path)
+
+    requests = []
+    # Get the python function from the module
+    
+    if execution_strategy == 'for_each_file':
+        for dataset_name in datasets:
+            payload = {
+                'file': dataset_name,
+                'execution_env': execution_env,
+                'request_id': utils.generate_request_id()
+                }
+
+            module = importlib.import_module(module_name)
+            python_function = getattr(module, 'handler')
+            # Call the python function with the specified parameters and store the produced data to be used in the next steps
+            request_id = python_function(payload, None)
+            requests.append(request_id)
+            print(f'{activity_name} triggered with payload {payload} with execution strategy {execution_strategy} for file: {dataset_name}')
+
+    elif execution_strategy == 'for_all_files':
+        payload = {
+                'files': datasets,
+                'execution_env': execution_env,
+                }
+        python_function = getattr(module, 'handler')
+        # Call the python function with the specified parameters and store the produced data to be used in the next steps
+        request_id = python_function(payload)
+        requests.append(request_id)
+        print(f'{activity_name} triggered with payload {payload} with execution strategy {execution_strategy} for files: {datasets}')
+    
+    else:
+        raise ValueError(f'Invalid execution strategy: {execution_strategy}')
+    
+    return {f"{activity_name}_requests" : requests}

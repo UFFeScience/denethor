@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 import re
+import uuid
 
 # Define a regex pattern to match only valid characters in file names or directories
 def sanitize(filename):
@@ -24,3 +25,6 @@ def parse_float(value: str) -> float:
     match = re.search(r"\d+\.?\d*", value)
     value_float = float(match.group()) if match else None
     return value_float
+
+def generate_request_id():
+    return 'uuid_' + str(uuid.uuid4()).replace('-', '_')

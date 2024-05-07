@@ -5,16 +5,15 @@ import file_utils
 def handler(event, context):
 
     if context is None:
-        request_id = None
+        request_id = event.get('request_id', '0')
     else:
         request_id = context.aws_request_id
 
-    env = Environment(event)
-    env.print()
+    env = Environment(event['execution_env'])
 
     TMP_PATH = env.TMP_PATH # usado para escrever arquivos 'nopipe' durante o processo de validação
     INPUT_PATH = env.DATASET_PATH
-    OUTPUT_PATH = env.TREE_PATH 
+    OUTPUT_PATH = env.TREE_PATH
     CLUSTALW_PATH = env.CLUSTALW_PATH
     
     # formato das sequências: newick ou nexus
@@ -27,6 +26,8 @@ def handler(event, context):
     file_utils.create_directory_if_not_exists(TMP_PATH)
     file_utils.create_directory_if_not_exists(INPUT_PATH)
     file_utils.create_directory_if_not_exists(OUTPUT_PATH)
+    
+    env.print_environment()
 
     # Get the input_file from the payload
     input_file = event['file']
@@ -54,8 +55,8 @@ def handler(event, context):
     ############################################
     if env == 'LAMBDA':
         ## Copy tree file to S3 ##
-        output_bucket = event['outputBucket']
-        output_key = event['outputKey']
+        output_bucket = event.get('outputBucket')
+        output_key = event.get('outputKey')
         
         # Upload files from lambda function into s3
         up_info = upload_and_log_single_file_to_s3(request_id, output_bucket, output_key, OUTPUT_PATH, tree_file)
@@ -63,4 +64,17 @@ def handler(event, context):
         print(f'PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {up_info['file_count']} files\t FilesSize: {up_info['file_size']} bytes\t TransferDuration: {up_info['upload_duration_ms']} ms\t ProducedFiles: {tree_file}')
     ############################################    
         
-    return "OK"
+    return request_id
+
+
+
+
+
+
+# event = {
+#     'execution_env': 'LOCAL_WIN',
+#     'file': 'ORTHOMCL1'
+# }
+
+
+# handler(event, None)

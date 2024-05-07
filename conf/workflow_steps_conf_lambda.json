@@ -1,4 +1,9 @@
 {
+    "input_dataset": {
+        "json_file": "conf/input_files_201.json",
+        "limit": 10
+    },
+
     "steps": [
         {
             "name": "Upload files to AWS S3",
@@ -11,17 +16,17 @@
             }
         },
         {
-            "name": "Invoke function execution",
-            "module": "function_invoker",
+            "name": "Invoke execution",
+            "module": "invoker",
             "handler": "invoke_lambda_execution",
             "active": true,
             "params": {
                 "function_name": "tree_constructor",
+                "execution_strategy": "for_each_file",
                 "inputBucket": "mribeiro-input-files",
                 "inputKey": "",
                 "outputBucket": "mribeiro-tree-files",
-                "outputKey": "",
-                "execution_strategy": "for_each_file"
+                "outputKey": ""
             }
         },
         {

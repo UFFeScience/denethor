@@ -60,6 +60,18 @@ def get_num_files_and_size(path):
 
 def upload_and_log_single_file_to_s3(request_id, s3_bucket, s3_key, local_path, file_name):
     
+    if request_id is None:
+        raise ValueError('request_id cannot be None when uploading to S3!')
+    
+    if s3_bucket is None:
+        raise ValueError('s3_bucket cannot be None when uploading to S3!')
+    
+    if local_path is None:
+        raise ValueError('local_path cannot be None when uploading to S3!')
+    
+    if not os.path.exists(local_path):
+        raise ValueError('local_path does not exist!')
+    
     try:
         start_time = timeit.default_timer()
         
@@ -110,7 +122,7 @@ def download_and_log_single_file_from_s3(request_id, s3_bucket, s3_key, local_pa
     s3 = boto3.client('s3')
     file_name = os.path.basename(s3_key) # basename representa o nome do arquivo
     local_file_path = os.path.join(local_path, file_name)
-
+    
     s3.download_file(s3_bucket, s3_key, local_file_path)
     
     end_time = timeit.default_timer()
@@ -125,6 +137,18 @@ def download_and_log_single_file_from_s3(request_id, s3_bucket, s3_key, local_pa
 
 
 def download_and_log_single_file_from_s3_new(request_id, s3_bucket, s3_key, local_path):
+    
+    if request_id is None:
+        raise ValueError('request_id cannot be None when downloading from S3!')
+    
+    if s3_bucket is None:
+        raise ValueError('s3_bucket cannot be None when downloading from S3!')
+    
+    if local_path is None:
+        raise ValueError('local_path cannot be None when downloading from S3!')
+    
+    if not os.path.exists(local_path):
+        raise ValueError('local_path does not exist!')
     
     start_time = timeit.default_timer()
 

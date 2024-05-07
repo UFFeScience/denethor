@@ -1,0 +1,77 @@
+{
+    "dataset": {
+        "json_file": "conf/datasets_201.json",
+        "limit": 10
+    },
+
+    "steps": [
+        {
+            "step_id": 1,
+            "module": "invoker",
+            "handler": "invoke_execution",
+            "params": {
+                "activity": "tree_constructor",
+                "execution_strategy": "for_each_file",
+                "execution_env": "LOCAL_WIN",
+                "activity_module_name": "tree_constructor",
+                "activity_module_path": "C:/Users/marce/OneDrive/Documentos/GitHub/denethor/lambda_functions/src"
+            },
+            "active": true
+        },
+        {
+            "step_id": 2,
+            "module": "monitor",
+            "handler": "monitor_lambda_execution",
+            "params": {
+                "activity": "tree_constructor",
+                "execution_env": "LOCAL_WIN"
+            },
+            "active": false
+        },
+        {
+            "step_id": 3,
+            "module": "execution_invoker",
+            "handler": "invoke_lambda_execution",
+            "params": {
+                "activity": "subtree_mining",
+                "execution_strategy": "for_all_files",
+                "execution_env": "LOCAL_WIN"
+            },
+            "active": false
+        },
+        {
+            "step_id": 4,
+            "module": "monitor",
+            "handler": "monitor_lambda_execution",
+            "params": {
+                "activity": "subtree_mining",
+                "execution_env": "LOCAL_WIN"
+            },
+            "active": false
+        },
+        {
+            "step_id": 5,
+            "module": "provenance_importer",
+            "handler": "import_provenance_from_aws",
+            "params": {
+                "activity": "tree_constructor",
+                "log_path": "data/executions/logs",
+                "log_file": "log_[function_name]_[execution_id].json",
+                "execution_env": "LOCAL_WIN"
+            },
+            "active": false
+        },
+        {
+            "step_id": 6,
+            "module": "provenance_importer",
+            "handler": "import_provenance_from_aws",
+            "params": {
+                "activity": "subtree_mining",
+                "log_path": "data/executions/logs",
+                "log_file": "log_[function_name]_[execution_id].json",
+                "execution_env": "LOCAL_WIN"
+            },
+            "active": false
+        }
+    ]
+}

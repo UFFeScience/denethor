@@ -16,14 +16,14 @@ workflow_start_time_str = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(workfl
 execution_id = 'EXEC_' + workflow_start_time_str.replace(':', '-').replace('T', '_').replace('Z', '') + '_UTC'
 
 # Load JSON files
-with open('conf/provider_conf.json') as f: 
-    PROVIDER_CONF = json.load(f)
-
 with open('conf/workflow_conf.json') as f: 
-    WORKFLOW_CONF = json.load(f)
+    workflow_conf = json.load(f)
 
-with open('conf/workflow_steps.json') as f: 
-    WORKFLOW_STEPS = json.load(f)
+with open('conf/workflow_steps_conf_local.json') as f: 
+    steps_conf = json.load(f)
+
+with open('conf/env_conf.json') as f:
+    env_conf = json.load(f)
 
 # For testing purposes, you can override the start and end time of the logs to be retrieved
 override_params = {
@@ -67,7 +67,7 @@ override_params = {
 # # step_to_execute = "download_files_from_aws_s3"
 # step_to_execute = "import_provenance_from_aws"
 
-# for step in WORKFLOW_STEPS['steps']:
+# for step in workflow_conf['steps']:
 #     if step['handler'] == step_to_execute:
 #         step['active'] = True
 #     else:
@@ -82,40 +82,36 @@ override_params = {
 
 
 # Json file containing the list of input files
-json_file = WORKFLOW_CONF['workflow']['input_files']['json_file']
+json_file = steps_conf['dataset']['json_file']
+limit = steps_conf['dataset']['limit']
 
 # Load actual input files list to be used in the workflow
-with open(json_file, 'r') as file:
-    FILES = json.load(file)
-    input_files_name = FILES['files']
-    input_files_path = FILES['path']
+with open(json_file, 'r') as jf:
+    file = json.load(jf)
+    datasets = file['datasets']
 
 # Limit the number of files to be used
-file_limit = WORKFLOW_CONF['workflow']['input_files']['limit']
-if file_limit is not None:
-    input_files_name = input_files_name[:file_limit]
+if limit is not None:
+    datasets = datasets[:limit]
 
-# Store workflow configuration and runtime parameters
-workflow_params = {
-    # Workflow and provider configuration parameters from the JSON file
-    **PROVIDER_CONF, 
-    **WORKFLOW_CONF, 
-    # Workflow runtime parameters
+# Workflow runtime parameters
+runtime_params = {
     'execution_id': execution_id,
     'workflow_start_time_str': workflow_start_time_str,
     'workflow_start_time_ms': workflow_start_time_ms,
-    'input_files_name': input_files_name,
-    'input_files_path': input_files_path,
-}
-
-# Store the produced data of the activities at each step
-steps_return_data = {
+    'datasets': datasets,
+    'env_conf': '',
+    'produced_data': ''
 }
 
 # For each step in the workflow
-for step in WORKFLOW_STEPS['steps']:
+for step in steps_conf['steps']:
     # Check if the step is active
     if step.get('active', True):
+
+        # Get the current environment configuration
+        runtime_params['env_conf'] = env_conf[step['params']['execution_env']]
+
         # Import the module dynamically
         module = importlib.import_module(step['module'])
 
@@ -123,16 +119,16 @@ for step in WORKFLOW_STEPS['steps']:
         python_function = getattr(module, step['handler'])
         
         params = {
-            **workflow_params,
-            **steps_return_data,
-            **step['params'],
-            **override_params
+            'workflow_conf': workflow_conf,
+            'runtime_params': runtime_params,
+            'step_params': step['params'],
+            'override_params': override_params
         }
         print(f'\n>>> Calling python function {step['handler']} from module {step['module']} with params: {params}')
         # Call the python function with the specified parameters and store the produced data to be used in the next steps
-        return_data = python_function(params)
-        if return_data is not None:
-            steps_return_data = {**steps_return_data, **return_data}
+        func_data = python_function(params)
+        if func_data is not None:
+            produced_data = {**produced_data, **func_data}
 
         print(f'\n>>> Function {step['handler']} from module {step['module']} called successfully')
 
