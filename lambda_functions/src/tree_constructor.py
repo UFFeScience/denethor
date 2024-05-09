@@ -1,4 +1,4 @@
-from environment import Environment
+import environment
 from tree_constructor_core import *
 import file_utils
 
@@ -9,15 +9,17 @@ def handler(event, context):
     else:
         request_id = context.aws_request_id
 
-    env = Environment(event['execution_env'])
+    env_conf = event['env_conf']
+    env_name = event['env_name']
+    environment.print_env(env_name, env_conf)
 
-    TMP_PATH = env.TMP_PATH # usado para escrever arquivos 'nopipe' durante o processo de validação
-    INPUT_PATH = env.DATASET_PATH
-    OUTPUT_PATH = env.TREE_PATH
-    CLUSTALW_PATH = env.CLUSTALW_PATH
+    TMP_PATH = env_conf.get('TMP_PATH') # usado para escrever arquivos 'nopipe' durante o processo de validação
+    INPUT_PATH = env_conf.get('DATASET_PATH')
+    OUTPUT_PATH = env_conf.get('TREE_PATH')
+    CLUSTALW_PATH = env_conf.get('CLUSTALW_PATH')
     
     # formato das sequências: newick ou nexus
-    DATA_FORMAT = env.DATA_FORMAT 
+    DATA_FORMAT = env_conf.get('DATA_FORMAT') 
 
     ## Limpeza arquivos antigos ##
     file_utils.remove_files(TMP_PATH)
@@ -27,13 +29,11 @@ def handler(event, context):
     file_utils.create_directory_if_not_exists(INPUT_PATH)
     file_utils.create_directory_if_not_exists(OUTPUT_PATH)
     
-    env.print_environment()
-
     # Get the input_file from the payload
     input_file = event['file']
 
     ############################################
-    if env == 'LAMBDA':
+    if env_name == 'LAMBDA':
         # Get the input_bucket from the payload
         input_bucket = event['inputBucket']
 
@@ -53,7 +53,7 @@ def handler(event, context):
     ############################################
 
     ############################################
-    if env == 'LAMBDA':
+    if env_name == 'LAMBDA':
         ## Copy tree file to S3 ##
         output_bucket = event.get('outputBucket')
         output_key = event.get('outputKey')

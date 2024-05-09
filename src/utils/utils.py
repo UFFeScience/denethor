@@ -1,4 +1,7 @@
 from datetime import datetime, timezone
+import importlib.util
+import inspect
+import sys
 import re
 import uuid
 
@@ -28,3 +31,36 @@ def parse_float(value: str) -> float:
 
 def generate_request_id():
     return 'uuid_' + str(uuid.uuid4()).replace('-', '_')
+
+# def invoke_python(module_name, module_path, function_name, payload):
+#     print(f'\n>>> Calling python function {function_name} from module {module_name} with params: {payload}')
+#     if module_path is not None:
+#         sys.path.append(module_path)
+#     module = importlib.import_module(module_name)
+#     python_function = getattr(module, function_name)
+#     return python_function(payload)
+
+
+def invoke_python(module_name, module_path, function_name, *args):
+    # Check if the module and function exist
+    if not module_name or not function_name:
+        raise ValueError('Both module_name and function_name must be provided')
+
+    if module_path is not None:
+        sys.path.append(module_path)
+
+    module = importlib.import_module(module_name)
+
+    # Get the function from the module
+    if hasattr(module, function_name):
+        python_function = getattr(module, function_name)
+    else:
+        raise AttributeError(f'The module {module_name} does not have a function named {function_name}')
+
+    # Check if the number of provided arguments matches the number of parameters the function requires
+    params = inspect.signature(python_function).parameters
+    if len(args) != len(params):
+        raise ValueError(f'The function {function_name} requires {len(params)} parameters, but {len(args)} were provided')
+
+    # Call the function with the provided arguments
+    return python_function(*args)

@@ -26,9 +26,9 @@ def subtree_constructor(tree_name, input_tree_path, output_subtree_path, data_fo
 
     match data_format:
         case 'nexus':
-            EXTENTION_FORMAT = 'nexus' # Nexus: 'nexus'
+            DATA_FORMAT = 'nexus' # Nexus: 'nexus'
         case 'newick':
-            EXTENTION_FORMAT = 'nwk' # Newick: 'nwk'
+            DATA_FORMAT = 'nwk' # Newick: 'nwk'
     
     # Leitura do arquido da árvore
     print(f"\nReading tree file {tree_name}")
@@ -44,7 +44,7 @@ def subtree_constructor(tree_name, input_tree_path, output_subtree_path, data_fo
     for clade in tree.find_clades():
         subtree = Phylo.BaseTree.Tree(clade)
         if subtree.count_terminals() > 1:
-            subtree_name = f'{tree_name_prefix}_{clade.name}.{EXTENTION_FORMAT}'
+            subtree_name = f'{tree_name_prefix}_{clade.name}.{DATA_FORMAT}'
             subtree_file = os.path.join(output_subtree_path, subtree_name)
             Phylo.write(subtree, subtree_file, data_format)
             list_subtree.append(subtree_name)

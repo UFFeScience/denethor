@@ -3,6 +3,8 @@ import json
 import importlib
 import os
 import time
+from utils import utils
+
 
 
 print('******* Worflow execution started at: ', datetime.now().strftime("%Y-%m-%d %H:%M:%S"), ' *******')
@@ -13,7 +15,7 @@ workflow_start_time_ms = int(time.time() * 1000)
 workflow_start_time_str = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(workflow_start_time_ms/1000))
 
 # Set the workflow execution ID
-execution_id = 'EXEC_' + workflow_start_time_str.replace(':', '-').replace('T', '_').replace('Z', '') + '_UTC'
+workflow_execution_id = 'EXEC_' + workflow_start_time_str.replace(':', '-').replace('T', '_').replace('Z', '') + '_UTC'
 
 # Load JSON files
 with open('conf/workflow_conf.json') as f: 
@@ -23,7 +25,7 @@ with open('conf/workflow_steps_conf_local.json') as f:
     steps_conf = json.load(f)
 
 with open('conf/env_conf.json') as f:
-    env_conf = json.load(f)
+    all_env_conf = json.load(f)
 
 # For testing purposes, you can override the start and end time of the logs to be retrieved
 override_params = {
@@ -96,37 +98,33 @@ if limit is not None:
 
 # Workflow runtime parameters
 runtime_params = {
-    'execution_id': execution_id,
+    'workflow_execution_id': workflow_execution_id,
     'workflow_start_time_str': workflow_start_time_str,
     'workflow_start_time_ms': workflow_start_time_ms,
-    'datasets': datasets,
-    'env_conf': '',
-    'produced_data': ''
 }
+
+produced_data = {}
 
 # For each step in the workflow
 for step in steps_conf['steps']:
     # Check if the step is active
     if step.get('active', True):
 
-        # Get the current environment configuration
-        runtime_params['env_conf'] = env_conf[step['params']['execution_env']]
-
-        # Import the module dynamically
-        module = importlib.import_module(step['module'])
-
-        # Get the python function from the module
-        python_function = getattr(module, step['handler'])
+        
         
         params = {
             'workflow_conf': workflow_conf,
+            'all_env_conf': all_env_conf,
             'runtime_params': runtime_params,
             'step_params': step['params'],
+            'datasets': datasets,
+            'produced_data': produced_data,
             'override_params': override_params
         }
-        print(f'\n>>> Calling python function {step['handler']} from module {step['module']} with params: {params}')
-        # Call the python function with the specified parameters and store the produced data to be used in the next steps
-        func_data = python_function(params)
+        
+        # Call the python function with the specified parameters
+        func_data = utils.invoke_python(step['module'], None, step['handler'], params)
+
         if func_data is not None:
             produced_data = {**produced_data, **func_data}
 

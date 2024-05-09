@@ -12,20 +12,16 @@ def invoke_execution(params):
     Args:
         params (dict): A dictionary containing the following keys:
     """
-    runtime_params = params['runtime_params']
-    step_params = params['step_params']
-    execution_env = step_params['execution_env']
-
     
-    if execution_env == 'LOCAL_WIN':
-        return invoke_local_execution(runtime_params, step_params)
+    if params.get('step_params').get('env_name') == 'LOCAL_WIN':
+        return invoke_local_execution(params)
 
-    elif execution_env == 'LAMBDA':
+    elif params.get('step_params').get('env_name') == 'LAMBDA':
         return invoke_lambda_execution(params)
 
     
     else:
-        raise ValueError(f'Invalid execution environment: {execution_env}')
+        raise ValueError(f'Invalid execution environment: {params.get('step_params').get('env_name')}')
 
 
 def invoke_lambda_execution(params):
@@ -103,46 +99,43 @@ def invoke_async(function_name, payload):
     return request_id
 
 
-def invoke_local_execution(runtime_params, step_params):
+def invoke_local_execution(params):
     
-    datasets = runtime_params['datasets']
+    step_params = params.get('step_params')
 
-    env_conf = runtime_params['env_conf'] ###### AQUI ######
-    
-    activity_name = step_params['activity']    
-    execution_strategy = step_params['execution_strategy']
-    execution_env = step_params['execution_env']
-    module_name = step_params['activity_module_name']
-    module_path = step_params['activity_module_path']
-
-    sys.path.append(module_path)
+    activity_name = step_params.get('activity')
+    function_name = 'handler' # nome da função padrão dentro da implementação da atividade
+    execution_strategy = step_params.get('execution_strategy')
+    module_name = step_params.get('activity_module_name')
+    module_path = step_params.get('activity_module_path')
+    env_name = step_params.get('env_name')
+    env_conf = params.get('all_env_conf').get(env_name)
+    datasets = params.get('datasets')
 
     requests = []
     # Get the python function from the module
     
     if execution_strategy == 'for_each_file':
-        for dataset_name in datasets:
+        for dataset in datasets:
             payload = {
-                'file': dataset_name,
-                'execution_env': execution_env,
+                'file': dataset,
+                'env_name': env_name,
+                'env_conf': env_conf,
                 'request_id': utils.generate_request_id()
                 }
 
-            module = importlib.import_module(module_name)
-            python_function = getattr(module, 'handler')
-            # Call the python function with the specified parameters and store the produced data to be used in the next steps
-            request_id = python_function(payload, None)
+            # Call the python function with the specified parameters and return the request ID
+            request_id = utils.invoke_python(module_name, module_path, function_name, payload, None)
             requests.append(request_id)
-            print(f'{activity_name} triggered with payload {payload} with execution strategy {execution_strategy} for file: {dataset_name}')
+            print(f'{activity_name} triggered with payload {payload} with execution strategy {execution_strategy} for file: {dataset}')
 
     elif execution_strategy == 'for_all_files':
         payload = {
-                'files': datasets,
-                'execution_env': execution_env,
-                }
-        python_function = getattr(module, 'handler')
-        # Call the python function with the specified parameters and store the produced data to be used in the next steps
-        request_id = python_function(payload)
+            'files': datasets,
+            'env_conf': env_conf,
+            }
+        # Call the python function with the specified parameters and return the request ID
+        request_id = utils.invoke_python(module_name, module_path, function_name, payload, None)
         requests.append(request_id)
         print(f'{activity_name} triggered with payload {payload} with execution strategy {execution_strategy} for files: {datasets}')
     

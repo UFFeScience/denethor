@@ -79,15 +79,15 @@ def tree_constructor(input_file_name, input_path, tmp_path, output_path, clustal
 
     match data_format:
         case 'nexus':
-            EXTENTION_FORMAT = 'nexus' # Nexus: 'nexus'
+            DATA_FORMAT = 'nexus' # Nexus: 'nexus'
         case 'newick':
-            EXTENTION_FORMAT = 'nwk' # Newick: 'nwk'
+            DATA_FORMAT = 'nwk' # Newick: 'nwk'
     
     #configurando caminhos relativos padrões do diretorio
     fasta_file = os.path.join(input_path, input_file_name)
     aln_file  = os.path.join(tmp_path, f'{input_file_name}.aln')
     dnd_file  = os.path.join(tmp_path, f'{input_file_name}.dnd')
-    tree_file = os.path.join(output_path, f'tree_{input_file_name}.{EXTENTION_FORMAT}')
+    tree_file = os.path.join(output_path, f'tree_{input_file_name}.{DATA_FORMAT}')
 
     # Em caso de nomes duplicados ou sequências inválidas
     if duplicate_names(fasta_file) or not(validate_sequences(fasta_file)):
@@ -130,7 +130,7 @@ def tree_constructor(input_file_name, input_path, tmp_path, output_path, clustal
     tree = constructor.nj(distance_matrix)
 
     # Salva a árvore
-    Phylo.write(tree, tree_file, EXTENTION_FORMAT)
+    Phylo.write(tree, tree_file, DATA_FORMAT)
     print(f'Writing file {tree_file}')
 
     end_time = timeit.default_timer()
