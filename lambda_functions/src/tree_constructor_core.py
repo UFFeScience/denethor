@@ -87,6 +87,7 @@ def tree_constructor(input_file_name, input_path, tmp_path, output_path, clustal
     fasta_file = os.path.join(input_path, input_file_name)
     aln_file  = os.path.join(tmp_path, f'{input_file_name}.aln')
     dnd_file  = os.path.join(tmp_path, f'{input_file_name}.dnd')
+    tree_file_name = f'tree_{input_file_name}.{DATA_FORMAT}'
     tree_file = os.path.join(output_path, f'tree_{input_file_name}.{DATA_FORMAT}')
 
     # Em caso de nomes duplicados ou sequências inválidas
@@ -131,9 +132,10 @@ def tree_constructor(input_file_name, input_path, tmp_path, output_path, clustal
 
     # Salva a árvore
     Phylo.write(tree, tree_file, DATA_FORMAT)
-    print(f'Writing file {tree_file}')
+    print(f'Writing file {tree_file_name}')
 
     end_time = timeit.default_timer()
     tree_duration_ms = (end_time - start_time) * 1000
 
-    return tree_file, tree_duration_ms
+    produced_files = [tree_file_name]
+    return produced_files, tree_duration_ms

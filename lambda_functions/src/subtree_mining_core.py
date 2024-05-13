@@ -36,7 +36,7 @@ def subtree_constructor(tree_name, input_tree_path, output_subtree_path, data_fo
     tree = Phylo.read(tree_file, data_format)
 
     #Lista caminhos das subárvores (que posteriormente serão utilizadas para compor a matriz de subárvores)
-    list_subtree = []
+    subtree_files = []
 
     # Salva o arquivo da subárvore
     tree_name_prefix = tree_name.rsplit(".", 1)[0]
@@ -47,14 +47,14 @@ def subtree_constructor(tree_name, input_tree_path, output_subtree_path, data_fo
             subtree_name = f'{tree_name_prefix}_{clade.name}.{DATA_FORMAT}'
             subtree_file = os.path.join(output_subtree_path, subtree_name)
             Phylo.write(subtree, subtree_file, data_format)
-            list_subtree.append(subtree_name)
+            subtree_files.append(subtree_name)
             print(f"Subtree file {subtree_name} was created!")
 
     end_time = timeit.default_timer()
     subtree_duration_ms = (end_time - start_time) * 1000
     print(f'Tempo de construção dos arquivos de subárvores de {tree_name}: {subtree_duration_ms} milissegundos')
 
-    return list_subtree, subtree_duration_ms
+    return subtree_files, subtree_duration_ms
 
 
 # 
@@ -100,6 +100,8 @@ def maf_database_create(subtree_matrix, path, data_format):
     
     print(f'maf_database_create start time: {time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}')
 
+    start_time = timeit.default_timer()
+
     subtree_matrix = fill_matrix(subtree_matrix, value=None)
 
     max_rows = len(subtree_matrix)
@@ -138,4 +140,8 @@ def maf_database_create(subtree_matrix, path, data_format):
     #         # print(i, key, val)
     #         continue
     
-    return dict_maf_database, max_maf
+    end_time = timeit.default_timer()
+    maf_duration_ms = (end_time - start_time) * 1000
+    print(f'Tempo de construção do maf_database: {maf_duration_ms} milissegundos')
+
+    return dict_maf_database, max_maf, maf_duration_ms

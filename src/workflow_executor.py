@@ -6,38 +6,31 @@ import time
 from utils import utils
 
 
-
-print('******* Worflow execution started at: ', datetime.now().strftime("%Y-%m-%d %H:%M:%S"), ' *******')
+print('******* Worflow execution started at: ', utils.now_str(), ' *******')
 print('******* Working directory: ', os.getcwd(), ' *******')
 
-# Set the workflow start time
-workflow_start_time_ms = int(time.time() * 1000)
-workflow_start_time_str = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(workflow_start_time_ms/1000))
-
-# Set the workflow execution ID
-workflow_execution_id = 'EXEC_' + workflow_start_time_str.replace(':', '-').replace('T', '_').replace('Z', '') + '_UTC'
+# Set the workflow start time in milliseconds
+start_time_ms = int(time.time() * 1000)
+end_time_ms = None
 
 # Load JSON files
-with open('conf/workflow_conf.json') as f: 
-    workflow_conf = json.load(f)
+with open('conf/workflow_config.json') as f: 
+    workflow_config = json.load(f)
 
-with open('conf/workflow_steps_conf_local.json') as f: 
-    steps_conf = json.load(f)
+with open('conf/workflow_steps_local.json') as f: 
+    workflow_steps = json.load(f)
 
-with open('conf/env_conf.json') as f:
-    all_env_conf = json.load(f)
+# Load input files list to be used in the workflow
+with open('conf/workflow_input_files.json', 'r') as f:
+    input_files = json.load(f)
 
-# For testing purposes, you can override the start and end time of the logs to be retrieved
-override_params = {
-}
-
-#########################################################################
-#########################################################################
-#########################################################################
+# Load the execution environment configuration
+with open('conf/execution_env_config.json') as f:
+    global_env_config = json.load(f)
+    
 #########################################################################
 # FOR LOCAL TESTING!!!!
 # Comment the following lines to run the workflow as usual
-#########################################################################
 #########################################################################
     
 # from datetime import datetime, timezone
@@ -51,86 +44,65 @@ override_params = {
 
 # # Converte para milissegundos e acrescenta uma margem de 10 segundos
 # # antes e depois do intervalo para garantir que todos os logs sejam capturados
-# override_start_time_ms = int(start_time_date.timestamp() * 1000) - (10 * 1000)
-# override_end_time_ms = int(end_time_date.timestamp() * 1000) + (10 * 1000)
-# override_execution_id = 'EXEC_' + str(start_time_date).replace('T', '_').replace('+00:00', '_UTC').replace('-03:00', '_GMT3').replace(':', '-').replace(' ', '_').replace('Z', '')
+# start_time_ms = int(start_time_date.timestamp() * 1000) - (10 * 1000)
+# end_time_ms = int(end_time_date.timestamp() * 1000) + (10 * 1000)
 
-# override_params = {
-#     'override_start_time_ms': override_start_time_ms,
-#     'override_end_time_ms': override_end_time_ms,
-#     'override_execution_id': override_execution_id
-# }
 
-# # step_to_execute = "upload_files_to_aws_s3"
-# # step_to_execute = "invoke_lambda_execution"
-# # step_to_execute = "monitor_lambda_execution"
-# # step_to_execute = "invoke_lambda_execution"
-# # step_to_execute = "monitor_lambda_execution"
-# # step_to_execute = "download_files_from_aws_s3"
-# step_to_execute = "import_provenance_from_aws"
+# Steps id 5 and 6 are active
 
-# for step in workflow_conf['steps']:
-#     if step['handler'] == step_to_execute:
+# for step in workflow_steps:
+#     if step['id'] in (5,6):
 #         step['active'] = True
 #     else:
 #         step['active'] = False
 
 #########################################################################
-#########################################################################
-#########################################################################
-#########################################################################
 
 
-
-
-# Json file containing the list of input files
-json_file = steps_conf['dataset']['json_file']
-limit = steps_conf['dataset']['limit']
-
-# Load actual input files list to be used in the workflow
-with open(json_file, 'r') as jf:
-    file = json.load(jf)
-    datasets = file['datasets']
-
-# Limit the number of files to be used
-if limit is not None:
-    datasets = datasets[:limit]
-
-# Workflow runtime parameters
-runtime_params = {
-    'workflow_execution_id': workflow_execution_id,
-    'workflow_start_time_str': workflow_start_time_str,
-    'workflow_start_time_ms': workflow_start_time_ms,
+# Workflow parameters
+params = {
+    'execution_id': utils.generate_execution_id(start_time_ms),
+    'start_time_ms': start_time_ms,
+    'end_time_ms': end_time_ms,
+    'input_files': input_files,
+    'step_params': None,
+    'step_data': None
 }
 
 produced_data = {}
 
+TREE_PATH = "data/executions/tree"
+SUBTREE_PATH = "data/executions/subtree"
+utils.remove_files(TREE_PATH) #TODO: provisório, remover após ajustar a execução local
+utils.remove_files(SUBTREE_PATH) #TODO: provisório, remover após ajustar a execução local
+
+
 # For each step in the workflow
-for step in steps_conf['steps']:
+for step in workflow_steps:
     # Check if the step is active
     if step.get('active', True):
 
+        step_params = step.get('params')
+        execution_env = step_params.get('execution_env')
+        env_config = global_env_config.get(execution_env)
         
-        
-        params = {
-            'workflow_conf': workflow_conf,
-            'all_env_conf': all_env_conf,
-            'runtime_params': runtime_params,
-            'step_params': step['params'],
-            'datasets': datasets,
-            'produced_data': produced_data,
-            'override_params': override_params
-        }
+        # Load the execution environment configuration into the step parameters
+        step_params['execution_env_config'] = env_config
+        params['step_params'] =  step_params
+        params['produced_data'] = produced_data
         
         # Call the python function with the specified parameters
-        func_data = utils.invoke_python(step['module'], None, step['handler'], params)
+        func_data = utils.invoke_python(step.get('module'),
+                                        None,
+                                        step.get('handler'),
+                                        params)
 
         if func_data is not None:
             produced_data = {**produced_data, **func_data}
 
-        print(f'\n>>> Function {step['handler']} from module {step['module']} called successfully')
+        print(f'\n>>> Function {step.get('handler')} from module {step.get('module')} called successfully')
 
     else:
-        print(f'\n>>> Step {step['handler']} is inactive! Skipping...')
+        print(f'\n>>> Step id={step.get('step_id')}, handler={step.get('handler')} is inactive! Skipping...')
 
-print('******* Workflow execution finished at: ', datetime.now().strftime("%Y-%m-%d %H:%M:%S"), ' *******')
+print('******* Workflow execution finished at: ', utils.now_str(), ' *******')

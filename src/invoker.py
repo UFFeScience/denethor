@@ -4,6 +4,9 @@ import importlib
 import sys
 from utils import utils
 
+LOCAL_WIN = 'LOCAL_WIN'
+LAMBDA = 'LAMBDA'
+VM_LINUX = 'VM_LINUX'
 
 def invoke_execution(params):
     """
@@ -13,15 +16,16 @@ def invoke_execution(params):
         params (dict): A dictionary containing the following keys:
     """
     
-    if params.get('step_params').get('env_name') == 'LOCAL_WIN':
+    execution_env = params.get('step_params').get('execution_env')
+
+    if execution_env == LOCAL_WIN:
         return invoke_local_execution(params)
 
-    elif params.get('step_params').get('env_name') == 'LAMBDA':
+    elif execution_env == LAMBDA:
         return invoke_lambda_execution(params)
 
-    
     else:
-        raise ValueError(f'Invalid execution environment: {params.get('step_params').get('env_name')}')
+        raise ValueError(f'Invalid execution environment: {execution_env}')
 
 
 def invoke_lambda_execution(params):
@@ -108,38 +112,59 @@ def invoke_local_execution(params):
     execution_strategy = step_params.get('execution_strategy')
     module_name = step_params.get('activity_module_name')
     module_path = step_params.get('activity_module_path')
-    env_name = step_params.get('env_name')
-    env_conf = params.get('all_env_conf').get(env_name)
-    datasets = params.get('datasets')
+    env_name = step_params.get('execution_env')
+    env_config = step_params.get('execution_env_config')
+    
+    files = params.get('input_files')
 
-    requests = []
+    tree_files = params.get('produced_data').get('tree_constructor').get('produced_files')
+    if (tree_files is not None):
+        files = [f for lin in tree_files for f in lin]
+    # TODO: Verificar uma melhor forma de passar os arquivos da etpa anterior para a próxima etapa
+
+    subtree_matrix = params.get('produced_data').get('subtree_constructor_files')
+
+    all_requests = []
+    all_produced_files = []
     # Get the python function from the module
     
     if execution_strategy == 'for_each_file':
-        for dataset in datasets:
+        for file in files:
             payload = {
-                'file': dataset,
+                'input_file': file,
                 'env_name': env_name,
-                'env_conf': env_conf,
-                'request_id': utils.generate_request_id()
+                'env_config': env_config,
+                'request_id': utils.generate_uuid()
                 }
 
             # Call the python function with the specified parameters and return the request ID
-            request_id = utils.invoke_python(module_name, module_path, function_name, payload, None)
-            requests.append(request_id)
-            print(f'{activity_name} triggered with payload {payload} with execution strategy {execution_strategy} for file: {dataset}')
+            request_id, produced_files = utils.invoke_python(module_name, module_path, function_name, payload, None)
+            all_requests.append(request_id)
+            all_produced_files.append(produced_files)
+            print(f'{activity_name} triggered with payload {payload} with execution strategy {execution_strategy} for file: {file}')
 
     elif execution_strategy == 'for_all_files':
         payload = {
-            'files': datasets,
-            'env_conf': env_conf,
+            'input_files': files,
+            'env_name': env_name,
+            'env_config': env_config,
+            'request_id': utils.generate_uuid()
             }
         # Call the python function with the specified parameters and return the request ID
-        request_id = utils.invoke_python(module_name, module_path, function_name, payload, None)
-        requests.append(request_id)
-        print(f'{activity_name} triggered with payload {payload} with execution strategy {execution_strategy} for files: {datasets}')
+        request_id, produced_files = utils.invoke_python(module_name, module_path, function_name, payload, None)
+        all_requests.append(request_id)
+        all_produced_files.append(produced_files)
+        print(f'{activity_name} triggered with payload {payload} with execution strategy {execution_strategy} for files: {files}')
     
     else:
         raise ValueError(f'Invalid execution strategy: {execution_strategy}')
     
-    return {f"{activity_name}_requests" : requests}
+    
+    out = {
+            activity_name: {
+                "requests" : all_requests,
+                "produced_files" : all_produced_files
+            }
+        }
+    
+    return out

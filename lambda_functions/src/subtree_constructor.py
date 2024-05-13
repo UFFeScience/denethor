@@ -1,7 +1,7 @@
 import os
 import environment as env
 import file_utils as file_utils
-import tree_constructor_core  as tcc
+import subtree_mining_core as smc
 
 def handler(event, context):
 
@@ -15,9 +15,8 @@ def handler(event, context):
     env.print_env(env_name, env_config)
 
     TMP_PATH = env_config.get('TMP_PATH') # usado para escrever arquivos 'nopipe' durante o processo de validação
-    INPUT_PATH = env_config.get('INPUT_FILE_PATH')
-    OUTPUT_PATH = env_config.get('TREE_PATH')
-    CLUSTALW_PATH = env_config.get('CLUSTALW_PATH')
+    INPUT_PATH = env_config.get('TREE_PATH')
+    OUTPUT_PATH = env_config.get('SUBTREE_PATH')
     
     # formato das sequências: newick ou nexus
     DATA_FORMAT = env_config.get('DATA_FORMAT') 
@@ -31,7 +30,9 @@ def handler(event, context):
     file_utils.create_directory_if_not_exists(OUTPUT_PATH)
     
     # Get the input_file from the payload
-    input_file = event.get('input_file')
+    input_file = event['input_file']
+
+
 
     #
     ## Download do arquivo de entrada ##
@@ -50,14 +51,18 @@ def handler(event, context):
     ##################
 
 
+    
     #
-    ## Construção do arquivo de árvore ##
+    ## Construção do arquivo de subárvores ##
     #
-    print("Reading file %s" % input_file)
-    produced_files, tree_duration_ms = tcc.tree_constructor(input_file, INPUT_PATH, TMP_PATH, OUTPUT_PATH, CLUSTALW_PATH, DATA_FORMAT)
-    print(f'TREE_CONSTRUCTOR RequestId: {request_id}\t InputFile:{input_file} \t OutputTreeFile:{produced_files} \t Duration: {tree_duration_ms} ms')
-    ##################
+    # subtree_matrix = []
+    produced_files, subtree_duration_ms = smc.subtree_constructor(input_file, INPUT_PATH, OUTPUT_PATH, DATA_FORMAT)
+    # subtree_matrix.append(produced_files)
 
+    print(f'SUBTREE_CONSTRUCTOR RequestId: {request_id}\t InputTree: {input_file}\t OutputSubtrees: {produced_files}\t Duration: {subtree_duration_ms} ms')
+    ##################
+    
+    
     #
     ## Upload do(s) arquivo(s) de saída ##
     #
@@ -75,17 +80,8 @@ def handler(event, context):
     
     f_info = file_utils.get_files_info(produced_files, OUTPUT_PATH)      
     print(f'PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {f_info['files_count']} files\t FilesSize: {f_info['files_size']} bytes\t TransferDuration: {upload_duration_ms} ms\t ProducedFiles: {produced_files}')
-        
+    
+    
     return request_id, produced_files
 
 
-
-
-
-# event = {
-#     'execution_env': 'LOCAL_WIN',
-#     'file': 'ORTHOMCL1'
-# }
-
-
-# handler(event, None)

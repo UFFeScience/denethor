@@ -1,7 +1,7 @@
 import os
 import environment as env
 import file_utils as file_utils
-import tree_constructor_core  as tcc
+import subtree_mining_core as smc
 
 def handler(event, context):
 
@@ -10,17 +10,16 @@ def handler(event, context):
     else:
         request_id = context.aws_request_id
 
-    env_config = event.get('env_config')
-    env_name = event.get('env_name')
-    env.print_env(env_name, env_config)
+    env_conf = event['env_conf']
+    env_name = event['env_name']
+    env.print_env(env_name, env_conf)
 
-    TMP_PATH = env_config.get('TMP_PATH') # usado para escrever arquivos 'nopipe' durante o processo de validação
-    INPUT_PATH = env_config.get('INPUT_FILE_PATH')
-    OUTPUT_PATH = env_config.get('TREE_PATH')
-    CLUSTALW_PATH = env_config.get('CLUSTALW_PATH')
+    TMP_PATH = env_conf.get('TMP_PATH') # usado para escrever arquivos 'nopipe' durante o processo de validação
+    INPUT_PATH = env_conf.get('TREE_PATH')
+    OUTPUT_PATH = env_conf.get('SUBTREE_PATH')
     
     # formato das sequências: newick ou nexus
-    DATA_FORMAT = env_config.get('DATA_FORMAT') 
+    DATA_FORMAT = env_conf.get('DATA_FORMAT') 
 
     ## Limpeza arquivos temporários (antigos) ##
     file_utils.remove_files(TMP_PATH)
@@ -31,13 +30,15 @@ def handler(event, context):
     file_utils.create_directory_if_not_exists(OUTPUT_PATH)
     
     # Get the input_file from the payload
-    input_file = event.get('input_file')
+    input_file = event['file']
+
+
 
     #
     ## Download do arquivo de entrada ##
     #
     download_time_ms = None
-    if env_name == env.LAMBDA:
+    if env_name == 'LAMBDA':
         # Get the input_bucket from the payload
         input_bucket = event['inputBucket']
         input_key = event['inputKey']
@@ -50,19 +51,26 @@ def handler(event, context):
     ##################
 
 
+    
+    subtree_matrix = []
     #
-    ## Construção do arquivo de árvore ##
+    ## Criação do dicionário de similariadades de subárvore ##
     #
-    print("Reading file %s" % input_file)
-    produced_files, tree_duration_ms = tcc.tree_constructor(input_file, INPUT_PATH, TMP_PATH, OUTPUT_PATH, CLUSTALW_PATH, DATA_FORMAT)
-    print(f'TREE_CONSTRUCTOR RequestId: {request_id}\t InputFile:{input_file} \t OutputTreeFile:{produced_files} \t Duration: {tree_duration_ms} ms')
-    ##################
+    start_time = timeit.default_timer()
+    dict_maf_database, max_maf, duration = smc.maf_database_create(subtree_matrix, OUTPUT_PATH, DATA_FORMAT)
+    end_time = timeit.default_timer()
+    maf_time_ms = (end_time - start_time) * 1000
 
+    print(f'MAF_DATABASE_CREATE RequestId: {request_id}\t MaxMaf: {max_maf}\t Duration: {maf_time_ms} ms\t MafDatabase: {dict_maf_database}')
+
+    ##################
+    
+    
     #
     ## Upload do(s) arquivo(s) de saída ##
     #
     upload_duration_ms = None
-    if env_name == env.LAMBDA:
+    if env_name == 'LAMBDA':
         ## Copy tree file to S3 ##
         output_bucket = event.get('outputBucket')
         output_key = event.get('outputKey')
@@ -75,17 +83,8 @@ def handler(event, context):
     
     f_info = file_utils.get_files_info(produced_files, OUTPUT_PATH)      
     print(f'PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {f_info['files_count']} files\t FilesSize: {f_info['files_size']} bytes\t TransferDuration: {upload_duration_ms} ms\t ProducedFiles: {produced_files}')
-        
+    
+    
     return request_id, produced_files
 
 
-
-
-
-# event = {
-#     'execution_env': 'LOCAL_WIN',
-#     'file': 'ORTHOMCL1'
-# }
-
-
-# handler(event, None)

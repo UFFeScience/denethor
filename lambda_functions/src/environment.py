@@ -3,6 +3,10 @@ import json
 import os
 import platform
 
+LOCAL_WIN = 'LOCAL_WIN'
+LAMBDA = 'LAMBDA'
+VM_LINUX = 'VM_LINUX'
+
 # class Environment:
 #     def __init__(self, execution_env):
 #         # 'LAMBDA' or 'LOCAL_WIN' or 'VM_LINUX'
