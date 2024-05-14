@@ -31,10 +31,11 @@ def remove_files(dir_path):
         print(f'Sorry, directory {dir_path} did not exist.')
 
 
-def create_directory_if_not_exists(dir_path):
-    if not os.path.exists(dir_path):
-        os.makedirs(dir_path, exist_ok=True) # cria o diretório, caso não exista
-        print(f'Directory {dir_path} was created!')
+def create_directory_if_not_exists(**dir_path):
+    for dir_path in dir_path.values():
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path, exist_ok=True) # cria o diretório, caso não exista
+            print(f'Directory {dir_path} was created!')
 
 
 def directory_has_single_file(directory_path):
@@ -70,7 +71,7 @@ def get_files_info(files, path):
     
     return {'files_name': files_name, 'files_count': files_count, 'files_size': files_size}
 
-def upload_and_log_single_file_to_s3_new(request_id, s3_bucket, s3_key, file_name, local_path):
+def upload_file_to_s3(request_id, s3_bucket, s3_key, file_name, local_path):
     
     validade_required_params(request_id, s3_bucket, file_name, local_path)
     
@@ -104,7 +105,7 @@ def upload_to_s3(request_id, s3_bucket, s3_key, file_list, local_path):
     
     for file_name in file_list:
         # upload files from lambda function into s3
-        duration_ms = upload_and_log_single_file_to_s3_new(request_id, s3_bucket, s3_key, file_name, local_path)
+        duration_ms = upload_file_to_s3(request_id, s3_bucket, s3_key, file_name, local_path)
         
         total_upload_duration_ms += duration_ms
     
@@ -133,7 +134,7 @@ def upload_to_s3(request_id, s3_bucket, s3_key, file_list, local_path):
 #     return download_time_ms
 
 
-def download_and_log_single_file_from_s3_new(request_id, s3_bucket, s3_key, file_name, local_path):
+def download_file_from_s3(request_id, s3_bucket, s3_key, file_name, local_path):
     
     validade_required_params(request_id, s3_bucket, file_name, local_path)
     

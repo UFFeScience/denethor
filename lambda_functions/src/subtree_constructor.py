@@ -25,9 +25,8 @@ def handler(event, context):
     file_utils.remove_files(TMP_PATH)
 
     ## Criação de diretórios ##
-    file_utils.create_directory_if_not_exists(TMP_PATH)
-    file_utils.create_directory_if_not_exists(INPUT_PATH)
-    file_utils.create_directory_if_not_exists(OUTPUT_PATH)
+    file_utils.create_directory_if_not_exists(INPUT_PATH, OUTPUT_PATH, TMP_PATH)
+
     
     # Get the input_file from the payload
     input_file = event['input_file']
