@@ -22,11 +22,11 @@
             "active": true,
             "params": {
                 "function_name": "tree_constructor",
-                "execution_strategy": "for_each_file",
-                "inputBucket": "mribeiro-input-files",
-                "inputKey": "",
-                "outputBucket": "mribeiro-tree-files",
-                "outputKey": ""
+                "execution_strategy": "for_each_input",
+                "input_bucket": "mribeiro-input-files",
+                "input_key": "",
+                "output_bucket": "mribeiro-tree-files",
+                "output_key": ""
             }
         },
         {
@@ -45,11 +45,11 @@
             "active": false,
             "params": {
                 "function_name": "subtree_mining",
-                "inputBucket": "mribeiro-tree-files",
-                "inputKey": "",
-                "outputBucket": "mribeiro-subtree-files",
-                "outputKey": "",
-                "execution_strategy": "for_all_files"
+                "input_bucket": "mribeiro-tree-files",
+                "input_key": "",
+                "output_bucket": "mribeiro-subtree-files",
+                "output_key": "",
+                "execution_strategy": "for_all_inputs"
             }
         },
         {

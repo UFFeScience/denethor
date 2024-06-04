@@ -21,11 +21,11 @@ Os parâmetros variam dependendo da etapa, mas podem incluir:
 - `bucket`: O nome do bucket AWS S3 para upload/download de arquivos.
 - `key`: A chave do arquivo a ser acessado no bucket AWS S3.
 - `function_name`: O nome da função AWS Lambda a ser invocada.
-- `inputBucket`: O nome do bucket AWS S3 de onde os arquivos de entrada serão lidos.
-- `inputKey`: A chave do arquivo de entrada a ser lido do bucket AWS S3, se aplicável.
-- `outputBucket`: O nome do bucket AWS S3 onde os arquivos de saída serão escritos.
-- `outputKey`: A chave do arquivo de saída a ser escrito no bucket AWS S3, se aplicável.
-- `execution_strategy`: A estratégia de execução para a função AWS Lambda. Pode ser *for_each_file* ou *for_all_files*.
+- `input_bucket`: O nome do bucket AWS S3 de onde os arquivos de entrada serão lidos.
+- `input_key`: A chave do arquivo de entrada a ser lido do bucket AWS S3, se aplicável.
+- `output_bucket`: O nome do bucket AWS S3 onde os arquivos de saída serão escritos.
+- `output_key`: A chave do arquivo de saída a ser escrito no bucket AWS S3, se aplicável.
+- `execution_strategy`: A estratégia de execução para a função AWS Lambda. Pode ser *for_each_input* ou *for_all_inputs*.
 
 ### `workflow_conf.json`
 
@@ -85,11 +85,11 @@ Conforme definido no arquivo `workflow_steps.json`, o workflow é composto por 7
 
 1. **Upload files to AWS S3**: Esta etapa realiza o upload de arquivos para o bucket AWS S3 especificado. O parâmetro "key" não é especificado, indicando que os arquivos serão carregados diretamente na raiz do bucket.
 
-2. **Invoke function execution (tree_constructor)**: Esta etapa realiza a invocação da função AWS Lambda "tree_constructor". A função lê arquivos do bucket de entrada e escreve a saída no bucket de saída. A estratégia de execução é "for_each_file", fazendo com que a função seja invocada separadamente para cada arquivo de entrada.
+2. **Invoke function execution (tree_constructor)**: Esta etapa realiza a invocação da função AWS Lambda "tree_constructor". A função lê arquivos do bucket de entrada e escreve a saída no bucket de saída. A estratégia de execução é "for_each_input", fazendo com que a função seja invocada separadamente para cada arquivo de entrada.
 
 3. **Monitor function execution (tree_constructor)**: Esta etapa realiza o monitoramento da execução da função AWS Lambda "tree_constructor". Através dos requests_id gerados na etapa anterior, é possível monitorar o status da execução de cada chamada da função.
 
-4. **Invoke function execution (subtree_mining)**: Esta etapa realiza a invocação da função AWS Lambda "subtree_mining". A função lê arquivos do bucket de entrada e escreve a saída no bucket de saída. A estratégia de execução é "for_all_files", fazendo com que a função seja invocada uma úncia vez para todo o conjunto de arquivos de entrada.
+4. **Invoke function execution (subtree_mining)**: Esta etapa realiza a invocação da função AWS Lambda "subtree_mining". A função lê arquivos do bucket de entrada e escreve a saída no bucket de saída. A estratégia de execução é "for_all_inputs", fazendo com que a função seja invocada uma úncia vez para todo o conjunto de arquivos de entrada.
 
 5. **Monitor function execution (subtree_mining)**: Esta etapa realiza o monitoramento da execução da função AWS Lambda "subtree_mining". Através dos requests_id gerados na etapa anterior, é possível monitorar o status da execução da função.
 

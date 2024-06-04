@@ -1,12 +1,12 @@
 import boto3
 import time
-from invoker import LOCAL_WIN, LAMBDA, VM_LINUX
+from src.invoke_execution import local_win, LAMBDA, VM_LINUX
 
 def monitor_execution(params):
 
     execution_env = params.get('step_params').get('execution_env')
 
-    if execution_env == LOCAL_WIN:
+    if execution_env == local_win:
         return monitor_local_execution(params)
 
     elif execution_env == LAMBDA:

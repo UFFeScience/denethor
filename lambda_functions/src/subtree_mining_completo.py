@@ -37,7 +37,7 @@ def handler(event, context):
     download_duration_ms = None
     if env_name == 'LAMBDA':
         # Get the input_bucket from the payload
-        input_bucket = event['inputBucket']
+        input_bucket = event['input_bucket']
         ## Download multiple files from s3 bucket into lambda function
         download_duration_ms = smc.download_and_log_multiple_files_from_s3(request_id, input_bucket, INPUT_PATH, input_files, DATA_FORMAT)
     ###################################################################################
@@ -80,8 +80,8 @@ def handler(event, context):
     upload_duration_ms = None
     if env_name == 'LAMBDA':
         ## Copy tree file to S3 ##
-        output_bucket = event.get('outputBucket')
-        output_key = event.get('outputKey')
+        output_bucket = event.get('output_bucket')
+        output_key = event.get('output_key')
         # Upload files from lambda function into s3
         upload_duration_ms = smc.upload_and_log_multiple_files_to_s3(request_id, output_bucket, output_key, OUTPUT_PATH, produced_files)
     ###################################################################################

@@ -26,10 +26,10 @@ def handler(event, context):
     remove_files(OUTPUT_PATH)
 
     # Obter o bucket de entrada, arquivo e o bucket de saída do payload
-    input_bucket = event['inputBucket']
+    input_bucket = event['input_bucket']
     input_file = event['file']
-    output_bucket = event['outputBucket']
-    output_key = event['outputKey']
+    output_bucket = event['output_bucket']
+    output_key = event['output_key']
 
     ## Download file from s3 bucket into lambda function
     download_duration_ms = download_and_log_single_file_from_s3(request_id, input_bucket, input_file, INPUT_PATH)

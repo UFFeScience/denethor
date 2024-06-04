@@ -1,10 +1,10 @@
 from datetime import datetime, timezone
 import importlib.util
 import inspect
+import json
 import os
 import sys
 import re
-import uuid
 
 # Define a regex pattern to match only valid characters in file names or directories
 def sanitize(filename):
@@ -22,6 +22,9 @@ def to_str(time: float):
 def now_str():
     return datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
 
+def to_str(json_obj: dict) -> str:
+    return json.dumps(json_obj, indent=2)
+
 def parse_int(value: str) -> int:
     if value is None:
         return None
@@ -36,9 +39,6 @@ def parse_float(value: str) -> float:
     value_float = float(match.group()) if match else None
     return value_float
 
-def generate_uuid():
-    return 'uuid_' + str(uuid.uuid4()).replace('-', '_')
-
 def generate_execution_id(start_time_ms):
     return 'EXEC_' + to_str(start_time_ms).replace(':', '-').replace('T', '_').replace('Z', '') + '_UTC'
 
@@ -51,7 +51,7 @@ def generate_execution_id(start_time_ms):
 #     return python_function(payload)
 
 
-def invoke_python(module_name, module_path, func_name, *args):
+def invoke_python(module_name, module_path, func_name, payload):
     # Check if the module and function exist
     if not module_name or not func_name:
         raise ValueError('Both module_name and function_name must be provided')
@@ -69,8 +69,8 @@ def invoke_python(module_name, module_path, func_name, *args):
 
     # Check if the number of provided arguments matches the number of parameters the function requires
     params = inspect.signature(python_function).parameters
-    if len(args) != len(params):
-        raise ValueError(f'The function {func_name} requires {len(params)} parameters, but {len(args)} were provided')
+    num_none = len(params) - 1
+    args = [payload] + ([None] * num_none)
 
     # Call the function with the provided arguments
     return python_function(*args)

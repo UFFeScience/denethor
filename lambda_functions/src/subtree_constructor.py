@@ -1,86 +1,54 @@
-import os
-import environment as env
-import file_utils as file_utils
 import subtree_mining_core as smc
+import utils.denethor_utils as du
+import utils.file_utils as fu
 
 def handler(event, context):
 
-    if context is None:
-        request_id = event.get('request_id', '0')
-    else:
-        request_id = context.aws_request_id
+    request_id = du.get_request_id(context)
+    execution_env = du.get_execution_env(event)
+    
+    du.print_env(execution_env)
 
-    env_config = event.get('env_config')
-    env_name = event.get('env_name')
-    env.print_env(env_name, env_config)
-
-    TMP_PATH = env_config.get('TMP_PATH') # usado para escrever arquivos 'nopipe' durante o processo de validação
-    INPUT_PATH = env_config.get('TREE_PATH')
-    OUTPUT_PATH = env_config.get('SUBTREE_PATH')
+    TMP_PATH = execution_env.get('TMP_PATH') # usado para escrever arquivos 'nopipe' durante o processo de validação
+    INPUT_PATH = execution_env.get('TREE_PATH')
+    OUTPUT_PATH = execution_env.get('SUBTREE_PATH')
     
     # formato das sequências: newick ou nexus
-    DATA_FORMAT = env_config.get('DATA_FORMAT') 
-
-    ## Limpeza arquivos temporários (antigos) ##
-    file_utils.remove_files(TMP_PATH)
-
-    ## Criação de diretórios ##
-    file_utils.create_directory_if_not_exists(INPUT_PATH, OUTPUT_PATH, TMP_PATH)
-
-    
-    # Get the input_file from the payload
-    input_file = event['input_file']
-
-
+    DATA_FORMAT = execution_env.get('DATA_FORMAT') 
 
     #
-    ## Download do arquivo de entrada ##
+    ## Cleaning old temporary files and creating directories ##
     #
-    download_time_ms = None
-    if env_name == env.LAMBDA:
-        # Get the input_bucket from the payload
-        input_bucket = event['inputBucket']
-        input_key = event['inputKey']
-        # Download file from s3 bucket into lambda function
-        download_time_ms = file_utils.download_and_log_single_file_from_s3_new(request_id, input_bucket, input_key, input_file, INPUT_PATH)
-        
-    f_info = file_utils.get_files_info(input_file, INPUT_PATH)      
-    print(f'CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {f_info['files_count']} files\t FilesSize: {f_info['files_size']} bytes\t TransferDuration: {download_time_ms} ms\t ConsumedFiles: {input_file}')
-
-    ##################
-
-
+    fu.remove_files(TMP_PATH)
+    fu.create_directory_if_not_exists(INPUT_PATH, OUTPUT_PATH, TMP_PATH)
     
     #
-    ## Construção do arquivo de subárvores ##
+    ## Get the input_file from the payload
+    #
+    input_files = event.get('input_data')
+
+    #
+    ## Download input files ##
+    #
+    du.handle_consumed_files(request_id, input_files, INPUT_PATH, event)
+
+    #
+    ## Building the subtree files ##
     #
     # subtree_matrix = []
-    produced_files, subtree_duration_ms = smc.subtree_constructor(input_file, INPUT_PATH, OUTPUT_PATH, DATA_FORMAT)
+    produced_files, duration_ms = smc.subtree_constructor(input_files, INPUT_PATH, OUTPUT_PATH, DATA_FORMAT)
     # subtree_matrix.append(produced_files)
+    print(f'SUBTREE_CONSTRUCTOR RequestId: {request_id}\t InputTree: {input_files}\t OutputSubtrees: {produced_files}\t Duration: {duration_ms} ms')
 
-    print(f'SUBTREE_CONSTRUCTOR RequestId: {request_id}\t InputTree: {input_file}\t OutputSubtrees: {produced_files}\t Duration: {subtree_duration_ms} ms')
-    ##################
-    
-    
     #
-    ## Upload do(s) arquivo(s) de saída ##
+    ## Upload output files ##
     #
-    upload_duration_ms = None
-    if env_name == env.LAMBDA:
-        ## Copy tree file to S3 ##
-        output_bucket = event.get('outputBucket')
-        output_key = event.get('outputKey')
-        
-        # Upload files from lambda function into s3
-        upload_duration_ms = file_utils.upload_to_s3(request_id, output_bucket, output_key, produced_files, OUTPUT_PATH)
-        
-    ##################    
-
+    du.handle_produced_files(request_id, produced_files, OUTPUT_PATH, event)
     
-    f_info = file_utils.get_files_info(produced_files, OUTPUT_PATH)      
-    print(f'PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {f_info['files_count']} files\t FilesSize: {f_info['files_size']} bytes\t TransferDuration: {upload_duration_ms} ms\t ProducedFiles: {produced_files}')
-    
-    
-    return request_id, produced_files
+    return {
+            "request_id" : request_id,
+            "input_data" : input_files,
+            "produced_data" : produced_files
+        }
 
 

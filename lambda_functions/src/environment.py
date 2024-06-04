@@ -3,13 +3,13 @@ import json
 import os
 import platform
 
-LOCAL_WIN = 'LOCAL_WIN'
+local_win = 'local_win'
 LAMBDA = 'LAMBDA'
 VM_LINUX = 'VM_LINUX'
 
 # class Environment:
 #     def __init__(self, execution_env):
-#         # 'LAMBDA' or 'LOCAL_WIN' or 'VM_LINUX'
+#         # 'LAMBDA' or 'local_win' or 'VM_LINUX'
 #         self.env = execution_env
 #         self.TMP_PATH = None
 #         self.DATASET_PATH = None

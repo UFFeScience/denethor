@@ -1,0 +1,60 @@
+{
+    "default_separator": "\t",
+    
+    "general_statistics": {
+        "START": [
+            {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string", "separator": " "},
+            {"searchKey": "Version", "fieldName": "version", "dataType": "string"}
+        ],
+        "END": [
+            {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string"}
+        ],
+        "REPORT": [
+            {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string"},
+            {"searchKey": "Duration", "fieldName": "duration", "dataType": "float"},
+            {"searchKey": "Billed Duration", "fieldName": "billed_duration", "dataType": "float"},
+            {"searchKey": "Memory Size", "fieldName": "memory_size", "dataType": "integer"},
+            {"searchKey": "Max Memory Used", "fieldName": "max_memory_used", "dataType": "integer"},
+            {"searchKey": "Init Duration", "fieldName": "init_duration", "dataType": "float"}
+        ],
+        "FILE_TRANSFER": [
+            {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string"},
+            {"searchKey": "FileName", "fieldName": "name", "dataType": "string"},
+            {"searchKey": "Bucket", "fieldName": "bucket", "dataType": "string"},
+            {"searchKey": "FilePath", "fieldName": "path", "dataType": "string"},
+            {"searchKey": "FileSize", "fieldName": "size", "dataType": "integer"},
+            {"searchKey": "TransferDuration", "fieldName": "transfer_duration", "dataType": "float"},
+            {"searchKey": "TransferType", "fieldName": "transfer_type", "dataType": "string"}
+        ],
+        "CONSUMED_FILES_INFO": [
+            {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string"},
+            {"searchKey": "FilesCount", "fieldName": "consumed_files_count", "dataType": "integer"},
+            {"searchKey": "FilesSize", "fieldName": "consumed_files_size", "dataType": "integer"}, 
+            {"searchKey": "TransferDuration", "fieldName": "consumed_files_transfer_duration", "dataType": "float"}
+        ],
+        "PRODUCED_FILES_INFO": [
+            {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string"},
+            {"searchKey": "FilesCount", "fieldName": "produced_files_count", "dataType": "integer"},
+            {"searchKey": "FilesSize", "fieldName": "produced_files_size", "dataType": "integer"},
+            {"searchKey": "TransferDuration", "fieldName": "produced_files_transfer_duration", "dataType": "float"}
+        ]
+    },
+
+    "custom_statistics": {
+        "TREE_CONSTRUCTOR": [
+            {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string"},
+            {"searchKey": "Duration", "fieldName": "tree_duration", "dataType": "float", "description": "Execution time of the tree construction activity"}
+        ],
+        "SUBTREE_CONSTRUCTOR": [
+            {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string"},
+            {"searchKey": "Duration", "fieldName": "subtree_duration", "dataType": "float", "description": "Execution time of the subtree creation activity"}
+        ],
+        "MAF_DATABASE_CREATE": [
+            {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string"},
+            {"searchKey": "MaxMaf", "fieldName": "max_maf", "dataType": "integer", "description": "Max MAF value found during input file processing"},
+            {"searchKey": "MafDatabase", "fieldName": "maf_database", "dataType": "string", "description": "Value of the \"maf_database\" dictionary obtained at the end of the activity"},
+            {"searchKey": "Duration", "fieldName": "maf_db_duration", "dataType": "float", "description": "Execution time of the MAF database creation activity"}
+        ]
+    }
+}
+    

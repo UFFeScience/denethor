@@ -26,9 +26,9 @@ def handler(event, context):
     remove_files(OUTPUT_PATH)
 
     # Obter o bucket de entrada, a lista de arquivos e o bucket de saída do payload
-    input_bucket = event['inputBucket']
-    output_bucket = event['outputBucket']
-    output_key = event['outputKey']
+    input_bucket = event['input_bucket']
+    output_bucket = event['output_bucket']
+    output_key = event['output_key']
     input_files = event['files']
 
     ## Download multiple files from s3 bucket into lambda function
