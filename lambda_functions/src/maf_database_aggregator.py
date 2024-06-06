@@ -1,3 +1,4 @@
+import json
 import subtree_mining_core as smc
 import utils.denethor_utils as du
 import utils.file_utils as fu
@@ -13,45 +14,82 @@ def handler(event, context):
     ## Get the input_file from the payload
     #
     input_data = event.get('input_data')
-    # input_data contem uma lista de maf_databases parciais
+    # input_data contem uma lista de instâncias de maf_databases
     # gerados comparando cada grupo de subárvores com todas as outras
-    # cada maf_database parcial contem um dicionário de similaridades de subárvores 
-    # onde o valor do id indica o grau de similaridade
-    # A ideia é unir os maf_databases parciais em um único maf_database levando em conta esse grau de similaridade
-
-    i = 0
-    for partial_maf_database in input_data:
-        print(f"___________  {i}  _______________")
-        for k,v in partial_maf_database.items():
-            print(f'Partial MAF_DATABASE: {k} {v}')
-        print("_______________________________")
-        i += 1
-
-
-    maf_database = {}
-
-
-
-
-
-
+    # cada instância de maf_database contem:
+    # 1) id: grau de similaridade
+    # 2) chave: nome do arquivo de subárvores
+    # 3) valor: lista de subárvores que são similares
+    # A ideia é unir os maf_databases parciais em um único maf_database levando em conta o grau de similaridade
+    
+    # Exemplo de 'input_data' para os 5 primeiros datasets.
+    #
+    # -> conjunto de dados (n1):
+    #   * lista contendo o resultado de cada ativação de comparação de subárvores
+    #   * n1 = (0,3,4) estão vazios, pois não houve similiaridade entre a subarvores analisadas na ativação e todas as demais (grau = 0)
+    #   * n1 = (1,2) contém dados de subárvores similares
+    #
+    # -> conjunto de dados (n2):
+    #   * é cada item da lista (n1)
+    #   * tipo de dados: dicionário
+    #   * chave: o grau de similiaridade | valor: um dicionário de similaridades daquele grau
+    #
+    #  -> conjunto de dados (n3):
+    #    * é cada item valor de (n2)
+    #    * tipo de dados: dicionário
+    #    * chave: nome da subarvore | valor: lista de subárvores similares
+    #
+    # 0: {}
+    # 1: {
+    #     1: {'tree_ORTHOMCL256_Inner4.nexus': ['tree_ORTHOMCL256_2_Inner4.nexus', 'tree_ORTHOMCL256_2_Inner5.nexus', 'tree_ORTHOMCL256_2_Inner6.nexus', 'tree_ORTHOMCL256_2_Inner7.nexus', 'tree_ORTHOMCL256_2_Inner8.nexus'], 'tree_ORTHOMCL256_Inner5.nexus': ['tree_ORTHOMCL256_2_Inner4.nexus'], 'tree_ORTHOMCL256_Inner6.nexus': ['tree_ORTHOMCL256_2_Inner4.nexus'], 'tree_ORTHOMCL256_Inner7.nexus': ['tree_ORTHOMCL256_2_Inner4.nexus'], 'tree_ORTHOMCL256_Inner8.nexus': ['tree_ORTHOMCL256_2_Inner4.nexus']}  
+    #     2: {'tree_ORTHOMCL256_Inner1.nexus': ['tree_ORTHOMCL256_2_Inner1.nexus', 'tree_ORTHOMCL256_2_Inner2.nexus', 'tree_ORTHOMCL256_2_Inner3.nexus', 'tree_ORTHOMCL256_2_Inner5.nexus', 'tree_ORTHOMCL256_2_Inner6.nexus', 'tree_ORTHOMCL256_2_Inner7.nexus', 'tree_ORTHOMCL256_2_Inner8.nexus'], 'tree_ORTHOMCL256_Inner2.nexus': ['tree_ORTHOMCL256_2_Inner1.nexus', 'tree_ORTHOMCL256_2_Inner2.nexus', 'tree_ORTHOMCL256_2_Inner3.nexus', 'tree_ORTHOMCL256_2_Inner5.nexus', 'tree_ORTHOMCL256_2_Inner6.nexus', 'tree_ORTHOMCL256_2_Inner7.nexus', 'tree_ORTHOMCL256_2_Inner8.nexus'], 'tree_ORTHOMCL256_Inner3.nexus': ['tree_ORTHOMCL256_2_Inner1.nexus', 'tree_ORTHOMCL256_2_Inner2.nexus'], 'tree_ORTHOMCL256_Inner5.nexus': ['tree_ORTHOMCL256_2_Inner1.nexus', 'tree_ORTHOMCL256_2_Inner2.nexus'], 'tree_ORTHOMCL256_Inner6.nexus': ['tree_ORTHOMCL256_2_Inner1.nexus', 'tree_ORTHOMCL256_2_Inner2.nexus'], 'tree_ORTHOMCL256_Inner7.nexus': ['tree_ORTHOMCL256_2_Inner1.nexus', 'tree_ORTHOMCL256_2_Inner2.nexus'], 'tree_ORTHOMCL256_Inner8.nexus': ['tree_ORTHOMCL256_2_Inner1.nexus', 'tree_ORTHOMCL256_2_Inner2.nexus']}
+    #     3: {'tree_ORTHOMCL256_Inner3.nexus': ['tree_ORTHOMCL256_2_Inner3.nexus', 'tree_ORTHOMCL256_2_Inner5.nexus', 'tree_ORTHOMCL256_2_Inner6.nexus', 'tree_ORTHOMCL256_2_Inner7.nexus', 'tree_ORTHOMCL256_2_Inner8.nexus'], 'tree_ORTHOMCL256_Inner5.nexus': ['tree_ORTHOMCL256_2_Inner3.nexus'], 'tree_ORTHOMCL256_Inner6.nexus': ['tree_ORTHOMCL256_2_Inner3.nexus'], 'tree_ORTHOMCL256_Inner7.nexus': ['tree_ORTHOMCL256_2_Inner3.nexus'], 'tree_ORTHOMCL256_Inner8.nexus': ['tree_ORTHOMCL256_2_Inner3.nexus']}
+    #     4: {'tree_ORTHOMCL256_Inner5.nexus': ['tree_ORTHOMCL256_2_Inner5.nexus', 'tree_ORTHOMCL256_2_Inner6.nexus', 'tree_ORTHOMCL256_2_Inner7.nexus', 'tree_ORTHOMCL256_2_Inner8.nexus'], 'tree_ORTHOMCL256_Inner6.nexus': ['tree_ORTHOMCL256_2_Inner5.nexus'], 'tree_ORTHOMCL256_Inner7.nexus': ['tree_ORTHOMCL256_2_Inner5.nexus'], 'tree_ORTHOMCL256_Inner8.nexus': ['tree_ORTHOMCL256_2_Inner5.nexus']}
+    #     5: {'tree_ORTHOMCL256_Inner6.nexus': ['tree_ORTHOMCL256_2_Inner6.nexus', 'tree_ORTHOMCL256_2_Inner7.nexus', 'tree_ORTHOMCL256_2_Inner8.nexus'], 'tree_ORTHOMCL256_Inner7.nexus': ['tree_ORTHOMCL256_2_Inner6.nexus'], 'tree_ORTHOMCL256_Inner8.nexus': ['tree_ORTHOMCL256_2_Inner6.nexus']}
+    #     6: {'tree_ORTHOMCL256_Inner7.nexus': ['tree_ORTHOMCL256_2_Inner7.nexus', 'tree_ORTHOMCL256_2_Inner8.nexus'], 'tree_ORTHOMCL256_Inner8.nexus': ['tree_ORTHOMCL256_2_Inner7.nexus']}
+    #     8: {'tree_ORTHOMCL256_Inner8.nexus': ['tree_ORTHOMCL256_2_Inner8.nexus']}
+    # }
+    # 2: {
+    #     1: {'tree_ORTHOMCL256_2_Inner4.nexus': ['tree_ORTHOMCL256_Inner4.nexus', 'tree_ORTHOMCL256_Inner5.nexus', 'tree_ORTHOMCL256_Inner6.nexus', 'tree_ORTHOMCL256_Inner7.nexus', 'tree_ORTHOMCL256_Inner8.nexus'], 'tree_ORTHOMCL256_2_Inner5.nexus': ['tree_ORTHOMCL256_Inner4.nexus'], 'tree_ORTHOMCL256_2_Inner6.nexus': ['tree_ORTHOMCL256_Inner4.nexus'], 'tree_ORTHOMCL256_2_Inner7.nexus': ['tree_ORTHOMCL256_Inner4.nexus'], 'tree_ORTHOMCL256_2_Inner8.nexus': ['tree_ORTHOMCL256_Inner4.nexus']}
+    #     2: {'tree_ORTHOMCL256_2_Inner1.nexus': ['tree_ORTHOMCL256_Inner1.nexus', 'tree_ORTHOMCL256_Inner2.nexus', 'tree_ORTHOMCL256_Inner3.nexus', 'tree_ORTHOMCL256_Inner5.nexus', 'tree_ORTHOMCL256_Inner6.nexus', 'tree_ORTHOMCL256_Inner7.nexus', 'tree_ORTHOMCL256_Inner8.nexus'], 'tree_ORTHOMCL256_2_Inner2.nexus': ['tree_ORTHOMCL256_Inner1.nexus', 'tree_ORTHOMCL256_Inner2.nexus', 'tree_ORTHOMCL256_Inner3.nexus', 'tree_ORTHOMCL256_Inner5.nexus', 'tree_ORTHOMCL256_Inner6.nexus', 'tree_ORTHOMCL256_Inner7.nexus', 'tree_ORTHOMCL256_Inner8.nexus'], 'tree_ORTHOMCL256_2_Inner3.nexus': ['tree_ORTHOMCL256_Inner1.nexus', 'tree_ORTHOMCL256_Inner2.nexus'], 'tree_ORTHOMCL256_2_Inner5.nexus': ['tree_ORTHOMCL256_Inner1.nexus', 'tree_ORTHOMCL256_Inner2.nexus'], 'tree_ORTHOMCL256_2_Inner6.nexus': ['tree_ORTHOMCL256_Inner1.nexus', 'tree_ORTHOMCL256_Inner2.nexus'], 'tree_ORTHOMCL256_2_Inner7.nexus': ['tree_ORTHOMCL256_Inner1.nexus', 'tree_ORTHOMCL256_Inner2.nexus'], 'tree_ORTHOMCL256_2_Inner8.nexus': ['tree_ORTHOMCL256_Inner1.nexus', 'tree_ORTHOMCL256_Inner2.nexus']}
+    #     3: {'tree_ORTHOMCL256_2_Inner3.nexus': ['tree_ORTHOMCL256_Inner3.nexus', 'tree_ORTHOMCL256_Inner5.nexus', 'tree_ORTHOMCL256_Inner6.nexus', 'tree_ORTHOMCL256_Inner7.nexus', 'tree_ORTHOMCL256_Inner8.nexus'], 'tree_ORTHOMCL256_2_Inner5.nexus': ['tree_ORTHOMCL256_Inner3.nexus'], 'tree_ORTHOMCL256_2_Inner6.nexus': ['tree_ORTHOMCL256_Inner3.nexus'], 'tree_ORTHOMCL256_2_Inner7.nexus': ['tree_ORTHOMCL256_Inner3.nexus'], 'tree_ORTHOMCL256_2_Inner8.nexus': ['tree_ORTHOMCL256_Inner3.nexus']}
+    #     4: {'tree_ORTHOMCL256_2_Inner5.nexus': ['tree_ORTHOMCL256_Inner5.nexus', 'tree_ORTHOMCL256_Inner6.nexus', 'tree_ORTHOMCL256_Inner7.nexus', 'tree_ORTHOMCL256_Inner8.nexus'], 'tree_ORTHOMCL256_2_Inner6.nexus': ['tree_ORTHOMCL256_Inner5.nexus'], 'tree_ORTHOMCL256_2_Inner7.nexus': ['tree_ORTHOMCL256_Inner5.nexus'], 'tree_ORTHOMCL256_2_Inner8.nexus': ['tree_ORTHOMCL256_Inner5.nexus']}
+    #     5: {'tree_ORTHOMCL256_2_Inner6.nexus': ['tree_ORTHOMCL256_Inner6.nexus', 'tree_ORTHOMCL256_Inner7.nexus', 'tree_ORTHOMCL256_Inner8.nexus'], 'tree_ORTHOMCL256_2_Inner7.nexus': ['tree_ORTHOMCL256_Inner6.nexus'], 'tree_ORTHOMCL256_2_Inner8.nexus': ['tree_ORTHOMCL256_Inner6.nexus']}
+    #     6: {'tree_ORTHOMCL256_2_Inner7.nexus': ['tree_ORTHOMCL256_Inner7.nexus', 'tree_ORTHOMCL256_Inner8.nexus'], 'tree_ORTHOMCL256_2_Inner8.nexus': ['tree_ORTHOMCL256_Inner7.nexus']}
+    #     8: {'tree_ORTHOMCL256_2_Inner8.nexus': ['tree_ORTHOMCL256_Inner8.nexus']}
+    # }
+    # 3: {}
+    # 4: {}
+    
     #
     ## Criação do dicionário de similariadades de subárvore ##
     #
-    maf_database = None
-    max_maf = 0
-    
     maf_database = {}
-    max_maf = 0
-    for k,v in maf_database.items():
-        max_maf = max(max_maf, k)
     
-    
-    
-    
-    
-    
-    
+    i = 0
+    n1_list = input_data
+    for n1_item in n1_list:
+        print(f"___________ N1 - activation: {i}  _______________")
+        for n2_grade, n2_dict in n1_item.items():
+            print(f"___________ N2 - grade: {n2_grade}  _______________")
+            # se o id do grau de similaridade não existe no dicionário de similaridades
+            # então cria-se uma nova entrada
+            if n2_grade not in maf_database:
+                maf_database[n2_grade] = {}
+            for n3_subtree, n3_subtree_list in n2_dict.items():
+                print(f'>> N3: {n3_subtree}: {n3_subtree_list} \n')
+                # para um determinado grau de similaridade, adiciona-se a lista de subárvores similares em maf_database
+                if n3_subtree not in maf_database[n2_grade]:
+                    maf_database[n2_grade][n3_subtree] = n3_subtree_list
+                else:
+                    raise ValueError(f"Subtree {n3_subtree} already exists in maf_database[{n2_grade}]!!")
+            print("_______________________________")
+        i += 1
+
+    print(maf_database)
+
+
+
     #
     ## Upload output files ##
     #
