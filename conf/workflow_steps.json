@@ -5,10 +5,10 @@
         "activity": "tree_constructor",
         "execution_env": "local_win",
         "execution_strategy": "for_each_input",
-        "data": {
-            "input": "conf/input_files.json",
+        "params": {
+            "input_param": "conf/input_files.json",
             "input_limit": 5,
-            "output": "tree_files"
+            "output_param": "tree_files"
         },
         "active": true
     },
@@ -18,9 +18,9 @@
         "activity": "subtree_constructor",
         "execution_env": "local_win",
         "execution_strategy": "for_each_input",
-        "data": {
-            "input": "tree_files",
-            "output": "subtree_files"
+        "params": {
+            "input_param": "tree_files",
+            "output_param": "subtree_files"
         },
         "active": true
     },
@@ -30,9 +30,9 @@
         "activity": "maf_database_creator",
         "execution_env": "local_win",
         "execution_strategy": "for_each_input",
-        "data": {
-            "input": "subtree_files",
-            "output": "maf_database"
+        "params": {
+            "input_param": "subtree_files",
+            "output_param": "maf_databases"
         },
         "active": true
     },
@@ -42,9 +42,9 @@
         "activity": "maf_database_aggregator",
         "execution_env": "local_win",
         "execution_strategy": "for_all_inputs",
-        "data": {
-            "input": "maf_database",
-            "output": "final_maf_database"
+        "params": {
+            "input_param": "maf_databases",
+            "output_param": "final_maf_database"
         },"active": true
     },
     {

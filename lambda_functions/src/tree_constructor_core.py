@@ -101,7 +101,7 @@ def tree_constructor(input_files: list, input_path: str, tmp_path: str, output_p
 
         # Executa o programa Clustalw para alinhar as sequências sem precisar da linha de comando.
         if not os.path.exists(clustalw_path):
-            print(f'Sorry, directory {clustalw_path} do not exist.')
+            raise FileNotFoundError(f'Sorry, directory {clustalw_path} do not exist.')
             
         clustalw_bin = os.path.join(clustalw_path,'clustalw2')
         clustalw_cline = ClustalwCommandline(clustalw_bin, infile=fasta_file, outfile=aln_file)
@@ -137,7 +137,7 @@ def tree_constructor(input_files: list, input_path: str, tmp_path: str, output_p
 
         # Salva a árvore
         Phylo.write(tree, tree_file, file_format)
-        print(f'Writing file {tree_file_name}')
+        # print(f'Writing file {tree_file_name}')
 
         produced_files.append(tree_file_name)
 

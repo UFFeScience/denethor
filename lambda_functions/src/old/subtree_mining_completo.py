@@ -16,12 +16,12 @@ def handler(event, context):
     env_name = event['env_name']
     env.print_env(env_name, env_conf)
 
-    TMP_PATH = env_conf.get('TMP_PATH') # usado para escrever arquivos 'nopipe' durante o processo de validação
-    INPUT_PATH = env_conf.get('TREE_PATH')
-    OUTPUT_PATH = env_conf.get('SUBTREE_PATH')
+    TMP_PATH = env_conf.get('tmp_path') # usado para escrever arquivos 'nopipe' durante o processo de validação
+    INPUT_PATH = env_conf.get('tree_path')
+    OUTPUT_PATH = env_conf.get('subtree_path')
     
     # formato das sequências: newick ou nexus
-    DATA_FORMAT = env_conf.get('DATA_FORMAT') 
+    DATA_FORMAT = env_conf.get('data_format') 
 
     ## Limpeza arquivos temporários (antigos) ##
     file_utils.remove_files(TMP_PATH)

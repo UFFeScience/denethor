@@ -1,8 +1,3 @@
-import boto3
-import json
-import importlib
-import sys
-from utils import utils
 from execution import local_executor, aws_executor
 
 # params = {
@@ -12,8 +7,7 @@ from execution import local_executor, aws_executor
 #     'activity': activity,
 #     'execution_env': execution_env,
 #     'strategy': strategy,
-#     'input_data': input_data,
-#     'output_param': output_param,
+#     'input_data': input_data
 # }
 
 def execute(params):
@@ -33,6 +27,7 @@ def execute(params):
             results.append(result)
 
     elif strategy == 'for_all_inputs':
+        params['input_data'] = all_input_data
         result = execute_by_env(params)
         results.append(result)
     
@@ -45,7 +40,7 @@ def execute_by_env(params):
     if environment == 'local_win':
         result = local_executor.execute(params)
     
-    elif environment == 'AWS_LAMBDA':
+    elif environment == 'aws_lambda':
         result = aws_executor.execute(params)
     else:
         raise ValueError(f'Invalid execution environment: {environment}')

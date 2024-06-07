@@ -1,21 +1,26 @@
 import tree_constructor_core  as tcc
 import utils.denethor_utils as du
 import utils.file_utils as fu
+import utils.logger as dl
+
 
 def handler(event, context):
+    
 
     request_id = du.get_request_id(context)
     execution_env = du.get_execution_env(event)
+    logger = dl.get_logger(execution_env)
     
     du.print_env(execution_env)
+    du.print_env_to_log(execution_env, logger)
 
-    TMP_PATH = execution_env.get('TMP_PATH') # usado para escrever arquivos 'nopipe' durante o processo de validação
-    INPUT_PATH = execution_env.get('INPUT_FILE_PATH')
-    OUTPUT_PATH = execution_env.get('TREE_PATH')
-    CLUSTALW_PATH = execution_env.get('CLUSTALW_PATH')
+    TMP_PATH = execution_env.get('tmp_path') # usado para escrever arquivos 'nopipe' durante o processo de validação
+    INPUT_PATH = execution_env.get('input_file_path')
+    OUTPUT_PATH = execution_env.get('tree_path')
+    CLUSTALW_PATH = execution_env.get('clustalw_path')
 
     # formato das sequências: newick ou nexus
-    DATA_FORMAT = execution_env.get('DATA_FORMAT') 
+    DATA_FORMAT = execution_env.get('data_format') 
 
     #
     ## Cleaning old temporary files and creating directories ##
@@ -38,6 +43,7 @@ def handler(event, context):
     #
     produced_files, duration_ms = tcc.tree_constructor(input_files, INPUT_PATH, TMP_PATH, OUTPUT_PATH, CLUSTALW_PATH, DATA_FORMAT)
     print(f'TREE_CONSTRUCTOR RequestId: {request_id}\t InputFile:{input_files} \t OutputTreeFile:{produced_files} \t Duration: {duration_ms} ms')
+    logger.info(f'TREE_CONSTRUCTOR RequestId: {request_id}\t InputFile:{input_files} \t OutputTreeFile:{produced_files} \t Duration: {duration_ms} ms')
 
     #
     ## Upload output files ##
@@ -46,7 +52,6 @@ def handler(event, context):
     
     return {
             "request_id" : request_id,
-            "input_data" : input_files,
             "produced_data" : produced_files
         }
 

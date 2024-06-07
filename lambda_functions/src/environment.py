@@ -16,7 +16,7 @@ VM_LINUX = 'VM_LINUX'
 #         self.INPUT_PATH = None
 #         self.OUTPUT_PATH = None
 #         self.CLUSTALW_PATH = None
-#         self.DATA_FORMAT = None
+#         self.data_format = None
 #         self.LIB_PATH = None
 #         self.PLATFORM = platform.system()
 
@@ -28,13 +28,13 @@ VM_LINUX = 'VM_LINUX'
 #             env_config = json.load(f)
 
 #         # Environment variables depending on the execution environment
-#         self.DATA_FORMAT = env_config['DATA_FORMAT']
+#         self.data_format = env_config['DATA_FORMAT']
 
 #         if self.env in env_config:
-#             self.TMP_PATH = env_config[self.env]['TMP_PATH']
+#             self.TMP_PATH = env_config[self.env]['tmp_path']
 #             self.DATASET_PATH = env_config[self.env]['DATASET_PATH']
-#             self.TREE_PATH = env_config[self.env]['TREE_PATH']
-#             self.SUBTREE_PATH = env_config[self.env]['SUBTREE_PATH']
+#             self.tree_path = env_config[self.env]['tree_path']
+#             self.SUBtree_path = env_config[self.env]['SUBtree_path']
 #             self.CLUSTALW_PATH = env_config[self.env]['CLUSTALW_PATH']
 #         else:
 #             raise Exception('Invalid execution environment: ' + self.env)

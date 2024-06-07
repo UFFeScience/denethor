@@ -1,13 +1,6 @@
-import copy
-import json
-import os
-import time
+import os, time, json
 from utils import utils
 from execution import execution_manager
-
-local_win = 'local_win'
-LAMBDA = 'LAMBDA'
-VM_LINUX = 'VM_LINUX'
 
 # Load JSON files
 with open('conf/provider_info.json') as f: 
@@ -30,7 +23,6 @@ with open('conf/env_config.json') as f:
 start_time_ms = int(time.time() * 1000)
 end_time_ms = None
 execution_id = utils.generate_execution_id(start_time_ms)
-
 
 
 def main():
@@ -70,12 +62,12 @@ def main():
     #########################################################################
 
 
-    TREE_PATH = "data/executions/tree"
-    SUBTREE_PATH = "data/executions/subtree"
-    utils.remove_files(TREE_PATH) #TODO: provisório, remover após ajustar a execução local
-    utils.remove_files(SUBTREE_PATH) #TODO: provisório, remover após ajustar a execução local
+    tree_path = "data/executions/tree"
+    subtree_path = "data/executions/subtree"
+    utils.remove_files(tree_path) #TODO: provisório, remover após ajustar a execução local
+    utils.remove_files(subtree_path) #TODO: provisório, remover após ajustar a execução local
 
-    produced_data = {}
+    workflow_produced_data = {}
 
     # For each step in the workflow
     for step in workflow_steps:
@@ -86,40 +78,6 @@ def main():
             print(f'\n>>> Step [{step_id}], action: {step.get("action")}, activity: {step.get("activity")} is inactive. Skipping...')
             continue
             
-        
-        
-        
-        # se em step id anterior houver arquivos produzidos, usá-los como input_files
-
-        # TODO: Verificar uma melhor forma de passar os arquivos da etpa anterior para a próxima etapa
-        # tree_constructor
-        
-        # tree_files = []
-        # for exec in steps_produced_data.get(1):
-        #     tree_files.extend(exec.get('produced_files'))
-        # if tree_files is not None and len(tree_files) > 0:
-        #     # files = [f for lin in tree_files for f in lin]
-        #     current_files = copy.deepcopy(tree_files)
-
-        # # subtree_constructor
-        # subtree_matrix = []
-        # for exec in steps_produced_data.get(2):
-        #     subtree_matrix.append(exec.get('produced_files'))
-        # if subtree_matrix is not None and len(subtree_matrix) > 0:
-        #     current_files = copy.deepcopy(subtree_matrix)
-
-        # # subtree_maf: combine maf_database and max_maf
-        # maf_database_list = {}
-        # max_maf_list = {}
-        # for exec in steps_produced_data.get(3):
-        #     db = exec.get('maf_database')
-        #     mm = exec.get('max_maf')
-        #     if db is not None:
-        #         maf_database_list.append(db)
-        #     if mm is not None:
-        #         max_maf_list.append(mm)                  
-        
-        # Load the execution environment configuration into the step parameters
         action = step.get('action')
         activity = step.get('activity')
         execution_env_name = step.get('execution_env')
@@ -127,26 +85,28 @@ def main():
         execution_env = global_env_config.get(execution_env_name)
         execution_env = {'env_name': execution_env_name, **execution_env}
 
-        input_data_param = step.get('data').get('input')
-        limit = step.get('data').get('input_limit')
-        output_param = step.get('data').get('output')
-        if '.json' in input_data_param:
+        input_param = step.get('params').get('input_param')
+        limit_param = step.get('params').get('input_limit')
+        output_param = step.get('params').get('output_param')
+        
+        if '.json' in input_param:
             # Load input files list to be used in the workflow
-            with open(input_data_param, 'r') as f:
+            with open(input_param, 'r') as f:
                 input_data = json.load(f)
         
         else:
-            # recuperar os dados da etapa anterior contidos no parametro indicado por 'input_data_param'
-            for key, value in produced_data.items():
-                if input_data_param == key:
-                    input_data = [item['produced_data'] for item in value]
+            # recuperar os dados produzidos anteriormente indicados por 'input_param'
+            # input_data será uma lista dos outputs produzidos pelas ativações
+            for param, activity_output in workflow_produced_data.items():
+                if input_param == param:
+                    input_data = [output['produced_data'] for output in activity_output]
                     break
 
         if input_data is None:
-            raise ValueError(f'Invalid input data: {input_data_param}')
+            raise ValueError(f'Invalid input data: {input_param}')
         
-        if limit is not None:
-            input_data = input_data[:limit]  
+        if limit_param is not None:
+            input_data = input_data[:limit_param]  
                 
         # Workflow parameters
         params = {
@@ -156,22 +116,19 @@ def main():
             'activity': activity,
             'execution_env': execution_env,
             'strategy': strategy,
-            'input_data': input_data,
-            'output_param': output_param,
+            'input_data': input_data
         }
         
         
-        result = execution_manager.execute(params)
+        results = execution_manager.execute(params)
         
-        produced_data[output_param] = result
+        workflow_produced_data[output_param] = results
                 
 
-        print(f'\n>>> Action {action} | activity {activity} completed.')
+        print(f'\n>>> Action: {action} | activity: {activity} completed.')
 
-        
 
     print('******* Workflow execution finished at: ', utils.now_str(), ' *******')
-
 
 
 

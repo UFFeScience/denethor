@@ -1,20 +1,24 @@
+import time
 import subtree_mining_core as smc
 import utils.denethor_utils as du
 import utils.file_utils as fu
+import utils.logger as dl
 
 def handler(event, context):
 
     request_id = du.get_request_id(context)
     execution_env = du.get_execution_env(event)
-    
-    du.print_env(execution_env)
+    logger = dl.get_logger(execution_env)
 
-    TMP_PATH = execution_env.get('TMP_PATH') # usado para escrever arquivos 'nopipe' durante o processo de validação
-    INPUT_PATH = execution_env.get('TREE_PATH')
-    OUTPUT_PATH = execution_env.get('SUBTREE_PATH')
+    du.print_env(execution_env)
+    du.print_env_to_log(execution_env, logger)
+
+    TMP_PATH = execution_env.get('tmp_path') # usado para escrever arquivos 'nopipe' durante o processo de validação
+    INPUT_PATH = execution_env.get('tree_path')
+    OUTPUT_PATH = execution_env.get('subtree_path')
     
     # formato das sequências: newick ou nexus
-    DATA_FORMAT = execution_env.get('DATA_FORMAT') 
+    DATA_FORMAT = execution_env.get('data_format') 
 
     #
     ## Cleaning old temporary files and creating directories ##
@@ -39,6 +43,10 @@ def handler(event, context):
     produced_files, duration_ms = smc.subtree_constructor(input_files, INPUT_PATH, OUTPUT_PATH, DATA_FORMAT)
     # subtree_matrix.append(produced_files)
     print(f'SUBTREE_CONSTRUCTOR RequestId: {request_id}\t InputTree: {input_files}\t OutputSubtrees: {produced_files}\t Duration: {duration_ms} ms')
+    logger.info(f'SUBTREE_CONSTRUCTOR RequestId: {request_id}\t InputTree: {input_files}\t OutputSubtrees: {produced_files}\t Duration: {duration_ms} ms')
+
+    # para evitar: 'PermissionError: [Errno 13] Permission denied' ao tentar abrir os arquivos logo após terem sido escritos
+    time.sleep(0.100)
 
     #
     ## Upload output files ##
@@ -47,7 +55,6 @@ def handler(event, context):
     
     return {
             "request_id" : request_id,
-            "input_data" : input_files,
             "produced_data" : produced_files
         }
 

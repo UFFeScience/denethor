@@ -32,6 +32,4 @@ def execute(params):
     # Call the python function with the specified parameters and return the request ID
     result = utils.invoke_python(activity_name, activity_path, function_name, payload)
     
-    print(f'{activity_name} triggered with payload {payload}')
-
     return result

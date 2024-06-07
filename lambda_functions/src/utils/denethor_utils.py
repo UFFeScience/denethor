@@ -4,10 +4,11 @@ import os
 import platform
 import uuid
 import utils.file_utils as fu
+import utils.logger as dl
 
-local_win = 'local_win'
-LAMBDA = 'LAMBDA'
-VM_LINUX = 'VM_LINUX'
+LOCAL_WIN = 'local_win'
+AWS_LAMBDA = 'aws_lambda'
+VM_LINUX = 'vm_linux'
 
 def generate_uuid():
     return 'uuid_' + str(uuid.uuid4()).replace('-', '_')
@@ -21,7 +22,7 @@ def get_execution_env(event):
 def handle_consumed_files(request_id: str, files: list, file_path: str, params: dict):
     
     download_time_ms = None
-    if params.get('execution_env').get('env_name') == LAMBDA:
+    if params.get('execution_env').get('env_name') == AWS_LAMBDA:
         # Get the input_bucket from the payload
         bucket = params.get('input_bucket')
         key = params.get('input_key')
@@ -35,7 +36,7 @@ def handle_consumed_files(request_id: str, files: list, file_path: str, params: 
 def handle_produced_files(request_id: str, files: list, files_path: str, params: dict):
 
     upload_duration_ms = None
-    if params.get('execution_env').get('env_name') == LAMBDA:
+    if params.get('execution_env').get('env_name') == AWS_LAMBDA:
         ## Copy tree file to S3 ##
         bucket = params.get('output_bucket')
         key = params.get('output_key')
@@ -57,4 +58,13 @@ def print_env(execution_env):
         print(f'{label}={value}')
         # print(os.listdir(value) if 'PATH' in label else '')  
     print('===========================================================')
+
+def print_env_to_log(execution_env, logger):
+    logger.info(f'============== Ambiente de execução: {execution_env.get('env_name')} ==============')
+    logger.info(f'Start time: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+    logger.info('pwd:', os.getcwd())
+    for label, value in execution_env.items():
+        logger.info(f'{label}={value}')
+        # logger.info(os.listdir(value) if 'PATH' in label else '')  
+    logger.info('===========================================================')
 
