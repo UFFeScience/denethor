@@ -8,6 +8,7 @@ import sys
 #     'start_time_ms': start_time_ms,
 #     'end_time_ms': end_time_ms,
 #     'activity': activity,
+#     'all_input_data': all_input_data,
 #     'execution_env': execution_env,
 #     'strategy': strategy,
 #     'input_data': input_data,
@@ -17,24 +18,24 @@ import sys
 # Invokes a Lambda function execution based on the provided parameters.
 def execute(params):
 
+    activity_name = params.get('activity')
+    execution_env = params.get('execution_env')
+
     payload = {
+        'activity': activity_name, # nome da atividade
+        'input_data': params.get('input_data'), # dados de entrada
+        'all_input_data': params.get('all_input_data'), # conjunto completo dos dados de entrada
+        'execution_env': execution_env, # ambiente de execução
         'input_bucket': params['input_bucket'],
         'input_key': params['input_key'],
         'output_bucket': params['output_bucket'],
-        'output_key': params['output_key'], 
-        'execution_data': params['execution_data']
-    }
-
-    execution_data = params['execution_data']
-    function_name = params['function_name']
+        'output_key': params['output_key']
+        }
     
-    requests = []
+    request_id = invoke_async(activity_name, payload)
+    # print(f'{function_name} triggered with payload {payload} with execution strategy {execution_strategy} for file: {file_name}')
 
-    request_id = invoke_async(function_name, payload)
-    requests.append(request_id)
-    print(f'{function_name} triggered with payload {payload} with execution strategy {execution_strategy} for file: {file_name}')
-
-    return {f"{function_name}_requests" : requests}
+    return request_id
 
 
 def invoke_async(function_name, payload):

@@ -1,5 +1,5 @@
 import unittest
-from src.utils.execution_logs_parser import parse_message
+from denethor.src.provenance.log_parser import parse_message
 
 class TestLogParser(unittest.TestCase):
 

@@ -1,4 +1,7 @@
-from execution import local_executor, aws_executor
+from workflow_executor.src.execution import executor_local
+from denethor.src.constants import LOCAL_WIN, AWS_LAMBDA, VM_LINUX
+from workflow_executor.src.execution import executor_aws
+
 
 # params = {
 #     'execution_id': execution_id,
@@ -37,11 +40,11 @@ def execute(params):
 def execute_by_env(params):
     environment = params.get('execution_env').get('env_name')
     
-    if environment == 'local_win':
-        result = local_executor.execute(params)
+    if environment == LOCAL_WIN:
+        result = executor_local.execute(params)
     
-    elif environment == 'aws_lambda':
-        result = aws_executor.execute(params)
+    elif environment == AWS_LAMBDA:
+        result = executor_aws.execute(params)
     else:
         raise ValueError(f'Invalid execution environment: {environment}')
     

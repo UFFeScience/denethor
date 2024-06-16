@@ -1,5 +1,6 @@
 import os, time, json
-from utils import utils
+from denethor.src.utils import denethor_utils as du
+from denethor.src.utils import utils as utils
 from execution import execution_manager
 
 # Load JSON files
@@ -22,7 +23,7 @@ with open('conf/env_config.json') as f:
 # Set the workflow start time in milliseconds
 start_time_ms = int(time.time() * 1000)
 end_time_ms = None
-execution_id = utils.generate_execution_id(start_time_ms)
+workflow_exec_id = du.generate_workflow_exec_id(start_time_ms)
 
 
 def main():
@@ -110,7 +111,7 @@ def main():
                 
         # Workflow parameters
         params = {
-            'execution_id': execution_id,
+            'execution_id': workflow_exec_id,
             'start_time_ms': start_time_ms,
             'end_time_ms': end_time_ms,
             'activity': activity,

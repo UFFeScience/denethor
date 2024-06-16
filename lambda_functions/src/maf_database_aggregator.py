@@ -1,9 +1,6 @@
-import json
 import timeit
-import subtree_mining_core as smc
-import utils.denethor_utils as du
-import utils.file_utils as fu
-import utils.logger as dl
+from denethor.src.utils import denethor_logger as dl
+from denethor.src.utils import denethor_utils as du
 
 def handler(event, context):
 
