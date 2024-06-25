@@ -13,6 +13,7 @@ sudo ./aws/install
 
 aws --version
 # aws-cli/2.13.37 Python/3.11.6 Linux/6.2.0-36-generic exe/x86_64.ubuntu.22 prompt/off
+# aws-cli/2.14.5 Python/3.11.6 Windows/10 exe/AMD64 prompt/off
 ```
 
 ```bash
@@ -39,11 +40,11 @@ It will be necessary to create three S3 buckets for the execution of the workflo
 For this, execute the following commands in the terminal:
 
 ```bash
-aws s3api create-bucket --bucket mribeiro-input-files --region sa-east-1 --create-bucket-configuration LocationConstraint=sa-east-1
+aws s3api create-bucket --bucket denethor-input --region sa-east-1 --create-bucket-configuration LocationConstraint=sa-east-1
 
-aws s3api create-bucket --bucket mribeiro-tree-files --region sa-east-1 --create-bucket-configuration LocationConstraint=sa-east-1
+aws s3api create-bucket --bucket denethor-tree --region sa-east-1 --create-bucket-configuration LocationConstraint=sa-east-1
 
-aws s3api create-bucket --bucket mribeiro-subtree-files --region sa-east-1 --create-bucket-configuration LocationConstraint=sa-east-1
+aws s3api create-bucket --bucket denethor-subtree --region sa-east-1 --create-bucket-configuration LocationConstraint=sa-east-1
 ```
 
 To verify that the buckets were created correctly:
@@ -63,22 +64,20 @@ Before creating the lambda functions, it is necessary to create a base layer for
 ```bash
 mkdir package
 
-python3.11 -m pip install --target package/python -r requirements.txt
+python -m pip install --target package/python -r requirements.txt
 
-cp -R clustalw-2.1-linux-x86_64-libcppstatic package/python
+cp -R ./lib/opt/python/clustalw-2.1-linux-x86_64-libcppstatic package/python
 
 cd package
 
 zip -r ../lambda_layer.zip .
+# obs.: if using Windows, use a third-party tool like 7zip to compress the folder
 ```
 
 Creating the base layer in AWS should indicate the interpreter that will be used (Python 3.11) and the *zip file* (previously created) that contains the project dependencies.
 
 ```bash
-aws lambda publish-layer-version --layer-name lambda_layer \
---zip-file fileb://lambda_layer.zip \
---compatible-runtimes python3.11 \
---region sa-east-1
+aws lambda publish-layer-version --layer-name lambda_layer --zip-file fileb://lambda_layer.zip --compatible-runtimes python3.12 --region sa-east-1
 ```
 
 ___

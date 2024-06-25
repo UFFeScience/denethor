@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 import os, re, json, uuid
-import denethor_logger as dl
+from denethor.src.utils import denethor_logger as dl
 
 
 def generate_uuid():
@@ -67,7 +67,8 @@ def remove_files(dir_path):
         print(f'Sorry, directory {dir_path} did not exist.')
 
 def print_env(execution_env):
-    print(f'============== Ambiente de execução: {execution_env.get('env_name')} ==============')
+    print('===========================================================')
+    print(f'=======================  {execution_env.get('env_name')}  =======================')
     print(f'Start time: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
     print('pwd:', os.getcwd())
     for label, value in execution_env.items():
@@ -77,7 +78,8 @@ def print_env(execution_env):
 
 
 def print_env_to_log(execution_env, logger):
-    logger.info(f'============== Ambiente de execução: {execution_env.get('env_name')} ==============')
+    logger.info('===========================================================')
+    logger.info(f'=======================  {execution_env.get('env_name')}  =======================')
     logger.info(f'Start time: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
     logger.info('pwd:', os.getcwd())
     for label, value in execution_env.items():

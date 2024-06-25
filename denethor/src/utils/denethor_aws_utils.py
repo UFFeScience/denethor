@@ -2,7 +2,7 @@ import os
 import boto3
 import timeit
 import logging
-from constants import LOCAL_WIN, AWS_LAMBDA, VM_LINUX
+from denethor.src.constants import LOCAL_WIN, AWS_LAMBDA, VM_LINUX
 
 
 ##

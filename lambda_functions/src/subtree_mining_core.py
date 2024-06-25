@@ -201,6 +201,10 @@ def maf_database_create_2(subtree_list: list, subtree_matrix: list, maf_database
                 print(f'Comparing file {main_file} with {current_file}')
                 g_maf = grade_maf(main_file , current_file, path, data_format)
                 # print('g_maf=', g_maf)
+
+                if max_maf < g_maf:
+                    max_maf = g_maf
+
                 if g_maf > 0:
                     if g_maf not in maf_database:
                         maf_database[g_maf] = {}

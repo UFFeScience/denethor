@@ -55,8 +55,8 @@ The project can be executed in two modes: *local* and *lambda*.
 - The *local* mode will execute the entire workflow on the local machine.
 - The *lambda* mode should be used for execution using AWS Lambda functions.
 
-Each execution mode has its own specific instructions and configurations. They are detailed in the files **[local_setup](doc/local_setup.md)** and **[aws_setup](doc/aws_setup.md)**, respectively.
+Each execution mode has its own specific instructions and configurations. They are detailed in the files **[local_setup](docs/local_setup.md)** and **[aws_setup](docs/aws_setup.md)**, respectively.
 
 ## Denethor
 
-The file **[denethor](doc/denethor.md)** explains how the workflow execution monitoring system was implemented and which configuration files are used in the execution of activities. Execution by `Denethor` assumes that the AWS environment setup steps have already been completed.
+The file **[denethor](docs/denethor.md)** explains how the workflow execution monitoring system was implemented and which configuration files are used in the execution of activities. Execution by `Denethor` assumes that the AWS environment setup steps have already been completed.

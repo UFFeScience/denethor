@@ -1,6 +1,5 @@
-from workflow_executor.src.execution import executor_local
+from . import executor_local, executor_aws
 from denethor.src.constants import LOCAL_WIN, AWS_LAMBDA, VM_LINUX
-from workflow_executor.src.execution import executor_aws
 
 
 # params = {

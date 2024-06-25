@@ -1,23 +1,27 @@
 import os, time, json
+
+import sys
+sys.path.append("../denethor")
+
 from denethor.src.utils import denethor_utils as du
-from denethor.src.utils import utils as utils
+
 from execution import execution_manager
 
 # Load JSON files
-with open('conf/provider_info.json') as f: 
+with open(os.getcwd() + '/workflow_executor/conf/provider_info.json') as f: 
     provider = json.load(f)
 
-with open('conf/workflow_info.json') as f: 
+with open(os.getcwd() + '/workflow_executor/conf/workflow_info.json') as f: 
     workflow = json.load(f)
 
-with open('conf/workflow_steps.json') as f: 
+with open(os.getcwd() + '/workflow_executor/conf/workflow_steps.json') as f: 
     workflow_steps = json.load(f)
 
-with open('conf/statistics.json') as f: 
+with open(os.getcwd() + '/workflow_executor/conf/statistics.json') as f: 
     statistics = json.load(f)
 
 # Load the execution environment configuration
-with open('conf/env_config.json') as f:
+with open(os.getcwd() + '/workflow_executor/conf/env_config.json') as f:
     global_env_config = json.load(f)
 
 # Set the workflow start time in milliseconds
@@ -28,7 +32,7 @@ workflow_exec_id = du.generate_workflow_exec_id(start_time_ms)
 
 def main():
 
-    print('******* Worflow execution started at: ', utils.now_str(), ' *******')
+    print('******* Worflow execution started at: ', du.now_str(), ' *******')
     print('******* Working directory: ', os.getcwd(), ' *******')
 
         
@@ -65,8 +69,8 @@ def main():
 
     tree_path = "data/executions/tree"
     subtree_path = "data/executions/subtree"
-    utils.remove_files(tree_path) #TODO: provisório, remover após ajustar a execução local
-    utils.remove_files(subtree_path) #TODO: provisório, remover após ajustar a execução local
+    du.remove_files(tree_path) #TODO: provisório, remover após ajustar a execução local
+    du.remove_files(subtree_path) #TODO: provisório, remover após ajustar a execução local
 
     workflow_produced_data = {}
 
@@ -92,7 +96,7 @@ def main():
         
         if '.json' in input_param:
             # Load input files list to be used in the workflow
-            with open(input_param, 'r') as f:
+            with open(os.getcwd() + '/workflow_executor/' + input_param, 'r') as f:
                 input_data = json.load(f)
         
         else:
@@ -129,7 +133,7 @@ def main():
         print(f'\n>>> Action: {action} | activity: {activity} completed.')
 
 
-    print('******* Workflow execution finished at: ', utils.now_str(), ' *******')
+    print('******* Workflow execution finished at: ', du.now_str(), ' *******')
 
 
 

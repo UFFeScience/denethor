@@ -1,7 +1,7 @@
 import subtree_mining_core as smc
 from utils import file_utils as fu
-from denethor.src.utils import denethor_logger as dl
-from denethor.src.utils import denethor_utils as du
+from denethor.src.utils import denethor_logger as dl, denethor_utils as du, denethor_aws_utils as dau
+
 
 def handler(event, context):
 
@@ -33,7 +33,7 @@ def handler(event, context):
     #
     ## Download input files ##
     #
-    du.handle_consumed_files(request_id, input_files, INPUT_PATH, event)
+    dau.handle_consumed_files(request_id, input_files, INPUT_PATH, event)
 
     #
     ## Criação do dicionário de similariadades de subárvore ##
@@ -54,11 +54,10 @@ def handler(event, context):
     #
     ## Upload output files ##
     #
-    # du.handle_produced_files(request_id, produced_files, OUTPUT_PATH, event)
+    # dau.handle_produced_files(request_id, produced_files, OUTPUT_PATH, event)
     
     return {
             "request_id" : request_id,
             "produced_data" : maf_database
         }
         
-

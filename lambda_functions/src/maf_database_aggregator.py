@@ -1,6 +1,5 @@
 import timeit
-from denethor.src.utils import denethor_logger as dl
-from denethor.src.utils import denethor_utils as du
+from denethor.src.utils import denethor_logger as dl, denethor_utils as du
 
 def handler(event, context):
 
