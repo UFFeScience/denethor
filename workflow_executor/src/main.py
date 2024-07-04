@@ -7,21 +7,22 @@ from denethor.src.utils import denethor_utils as du
 
 from execution import execution_manager
 
+conf_path = os.getcwd() + '/workflow_executor/conf/'
 # Load JSON files
-with open(os.getcwd() + '/workflow_executor/conf/provider_info.json') as f: 
+with open(conf_path + 'provider_info.json') as f:
     provider = json.load(f)
 
-with open(os.getcwd() + '/workflow_executor/conf/workflow_info.json') as f: 
+with open(conf_path + 'workflow_info.json') as f:
     workflow = json.load(f)
 
-with open(os.getcwd() + '/workflow_executor/conf/workflow_steps.json') as f: 
+with open(conf_path + 'workflow_steps.json') as f:
     workflow_steps = json.load(f)
 
-with open(os.getcwd() + '/workflow_executor/conf/statistics.json') as f: 
+with open(conf_path + 'statistics.json') as f:
     statistics = json.load(f)
 
 # Load the execution environment configuration
-with open(os.getcwd() + '/workflow_executor/conf/env_config.json') as f:
+with open(conf_path + 'env_config.json') as f:
     global_env_config = json.load(f)
 
 # Set the workflow start time in milliseconds
@@ -88,7 +89,6 @@ def main():
         execution_env_name = step.get('execution_env')
         strategy = step.get('execution_strategy')
         execution_env = global_env_config.get(execution_env_name)
-        execution_env = {'env_name': execution_env_name, **execution_env}
 
         input_param = step.get('params').get('input_param')
         limit_param = step.get('params').get('input_limit')
@@ -98,7 +98,6 @@ def main():
             # Load input files list to be used in the workflow
             with open(os.getcwd() + '/workflow_executor/' + input_param, 'r') as f:
                 input_data = json.load(f)
-        
         else:
             # recuperar os dados produzidos anteriormente indicados por 'input_param'
             # input_data será uma lista dos outputs produzidos pelas ativações
