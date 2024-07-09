@@ -76,6 +76,8 @@ def tree_constructor(input_files: list, input_path: str, tmp_path: str, output_p
 
     if not isinstance(input_files, list):
         files = [input_files]
+    else:
+        files = input_files
 
     match data_format:
         case 'nexus':

@@ -34,7 +34,12 @@ def handler(event, context):
     #
     ## Download input files ##
     #
-    dau.handle_consumed_files(request_id, input_files, INPUT_PATH, event)
+    params = {
+        'env_name': execution_env.get('env_name'),
+        'input_bucket': execution_env.get('bucket'),
+        'input_key': execution_env.get('dataset_key_path')
+    }
+    dau.handle_consumed_files(request_id, input_files, INPUT_PATH, params)
 
     #
     ## Building the tree file ##
@@ -46,7 +51,12 @@ def handler(event, context):
     #
     ## Upload output files ##
     #
-    dau.handle_produced_files(request_id, produced_files, OUTPUT_PATH, event)
+    params = {
+        'env_name': execution_env.get('env_name'),
+        'output_bucket': execution_env.get('bucket'),
+        'output_key': execution_env.get('tree_key_path')
+    }
+    dau.handle_produced_files(request_id, produced_files, OUTPUT_PATH, params)
     
     return {
             "request_id" : request_id,

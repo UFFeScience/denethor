@@ -68,24 +68,57 @@ Before creating the lambda functions, it is necessary to create a base layer for
 ```bash
 cd lambda_functions
 
-mkdir package
+python -m pip install --platform manylinux2014_x86_64 --python-version 3.12 --only-binary=:all: --target lambda_layer/python -r requirements.txt
 
-python -m pip install --target package/python -r requirements.txt
+cp -R ./lib/clustalw-2.1-linux-x86_64-libcppstatic lambda_layer/python
 
-cp -R ./lib/clustalw-2.1-linux-x86_64-libcppstatic package/python
-
+cd lambda_layer
 ```
 
 Linux:
 
 ```bash
-zip -r lambda_layer.zip ./package
+zip -r lambda_layer.zip ./python
 ```
 
 Windows:
 
 ```bash
-"C:\Program Files\7-Zip\7z.exe" a -tzip lambda_layer.zip package
+"C:\Program Files\7-Zip\7z.exe" a -tzip lambda_layer.zip python 
+```
+
+Creating the base layer in AWS should indicate the interpreter that will be used (Python 3.12) and the *zip file* (previously created) that contains the project dependencies.
+
+```bash
+aws lambda publish-layer-version --layer-name lambda_layer --zip-file fileb://lambda_layer.zip --compatible-runtimes python3.12 --region sa-east-1
+```
+
+___
+
+### Create the denthor layer
+
+___
+
+Before creating the lambda functions, it is necessary to create a base layer for the function. To do this, you need to create a directory called `package` and then install the project dependencies and copy the ClustalW executable. Finally, compress the directory into a .zip file to be used in creating the layer.
+
+```bash
+cd denethor
+
+mkdir denethor_layer
+
+cd denethor_layer
+```
+
+Linux:
+
+```bash
+zip -r lambda_layer.zip ./python
+```
+
+Windows:
+
+```bash
+"C:\Program Files\7-Zip\7z.exe" a -tzip lambda_layer.zip python 
 ```
 
 Creating the base layer in AWS should indicate the interpreter that will be used (Python 3.12) and the *zip file* (previously created) that contains the project dependencies.

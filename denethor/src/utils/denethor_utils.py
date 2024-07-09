@@ -81,7 +81,7 @@ def print_env_to_log(execution_env, logger):
     logger.info('===========================================================')
     logger.info(f'=======================  {execution_env.get('env_name')}  =======================')
     logger.info(f'Start time: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
-    logger.info('pwd:', os.getcwd())
+    logger.info(f'pwd={os.getcwd()}')
     for label, value in execution_env.items():
         logger.info(f'{label}={value}')
         # logger.info(os.listdir(value) if 'PATH' in label else '')  

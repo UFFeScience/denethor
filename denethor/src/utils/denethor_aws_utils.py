@@ -10,7 +10,7 @@ from denethor.src.constants import LOCAL_WIN, AWS_LAMBDA, VM_LINUX
 ##
 def handle_consumed_files(request_id: str, files: list, file_path: str, params: dict):
     download_time_ms = None
-    if params.get('execution_env').get('env_name') == AWS_LAMBDA:
+    if params.get('env_name') == AWS_LAMBDA:
         # Get the input_bucket from the payload
         bucket = params.get('input_bucket')
         key = params.get('input_key')
@@ -61,7 +61,7 @@ def download_file_from_s3(request_id: str, s3_bucket: str, s3_key: str, file_nam
 ##
 def handle_produced_files(request_id: str, files: list, files_path: str, params: dict):
     upload_duration_ms = None
-    if params.get('execution_env').get('env_name') == AWS_LAMBDA:
+    if params.get('env_name') == AWS_LAMBDA:
         ## Copy tree file to S3 ##
         bucket = params.get('output_bucket')
         key = params.get('output_key')
