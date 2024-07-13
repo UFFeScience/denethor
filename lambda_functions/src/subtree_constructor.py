@@ -10,7 +10,7 @@ def handler(event, context):
     execution_env = du.get_execution_env(event)
     logger = dl.get_logger(execution_env)
 
-    du.print_env(execution_env)
+    # du.print_env(execution_env)
     du.print_env_to_log(execution_env, logger)
 
     TMP_PATH = execution_env.get('tmp_path') # usado para escrever arquivos 'nopipe' durante o processo de validação
@@ -39,7 +39,8 @@ def handler(event, context):
         'input_bucket': execution_env.get('bucket'),
         'input_key': execution_env.get('tree_key_path')
     }
-    dau.handle_consumed_files(request_id, input_files, INPUT_PATH, event)
+    print("*******************", params)
+    dau.handle_consumed_files(request_id, input_files, INPUT_PATH, params)
 
     #
     ## Building the subtree files ##
@@ -61,7 +62,7 @@ def handler(event, context):
         'output_bucket': execution_env.get('bucket'),
         'output_key': execution_env.get('subtree_key_path')
     }
-    dau.handle_produced_files(request_id, produced_files, OUTPUT_PATH, event)
+    dau.handle_produced_files(request_id, produced_files, OUTPUT_PATH, params)
     
     return {
             "request_id" : request_id,

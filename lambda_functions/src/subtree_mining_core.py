@@ -176,9 +176,12 @@ def init_maf_database(matrix):
     print(f'Empty dict_maf_database: {maf}')
     return maf
 
-def maf_database_create_2(subtree_list: list, subtree_matrix: list, maf_database: dict, max_maf: int, path: str, data_format: str):
+def maf_database_create_2(subtree_list: list, subtree_matrix: list, file_path: str, data_format: str):
     
     start_time = timeit.default_timer()
+
+    maf_database: dict = None
+    max_maf: int = 0
 
     #subtree_list equivale a uma linha da matriz de subárvores
     print(f'maf_database_create start time: {time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}')
@@ -199,7 +202,7 @@ def maf_database_create_2(subtree_list: list, subtree_matrix: list, maf_database
             
             for current_file in row:
                 print(f'Comparing file {main_file} with {current_file}')
-                g_maf = grade_maf(main_file , current_file, path, data_format)
+                g_maf = grade_maf(main_file , current_file, file_path, data_format)
                 # print('g_maf=', g_maf)
 
                 if max_maf < g_maf:

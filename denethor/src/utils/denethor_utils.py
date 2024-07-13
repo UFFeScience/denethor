@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from logging import Logger
 import os, re, json, uuid
 from denethor.src.utils import denethor_logger as dl
 
@@ -77,13 +78,13 @@ def print_env(execution_env):
     print('===========================================================')
 
 
-def print_env_to_log(execution_env, logger):
+def print_env_to_log(execution_env, logger: Logger):
     logger.info('===========================================================')
     logger.info(f'=======================  {execution_env.get('env_name')}  =======================')
     logger.info(f'Start time: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
     logger.info(f'pwd={os.getcwd()}')
     for label, value in execution_env.items():
         logger.info(f'{label}={value}')
-        # logger.info(os.listdir(value) if 'PATH' in label else '')  
+        logger.info(os.listdir(value) if 'PATH' in label else '')  
     logger.info('===========================================================')
 

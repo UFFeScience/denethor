@@ -35,7 +35,7 @@ def download_file_from_s3(request_id: str, s3_bucket: str, s3_key: str, file_nam
     s3 = boto3.client('s3')
 
     # verificando se o nome do arquivo já está presente na s3_key
-    # dependendo da forma que a requisição é feita, o nome do arquivo ppode já estar incluso na s3_key
+    # dependendo da forma que a requisição é feita, o nome do arquivo pode já estar incluso na s3_key
     if not s3_key.endswith(file_name):
         s3_key = os.path.join(s3_key, file_name)
 

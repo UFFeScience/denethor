@@ -1,6 +1,6 @@
 import logging
 
-def get_logger(execution_env: dict):
+def get_logger(execution_env: dict) -> logging.Logger:
     
     logger = logging.getLogger(execution_env.get('env_name'))
     

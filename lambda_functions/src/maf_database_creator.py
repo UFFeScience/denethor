@@ -27,30 +27,25 @@ def handler(event, context):
     #
     ## Get the input_file from the payload
     #
-    input_files = event.get('input_data')
+    subtree_list = event.get('input_data')
     subtree_matrix = event.get('all_input_data')
 
     #
     ## Download input files ##
     #
-    dau.handle_consumed_files(request_id, input_files, INPUT_PATH, event)
+    params = {
+        'env_name': execution_env.get('env_name'),
+        'input_bucket': execution_env.get('bucket'),
+        'input_key': execution_env.get('subtree_key_path')
+    }
+    dau.handle_consumed_files(request_id, subtree_matrix, INPUT_PATH, params)
 
     #
     ## Criação do dicionário de similariadades de subárvore ##
     #
-    maf_database = None
-    max_maf = 0
+    maf_database, max_maf, maf_duration_ms = smc.maf_database_create_2(subtree_list, subtree_matrix, INPUT_PATH, DATA_FORMAT)
+    logger.info(f'MAF_DATABASE_CREATE RequestId: {request_id}\t InputSubtrees: {subtree_list}\t Duration: {maf_duration_ms} ms\t MaxMaf: {max_maf}\t MafDatabase: {maf_database}')
     
-    # verificando se input_file é uma lista de arquivos
-    if isinstance(input_files, list):
-        subtree_list = input_files
-        maf_database, max_maf, maf_duration_ms = smc.maf_database_create_2(subtree_list, subtree_matrix, maf_database, max_maf, INPUT_PATH, DATA_FORMAT)
-        print(f'MAF_DATABASE_CREATE RequestId: {request_id}\t InputSubtrees: {input_files}\t Duration: {maf_duration_ms} ms\t MaxMaf: {max_maf}\t MafDatabase: {maf_database}')
-        logger.info(f'MAF_DATABASE_CREATE RequestId: {request_id}\t InputSubtrees: {input_files}\t Duration: {maf_duration_ms} ms\t MaxMaf: {max_maf}\t MafDatabase: {maf_database}')
-    else:
-        # input_file é um arquivo
-        raise ValueError(f'MAF_DATABASE_CREATE: Invalid input_file: {input_files}. List of files expected.')
-
     #
     ## Upload output files ##
     #

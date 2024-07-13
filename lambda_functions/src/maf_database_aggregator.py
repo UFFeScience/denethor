@@ -73,29 +73,28 @@ def handler(event, context):
     
     n1_list = input_data
     for n1_item in n1_list:
-        # print(f"___________ N1 _______________")
+        print(f"___________ N1 - item: {n1_item} _______________")
         for n2_grade, n2_dict in n1_item.items():
+            print(f"___________ N2 - grade: {n2_grade}  _______________")
             max_maf = max(max_maf, n2_grade)
-            # print(f"___________ N2 - grade: {n2_grade}  _______________")
             # se o id do grau de similaridade não existe no dicionário de similaridades
             # então cria-se uma nova entrada
             if n2_grade not in maf_database:
                 maf_database[n2_grade] = {}
             for n3_subtree, n3_subtree_list in n2_dict.items():
-                # print(f'>> N3: {n3_subtree}: {n3_subtree_list} \n')
+                print(f'>> N3: {n3_subtree}: {n3_subtree_list} \n')
                 # para um determinado grau de similaridade, adiciona-se a lista de subárvores similares em maf_database
                 if n3_subtree not in maf_database[n2_grade]:
                     maf_database[n2_grade][n3_subtree] = n3_subtree_list
                 else:
                     raise ValueError(f"Subtree {n3_subtree} already exists in maf_database[{n2_grade}]!!")
-            # print("_______________________________")
+            print("_______________________________")
 
     # print(maf_database)
 
     end_time = timeit.default_timer()
     maf_time_ms = (end_time - start_time) * 1000
     
-    print(f'MAF_DATABASE_AGGREGATE RequestId: {request_id}\t InputDataCount: {len(input_data)}\t Duration: {maf_time_ms} ms\t MaxMaf: {max_maf}\t MafDatabase: {maf_database}')
     logger.info(f'MAF_DATABASE_AGGREGATE RequestId: {request_id}\t InputDataCount: {len(input_data)}\t Duration: {maf_time_ms} ms\t MaxMaf: {max_maf}\t MafDatabase: {maf_database}')
 
     #
