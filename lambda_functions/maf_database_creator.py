@@ -1,4 +1,4 @@
-import lambda_functions.src.subtree_constructor_core as smc
+import subtree_constructor_core as smc
 from utils import file_utils as fu
 from denethor.src.utils import denethor_logger as dl, denethor_utils as du, denethor_aws_utils as dau
 
