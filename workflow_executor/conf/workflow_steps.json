@@ -3,7 +3,7 @@
         "id": 1,
         "action": "execute",
         "activity": "tree_constructor",
-        "execution_env": "local_win",
+        "execution_env": "local",
         "execution_strategy": "for_each_input",
         "params": {
             "input_param": "conf/input_files.json",
@@ -16,7 +16,7 @@
         "id": 2,
         "action": "execute",
         "activity": "subtree_constructor",
-        "execution_env": "local_win",
+        "execution_env": "local",
         "execution_strategy": "for_each_input",
         "params": {
             "input_param": "tree_files",
@@ -28,7 +28,7 @@
         "id": 3,
         "action": "execute",
         "activity": "maf_database_creator",
-        "execution_env": "local_win",
+        "execution_env": "local",
         "execution_strategy": "for_each_input",
         "params": {
             "input_param": "subtree_files",
@@ -40,7 +40,7 @@
         "id": 4,
         "action": "execute",
         "activity": "maf_database_aggregator",
-        "execution_env": "local_win",
+        "execution_env": "local",
         "execution_strategy": "for_all_inputs",
         "params": {
             "input_param": "maf_databases",
@@ -53,7 +53,7 @@
         "activity": "tree_constructor",
         "log_path": "data/executions/logs",
         "log_file": "log_[function_name]_[execution_id].json",
-        "execution_env": "local_win",
+        "execution_env": "local",
         "active": false
     },
     {
@@ -62,7 +62,7 @@
         "activity": "subtree_mining",
         "log_path": "data/executions/logs",
         "log_file": "log_[function_name]_[execution_id].json",
-        "execution_env": "local_win",
+        "execution_env": "local",
         "active": false
     }
 ]

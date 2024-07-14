@@ -1,5 +1,5 @@
 from . import executor_local, executor_aws
-from denethor.src.constants import LOCAL_WIN, AWS_LAMBDA, VM_LINUX
+from denethor.src.constants import LOCAL, AWS_LAMBDA, VM_LINUX
 
 
 # params = {
@@ -39,7 +39,7 @@ def execute(params):
 def execute_by_env(params):
     environment = params.get('execution_env').get('env_name')
     
-    if environment == LOCAL_WIN:
+    if environment == LOCAL:
         result = executor_local.execute(params)
     
     elif environment == AWS_LAMBDA:

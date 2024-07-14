@@ -2,27 +2,27 @@ import os
 import boto3
 import timeit
 import logging
-from denethor.src.constants import LOCAL_WIN, AWS_LAMBDA, VM_LINUX
+from denethor.src.constants import LOCAL, AWS_LAMBDA, VM_LINUX
 
 
 ##
 # Consumed (download) Files
 ##
-def handle_consumed_files(request_id: str, files: list, file_path: str, params: dict):
+def handle_consumed_files(request_id: str, files_name: list, path: str, params: dict):
     download_time_ms = None
     if params.get('env_name') == AWS_LAMBDA:
-        # Get the input_bucket from the payload
+        # Get the bucket from the payload
         bucket = params.get('input_bucket')
         key = params.get('input_key')
         # Download file from s3 bucket into lambda function
-        download_time_ms = download_from_s3(request_id, bucket, key, files, file_path)
+        download_time_ms = download_from_s3(request_id, bucket, key, files_name, path)
         
-    info = get_files_info(files, file_path)      
-    print(f'CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {info['files_count']} files\t FilesSize: {info['files_size']} bytes\t TransferDuration: {download_time_ms} ms\t ConsumedFiles: {files}')
+    info = get_files_info(files_name, path)      
+    print(f'CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {info['files_count']} files\t FilesSize: {info['files_size']} bytes\t TransferDuration: {download_time_ms} ms\t ConsumedFiles: {files_name}')
 
-def download_from_s3(request_id: str, s3_bucket: str, s3_key: str, file_list: list, local_path: str) -> int:
+def download_from_s3(request_id: str, s3_bucket: str, s3_key: str, files_name: list, local_path: str) -> int:
     total_download_duration_ms = 0
-    for file_name in file_list:
+    for file_name in files_name:
         # download files from s3 into lambda function
         duration_ms = download_file_from_s3(request_id, s3_bucket, s3_key, file_name, local_path)
         total_download_duration_ms += duration_ms
@@ -59,16 +59,15 @@ def download_file_from_s3(request_id: str, s3_bucket: str, s3_key: str, file_nam
 ##
 # Produced (upload) Files
 ##
-def handle_produced_files(request_id: str, files: list, files_path: str, params: dict):
+def handle_produced_files(request_id: str, files_name: list, files_path: str, params: dict):
     upload_duration_ms = None
     if params.get('env_name') == AWS_LAMBDA:
-        ## Copy tree file to S3 ##
         bucket = params.get('output_bucket')
         key = params.get('output_key')
         # Upload files from lambda function into s3
-        upload_duration_ms = upload_to_s3(request_id, bucket, key, files, files_path)
-    info = get_files_info(files, files_path)      
-    print(f'PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {info['files_count']} files\t FilesSize: {info['files_size']} bytes\t TransferDuration: {upload_duration_ms} ms\t ProducedFiles: {files}')
+        upload_duration_ms = upload_to_s3(request_id, bucket, key, files_name, files_path)
+    info = get_files_info(files_name, files_path)      
+    print(f'PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {info['files_count']} files\t FilesSize: {info['files_size']} bytes\t TransferDuration: {upload_duration_ms} ms\t ProducedFiles: {files_name}')
   
 
 def upload_to_s3(request_id: str, s3_bucket: str, s3_key: str, file_list: list, local_path: str) -> int:

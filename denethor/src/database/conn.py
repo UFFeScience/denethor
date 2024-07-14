@@ -6,7 +6,7 @@ HOST = 'mribeiro-pg-database.ca8aozgznnhf.sa-east-1.rds.amazonaws.com'
 PORT = 9855
 DATABASE = 'denethor'
 USER = 'postgres'
-PASSWORD = 'xxxxxxxxxxxxxxxxxxxxxxxxx'
+PASSWORD = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'
 
 class Connection:
     def __init__(self):
