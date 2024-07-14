@@ -21,7 +21,6 @@ def sanitize(filename):
     return re.sub(r'[^a-zA-Z0-9_\-\./]', '_', filename).replace("LATEST", '')
 
 
-
 ##
 # Parse and Conversion functions
 ##

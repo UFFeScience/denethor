@@ -1,6 +1,6 @@
 import boto3
 import time
-from constants import LOCAL, AWS_LAMBDA, VM_LINUX
+from src.constants import LOCAL, AWS_LAMBDA, VM_LINUX
 
 def monitor_execution(params):
 
