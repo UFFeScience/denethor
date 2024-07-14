@@ -8,11 +8,10 @@
 # 
 # IMPORTS E CONFIGURAÇÃO DO DIRETÓRIO BASE
 #
-import timeit
+import os, timeit
 from Bio.Align.Applications import ClustalwCommandline
 from Bio import AlignIO, Phylo, SeqIO
 from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor
-import os
 
        
 ## VALIDADORES ##

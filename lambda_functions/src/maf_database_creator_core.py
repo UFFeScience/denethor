@@ -1,7 +1,23 @@
 from Bio import Phylo
-import os
-import time
-from lambda_functions.src.file_utils import *
+import os, copy, timeit
+
+# 
+# ## Preencher as células vazias com o valor de preenchimento ##
+#
+def fill_matrix(matrix, value):
+    
+    max_rows = len(matrix)
+    max_columns = max(len(row) for row in matrix)
+
+    full_matrix = copy.deepcopy(matrix)
+    
+    for row in full_matrix:
+        while len(row) < max_columns:
+            row.append(value)
+    print(f'max_rows= {max_rows} | max_columns= {max_columns}')
+    
+    return full_matrix
+
 
 #
 # ## Comparação das subárvores ##
@@ -44,15 +60,13 @@ def maf_database_create(subtree_list: list, subtree_matrix: list, file_path: str
     maf_database: dict = None
     max_maf: int = 0
 
-    #subtree_list equivale a uma linha da matriz de subárvores
-    print(f'maf_database_create start time: {time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}')
-
     # filled_matrix = fill_matrix(subtree_matrix, value=None)
 
     if maf_database is None:
         # maf_database = init_maf_database(subtree_matrix)
         maf_database = {}
 
+    #subtree_list equivale a uma linha da matriz de subárvores
     for main_file  in subtree_list:
         print(f'subtree_matrix: processing file {main_file } of {subtree_list}')
         
@@ -96,8 +110,6 @@ def maf_database_create(subtree_list: list, subtree_matrix: list, file_path: str
 
 def maf_database_create_orig(subtree_matrix, path, data_format):
     
-    print(f'maf_database_create start time: {time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}')
-
     start_time = timeit.default_timer()
 
     subtree_matrix = fill_matrix(subtree_matrix, value=None)

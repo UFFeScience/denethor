@@ -1,6 +1,4 @@
 import os
-import timeit
-import logging
 
 #
 ## LIMPEZA ##
