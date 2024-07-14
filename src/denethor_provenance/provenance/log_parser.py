@@ -1,6 +1,6 @@
 import re
 from utils import utils
-from database.db_model import *
+from src.denethor_provenance.database.db_model import *
 
 def parse_message(message, stats_attributes, default_sep):
     """

@@ -1,7 +1,5 @@
 import subtree_constructor_core as smc
-from utils import file_utils as fu
-from denethor.src.utils import denethor_logger as dl, denethor_utils as du, denethor_aws_utils as dau
-
+from denethor_utils import file_utils as dfu, log_handler as dl, utils as du, aws_utils as dau
 
 def handler(event, context):
 
@@ -9,8 +7,8 @@ def handler(event, context):
     execution_env = du.get_execution_env(event)
     logger = dl.get_logger(execution_env)
 
-    du.print_env(execution_env)
-    du.print_env_to_log(execution_env, logger)
+    du.print_env_log(execution_env, logger)
+
 
     TMP_PATH = execution_env.get('tmp_path') # usado para escrever arquivos 'nopipe' durante o processo de validação
     INPUT_PATH = execution_env.get('subtree_path')
@@ -21,8 +19,8 @@ def handler(event, context):
     #
     ## Cleaning old temporary files and creating directories ##
     #
-    fu.remove_files(TMP_PATH)
-    fu.create_directory_if_not_exists(INPUT_PATH, TMP_PATH)
+    dfu.remove_files(TMP_PATH)
+    dfu.create_directory_if_not_exists(INPUT_PATH, TMP_PATH)
     
     #
     ## Get the input_file from the payload

@@ -1,7 +1,4 @@
-import boto3
-import json
-import importlib
-import sys
+import boto3, json
 
 # params = {
 #     'execution_id': execution_id,

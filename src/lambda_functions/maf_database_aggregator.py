@@ -1,5 +1,5 @@
 import timeit
-from denethor.src.utils import denethor_logger as dl, denethor_utils as du
+from denethor_utils import log_handler as dl, utils as du
 
 def handler(event, context):
 
@@ -7,8 +7,7 @@ def handler(event, context):
     execution_env = du.get_execution_env(event)
     logger = dl.get_logger(execution_env)
 
-    du.print_env(execution_env)
-    du.print_env_to_log(execution_env, logger)
+    du.print_env_log(execution_env, logger)
 
     #
     ## Get the input_file from the payload

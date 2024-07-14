@@ -1,11 +1,10 @@
 import os, time, json
 
-import sys
-sys.path.append("../denethor")
+# import sys
+# sys.path.append("../denethor")
 
-from denethor.src.utils import denethor_utils as du
-
-from execution import execution_manager
+from denethor_utils import utils as du, file_utils as dfu
+from denethor_executor import execution_manager as dem
 
 conf_path = os.getcwd() + '/workflow_executor/conf/'
 # Load JSON files
@@ -70,8 +69,8 @@ def main():
 
     tree_path = "data/executions/tree"
     subtree_path = "data/executions/subtree"
-    du.remove_files(tree_path) #TODO: provisório, remover após ajustar a execução local
-    du.remove_files(subtree_path) #TODO: provisório, remover após ajustar a execução local
+    dfu.remove_files(tree_path) #TODO: provisório, remover após ajustar a execução local
+    dfu.remove_files(subtree_path) #TODO: provisório, remover após ajustar a execução local
 
     workflow_produced_data = {}
 
@@ -124,7 +123,7 @@ def main():
         }
         
         
-        results = execution_manager.execute(params)
+        results = dem.execute(params)
         
         workflow_produced_data[output_param] = results
                 

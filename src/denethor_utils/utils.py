@@ -55,29 +55,7 @@ def parse_float(value: str) -> float:
     return value_float
 
 
-def remove_files(dir_path):
-    if os.path.exists(dir_path):
-        # Walk through all files and directories within dir_path
-        for root, dirs, files in os.walk(dir_path):
-            for file in files:
-                file_path = os.path.join(root, file)
-                os.remove(file_path)
-                print(f'Removed the file {file_path}')
-    else:
-        print(f'Sorry, directory {dir_path} did not exist.')
-
-def print_env(execution_env):
-    print('===========================================================')
-    print(f'=======================  {execution_env.get('env_name')}  =======================')
-    print(f'Start time: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
-    print('pwd:', os.getcwd())
-    for label, value in execution_env.items():
-        print(f'{label}={value}')
-        # print(os.listdir(value) if 'PATH' in label else '')  
-    print('===========================================================')
-
-
-def print_env_to_log(execution_env, logger: Logger):
+def print_env_log(execution_env, logger: Logger):
     logger.info('===========================================================')
     logger.info(f'=======================  {execution_env.get('env_name')}  =======================')
     logger.info(f'Start time: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')

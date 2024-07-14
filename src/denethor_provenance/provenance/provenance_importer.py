@@ -1,4 +1,4 @@
-from database.db_model import *
+from src.denethor_provenance.database.db_model import *
 from database.repository import *
 import aws_log_retriever as retriever
 import aws_log_interpreter as interpreter

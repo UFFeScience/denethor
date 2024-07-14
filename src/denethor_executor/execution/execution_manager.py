@@ -1,5 +1,5 @@
-from . import executor_local, executor_aws
-from src.constants import LOCAL, AWS_LAMBDA, VM_LINUX
+import executor_local, executor_aws
+from constants import LOCAL, AWS_LAMBDA, VM_LINUX
 
 
 # params = {

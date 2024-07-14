@@ -1,7 +1,7 @@
 import log_parser  as parser
-from database.db_model import *
+from src.denethor_provenance.database.db_model import *
 from database.repository import *
-from utils import utils
+from denethor_utils import utils
 
 from datetime import datetime
 import json
