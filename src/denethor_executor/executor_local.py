@@ -25,12 +25,12 @@ def execute(params):
         }
 
     base_path = execution_env.get('base_path')
-    activity_path = execution_env.get('activity_implementation_path')
-    activity_path = os.path.join(base_path, activity_path)
+    func_src_path = execution_env.get('function_src')
+    func_src_path = os.path.join(base_path, func_src_path)
     function_name = 'handler' # nome da função padrão dentro da implementação da atividade
 
     # Call the python function with the specified parameters and return the request ID
-    result = invoke_python(activity_name, activity_path, function_name, payload)
+    result = invoke_python(activity_name, func_src_path, function_name, payload)
     
     return result
 

@@ -1,42 +1,64 @@
-{
-    "aws_lambda": {
+[
+    {
         "env_name": "aws_lambda",
-        "input_file_path": "/tmp/dataset",
-        "tmp_path": "/tmp",
-        "tree_path": "/tmp/tree",
-        "subtree_path": "/tmp/subtree",
-        "clustalw_path": "/opt/python/clustalw-2.1-linux-x86_64-libcppstatic",
         "data_format": "nexus",
-        "bucket": "denethor",
-        "dataset_key_path": "data/full_dataset",
-        "tree_key_path": "tree",
-        "subtree_key_path": "subtree",
-        "log_output": "stdout",
-        "log_path": ""
+        "path_config": {
+            "input_file": "/tmp/dataset",
+            "tmp": "/tmp",
+            "tree": "/tmp/tree",
+            "subtree": "/tmp/subtree",
+            "clustalw": "/opt/python/clustalw-2.1-linux-x86_64-libcppstatic"
+        },
+        "bucket_config": {
+            "bucket_name": "denethor",
+            "key_input_files": "data/full_dataset",
+            "key_tree_files": "tree",
+            "key_subtre_files": "subtree"
+        },
+        "log_config": {
+            "output": "stdout"
+        }
     },
     
-    "local": {
-        "env_name": "local_win",
-        "base_path": "C:/Users/marce/OneDrive/Documentos/GitHub/denethor/",
-        "input_file_path": "data/full_dataset",
-        "tmp_path": "data/executions/tmp",
-        "tree_path": "data/executions/tree",
-        "subtree_path": "data/executions/subtree",
-        "clustalw_path": "lambda_functions/lib/ClustalW2",
+    {
+        "env_name": "local",
         "data_format": "nexus",
-        "activity_implementation_path": "lambda_functions/src",
-        "log_output": "file",
-        "log_path": "workflow_executor/.out/logs"
+        "path_config": {
+            "base_path": "",
+            "functions_src": "src/lambda_functions",
+            "input_file": "data/full_dataset",
+            "tmp": "data/_output/executions/tmp",
+            "tree": "data/_output/executions/tree",
+            "subtree": "data/_output/executions/subtree",
+            "clustalw": "lib/ClustalW2"
+        },
+        "log_config": {
+            "output_format": "file",
+            "path": "data/_output/logs"
+        }
     },
     
     
-    "vm_linux": {
+    
+    {
         "env_name": "vm_linux",
-        "input_file_path": "/data/full_dataset",
-        "tmp_path": "/tmp",
-        "tree_path": "/data/tree",
-        "subtree_path": "/data/subtree",
-        "clustalw_path": "lambda_functions/lib/opt/python/ClustalW2",
-        "data_format": "nexus"
+        "data_format": "nexus",
+        "path_config": {
+            "input_file": "/tmp/dataset",
+            "tmp": "/tmp",
+            "tree": "/tmp/tree",
+            "subtree": "/tmp/subtree",
+            "clustalw": "/opt/python/clustalw-2.1-linux-x86_64-libcppstatic"
+        },
+        "bucket_config": {
+            "bucket_name": "denethor",
+            "key_input_files": "data/full_dataset",
+            "key_tree_files": "tree",
+            "key_subtre_files": "subtree"
+        },
+        "log_config": {
+            "output_format": "file",
+            "path": "data/_output/logs"
+        }
     }
-}
+]

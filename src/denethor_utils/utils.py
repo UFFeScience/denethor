@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 from logging import Logger
 import os, re, json, uuid
-from denethor.src.utils import denethor_logger as dl
 
 
 def generate_uuid():
@@ -15,6 +14,9 @@ def get_request_id(context):
 
 def get_execution_env(event):
     return event.get('execution_env')
+
+def get_env_config_by_name(env_name, global_env_config):
+    pass#!!!!!!!! fazer a busca aqui
 
 # Define a regex pattern to match only valid characters in file names or directories
 def sanitize(filename):
@@ -48,7 +50,7 @@ def parse_int(value: str) -> int:
     return value_int
 
 def parse_float(value: str) -> float:
-    if value is None:
+    if not value:
         return None
     match = re.search(r"\d+\.?\d*", value)
     value_float = float(match.group()) if match else None
@@ -56,9 +58,10 @@ def parse_float(value: str) -> float:
 
 
 def print_env_log(execution_env, logger: Logger):
+    env_name = execution_env.get('env_name')
     logger.info('===========================================================')
-    logger.info(f'=======================  {execution_env.get('env_name')}  =======================')
-    logger.info(f'Start time: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+    logger.info(f'=======================  {env_name}  =======================')
+    logger.info(f'Start time: {now_str()}')
     logger.info(f'pwd={os.getcwd()}')
     for label, value in execution_env.items():
         logger.info(f'{label}={value}')

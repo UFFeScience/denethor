@@ -1,4 +1,4 @@
-import executor_local, executor_aws
+from denethor_executor import executor_local, executor_aws
 from constants import LOCAL, AWS_LAMBDA, VM_LINUX
 
 

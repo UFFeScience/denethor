@@ -1,27 +1,27 @@
 import os, time, json
 
 # import sys
-# sys.path.append("../denethor")
+# sys.path.append("../src")
 
 from denethor_utils import utils as du, file_utils as dfu
 from denethor_executor import execution_manager as dem
 
-conf_path = os.getcwd() + '/workflow_executor/conf/'
+conf_path = os.path.join(os.getcwd(), 'conf')
 # Load JSON files
-with open(conf_path + 'provider_info.json') as f:
+with open(os.path.join(conf_path, 'provider_info.json'), 'r') as f:
     provider = json.load(f)
 
-with open(conf_path + 'workflow_info.json') as f:
+with open(os.path.join(conf_path, 'workflow_info.json'), 'r') as f:
     workflow = json.load(f)
 
-with open(conf_path + 'workflow_steps.json') as f:
+with open(os.path.join(conf_path, 'workflow_steps.json'), 'r') as f:
     workflow_steps = json.load(f)
 
-with open(conf_path + 'statistics.json') as f:
+with open(os.path.join(conf_path, 'statistics.json'), 'r') as f:
     statistics = json.load(f)
 
 # Load the execution environment configuration
-with open(conf_path + 'env_config.json') as f:
+with open(os.path.join(conf_path, 'env_config.json'), 'r') as f:
     global_env_config = json.load(f)
 
 # Set the workflow start time in milliseconds
@@ -67,10 +67,10 @@ def main():
     #########################################################################
 
 
-    tree_path = "data/executions/tree"
-    subtree_path = "data/executions/subtree"
-    dfu.remove_files(tree_path) #TODO: provisório, remover após ajustar a execução local
-    dfu.remove_files(subtree_path) #TODO: provisório, remover após ajustar a execução local
+    # tree_path = "data/executions/tree"
+    # subtree_path = "data/executions/subtree"
+    # dfu.remove_files(tree_path) #TODO: provisório, remover após ajustar a execução local
+    # dfu.remove_files(subtree_path) #TODO: provisório, remover após ajustar a execução local
 
     workflow_produced_data = {}
 
@@ -87,27 +87,30 @@ def main():
         activity = step.get('activity')
         execution_env_name = step.get('execution_env')
         strategy = step.get('execution_strategy')
+        # Get the execution environment configuration by the name set in the step
         execution_env = global_env_config.get(execution_env_name)
 
         input_param = step.get('params').get('input_param')
         limit_param = step.get('params').get('input_limit')
         output_param = step.get('params').get('output_param')
         
+        # If the input parameter is a JSON file, load the data from the file
         if '.json' in input_param:
             # Load input files list to be used in the workflow
-            with open(os.getcwd() + '/workflow_executor/' + input_param, 'r') as f:
+            with open(os.path.join(conf_path, input_param), 'r') as f:
                 input_data = json.load(f)
         else:
             # recuperar os dados produzidos anteriormente indicados por 'input_param'
             # input_data será uma lista dos outputs produzidos pelas ativações
-            for param, activity_output in workflow_produced_data.items():
-                if input_param == param:
+            for param_name, activity_output in workflow_produced_data.items():
+                if input_param == param_name:
                     input_data = [output['produced_data'] for output in activity_output]
                     break
 
         if input_data is None:
             raise ValueError(f'Invalid input data: {input_param}')
         
+        # Limit the input data if the limit parameter is set
         if limit_param is not None:
             input_data = input_data[:limit_param]  
                 
@@ -123,8 +126,10 @@ def main():
         }
         
         
+        # Execute the activity
         results = dem.execute(params)
         
+        # Save the produced data in the dictionary
         workflow_produced_data[output_param] = results
                 
 
