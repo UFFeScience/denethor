@@ -22,11 +22,7 @@ def execute(params):
         'activity': activity_name, # nome da atividade
         'input_data': params.get('input_data'), # dados de entrada
         'all_input_data': params.get('all_input_data'), # conjunto completo dos dados de entrada
-        'execution_env': execution_env, # ambiente de execução
-        'input_bucket': params['input_bucket'],
-        'input_key': params['input_key'],
-        'output_bucket': params['output_bucket'],
-        'output_key': params['output_key']
+        'execution_env': execution_env # ambiente de execução
         }
     
     request_id = invoke_async(activity_name, payload)

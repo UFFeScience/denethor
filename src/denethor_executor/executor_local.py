@@ -24,8 +24,8 @@ def execute(params):
         'execution_env': execution_env # ambiente de execução
         }
 
-    base_path = execution_env.get('base_path')
-    func_src_path = execution_env.get('function_src')
+    base_path = execution_env.get('path_config').get('base')
+    func_src_path = execution_env.get('path_config').get('function_src')
     func_src_path = os.path.join(base_path, func_src_path)
     function_name = 'handler' # nome da função padrão dentro da implementação da atividade
 
