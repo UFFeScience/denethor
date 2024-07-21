@@ -1,6 +1,9 @@
 import os, sys
 import importlib.util, inspect
 
+
+HANDLER = 'handler'
+
 # params = {
 #     'execution_id': execution_id,
 #     'start_time_ms': start_time_ms,
@@ -9,28 +12,21 @@ import importlib.util, inspect
 #     'execution_env': execution_env,
 #     'strategy': strategy,
 #     'input_data': input_data,
+#     'all_input_data': all_input_data,
 #     'output_param': output_param,
 # }
 
-def execute(params):
+def execute(payload):
     
-    activity_name = params.get('activity')
-    execution_env = params.get('execution_env')
-
-    payload = {
-        'activity': activity_name, # nome da atividade
-        'input_data': params.get('input_data'), # dados de entrada
-        'all_input_data': params.get('all_input_data'), # conjunto completo dos dados de entrada
-        'execution_env': execution_env # ambiente de execução
-        }
+    activity_name = payload.get('activity')
+    execution_env = payload.get('execution_env')
 
     base_path = execution_env.get('path_config').get('base')
-    func_src_path = execution_env.get('path_config').get('function_src')
+    func_src_path = execution_env.get('path_config').get('functions_src')
     func_src_path = os.path.join(base_path, func_src_path)
-    function_name = 'handler' # nome da função padrão dentro da implementação da atividade
 
     # Call the python function with the specified parameters and return the request ID
-    result = invoke_python(activity_name, func_src_path, function_name, payload)
+    result = invoke_python(activity_name, func_src_path, HANDLER, payload)
     
     return result
 

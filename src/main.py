@@ -6,7 +6,7 @@ import os, time, json
 from denethor_utils import utils as du, file_utils as dfu
 from denethor_executor import execution_manager as dem
 
-conf_path = os.path.join(os.getcwd(), 'conf')
+conf_path = os.path.join(os.getcwd(), 'config')
 # Load JSON files
 with open(os.path.join(conf_path, 'provider_info.json'), 'r') as f:
     provider = json.load(f)
@@ -22,7 +22,7 @@ with open(os.path.join(conf_path, 'statistics.json'), 'r') as f:
 
 # Load the execution environment configuration
 with open(os.path.join(conf_path, 'env_config.json'), 'r') as f:
-    global_env_config = json.load(f)
+    env_configs = json.load(f)
 
 # Set the workflow start time in milliseconds
 start_time_ms = int(time.time() * 1000)
@@ -78,42 +78,38 @@ def main():
     for step in workflow_steps:
         
         step_id = step.get('id')
-        # Check if the step is active
-        if step.get('active') is False:
-            print(f'\n>>> Step [{step_id}], action: {step.get("action")}, activity: {step.get("activity")} is inactive. Skipping...')
-            continue
-            
         action = step.get('action')
         activity = step.get('activity')
-        execution_env_name = step.get('execution_env')
+        
+        # Check if the step is active
+        if step.get('active') is False:
+            print(f"\n>>> Step [{step_id}], action: {action}, activity: {activity} is inactive. Skipping...")
+            continue
+            
+        env_name = step.get('execution_env')
         strategy = step.get('execution_strategy')
         # Get the execution environment configuration by the name set in the step
-        execution_env = global_env_config.get(execution_env_name)
+        execution_env = du.get_env_config_by_name(env_name, env_configs)
 
         input_param = step.get('params').get('input_param')
-        limit_param = step.get('params').get('input_limit')
         output_param = step.get('params').get('output_param')
         
         # If the input parameter is a JSON file, load the data from the file
         if '.json' in input_param:
             # Load input files list to be used in the workflow
             with open(os.path.join(conf_path, input_param), 'r') as f:
-                input_data = json.load(f)
+                all_input_data = json.load(f)
         else:
             # recuperar os dados produzidos anteriormente indicados por 'input_param'
             # input_data será uma lista dos outputs produzidos pelas ativações
             for param_name, activity_output in workflow_produced_data.items():
                 if input_param == param_name:
-                    input_data = [output['produced_data'] for output in activity_output]
+                    all_input_data = [output['produced_data'] for output in activity_output]
                     break
 
-        if input_data is None:
-            raise ValueError(f'Invalid input data: {input_param}')
+        if all_input_data is None:
+            raise ValueError(f"Invalid input data: {input_param}")
         
-        # Limit the input data if the limit parameter is set
-        if limit_param is not None:
-            input_data = input_data[:limit_param]  
-                
         # Workflow parameters
         params = {
             'execution_id': workflow_exec_id,
@@ -122,7 +118,7 @@ def main():
             'activity': activity,
             'execution_env': execution_env,
             'strategy': strategy,
-            'input_data': input_data
+            'all_input_data': all_input_data
         }
         
         
@@ -133,7 +129,7 @@ def main():
         workflow_produced_data[output_param] = results
                 
 
-        print(f'\n>>> Action: {action} | activity: {activity} completed.')
+        print(f"\n>>> Action: {action} | activity: {activity} completed.")
 
 
     print('******* Workflow execution finished at: ', du.now_str(), ' *******')

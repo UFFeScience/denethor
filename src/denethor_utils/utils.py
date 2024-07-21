@@ -12,11 +12,17 @@ def generate_workflow_exec_id(start_time_ms):
 def get_request_id(context):
     return context.aws_request_id if context else generate_uuid()
 
+def get_execution_id(event):
+    return event.get('execution_id')
+
 def get_execution_env(event):
     return event.get('execution_env')
 
-def get_env_config_by_name(env_name, global_env_config):
-    pass#!!!!!!!! fazer a busca aqui
+def get_env_config_by_name(env_name, configs):
+    for config in configs:
+        if config.get('env_name') == env_name:
+            return config
+    raise ValueError(f"Invalid environment name: {env_name}")
 
 # Define a regex pattern to match only valid characters in file names or directories
 def sanitize(filename):
@@ -33,10 +39,13 @@ def to_datetime(time: float):
         return datetime.fromtimestamp((time / 1000.0), tz=timezone.utc)
     return None
 
-def to_str(time: float):
+def to_str(time: float) -> str:
     return to_datetime(time).strftime('%Y-%m-%dT%H:%M:%S')
 
 def now_str():
+    """
+    Returns the current time in the format: 'YYYY-MM-DDTHH:MM:SS'
+    """
     return datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
 
 def to_str(json_obj: dict) -> str:
@@ -56,6 +65,22 @@ def parse_float(value: str) -> float:
     value_float = float(match.group()) if match else None
     return value_float
 
+
+def flatten_list(input_list: list) -> list:
+    """
+    Flatten a list of lists into a single one
+    """
+    unique_elements = set()
+    
+    def flatten(item):
+        if isinstance(item, list):
+            for subitem in item:
+                flatten(subitem)
+        else:
+            unique_elements.add(item)
+    
+    flatten(input_list)
+    return list(unique_elements)
 
 def print_env_log(execution_env, logger: Logger):
     env_name = execution_env.get('env_name')
