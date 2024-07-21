@@ -1,11 +1,12 @@
 import timeit
-from denethor_utils import log_handler as dl, utils as du
+from denethor_utils import log_handler as dlh, utils as du
 
 def handler(event, context):
 
     request_id = du.get_request_id(context)
+    execution_id = du.get_execution_id(event)
     execution_env = du.get_execution_env(event)
-    logger = dl.get_logger(execution_env)
+    logger = dlh.get_logger(execution_id, execution_env)
 
     du.print_env_log(execution_env, logger)
 

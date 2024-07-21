@@ -1,21 +1,31 @@
 from denethor_executor import executor_local, executor_aws
-from constants import LOCAL, AWS_LAMBDA, VM_LINUX
+from denethor_utils.env import LOCAL, AWS_LAMBDA, VM_LINUX
 
-
-# params = {
-#     'execution_id': execution_id,
-#     'start_time_ms': start_time_ms,
-#     'end_time_ms': end_time_ms,
-#     'activity': activity,
-#     'execution_env': execution_env,
-#     'strategy': strategy,
-#     'input_data': input_data
-# }
 
 def execute(params):
+    """
+    Executes the activity based on the provided parameters.
+    Parameters:
+    - params (dict): The parameters for the activity execution, containing the following keys:
+        - execution_id (str): The ID of the execution.
+        - start_time_ms (int): The start time of the execution in milliseconds.
+        - end_time_ms (int): The end time of the execution in milliseconds.
+        - activity (str): The name of the activity to execute.
+        - execution_env (dict): The execution environment configuration.
+        - strategy (str): The execution strategy for the activity.
+        - all_input_data (list): The complete input data for the activity execution.
+
+    Returns:
+    - list: The results of the activity execution as a list of dictionaries.
+    
+    Example: 
+    {'request_id': 'uuid_2a29bdff_3d29_46fa_b1bd_7d6779865002', 'produced_data': ['tree_ORTHOMCL1.nexus']}
+    {'request_id': 'uuid_dc71e784_52ca_428d_8bde_433ed7b0f5b6', 'produced_data': ['tree_ORTHOMCL256.nexus']}
+    """
+
     activity_name = params.get('activity')
     strategy = params.get('strategy')
-    all_input_data = params.get('input_data')
+    all_input_data = params.get('all_input_data')
     
     print(f'Activity {activity_name} triggered with execution strategy: {strategy} for input data: {all_input_data}')
 
@@ -24,6 +34,7 @@ def execute(params):
     if strategy == 'for_each_input':
         for input in all_input_data:
             params['input_data'] = input
+            #TODO: verificar se é necessário passar all_input_data
             params['all_input_data'] = all_input_data
             result = execute_by_env(params)
             results.append(result)

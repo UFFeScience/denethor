@@ -7,7 +7,7 @@
             "tmp": "/tmp",
             "tree": "/tmp/tree",
             "subtree": "/tmp/subtree",
-            "clustalw": "/opt/python/clustalw-2.1-linux-x86_64-libcppstatic"
+            "clustalw": "/opt/python/clustalw-2.1-linux"
         },
         "bucket_config": {
             "bucket_name": "denethor",
@@ -16,8 +16,9 @@
             "key_subtre_files": "subtree"
         },
         "log_config": {
-            "output_format": "stdout",
-            "path": ""
+            "output_type": "stdout",
+            "path": "",
+            "filename": ""
         }
     },
     
@@ -31,11 +32,18 @@
             "tmp": "data/_output/executions/tmp",
             "tree": "data/_output/executions/tree",
             "subtree": "data/_output/executions/subtree",
-            "clustalw": "lib/ClustalW2"
+            "clustalw": "lib/clustalw-2.1-linux"
+        },
+        "bucket_config": {
+            "bucket_name": "",
+            "key_input_files": "",
+            "key_tree_files": "",
+            "key_subtree_files": ""
         },
         "log_config": {
-            "output_format": "file",
-            "path": "data/_output/logs"
+            "output_type": "stdout_and_file",
+            "path": "data/_output/logs",
+            "filename": "denethor.log"
         }
     },
     

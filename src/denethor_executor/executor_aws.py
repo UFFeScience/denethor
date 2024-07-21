@@ -26,7 +26,6 @@ def execute(params):
         }
     
     request_id = invoke_async(activity_name, payload)
-    # print(f'{function_name} triggered with payload {payload} with execution strategy {execution_strategy} for file: {file_name}')
 
     return request_id
 
