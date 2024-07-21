@@ -144,18 +144,14 @@ def get_files_info(files: list, path: str) -> dict:
 
 def validade_required_params(request_id: str, s3_bucket: str, file_name: str, local_path: str) -> None:
     if request_id is None or request_id == '':
-    if request_id is None or request_id == '':
         raise ValueError('request_id cannot be None when downloading/uploading from S3!')
     
-    if s3_bucket is None or s3_bucket == '':
     if s3_bucket is None or s3_bucket == '':
         raise ValueError('s3_bucket cannot be None when downloading/uploading from S3!')
     
     if file_name is None or file_name == '':
-    if file_name is None or file_name == '':
         raise ValueError('file_name cannot be None when downloading/uploading from S3!')
     
-    if local_path is None or local_path == '':
     if local_path is None or local_path == '':
         raise ValueError('local_path cannot be None when downloading/uploading from S3!')
     
