@@ -56,29 +56,17 @@ aws s3 cp data/full_dataset s3://denethor/data/full_dataset --recursive
 
 ___
 
-Before creating the lambda functions, it is necessary to create a base layer for the function. To do this, you need to create a directory called `package` and then install the project dependencies and copy the ClustalW executable. Finally, compress the directory into a .zip file to be used in creating the layer.
+Before creating the lambda functions, it is necessary to create a base layer for the function. To do this, you need to install the project dependencies in a directory called `python` and copy the ClustalW executable. Finally, compress the directory into a .zip file to be used in the layer creation.
 
 ```bash
-cd lambda_functions
+python3 -m pip install --python-version 3.10 --only-binary=:all: --target .tmp/lambda_layer/python -r requirements_aws.txt
 
-python -m pip install --platform manylinux2014_x86_64 --python-version 3.10 --only-binary=:all: --target lambda_layer/python -r requirements.txt
+cp -R ./lib/clustalw-2.1-linux .tmp/lambda_layer/python
 
-cp -R ./lib/clustalw-2.1-linux-x86_64-libcppstatic lambda_layer/python
-
-cd lambda_layer
+cd .tmp/lambda_layer
 
 zip -r lambda_layer.zip python
-```
 
-Windows:
-
-```bash
-"C:\Program Files\7-Zip\7z.exe" a -tzip lambda_layer.zip python 
-```
-
-Create the denethor layer in AWS indicating the Python interpreter and the *zip file* containing the project dependencies:
-
-```bash
 aws lambda publish-layer-version --layer-name lambda_layer --zip-file fileb://lambda_layer.zip --compatible-runtimes python3.10 --region sa-east-1
 ```
 
@@ -94,24 +82,13 @@ Create a directory called `python` and then copy the `denethor` lib. Finally, co
 cd denethor
 
 mkdir denethor_layer/python
-mkdir denethor_layer/python/denethor
 
-cp -R src denethor_layer/python/denethor
+cp -R src/denethor_utils denethor_layer/python
 
 cd denethor_layer
 
 zip -r denethor_layer.zip python
-```
 
-Windows:
-
-```bash
-"C:\Program Files\7-Zip\7z.exe" a -tzip denethor_layer.zip python
-```
-
-Create the denethor layer in AWS indicating the Python interpreter and the *zip file* containing the project dependencies:
-
-```bash
 aws lambda publish-layer-version --layer-name denethor_layer --zip-file fileb://denethor_layer.zip --compatible-runtimes python3.10 --region sa-east-1
 ```
 
