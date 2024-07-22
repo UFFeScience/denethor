@@ -59,6 +59,9 @@ ___
 Before creating the lambda functions, it is necessary to create a base layer for the function. To do this, you need to install the project dependencies in a directory called `python` and copy the ClustalW executable. Finally, compress the directory into a .zip file to be used in the layer creation.
 
 ```bash
+rm -Rf .tmp/lambda_layer/
+mkdir -p .tmp/lambda_layer/python
+
 python3 -m pip install --python-version 3.10 --only-binary=:all: --target .tmp/lambda_layer/python -r requirements_aws.txt
 
 cp -R ./lib/clustalw-2.1-linux .tmp/lambda_layer/python
@@ -68,6 +71,8 @@ cd .tmp/lambda_layer
 zip -r lambda_layer.zip python
 
 aws lambda publish-layer-version --layer-name lambda_layer --zip-file fileb://lambda_layer.zip --compatible-runtimes python3.10 --region sa-east-1
+
+cd ../..
 ```
 
 ___
@@ -79,17 +84,18 @@ ___
 Create a directory called `python` and then copy the `denethor` lib. Finally, compress the directory into a .zip file to be used in creating the layer.
 
 ```bash
-cd denethor
+rm -Rf .tmp/denethor_layer/
+mkdir -p .tmp/denethor_layer/python
 
-mkdir denethor_layer/python
+cp -R src/denethor_utils .tmp/denethor_layer/python
 
-cp -R src/denethor_utils denethor_layer/python
-
-cd denethor_layer
+cd .tmp/denethor_layer/
 
 zip -r denethor_layer.zip python
 
 aws lambda publish-layer-version --layer-name denethor_layer --zip-file fileb://denethor_layer.zip --compatible-runtimes python3.10 --region sa-east-1
+
+cd ../..
 ```
 
 ___
@@ -98,32 +104,29 @@ ___
 
 ___
 
-Lambda Function for the activity of constructing Phylogenetic Trees. Initially, it is necessary to create a .zip file containing the lambda function code and the project dependencies.
+Lambda Function for the activity of constructing Phylogenetic Trees. Initially, it is necessary to create a .zip file containing the lambda function code and the project dependencies. Then we can create the lambda function in AWS. Replace `xxxxxxxxxxxxx` with your AWS account number:
 
 ```bash
-cd lambda_functions/src 
+rm -Rf .tmp/tree_constructor/
+mkdir -p .tmp/tree_constructor/
 
-zip tree_constructor.zip tree_constructor.py tree_constructor_core.py utils/file_utils.py
-```
+cp -R src/lambda_functions/tree_constructor* .tmp/tree_constructor/
 
-Windows:
+cd .tmp/tree_constructor/
 
-```bash
-"C:\Program Files\7-Zip\7z.exe" a -tzip [...]
-```
+zip tree_constructor.zip *
 
-Then we can create the lambda function in AWS. Replace `xxxxxxxxxxxxx` with your AWS account number:
-
-```bash
 aws lambda create-function --function-name tree_constructor \
 --zip-file fileb://tree_constructor.zip \
 --handler tree_constructor.handler \
 --runtime python3.10 \
---role arn:aws:iam::xxxxxxxxxxxxx:role/service-role/Lambda_S3_access_role \
+--role arn:aws:iam::058264090960:role/service-role/Lambda_S3_access_role \
 --timeout 15 \
 --memory-size 128 \
 --region sa-east-1 \
---layers "arn:aws:lambda:sa-east-1:058264090960:layer:lambda_layer:5" "arn:aws:lambda:sa-east-1:058264090960:layer:denethor_layer:1"
+--layers "arn:aws:lambda:sa-east-1:058264090960:layer:lambda_layer:6" "arn:aws:lambda:sa-east-1:058264090960:layer:denethor_layer:2"
+
+cd ../..
 ```
 
 ___
@@ -132,32 +135,29 @@ ___
 
 ___
 
-This will be the Lambda Function for the subtree constructor activity. Initially, it is necessary to create a .zip file containing the lambda function code and the project dependencies.
+This will be the Lambda Function for the subtree constructor activity. Initially, it is necessary to create a .zip file containing the lambda function code and the project dependencies. Then we can create the lambda function in AWS. Replace `xxxxxxxxxxxxx` with your AWS account number:
 
 ```bash
-cd lambda_functions/src 
+rm -Rf .tmp/subtree_constructor/
+mkdir -p .tmp/subtree_constructor/
 
-zip subtree_constructor.zip subtree_constructor.py subtree_mining_core.py utils/file_utils.py
-```
+cp -R src/lambda_functions/subtree_constructor* .tmp/subtree_constructor/
 
-Windows:
+cd .tmp/subtree_constructor/
 
-```bash
-"C:\Program Files\7-Zip\7z.exe" a -tzip [...]
-```
+zip subtree_constructor.zip *
 
-Then we can create the lambda function in AWS. Replace `xxxxxxxxxxxxx` with your AWS account number:
-
-```bash
 aws lambda create-function --function-name subtree_constructor \
 --zip-file fileb://subtree_constructor.zip \
 --handler subtree_constructor.handler \
 --runtime python3.10 \
---role arn:aws:iam::xxxxxxxxxxxxx:role/service-role/Lambda_S3_access_role \
+--role arn:aws:iam::058264090960:role/service-role/Lambda_S3_access_role \
 --timeout 30 \
 --memory-size 256 \
 --region sa-east-1 \
---layers "arn:aws:lambda:sa-east-1:058264090960:layer:lambda_layer:5" "arn:aws:lambda:sa-east-1:058264090960:layer:denethor_layer:1"
+--layers "arn:aws:lambda:sa-east-1:058264090960:layer:lambda_layer:6" "arn:aws:lambda:sa-east-1:058264090960:layer:denethor_layer:2"
+
+cd ../..
 ```
 
 Note that the timeout for the `subtree_mining` function has been set to 30 seconds and the memory size has been set to 256 MB. These values are necessary because this activity runs for a longer period than the previous one.
@@ -168,20 +168,15 @@ ___
 ___
 
 ```bash
-cd lambda_functions/src 
+rm -Rf .tmp/maf_database_creator/
+mkdir -p .tmp/maf_database_creator/
 
-zip maf_database_creator.zip maf_database_creator.py subtree_mining_core.py utils/file_utils.py
-```
+cp -R src/lambda_functions/maf_database_creator* .tmp/maf_database_creator/
 
-Windows:
+cd .tmp/maf_database_creator/
 
-```bash
-"C:\Program Files\7-Zip\7z.exe" a -tzip [...]
-```
+zip maf_database_creator.zip *
 
-Then we can create the lambda function in AWS. Replace `xxxxxxxxxxxxx` with your AWS account number:
-
-```bash
 aws lambda create-function --function-name maf_database_creator \
 --zip-file fileb://maf_database_creator.zip \
 --handler maf_database_creator.handler \
@@ -190,7 +185,9 @@ aws lambda create-function --function-name maf_database_creator \
 --timeout 30 \
 --memory-size 256 \
 --region sa-east-1 \
---layers "arn:aws:lambda:sa-east-1:058264090960:layer:lambda_layer:5" "arn:aws:lambda:sa-east-1:058264090960:layer:denethor_layer:1"
+--layers "arn:aws:lambda:sa-east-1:058264090960:layer:lambda_layer:6" "arn:aws:lambda:sa-east-1:058264090960:layer:denethor_layer:2"
+
+cd ../..
 ```
 
 ___
@@ -200,29 +197,26 @@ ___
 ___
 
 ```bash
-cd lambda_functions/src 
+rm -Rf .tmp/maf_database_aggregator/
+mkdir -p .tmp/maf_database_aggregator/
 
-zip maf_database_aggregator.zip maf_database_aggregator.py
-```
+cp -R src/lambda_functions/maf_database_aggregator* .tmp/maf_database_aggregator/
 
-Windows:
+cd .tmp/maf_database_aggregator/
 
-```bash
-"C:\Program Files\7-Zip\7z.exe" a -tzip [...]
-```
+zip maf_database_aggregator.zip *
 
-Then we can create the lambda function in AWS. Replace `xxxxxxxxxxxxx` with your AWS account number:
-
-```bash
 aws lambda create-function --function-name maf_database_aggregator \
 --zip-file fileb://maf_database_aggregator.zip \
 --handler maf_database_aggregator.handler \
 --runtime python3.10 \
 --role arn:aws:iam::058264090960:role/service-role/Lambda_S3_access_role \
---timeout 30 \
---memory-size 256 \
+--timeout 15 \
+--memory-size 128 \
 --region sa-east-1 \
---layers "arn:aws:lambda:sa-east-1:058264090960:layer:lambda_layer:5" "arn:aws:lambda:sa-east-1:058264090960:layer:denethor_layer:1"
+--layers "arn:aws:lambda:sa-east-1:058264090960:layer:lambda_layer:6" "arn:aws:lambda:sa-east-1:058264090960:layer:denethor_layer:2"
+
+cd ../..
 ```
 
 ___
