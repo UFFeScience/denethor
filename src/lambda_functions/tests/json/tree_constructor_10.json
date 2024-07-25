@@ -1,0 +1,37 @@
+{
+  "activity": "tree_constructor",
+  "input_data": [
+    "ORTHOMCL1",
+    "ORTHOMCL256",
+    "ORTHOMCL256_2",
+    "ORTHOMCL320",
+    "ORTHOMCL337",
+    "ORTHOMCL358",
+    "ORTHOMCL364",
+    "ORTHOMCL371",
+    "ORTHOMCL374",
+    "ORTHOMCL421"
+  ],
+  "execution_env": {
+    "env_name": "aws_lambda",
+    "data_format": "nexus",
+    "path_config": {
+      "input_file": "/tmp/dataset",
+      "tmp": "/tmp",
+      "tree": "/tmp/tree",
+      "subtree": "/tmp/subtree",
+      "clustalw": "/opt/python/clustalw-2.1-linux"
+    },
+    "bucket_config": {
+      "bucket_name": "denethor",
+      "key_input_files": "data/full_dataset",
+      "key_tree_files": "tree",
+      "key_subtree_files": "subtree"
+    },
+    "log_config": {
+      "output_type": "stdout",
+      "path": "",
+      "filename": ""
+    }
+  }
+}

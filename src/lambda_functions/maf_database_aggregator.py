@@ -76,7 +76,7 @@ def handler(event, context):
         print(f"___________ N1 - item: {n1_item} _______________")
         for n2_grade, n2_dict in n1_item.items():
             print(f"___________ N2 - grade: {n2_grade}  _______________")
-            max_maf = max(max_maf, n2_grade)
+            max_maf = max(max_maf, du.parse_int(n2_grade))
             # se o id do grau de similaridade não existe no dicionário de similaridades
             # então cria-se uma nova entrada
             if n2_grade not in maf_database:

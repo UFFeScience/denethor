@@ -21,7 +21,7 @@ def handler(event, context):
     s3_params = {
         'env_name': execution_env.get('env_name'),
         'bucket': bucket_config.get('bucket_name'),
-        'input_key': bucket_config.get('key_subtre_files'),
+        'input_key': bucket_config.get('key_subtree_files'),
         'output_key': ""
     }
     
