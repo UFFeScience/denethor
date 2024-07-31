@@ -1,6 +1,6 @@
 import re
-from utils import utils
-from src.denethor_provenance.database.db_model import *
+from denethor_utils import utils as du
+from denethor_provenance.database.db_model import *
 
 def parse_message(message, stats_attributes, default_sep):
     """
@@ -31,9 +31,9 @@ def parse_message(message, stats_attributes, default_sep):
             # Store the attribute value in the dictionary
             str_val = match.group(1).strip()
             if attribute['dataType'] == 'integer':
-                parsed_message[attribute['fieldName']] = utils.parse_int(str_val)
+                parsed_message[attribute['fieldName']] = du.parse_int(str_val)
             elif attribute['dataType'] == 'float':
-                parsed_message[attribute['fieldName']] = utils.parse_float(str_val)
+                parsed_message[attribute['fieldName']] = du.parse_float(str_val)
             else:
                 parsed_message[attribute['fieldName']] = str_val
         else:
@@ -96,10 +96,10 @@ def process_default_stats(service_execution, parsed_message: dict, timestamp: in
     """
     match parsed_message["logType"]:
         case 'START':
-            service_execution.start_time = utils.to_datetime(timestamp)
+            service_execution.start_time = du.convert_ms_to_datetime(timestamp)
                     
         case 'END':
-            service_execution.end_time = utils.to_datetime(timestamp)
+            service_execution.end_time = du.convert_ms_to_datetime(timestamp)
                     
         case 'REPORT' | 'PRODUCED_FILES_INFO' | 'CONSUMED_FILES_INFO':
             service_execution.update_from_dict(parsed_message)

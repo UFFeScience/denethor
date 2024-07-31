@@ -4,7 +4,7 @@ import importlib.util, inspect
 
 HANDLER = 'handler'
 
-# params = {
+# payload = {
 #     'execution_id': execution_id,
 #     'start_time_ms': start_time_ms,
 #     'end_time_ms': end_time_ms,
@@ -17,7 +17,9 @@ HANDLER = 'handler'
 # }
 
 def execute(payload):
-    
+    """
+    Executes the activity in the local environment based on the provided parameters.
+    """
     activity_name = payload.get('activity')
     execution_env = payload.get('execution_env')
 
@@ -25,13 +27,28 @@ def execute(payload):
     func_src_path = execution_env.get('path_config').get('functions_src')
     func_src_path = os.path.join(base_path, func_src_path)
 
-    # Call the python function with the specified parameters and return the request ID
-    result = invoke_python(activity_name, func_src_path, HANDLER, payload)
-    
-    return result
+    # Call the python function with the specified parameters and return the response data
+    response_data = invoke_python(activity_name, func_src_path, HANDLER, payload)
+    return response_data
 
 
 def invoke_python(module_name, module_path, func_name, payload):
+    """
+    Invokes a Python function with the given module name, function name, and payload.
+
+    Args:
+        module_name (str): The name of the module containing the target function.
+        module_path (str): The path to the module if it is not in the default search path.
+        func_name (str): The name of the function to be invoked.
+        payload (Any): The payload to be passed as an argument to the function.
+
+    Returns:
+        Any: The result of the function call.
+
+    Raises:
+        ValueError: If both `module_name` and `func_name` are not provided.
+        AttributeError: If the module does not have a function with the given name.
+    """
     # Check if the module and function exist
     if not module_name or not func_name:
         raise ValueError('Both module_name and function_name must be provided')

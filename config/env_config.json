@@ -3,7 +3,7 @@
         "env_name": "aws_lambda",
         "data_format": "nexus",
         "path_config": {
-            "input_file": "/tmp/dataset",
+            "input_file": "/tmp/input",
             "tmp": "/tmp",
             "tree": "/tmp/tree",
             "subtree": "/tmp/subtree",
@@ -17,8 +17,8 @@
         },
         "log_config": {
             "output_type": "stdout",
-            "path": "",
-            "filename": ""
+            "path": "resources/logs/aws",
+            "file_name": "log_[activity_name]_[execution_id].json"
         }
     },
     
@@ -28,11 +28,11 @@
         "path_config": {
             "base": "",
             "functions_src": "src/lambda_functions",
-            "input_file": "data/full_dataset",
-            "tmp": "data/_output/executions/tmp",
-            "tree": "data/_output/executions/tree",
-            "subtree": "data/_output/executions/subtree",
-            "clustalw": "lib/clustalw-2.1-linux"
+            "input_file": "resources/input_data",
+            "tmp": ".tmp",
+            "tree": ".tmp/tree",
+            "subtree": ".tmp/subtree",
+            "clustalw": "resources/libs/clustalw-2.1-linux"
         },
         "bucket_config": {
             "bucket_name": "",
@@ -42,12 +42,10 @@
         },
         "log_config": {
             "output_type": "stdout_and_file",
-            "path": "data/_output/logs",
-            "filename": "denethor.log"
+            "path": "resources/logs/local",
+            "file_name": "log_[activity_name]_[execution_id].log"
         }
     },
-    
-    
     
     {
         "env_name": "vm_linux",

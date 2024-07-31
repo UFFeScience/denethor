@@ -1,51 +1,55 @@
 import boto3, json
 
-# params = {
+# payload = {
 #     'execution_id': execution_id,
 #     'start_time_ms': start_time_ms,
 #     'end_time_ms': end_time_ms,
 #     'activity': activity,
-#     'all_input_data': all_input_data,
 #     'execution_env': execution_env,
 #     'strategy': strategy,
 #     'input_data': input_data,
+#     'all_input_data': all_input_data,
 #     'output_param': output_param,
 # }
 
-# Invokes a Lambda function execution based on the provided parameters.
-def execute(params):
-
-    activity_name = params.get('activity')
-    execution_env = params.get('execution_env')
-
-    payload = {
-        'activity': activity_name, # nome da atividade
-        'input_data': params.get('input_data'), # dados de entrada
-        'all_input_data': params.get('all_input_data'), # conjunto completo dos dados de entrada
-        'execution_env': execution_env # ambiente de execução
-        }
-    
-    request_id = invoke_async(activity_name, payload)
-
-    return request_id
-
-
-def invoke_async(function_name, payload):
+def execute(payload):
     """
-    Invokes a Lambda function asynchronously with the given function name and payload.
+    Executes the activity in the AWS Lambda environment based on the provided parameters.
+    """
+    activity_name = payload.get('activity')
+    
+    response_data = invoke_lambda(activity_name, payload, 350)
+    return response_data
+
+
+def invoke_lambda(function_name, payload, timeout=120, async_invoke=False):
+    """
+    Invokes a Lambda function with the given function name and payload.
 
     Parameters:
     - function_name (str): The name of the Lambda function to invoke.
     - payload (dict): The payload to pass to the Lambda function.
+    - async_invoke (bool): Whether to invoke the function asynchronously. Default is False.
+    - timeout (int): The timeout for the request in seconds. Default is 120 seconds.
 
     Returns:
     - str: The request ID of the Lambda function invocation.
+    - dict (optional): The response payload if invoked synchronously.
     """
-    lambda_client = boto3.client('lambda')
+    
+    print(f"\nInvoking Lambda function: {function_name} | async_invoke={async_invoke}")
+    
+    lambda_client = boto3.client('lambda', config=boto3.session.Config(read_timeout=timeout))
+    invocation_type = 'Event' if async_invoke else 'RequestResponse'
     response = lambda_client.invoke(
-                function_name=function_name,
-                InvocationType='Event',
-                Payload=json.dumps(payload)
-            )
-    request_id = response['ResponseMetadata']['RequestId']
-    return request_id
+        FunctionName=function_name,
+        InvocationType=invocation_type,
+        Payload=json.dumps(payload)
+    )
+    
+    print(f"Lambda function {function_name} invoked successfully!")
+    
+    if async_invoke:
+        return response['ResponseMetadata']['RequestId']
+    else:
+        return json.loads(response['Payload'].read())

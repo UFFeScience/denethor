@@ -6,11 +6,11 @@ from Bio import Phylo
 # ## Exibe subárvore ##
 #
 def print_trees_in_directory(directory, data_format):
-    for filename in os.listdir(directory):
-        if filename.endswith(".nexus"):
-            file_path = os.path.join(directory, filename)
+    for file_name in os.listdir(directory):
+        if file_name.endswith(".nexus"):
+            file_path = os.path.join(directory, file_name)
 
-            print(filename.upper() + "\n")
+            print(file_name.upper() + "\n")
             tree = Tree.get_from_path(file_path, data_format)
             tree.print_plot()
 

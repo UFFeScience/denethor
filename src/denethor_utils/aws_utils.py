@@ -7,24 +7,19 @@ from denethor_utils.env import LOCAL, AWS_LAMBDA, VM_LINUX
 ##
 def handle_consumed_files(request_id: str, files_name: list, path: str, params: dict):
     download_time_ms = None
+    files_name_flat = du.flatten_list(files_name)
+    
     if params.get('env_name') == AWS_LAMBDA:
         # Get the bucket from the payload
         bucket = params.get('bucket')
-        bucket = params.get('bucket')
         key = params.get('input_key')
         
-        files_name_list = du.flatten_list(files_name)
-        
-        
-        files_name_list = du.flatten_list(files_name)
         
         # Download file from s3 bucket into lambda function
-        download_time_ms = download_from_s3(request_id, bucket, key, files_name_list, path)
-        download_time_ms = download_from_s3(request_id, bucket, key, files_name_list, path)
+        download_time_ms = download_from_s3(request_id, bucket, key, files_name_flat, path)
         
-    info = get_files_info(files_name, path)      
-    print(f"CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {info.get('files_count')} files\t FilesSize: {info.get('files_size')} bytes\t TransferDuration: {download_time_ms} ms\t ConsumedFiles: {files_name}")
-    print(f"CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {info.get('files_count')} files\t FilesSize: {info.get('files_size')} bytes\t TransferDuration: {download_time_ms} ms\t ConsumedFiles: {files_name}")
+    info = get_files_info(files_name_flat, path)      
+    print(f"CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {info.get('files_count')} files\t FilesSize: {info.get('files_size')} bytes\t TransferDuration: {download_time_ms} ms\t ConsumedFiles: {files_name_flat}")
 
 def download_from_s3(request_id: str, s3_bucket: str, s3_key: str, files_name: list, local_path: str) -> int:
     total_download_duration_ms = 0
@@ -56,8 +51,6 @@ def download_file_from_s3(request_id: str, s3_bucket: str, s3_key: str, file_nam
 
     print(f"Download Successful from S3! File {file_name} | {file_size} bytes | {download_time_ms} milissegundos")
     print(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: consumed\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key}\t LocalFilePath: {local_file_path}\t TransferDuration: {download_time_ms} ms\t FileSize: {file_size} bytes")
-    print(f"Download Successful from S3! File {file_name} | {file_size} bytes | {download_time_ms} milissegundos")
-    print(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: consumed\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key}\t LocalFilePath: {local_file_path}\t TransferDuration: {download_time_ms} ms\t FileSize: {file_size} bytes")
 
     return download_time_ms
       
@@ -71,19 +64,14 @@ def handle_produced_files(request_id: str, files_name: list, files_path: str, pa
     upload_duration_ms = None
     if params.get('env_name') == AWS_LAMBDA:
         bucket = params.get('bucket')
-        bucket = params.get('bucket')
         key = params.get('output_key')
-
-        files_name_list = du.flatten_list(files_name)
-
 
         files_name_list = du.flatten_list(files_name)
 
         # Upload files from lambda function into s3
         upload_duration_ms = upload_to_s3(request_id, bucket, key, files_name_list, files_path)
-        upload_duration_ms = upload_to_s3(request_id, bucket, key, files_name_list, files_path)
+    
     info = get_files_info(files_name, files_path)      
-    print(f"PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {info.get('files_count')} files\t FilesSize: {info.get('files_size')} bytes\t TransferDuration: {upload_duration_ms} ms\t ProducedFiles: {files_name}")
     print(f"PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {info.get('files_count')} files\t FilesSize: {info.get('files_size')} bytes\t TransferDuration: {upload_duration_ms} ms\t ProducedFiles: {files_name}")
   
 
@@ -113,11 +101,8 @@ def upload_file_to_s3(request_id: str, s3_bucket: str, s3_key: str, file_name: s
         
         print(f"Upload Successful to S3! File {file_name} | {file_size} bytes | {upload_duration_ms} milissegundos")
         print(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: produced\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key_upload}\t LocalFilePath: {local_file}\t TransferDuration: {upload_duration_ms} ms\t FileSize: {file_size} bytes")
-        print(f"Upload Successful to S3! File {file_name} | {file_size} bytes | {upload_duration_ms} milissegundos")
-        print(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: produced\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key_upload}\t LocalFilePath: {local_file}\t TransferDuration: {upload_duration_ms} ms\t FileSize: {file_size} bytes")
 
     except FileNotFoundError as e:
-        print(f"The local file {local_file} was not found!")
         print(f"The local file {local_file} was not found!")
         logging.error(e)
         raise e
@@ -156,7 +141,6 @@ def validade_required_params(request_id: str, s3_bucket: str, file_name: str, lo
         raise ValueError('local_path cannot be None when downloading/uploading from S3!')
     
     if not os.path.exists(local_path):
-        raise ValueError(f"local_path:{local_path} does not exist!")
         raise ValueError(f"local_path:{local_path} does not exist!")
 
 
@@ -199,7 +183,6 @@ def validade_required_params(request_id: str, s3_bucket: str, file_name: str, lo
 #         # Upload the file to S3
 #         s3.upload_file(file_path, bucket, file_key)
 #         print(f"File {file_key} uploaded to {bucket}')
-#         print(f"File {file_key} uploaded to {bucket}')
 
 
 # def download_files_from_aws_s3(params):
@@ -237,5 +220,4 @@ def validade_required_params(request_id: str, s3_bucket: str, file_name: str, lo
 #         file_key = os.path.join(key, file_name)
 #         # Download the file from S3
 #         s3.download_file(bucket, file_key, file_path)
-#         print(f"File {file_key} downloaded from {bucket}')
 #         print(f"File {file_key} downloaded from {bucket}')

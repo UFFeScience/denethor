@@ -29,6 +29,8 @@ start_time_ms = int(time.time() * 1000)
 end_time_ms = None
 workflow_exec_id = du.generate_workflow_exec_id(start_time_ms)
 
+workflow_produced_data = {}
+
 
 def main():
 
@@ -41,28 +43,30 @@ def main():
     # Comment the following lines to run the workflow as usual
     #########################################################################
         
-    # from datetime import datetime, timezone
+    from datetime import datetime, timezone
 
-    # start_time_human = "2024-03-15 02:52:52Z"
-    # end_time_human   = "2024-03-15 02:53:26Z"
+    # Define the start and end time parameters for log retrieval in aws cloudwatch
+    start_time_human = "2024-07-29 22:27:05"
+    end_time_human   = "2024-07-29 22:30:09"
 
-    # # Converte a string para um objeto datetime
-    # start_time_date = datetime.strptime(start_time_human, "%Y-%m-%d %H:%M:%SZ").replace(tzinfo=timezone.utc)
-    # end_time_date   = datetime.strptime(end_time_human, "%Y-%m-%d %H:%M:%SZ").replace(tzinfo=timezone.utc)
+    # Convert the human-readable time to milliseconds
+    start_time_ms = du.convert_str_to_ms(start_time_human)
+    end_time_ms = du.convert_str_to_ms(end_time_human)
 
-    # # Converte para milissegundos e acrescenta uma margem de 10 segundos
-    # # antes e depois do intervalo para garantir que todos os logs sejam capturados
-    # start_time_ms = int(start_time_date.timestamp() * 1000) - (10 * 1000)
-    # end_time_ms = int(end_time_date.timestamp() * 1000) + (10 * 1000)
+    # Adds a margin of 10 seconds before and after the interval to ensure that all logs are captured
+    start_time_ms -= 10000
+    end_time_ms += 10000
 
+    # Setting the active steps for testing
+    # ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
+    action = "import_provenance"
+    activities = ["maf_database_creator"]
 
-    # Steps id 5 and 6 are active
-
-    # for step in workflow_steps:
-    #     if step['id'] in (5,6):
-    #         step['active'] = True
-    #     else:
-    #         step['active'] = False
+    for step in workflow_steps:
+        if step['action'] == action and step['activity'] in activities:
+            step['active'] = True
+        else:
+            step['active'] = False
 
     #########################################################################
 
@@ -72,11 +76,40 @@ def main():
     # dfu.remove_files(tree_path) #TODO: provisório, remover após ajustar a execução local
     # dfu.remove_files(subtree_path) #TODO: provisório, remover após ajustar a execução local
 
-    workflow_produced_data = {}
 
+
+    # testing_execution = False
+    # # testing_execution = True
+
+    # if testing_execution:
+
+    #     test_path = 'src/lambda_functions/tests/json'
+        
+    #     #open src/lambda_functions/tests/json/tree_constructor_10.json
+    #     with open(os.path.join(test_path, 'subtree_constructor_10.json'), 'r') as f:
+    #         tree_constructor_10 = json.load(f)
+    #         data = [{
+    #             "request_id" : "test_tree",
+    #             "produced_data" : tree_constructor_10['all_input_data']
+    #         }]
+    #         workflow_produced_data['tree_files'] = data
+
+    #     #open src/lambda_functions/tests/json/maf_db_creator_01st_x_05.json
+    #     with open(os.path.join(test_path, 'maf_db_creator_01st_x_05.json'), 'r') as f:
+    #         maf_db_creator_01st_x_05 = json.load(f)
+    #         data = [{
+    #             "request_id" : "test_subtree",
+    #             "produced_data" : maf_db_creator_01st_x_05['all_input_data']
+    #         }]
+    #         workflow_produced_data['subtree_files'] = data
+
+    
+    
+    
+    
     # For each step in the workflow
     for step in workflow_steps:
-        
+
         step_id = step.get('id')
         action = step.get('action')
         activity = step.get('activity')
@@ -85,36 +118,56 @@ def main():
         if step.get('active') is False:
             print(f"\n>>> Step [{step_id}], action: {action}, activity: {activity} is inactive. Skipping...")
             continue
-            
+
         env_name = step.get('execution_env')
         strategy = step.get('execution_strategy')
         # Get the execution environment configuration by the name set in the step
         execution_env = du.get_env_config_by_name(env_name, env_configs)
 
-        input_param = step.get('params').get('input_param')
-        output_param = step.get('params').get('output_param')
+        input_param = None
+        output_param = None
+        step_params = step.get('params')
+        if step_params:
+            input_param = step_params.get('input_param')
+            output_param = step_params.get('output_param')
+        
+        # Validation of input parameter
+        if step_params and input_param is None:
+            raise ValueError(f"Invalid input parameter: {input_param} for step: {step_id}")
         
         # If the input parameter is a JSON file, load the data from the file
-        if '.json' in input_param:
+        if input_param and '.json' in input_param:
             # Load input files list to be used in the workflow
             with open(os.path.join(conf_path, input_param), 'r') as f:
                 all_input_data = json.load(f)
         else:
-            # recuperar os dados produzidos anteriormente indicados por 'input_param'
+            # # recuperar os dados produzidos anteriormente indicados por 'input_param'
+            # # input_data será uma lista dos outputs produzidos pelas ativações
+            # for param_name, activity_output in workflow_produced_data.items():
+            #     if input_param == param_name:
+            #         all_input_data = [output['produced_data'] for output in activity_output]
+            #         break
+
+        # recuperar os dados produzidos anteriormente indicados por 'input_param'
             # input_data será uma lista dos outputs produzidos pelas ativações
+            all_input_data = []
             for param_name, activity_output in workflow_produced_data.items():
                 if input_param == param_name:
-                    all_input_data = [output['produced_data'] for output in activity_output]
+                    all_input_data = [item['produced_data'] for item in activity_output]
+                    # all_input_data.append(activity_output['produced_data'])
                     break
-
-        if all_input_data is None:
-            raise ValueError(f"Invalid input data: {input_param}")
+            all_input_data = du.flatten_list(all_input_data, 1)
+        
+        # Validation of input data
+        if step_params and input_param and all_input_data is None:
+            raise ValueError(f"Invalid input data: {all_input_data} for step_params: {step_params} at step: {step_id}")
         
         # Workflow parameters
-        params = {
+        step_params = {
             'execution_id': workflow_exec_id,
             'start_time_ms': start_time_ms,
             'end_time_ms': end_time_ms,
+            'action': action,
             'activity': activity,
             'execution_env': execution_env,
             'strategy': strategy,
@@ -123,7 +176,7 @@ def main():
         
         
         # Execute the activity
-        results = dem.execute(params)
+        results = dem.execute(step_params)
         
         # Save the produced data in the dictionary
         workflow_produced_data[output_param] = results

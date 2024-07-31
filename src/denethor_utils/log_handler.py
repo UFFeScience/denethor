@@ -16,7 +16,7 @@ def get_logger(execution_id: str, execution_env: dict) -> logging.Logger:
         # Permite que o log seja registrado em um arquivo e/ou na saída padrão
         
         if 'file' in output_type:
-            file = log_config.get('path')+'/'+log_config.get('filename')
+            file = log_config.get('path')+'/'+log_config.get('file_name')
             if execution_id:
                 file = file.replace('.log', f'_{execution_id}.log')
             file_handler = logging.FileHandler(file)

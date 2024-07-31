@@ -1,5 +1,6 @@
 from denethor_executor import executor_local, executor_aws
 from denethor_utils.env import LOCAL, AWS_LAMBDA, VM_LINUX
+import denethor_provenance.provenance.aws_log_retriever as retr
 
 
 def execute(params):
@@ -10,6 +11,7 @@ def execute(params):
         - execution_id (str): The ID of the execution.
         - start_time_ms (int): The start time of the execution in milliseconds.
         - end_time_ms (int): The end time of the execution in milliseconds.
+        - action (str): The name of the action to execute.
         - activity (str): The name of the activity to execute.
         - execution_env (dict): The execution environment configuration.
         - strategy (str): The execution strategy for the activity.
@@ -23,26 +25,38 @@ def execute(params):
     {'request_id': 'uuid_dc71e784_52ca_428d_8bde_433ed7b0f5b6', 'produced_data': ['tree_ORTHOMCL256.nexus']}
     """
 
+    action = params.get('action')
     activity_name = params.get('activity')
     strategy = params.get('strategy')
     all_input_data = params.get('all_input_data')
     
-    print(f'Activity {activity_name} triggered with execution strategy: {strategy} for input data: {all_input_data}')
+    print(f"\n>>> Action *{action}* activity *{activity_name}* triggered with execution strategy: *{strategy}* for input data: {all_input_data}")
 
     results = []
     
-    if strategy == 'for_each_input':
-        for input in all_input_data:
-            params['input_data'] = input
-            #TODO: verificar se é necessário passar all_input_data
-            params['all_input_data'] = all_input_data
+    if action == 'execute':
+    
+        if strategy == 'for_each_input':
+            for input in all_input_data:
+                params['input_data'] = input
+                params['all_input_data'] = all_input_data
+                result = execute_by_env(params)
+                results.append(result)
+
+        elif strategy == 'for_all_inputs':
+            params['input_data'] = all_input_data
             result = execute_by_env(params)
             results.append(result)
 
-    elif strategy == 'for_all_inputs':
-        params['input_data'] = all_input_data
-        result = execute_by_env(params)
-        results.append(result)
+
+    elif action == 'import_provenance':
+        retr.retrieve_logs_from_aws(params)
+    
+    else:
+        raise ValueError(f"Invalid action: {action}")
+    
+    
+    
     
     return results
 
