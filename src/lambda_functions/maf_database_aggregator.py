@@ -8,7 +8,7 @@ def handler(event, context):
     execution_env = du.get_execution_env(event)
     logger = dlh.get_logger(execution_id, execution_env)
 
-    du.print_env_log(execution_env, logger)
+    du.log_env_info(execution_env, logger)
 
     #
     ## Get the input_file from the payload

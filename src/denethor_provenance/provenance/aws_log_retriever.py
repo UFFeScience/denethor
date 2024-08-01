@@ -1,6 +1,8 @@
 import time, boto3, datetime, os, json
 from denethor_utils import utils as du
 
+client = boto3.client('logs')
+
 # params = {
 #             'execution_id': workflow_exec_id,
 #             'start_time_ms': start_time_ms,
@@ -30,16 +32,14 @@ def retrieve_logs_from_aws(params):
         None
     """
     # Retrieve logs from AWS Lambda organized by logStreamName
-    client = boto3.client('logs')
-    
     execution_id = params.get('execution_id')
 
     # Set the start and end time for the log filter based on the workflow start time and the current time
-    log_filter_start_time_ms = params.get('start_time_ms')
-    log_filter_end_time_ms = params.get('end_time_ms')
+    log_filter_start = params.get('start_time_ms')
+    log_filter_end = params.get('end_time_ms')
     
-    if log_filter_end_time_ms is None:
-        log_filter_end_time_ms = int(time.time() * 1000)
+    if log_filter_end is None:
+        log_filter_end = int(time.time() * 1000)
 
     function_name = params.get('activity')
     execution_env = params.get('execution_env')
@@ -50,12 +50,14 @@ def retrieve_logs_from_aws(params):
     
     log_group_name = f"/aws/lambda/{function_name}"
     
-    response = client.filter_log_events(
-        logGroupName=log_group_name,
-        startTime=log_filter_start_time_ms,
-        endTime=log_filter_end_time_ms
-    )
-    logs = response['events']
+    # response = client.filter_log_events(
+    #     logGroupName=log_group_name,
+    #     startTime=log_filter_start_time_ms,
+    #     endTime=log_filter_end_time_ms
+    # )
+    # logs = response['events']
+
+    logs = get_all_log_events(log_group_name, log_filter_start, log_filter_end)
     if logs == None or len(logs) == 0:
         raise ValueError("No log records were found!")
     
@@ -63,6 +65,39 @@ def retrieve_logs_from_aws(params):
     save_log_file(logs, log_path, log_file)
 
     print(f"Logs saved to {log_path}/{log_file} in json format")
+
+
+
+def get_all_log_events(log_group_name, start_time, end_time, filter_pattern=""):
+    all_events = []
+    next_token = None
+
+    # If there are more log events than the limit, the response will contain a 'nextToken' field
+    # This token can be used to retrieve the next batch of log events
+    while True:
+        if next_token:
+            response = client.filter_log_events(
+                logGroupName=log_group_name,
+                startTime=start_time,
+                endTime=end_time,
+                filterPattern=filter_pattern,
+                nextToken=next_token
+            )
+        else:
+            response = client.filter_log_events(
+                logGroupName=log_group_name,
+                startTime=start_time,
+                endTime=end_time,
+                filterPattern=filter_pattern
+            )
+
+        all_events.extend(response['events'])
+
+        next_token = response.get('nextToken')
+        if not next_token:
+            break
+
+    return all_events
 
 
 
@@ -80,10 +115,10 @@ def save_log_file(json_logs, file_path, file_name):
     os.makedirs(file_path, exist_ok=True)
 
     file = os.path.join(file_path, file_name)
-    with open(file=file, mode='w') as file:
-        json.dump(json_logs, file, indent=2)
+    with open(file=file, mode='w', encoding='utf-8') as file:
+        json.dump(json_logs, file, ensure_ascii=False, indent=4)
     
-    print(f"Logs saved to {file} in json format")
+    print(f"Logs saved to {file_name} in json format")
 
 
 

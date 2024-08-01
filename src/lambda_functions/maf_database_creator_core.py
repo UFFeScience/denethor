@@ -76,7 +76,7 @@ def maf_database_create(subtree_list: list, subtree_matrix: list, file_path: str
                 continue
             
             for current_file in row:
-                print(f'Comparing file {main_file} with {current_file}')
+                # print(f'Comparing file {main_file} with {current_file}')
                 g_maf = grade_maf(main_file , current_file, file_path, data_format)
                 # print('g_maf=', g_maf)
 

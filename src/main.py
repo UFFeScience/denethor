@@ -5,6 +5,7 @@ import os, time, json
 
 from denethor_utils import utils as du, file_utils as dfu
 from denethor_executor import execution_manager as dem
+# from denethor_utils import log_handler as dlh
 
 conf_path = os.path.join(os.getcwd(), 'config')
 # Load JSON files
@@ -24,20 +25,21 @@ with open(os.path.join(conf_path, 'statistics.json'), 'r') as f:
 with open(os.path.join(conf_path, 'env_config.json'), 'r') as f:
     env_configs = json.load(f)
 
-# Set the workflow start time in milliseconds
-start_time_ms = int(time.time() * 1000)
-end_time_ms = None
-workflow_exec_id = du.generate_workflow_exec_id(start_time_ms)
-
-workflow_produced_data = {}
-
 
 def main():
 
     print('******* Worflow execution started at: ', du.now_str(), ' *******')
     print('******* Working directory: ', os.getcwd(), ' *******')
 
-        
+    # Set the workflow start time in milliseconds
+    start_time_ms = int(time.time() * 1000)
+    end_time_ms = None
+
+    # execution_env = du.get_env_config_by_name("local", env_configs)
+
+    # logger = dlh.get_logger(execution_id, execution_env)
+    # du.log_env_info(execution_env, logger)
+
     #########################################################################
     # FOR LOCAL TESTING!!!!
     # Comment the following lines to run the workflow as usual
@@ -47,7 +49,7 @@ def main():
 
     # Define the start and end time parameters for log retrieval in aws cloudwatch
     start_time_human = "2024-07-29 22:27:05"
-    end_time_human   = "2024-07-29 22:30:09"
+    end_time_human   = "2024-07-29 22:40:09"
 
     # Convert the human-readable time to milliseconds
     start_time_ms = du.convert_str_to_ms(start_time_human)
@@ -104,7 +106,8 @@ def main():
     #         workflow_produced_data['subtree_files'] = data
 
     
-    
+    execution_id = du.generate_workflow_execution_id(start_time_ms)
+    runtime_produced_data = {}
     
     
     # For each step in the workflow
@@ -151,7 +154,7 @@ def main():
         # recuperar os dados produzidos anteriormente indicados por 'input_param'
             # input_data será uma lista dos outputs produzidos pelas ativações
             all_input_data = []
-            for param_name, activity_output in workflow_produced_data.items():
+            for param_name, activity_output in runtime_produced_data.items():
                 if input_param == param_name:
                     all_input_data = [item['produced_data'] for item in activity_output]
                     # all_input_data.append(activity_output['produced_data'])
@@ -164,7 +167,7 @@ def main():
         
         # Workflow parameters
         step_params = {
-            'execution_id': workflow_exec_id,
+            'execution_id': execution_id,
             'start_time_ms': start_time_ms,
             'end_time_ms': end_time_ms,
             'action': action,
@@ -179,7 +182,7 @@ def main():
         results = dem.execute(step_params)
         
         # Save the produced data in the dictionary
-        workflow_produced_data[output_param] = results
+        runtime_produced_data[output_param] = results
                 
 
         print(f"\n>>> Action: {action} | activity: {activity} completed.")

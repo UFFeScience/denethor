@@ -8,7 +8,7 @@ def handler(event, context):
     execution_env = du.get_execution_env(event)
     logger = dlh.get_logger(execution_id, execution_env)
 
-    du.print_env_log(execution_env, logger)
+    du.log_env_info(execution_env, logger)
 
     path_config = execution_env.get('path_config')
     TMP_PATH = path_config.get('tmp') # usado para escrever arquivos 'nopipe' durante o processo de validação

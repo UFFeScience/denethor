@@ -6,8 +6,8 @@ import os, re, json, uuid
 def generate_uuid():
     return 'uuid_' + str(uuid.uuid4()).replace('-', '_')
 
-def generate_workflow_exec_id(start_time_ms):
-    return 'EXEC_' + convert_ms_to_str(start_time_ms).replace(':', '-').replace('T', '_').replace('Z', '') + '_UTC'
+def generate_workflow_execution_id(start_time_ms):
+    return 'exec_' + convert_ms_to_str(start_time_ms).replace(':', '-').replace('T', '_').replace('Z', '') + '_UTC'
 
 def get_request_id(context):
     return context.aws_request_id if context else generate_uuid()
@@ -69,8 +69,8 @@ def now_str() -> str:
 ##
 # Parse and Conversion functions
 ##
-def convert_ms_to_str(json_obj: dict) -> str:
-    return json.dumps(json_obj, indent=2)
+# def convert_json_to_str(json_obj: dict) -> str:
+#     return json.dumps(json_obj, indent=2)
 
 def parse_int(value: str) -> int:
     if value is None:
@@ -107,14 +107,10 @@ def flatten_list(input_list: list, level: int = None) -> list:
     return list(unique_elements)
 
 
-def print_env_log(execution_env, logger: Logger):
-    env_name = execution_env.get('env_name')
-    logger.info('===========================================================')
-    logger.info(f'=======================  {env_name}  =======================')
-    logger.info(f'Start time: {now_str()}')
-    logger.info(f'pwd={os.getcwd()}')
-    for label, value in execution_env.items():
-        logger.info(f'{label}={value}')
-        logger.info(os.listdir(value) if 'PATH' in label else '')  
-    logger.info('===========================================================')
+def log_env_info(env, logger: Logger):
+    logger.info(f">>>> Environment={env.get('env_name')} | current_time={now_str()} | pwd={os.getcwd()}")
+    for label, value in env.items():
+        logger.info(f'>> {label}={value}')
+        # logger.info(os.listdir(value) if 'PATH' in label else '')  
+    
 
