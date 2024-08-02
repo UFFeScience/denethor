@@ -1,13 +1,19 @@
 import os, time, json
+from pathlib import Path
+from denethor_utils import utils as du, file_utils as dfu
+from denethor_executor import execution_manager as dem
 
 # import sys
 # sys.path.append("../src")
-
-from denethor_utils import utils as du, file_utils as dfu
-from denethor_executor import execution_manager as dem
 # from denethor_utils import log_handler as dlh
 
-conf_path = os.path.join(os.getcwd(), 'config')
+# Obter o caminho do arquivo atual
+current_file = Path(__file__).resolve()
+
+# Navegar até o diretório raiz do projeto
+project_root = current_file.parent.parent
+
+conf_path = os.path.join(project_root, 'config')
 # Load JSON files
 with open(os.path.join(conf_path, 'provider_info.json'), 'r') as f:
     provider = json.load(f)
@@ -48,8 +54,11 @@ def main():
     from datetime import datetime, timezone
 
     # Define the start and end time parameters for log retrieval in aws cloudwatch
-    start_time_human = "2024-07-29 22:27:05"
-    end_time_human   = "2024-07-29 22:40:09"
+    
+    BRAZIL_TZ = "-03:00"
+    UTC_TZ = "-00:00"
+    start_time_human = "2024-08-01T21:54:18" + BRAZIL_TZ
+    end_time_human   = "2024-08-01T23:25:49" + BRAZIL_TZ
 
     # Convert the human-readable time to milliseconds
     start_time_ms = du.convert_str_to_ms(start_time_human)
@@ -62,7 +71,7 @@ def main():
     # Setting the active steps for testing
     # ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
     action = "import_provenance"
-    activities = ["maf_database_creator"]
+    activities = ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
 
     for step in workflow_steps:
         if step['action'] == action and step['activity'] in activities:

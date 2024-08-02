@@ -113,7 +113,7 @@ def process_and_save_logs(params):
 
             # para cada arquivo de entrada e registro de execução do arquivo,
             # verificamos se ambos já estão cadastrados na base
-            for  exec_file in service_execution.execution_files:
+            for exec_file in service_execution.execution_files:
                 file_db, file_created = file_repo.get_or_create(exec_file.file)
                 
                 exec_file.service_execution = service_execution_db

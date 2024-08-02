@@ -78,16 +78,16 @@ def get_all_log_events(log_group_name, start_time, end_time, filter_pattern=""):
         if next_token:
             response = client.filter_log_events(
                 logGroupName=log_group_name,
-                startTime=start_time,
-                endTime=end_time,
+                startTime=int(start_time),
+                endTime=int(end_time),
                 filterPattern=filter_pattern,
                 nextToken=next_token
             )
         else:
             response = client.filter_log_events(
                 logGroupName=log_group_name,
-                startTime=start_time,
-                endTime=end_time,
+                startTime=int(start_time),
+                endTime=int(end_time),
                 filterPattern=filter_pattern
             )
 
@@ -106,6 +106,7 @@ def save_log_file(json_logs, file_path, file_name):
     # garantir que os logs contenham o campo 'logStreamName' e 'timestamp'
     if not all('logStreamName' in log and 'timestamp' in log for log in json_logs):
         raise ValueError("Logs must contain 'logStreamName' and 'timestamp' fields")
+    
     json_logs.sort(key=lambda x: (x['logStreamName'], x['timestamp']))
     
     # Sanitize file name

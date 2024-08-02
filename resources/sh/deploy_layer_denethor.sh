@@ -1,37 +1,38 @@
 #!/bin/bash
 
 # Define global variables
-FUNCTION_NAME="denethor_layer"
+DENETHOR_DIR="/home/marcello/Documents/denethor"
+LAYER_NAME="denethor_layer"
 BASE_PATH=".lambda/lambda_layers"
-PYTHON_VERSION="python3.10"
+PYTHON_VERSION="3.10"
+PYTHON_RUNTIME="python$PYTHON_VERSION"
 AWS_REGION="sa-east-1"
 
-# Define the required directory path
-REQUIRED_DIR="/home/marcello/Documents/denethor"
+# Store the current working directory
+ORIGINAL_DIR=$(pwd)
 
-# Validate the current working directory
-if [ "$(pwd)" != "$REQUIRED_DIR" ]; then
-  echo "Error: Script must be run from $REQUIRED_DIR"
-  exit 1
-fi
+# Change to the required directory
+cd $DENETHOR_DIR || { echo "Error: Cannot change to required directory $DENETHOR_DIR"; exit 1; }
+
 
 # Remove existing lambda layer directory
-rm -Rf $BASE_PATH/$FUNCTION_NAME/
+rm -Rf $BASE_PATH/$LAYER_NAME/
 
 # Create necessary directories
-mkdir -p $BASE_PATH/$FUNCTION_NAME/python
+mkdir -p $BASE_PATH/$LAYER_NAME/python
 
 # Copy additional resources
-cp -R src/denethor_utils $BASE_PATH/$FUNCTION_NAME/python
+cp -R src/denethor_utils $BASE_PATH/$LAYER_NAME/python
 
 # Change to the lambda layer directory
-cd $BASE_PATH/$FUNCTION_NAME
+cd $BASE_PATH/$LAYER_NAME
 
 # Zip the lambda layer
-zip -r ${FUNCTION_NAME}.zip python
+zip -r ${LAYER_NAME}.zip python
 
 # Publish the lambda layer to AWS
-aws lambda publish-layer-version --layer-name $FUNCTION_NAME --zip-file fileb://${FUNCTION_NAME}.zip --compatible-runtimes $PYTHON_VERSION --region $AWS_REGION
+aws lambda publish-layer-version --layer-name $LAYER_NAME --zip-file fileb://${LAYER_NAME}.zip --compatible-runtimes $PYTHON_RUNTIME --region $AWS_REGION
 
 # Return to the original directory
-cd ../../..
+# cd ../../..
+cd $ORIGINAL_DIR

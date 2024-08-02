@@ -37,7 +37,10 @@ def execute(params):
     if action == 'execute':
     
         if strategy == 'for_each_input':
+            i = 0
             for input in all_input_data:
+                i += 1
+                params['iteration'] = i
                 params['input_data'] = input
                 params['all_input_data'] = all_input_data
                 result = execute_by_env(params)

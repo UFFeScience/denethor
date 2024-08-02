@@ -37,7 +37,11 @@ def invoke_lambda(function_name, payload, timeout=120, async_invoke=False):
     - dict (optional): The response payload if invoked synchronously.
     """
     
-    print(f"\nInvoking Lambda function: {function_name} | async_invoke={async_invoke}")
+    iteration_info = ""
+    if payload.get('iteration'):
+        iteration_info = f" | iteration={payload.get('iteration')} of {len(payload.get('all_input_data'))}"
+
+    print(f"\nInvoking Lambda function: {function_name} | async_invoke={async_invoke}" + iteration_info)
     
     lambda_client = boto3.client('lambda', config=boto3.session.Config(read_timeout=timeout))
     invocation_type = 'Event' if async_invoke else 'RequestResponse'

@@ -1,13 +1,22 @@
 #!/bin/bash
 
 # Define global variables
-REQUIRED_DIR="/home/marcello/Documents/denethor"
+DENETHOR_DIR="/home/marcello/Documents/denethor"
 AWS_ACCOUNT_ID="058264090960"
-LAMBDA_LAYER_VERSION="6"
-DENETHOR_LAYER_VERSION="2"
-PYTHON_VERSION="python3.10"
+PYTHON_VERSION="3.10"
+PYTHON_RUNTIME="python$PYTHON_VERSION"
 AWS_REGION="sa-east-1"
 IAM_ROLE="Lambda_S3_access_role"
+
+BASE_LAYER_NAME="base_layer"
+BASE_LAYER_VERSION="4"
+DENETHOR_LAYER_NAME="denethor_layer"
+DENETHOR_LAYER_VERSION="3"
+
+BASE_LAYER="arn:aws:lambda:$AWS_REGION:$AWS_ACCOUNT_ID:layer:$BASE_LAYER_NAME:$BASE_LAYER_VERSION"
+DENETHOR_LAYER="arn:aws:lambda:$AWS_REGION:$AWS_ACCOUNT_ID:layer:$DENETHOR_LAYER_NAME:$DENETHOR_LAYER_VERSION"
+
+LAYERS="$BASE_LAYER $DENETHOR_LAYER"
 
 # Function to display the menu and get the user's choice for function name
 function choose_function_name() {
@@ -19,7 +28,7 @@ function choose_function_name() {
   read -p "Enter the number corresponding to your choice: " choice
 
   case $choice in
-    1) FUNCTION_NAME="tree_constructor"; DEFAULT_TIMEOUT=15; DEFAULT_MEMORY_SIZE=128 ;;
+    1) FUNCTION_NAME="tree_constructor"; DEFAULT_TIMEOUT=30; DEFAULT_MEMORY_SIZE=128 ;;
     2) FUNCTION_NAME="subtree_constructor"; DEFAULT_TIMEOUT=45; DEFAULT_MEMORY_SIZE=256 ;;
     3) FUNCTION_NAME="maf_database_creator"; DEFAULT_TIMEOUT=300; DEFAULT_MEMORY_SIZE=512 ;;
     4) FUNCTION_NAME="maf_database_aggregator"; DEFAULT_TIMEOUT=15; DEFAULT_MEMORY_SIZE=128 ;;
@@ -44,16 +53,14 @@ choose_function_name
 choose_timeout
 choose_memory_size
 
-# Validate the current working directory
-if [ "$(pwd)" != "$REQUIRED_DIR" ]; then
-  echo "Error: Script must be run from $REQUIRED_DIR"
-  exit 1
-fi
+# Store the current working directory
+ORIGINAL_DIR=$(pwd)
 
-# Remove existing lambda function directory
+# Change to the required directory
+cd $DENETHOR_DIR || { echo "Error: Cannot change to required directory $DENETHOR_DIR"; exit 1; }
+
+# Remove existing lambda function directory and recreate it
 rm -Rf .lambda/lambda_functions/$FUNCTION_NAME/
-
-# Create necessary directories
 mkdir -p .lambda/lambda_functions/$FUNCTION_NAME/
 
 # Copy lambda function files
@@ -65,16 +72,38 @@ cd .lambda/lambda_functions/$FUNCTION_NAME/
 # Zip the lambda function
 zip ${FUNCTION_NAME}.zip *
 
-# Create the lambda function on AWS
-aws lambda create-function --function-name $FUNCTION_NAME \
---zip-file fileb://${FUNCTION_NAME}.zip \
---handler ${FUNCTION_NAME}.handler \
---runtime $PYTHON_VERSION \
---role arn:aws:iam::$AWS_ACCOUNT_ID:role/service-role/$IAM_ROLE \
---timeout $TIMEOUT \
---memory-size $MEMORY_SIZE \
---region $AWS_REGION \
---layers "arn:aws:lambda:$AWS_REGION:$AWS_ACCOUNT_ID:layer:lambda_layer:$LAMBDA_LAYER_VERSION" "arn:aws:lambda:$AWS_REGION:$AWS_ACCOUNT_ID:layer:denethor_layer:$DENETHOR_LAYER_VERSION"
+
+# Check if the function already exists
+if aws lambda get-function --function-name $FUNCTION_NAME --region $AWS_REGION > /dev/null 2>&1; then
+  echo "Function $FUNCTION_NAME already exists!"
+  
+  echo "Updating the function code..."
+  aws lambda update-function-code --function-name $FUNCTION_NAME --zip-file fileb://${FUNCTION_NAME}.zip --region $AWS_REGION
+  
+  # Sleep for a few seconds to ensure the update-function-code operation completes
+  echo "Sleeping for 5 seconds..."
+  sleep 5
+  
+  echo "Updating the function configuration..."
+  aws lambda update-function-configuration --function-name $FUNCTION_NAME --layers $LAYERS --timeout $TIMEOUT --memory-size $MEMORY_SIZE --region $AWS_REGION
+
+else
+  # Create the lambda function on AWS
+  echo "Function $FUNCTION_NAME does not exist. Creating the function."
+  aws lambda create-function --function-name $FUNCTION_NAME \
+  --zip-file fileb://${FUNCTION_NAME}.zip \
+  --handler ${FUNCTION_NAME}.handler \
+  --runtime $PYTHON_RUNTIME \
+  --role arn:aws:iam::$AWS_ACCOUNT_ID:role/service-role/$IAM_ROLE \
+  --timeout $TIMEOUT \
+  --memory-size $MEMORY_SIZE \
+  --region $AWS_REGION \
+  --layers $LAYERS
+fi
 
 # Return to the original directory
-cd ../../..
+# cd ../../..
+cd $ORIGINAL_DIR
+
+# End of script
+echo "Deployment completed successfully!"

@@ -37,34 +37,28 @@ def convert_ms_to_datetime(time: float) -> datetime:
     """
     Converts a timestamp in milliseconds to a datetime object (in UTC)
     """
-    if time:
-        return datetime.fromtimestamp((time / 1000.0), tz=timezone.utc)
-    return None
+    return datetime.fromtimestamp(time / 1000.0, tz=timezone.utc)
 
-def convert_datetime_to_ms(time: datetime) -> float:
-    """
-    Converts a datetime object to a timestamp in milliseconds
-    """
-    return int(time.timestamp() * 1000)
 
 def convert_ms_to_str(time: float) -> str:
     """
-    Converts a timestamp in milliseconds to a string in the format: 'YYYY-MM-DDTHH:MM:SS'
+    Converts a timestamp in milliseconds to a string in the format: 'YYYY-MM-DDTHH:MM:SS±HH:MM'
     """
-    return convert_ms_to_datetime(time).strftime('%Y-%m-%dT%H:%M:%S')
+    dt = datetime.fromtimestamp(time / 1000, tz=timezone.utc)
+    return dt.isoformat()
 
 def convert_str_to_ms(time: str) -> float:
     """
-    Converts a string in the format: 'YYYY-MM-DDTHH:MM:SS' to a timestamp in milliseconds
+    Converts a string in the format: 'YYYY-MM-DDTHH:MM:SS' or 'YYYY-MM-DDTHH:MM:SS±HH:MM' to a timestamp in milliseconds
     """
-    return convert_datetime_to_ms(datetime.strptime(time.replace("T", " "), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc))
-
+    dt = datetime.fromisoformat(time)
+    return dt.timestamp() * 1000
 
 def now_str() -> str:
     """
-    Returns the current time in the format: 'YYYY-MM-DDTHH:MM:SS'
+    Returns the current time in the format: 'YYYY-MM-DDTHH:MM:SS±HH:MM'
     """
-    return datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+    return datetime.now(timezone.utc).isoformat()
 
 ##
 # Parse and Conversion functions
