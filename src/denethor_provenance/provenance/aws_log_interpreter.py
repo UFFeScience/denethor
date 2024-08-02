@@ -18,7 +18,7 @@ def process_and_save_logs(params):
             - functions (list): A list of function names.
             - log_path (str): The path to the log files.
             - log_file (str): The log file name template.
-            - serviceProvider (dict): Information about the service provider.
+            - provider (dict): Information about the service provider.
             - workflow (dict): Information about the workflow.
 
     Raises:
@@ -69,7 +69,7 @@ def process_and_save_logs(params):
         if not activity_db:
             raise ValueError(f"Activity {activity_name} not found in Database!")
         
-        provider_db = service_provider_repo.get_by_name(activity['provider_name'])
+        provider_db = provider_repo.get_by_name(activity['provider_name'])
         if not provider_db:
             raise ValueError(f"Provider {activity['provider_name']} not found in Database!")
         

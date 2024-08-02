@@ -4,6 +4,7 @@ import aws_log_retriever as retriever
 import aws_log_interpreter as interpreter
 
 def import_provenance_from_aws(params):
+    
     print('Importing provenance from AWS')
 
     save_workflow_basic_info(params)
@@ -23,8 +24,8 @@ def save_workflow_basic_info(params):
     
     # Service Provider: iterating over the list of service providers and inserting into the database, if not already present
     for provider in providers:
-        provider_model = ServiceProvider.create_from_dict(provider)
-        provider_db, provider_created = service_provider_repo.get_or_create(provider_model)
+        provider_model = Provider.create_from_dict(provider)
+        provider_db, provider_created = provider_repo.get_or_create(provider_model)
         print(f'{"Saving" if provider_created else "Retrieving"} Provider: {provider_db}')
 
     # Workflow: inserting the workflow information into the database, if not already present

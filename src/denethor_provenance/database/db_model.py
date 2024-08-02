@@ -24,8 +24,8 @@ class BaseModel(Base):
 # Este método cria todas as tabelas armazenadas na metadata no banco de dados conectado ao engine. As tabelas são criadas no banco de dados usando o engine fornecido. Se uma tabela já existe no banco de dados, o método create_all() irá ignorá-la.
 # Base.metadata.create_all(engine)
 
-class ServiceProvider(BaseModel):
-    __tablename__ = 'service_provider'
+class Provider(BaseModel):
+    __tablename__ = 'provider'
 
     provider_id = Column(Integer, primary_key=True)
     provider_name = Column(String)
@@ -66,7 +66,7 @@ class ServiceExecution(BaseModel):
 
     se_id = Column(Integer, primary_key=True)
     activity_id = Column(Integer, ForeignKey('workflow_activity.activity_id'))
-    provider_id = Column(Integer, ForeignKey('service_provider.provider_id'))
+    provider_id = Column(Integer, ForeignKey('provider.provider_id'))
     request_id = Column(String)
     log_stream_name = Column(String)
     start_time = Column(TIMESTAMP)
@@ -87,7 +87,7 @@ class ServiceExecution(BaseModel):
     execution_files = relationship('ExecutionFile')
     execution_statistics = relationship('ExecutionStatistics')
     activity = relationship('WorkflowActivity')
-    provider = relationship('ServiceProvider')
+    provider = relationship('Provider')
 
     def __str__(self):
         return (

@@ -10,11 +10,11 @@
 # # Create an instance of GenericRepository for the ServiceExecution table
 # service_execution_repo = GenericRepository(session, ServiceExecution)
 
-# service_provider_repo = ServiceProviderRepository(session)
+# provider_repo = ProviderRepository(session)
 
 # workflow_activity_repo = WorkflowActivityRepository(session)
 
-# service_provider = service_provider_repo.get_by_name(name='AWS Lambda')
+# provider = provider_repo.get_by_name(name='AWS Lambda')
 # workflow_activity = workflow_activity_repo.get_by_name(name='tree_constructor')
 
 # # Example: Milliseconds representing start and end times
@@ -37,7 +37,7 @@
 #     'duration': duration,
 #     'error_message': None,
 #     'activity_id': workflow_activity.id,
-#     'provider_id': service_provider.id,
+#     'provider_id': provider.id,
 #     'consumed_file_id': None,
 #     'produced_file_id': None
 # }

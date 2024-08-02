@@ -3,14 +3,14 @@ DROP TABLE IF EXISTS execution_file;
 DROP TABLE IF EXISTS service_execution;
 DROP TABLE IF EXISTS workflow_activity;
 DROP TABLE IF EXISTS file;
-DROP TABLE IF EXISTS service_provider;
+DROP TABLE IF EXISTS provider;
 DROP TABLE IF EXISTS workflow;
 DROP TABLE IF EXISTS statistics;
 
 
 
 
-CREATE TABLE service_provider (
+CREATE TABLE provider (
     provider_id SERIAL  PRIMARY KEY,
     provider_name VARCHAR,
     provider_timeout INTEGER,
@@ -37,6 +37,7 @@ CREATE TABLE service_execution (
     se_id SERIAL  PRIMARY KEY,
     activity_id INTEGER,
     provider_id INTEGER,
+    workflow_execution_id VARCHAR,
     request_id VARCHAR,
     log_stream_name VARCHAR,
     start_time TIMESTAMP WITH TIME ZONE,

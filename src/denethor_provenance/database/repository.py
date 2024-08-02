@@ -45,9 +45,9 @@ class GenericRepository:
 
 
 
-class ServiceProviderRepository(GenericRepository):
+class ProviderRepository(GenericRepository):
     def __init__(self, session: Session):
-        super().__init__(session=session, model=ServiceProvider)
+        super().__init__(session=session, model=Provider)
     
     def get_by_id(self, id: int):
         return self.db.query(self.model).filter_by(provider_id=id).first()
@@ -55,9 +55,9 @@ class ServiceProviderRepository(GenericRepository):
     def get_by_name(self, name: str):
         return self.db.query(self.model).filter_by(provider_name=name).first()
     
-    def get_or_create(self, obj: ServiceProvider):
-        if type(obj) != ServiceProvider:
-            raise ValueError("The argument must be a ServiceProvider object")
+    def get_or_create(self, obj: Provider):
+        if type(obj) != Provider:
+            raise ValueError("The argument must be a Provider object")
         obj_dict = obj.__dict__.copy()
         return super().get_or_create(obj_dict)
 
@@ -203,7 +203,7 @@ from database.conn import *
 session = Connection().get_session()
 
 # Instânciando as classes de repositórios
-service_provider_repo = ServiceProviderRepository(session)
+provider_repo = ProviderRepository(session)
 workflow_repo = WorkflowRepository(session)
 workflow_activity_repo = WorkflowActivityRepository(session)
 file_repo = FileRepository(session)
