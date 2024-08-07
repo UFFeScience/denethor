@@ -25,36 +25,23 @@ def handler(event, context):
         'output_key': ""
     }
     
-    #
-    ## Cleaning old temporary files and creating directories ##
-    #
+    # Cleaning old temporary files and creating directories ##
     dfu.remove_files(TMP_PATH)
     dfu.create_directory_if_not_exists(INPUT_PATH, TMP_PATH)
     
-    #
-    ## Get the input_file from the payload
-    #
+    # Get the input_file from the payload
     subtree_list = event.get('input_data')
     subtree_matrix = event.get('all_input_data')
 
-    #
-    ## Download input files ##
-    #
+    # Download input files ##
     dau.handle_consumed_files(request_id, subtree_matrix, INPUT_PATH, s3_params)
 
-    #
-    ## Criação do dicionário de similariadades de subárvore ##
-    #
+    # Criação do dicionário de similariadades de subárvore ##
     maf_database, max_maf, maf_duration_ms = mdcc.maf_database_create(subtree_list, subtree_matrix, INPUT_PATH, DATA_FORMAT)
-    logger.info(f'MAF_DATABASE_CREATE RequestId: {request_id}\t InputSubtrees: {subtree_list}\t Duration: {maf_duration_ms} ms\t MaxMaf: {max_maf}\t MafDatabase: {maf_database}')
-    
-    #
-    ## Upload output files ##
-    #
-    # dau.handle_produced_files(request_id, produced_files, OUTPUT_PATH, s3_params)
+    logger.info(f'MAF_DATABASE_CREATE RequestId: {request_id}\t Duration: {maf_duration_ms} ms\t InputSubtrees: {subtree_list}\t MaxMaf: {max_maf}\t MafDatabase: {maf_database}')
     
     return {
             "request_id" : request_id,
-            "produced_data" : maf_database
+            "data" : maf_database
         }
         

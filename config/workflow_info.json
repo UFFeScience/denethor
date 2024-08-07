@@ -5,12 +5,22 @@
         {
             "activity_name": "tree_constructor",
             "activity_description": "Constructing Phylogenetic Trees from Protein Sequences",
-            "provider_name": "AWS Lambda (15)"
+            "provider_name": "AWS Lambda"
         },
         {
-            "activity_name": "subtree_mining",
-            "activity_description": "Generating Subtrees from Main Trees and MAF Analysis (Subtree Pair Frequency Matrix)",
-            "provider_name": "AWS Lambda (900)"
+            "activity_name": "subtree_constructor",
+            "activity_description": "Generating Subtrees from Main Trees",
+            "provider_name": "AWS Lambda"
+        },
+        {
+            "activity_name": "maf_database_creator",
+            "activity_description": "Creating MAF Databases from Subtrees (Subtree Pair Frequency Matrix)",
+            "provider_name": "AWS Lambda"
+        },
+        {
+            "activity_name": "maf_database_aggregator",
+            "activity_description": "Aggregating MAF Databases",
+            "provider_name": "AWS Lambda"
         }
     ]
 }

@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS execution_file;
 DROP TABLE IF EXISTS service_execution;
 DROP TABLE IF EXISTS workflow_activity;
 DROP TABLE IF EXISTS file;
+DROP TABLE IF EXISTS provider_configuration;
 DROP TABLE IF EXISTS provider;
 DROP TABLE IF EXISTS workflow;
 DROP TABLE IF EXISTS statistics;
@@ -11,12 +12,17 @@ DROP TABLE IF EXISTS statistics;
 
 
 CREATE TABLE provider (
-    provider_id SERIAL  PRIMARY KEY,
-    provider_name VARCHAR,
-    provider_timeout INTEGER,
-    provider_cpu INTEGER,
-    provider_ram INTEGER,
-    provider_storage_mb INTEGER
+    provider_id SERIAL PRIMARY KEY,
+    provider_name VARCHAR
+);
+
+CREATE TABLE provider_configuration (
+    configuration_id SERIAL PRIMARY KEY,
+    provider_id INTEGER REFERENCES provider(provider_id),
+    timeout INTEGER,
+    cpu INTEGER,
+    memory_mb INTEGER,
+    storage_mb INTEGER
 );
 
 CREATE TABLE workflow (

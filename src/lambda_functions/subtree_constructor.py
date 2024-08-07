@@ -27,40 +27,27 @@ def handler(event, context):
         'output_key': bucket_config.get('key_subtree_files')
     }
     
-    #
-    ## Cleaning old temporary files and creating directories ##
-    #
+    # Cleaning old temporary files and creating directories ##
     dfu.remove_files(TMP_PATH)
     dfu.create_directory_if_not_exists(INPUT_PATH, OUTPUT_PATH, TMP_PATH)
     
-    #
-    ## Get the input_file from the payload
-    #
+    # Get the input_file from the payload
     input_files = event.get('input_data')
 
-    #
-    ## Download input files ##
-    #
+    # Download input files ##
     dau.handle_consumed_files(request_id, input_files, INPUT_PATH, s3_params)
 
-    #
-    ## Building the subtree files ##
-    #
-    # subtree_matrix = []
-    produced_files, duration_ms = smc.subtree_constructor(input_files, INPUT_PATH, OUTPUT_PATH, DATA_FORMAT)
-    # subtree_matrix.append(produced_files)
-    print(f'SUBTREE_CONSTRUCTOR RequestId: {request_id}\t InputTree: {input_files}\t OutputSubtrees: {produced_files}\t Duration: {duration_ms} ms')
-    logger.info(f'SUBTREE_CONSTRUCTOR RequestId: {request_id}\t InputTree: {input_files}\t OutputSubtrees: {produced_files}\t Duration: {duration_ms} ms')
+    # Building the subtree files ##
+    subtree_files, duration_ms = smc.subtree_constructor(input_files, INPUT_PATH, OUTPUT_PATH, DATA_FORMAT)
+    logger.info(f'SUBTREE_CONSTRUCTOR RequestId: {request_id}\t Duration: {duration_ms} ms\t InputTree: {input_files}\t OutputSubtrees: {subtree_files}')
 
     # para evitar: 'PermissionError: [Errno 13] Permission denied' ao tentar abrir os arquivos logo após terem sido escritos
     time.sleep(0.100)
 
-    #
-    ## Upload output files ##
-    #
-    dau.handle_produced_files(request_id, produced_files, OUTPUT_PATH, s3_params)
+    # Upload output files ##
+    dau.handle_produced_files(request_id, subtree_files, OUTPUT_PATH, s3_params)
     
     return {
             "request_id" : request_id,
-            "produced_data" : produced_files
+            "produced_data" : subtree_files
         }

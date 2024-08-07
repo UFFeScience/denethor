@@ -1,16 +1,23 @@
-[
-    {
-        "provider_name": "AWS Lambda (15)",
-        "provider_ram": "128",
-        "provider_timeout": "15",
-        "provider_cpu": "1",
-        "provider_storage_mb": "512"
-    },
-    {
-        "provider_name": "AWS Lambda (900)",
-        "provider_ram": "256",
-        "provider_timeout": "900",
-        "provider_cpu": "1",
-        "provider_storage_mb": "512"
-    }
-]
+{
+    "provider_name": "AWS Lambda",
+    "configurations": [
+        {
+            "timeout": 30,
+            "memory_mb": 128,
+            "cpu": 1,
+            "storage_mb": 512
+        },
+        {
+            "timeout": 45,
+            "memory_mb": 256,
+            "cpu": 1,
+            "storage_mb": 512
+        },
+        {
+            "timeout": 300,
+            "memory_mb": 512,
+            "cpu": 1,
+            "storage_mb": 512
+        }
+    ]
+}

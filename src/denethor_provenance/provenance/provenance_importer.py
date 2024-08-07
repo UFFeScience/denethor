@@ -1,4 +1,4 @@
-from src.denethor_provenance.database.db_model import *
+from denethor_provenance.database.db_model import *
 from database.repository import *
 import aws_log_retriever as retriever
 import aws_log_interpreter as interpreter
@@ -9,7 +9,7 @@ def import_provenance_from_aws(params):
 
     save_workflow_basic_info(params)
 
-    retriever.retrieve_logs_from_aws(params)
+    #retriever.retrieve_logs_from_aws(params)
 
     interpreter.process_and_save_logs(params)
 

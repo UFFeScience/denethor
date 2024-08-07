@@ -2,6 +2,7 @@ import os, time, json
 from pathlib import Path
 from denethor_utils import utils as du, file_utils as dfu
 from denethor_executor import execution_manager as dem
+import denethor_provenance.provenance.provenance_importer as dprov
 
 # import sys
 # sys.path.append("../src")
@@ -31,6 +32,12 @@ with open(os.path.join(conf_path, 'statistics.json'), 'r') as f:
 with open(os.path.join(conf_path, 'env_config.json'), 'r') as f:
     env_configs = json.load(f)
 
+# Load input files list to be used in the workflow
+with open(os.path.join(conf_path, 'input_files.json'), 'r') as f:
+    input_files = json.load(f)
+
+workflow_runtime_data = {}
+workflow_runtime_data['input_files']['data'] = input_files
 
 def main():
 
@@ -40,6 +47,7 @@ def main():
     # Set the workflow start time in milliseconds
     start_time_ms = int(time.time() * 1000)
     end_time_ms = None
+
 
     # execution_env = du.get_env_config_by_name("local", env_configs)
 
@@ -71,7 +79,8 @@ def main():
     # Setting the active steps for testing
     # ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
     action = "import_provenance"
-    activities = ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
+    # activities = ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
+    activities = ["tree_constructor"]
 
     for step in workflow_steps:
         if step['action'] == action and step['activity'] in activities:
@@ -116,7 +125,7 @@ def main():
 
     
     execution_id = du.generate_workflow_execution_id(start_time_ms)
-    runtime_produced_data = {}
+    
     
     
     # For each step in the workflow
@@ -131,67 +140,71 @@ def main():
             print(f"\n>>> Step [{step_id}], action: {action}, activity: {activity} is inactive. Skipping...")
             continue
 
-        env_name = step.get('execution_env')
-        strategy = step.get('execution_strategy')
-        # Get the execution environment configuration by the name set in the step
-        execution_env = du.get_env_config_by_name(env_name, env_configs)
+        if action == 'execute':
+            env_name = step.get('execution_env')
+            strategy = step.get('execution_strategy')
+            # Get the execution environment configuration by the name set in the step
+            execution_env = du.get_env_config_by_name(env_name, env_configs)
 
-        input_param = None
-        output_param = None
-        step_params = step.get('params')
-        if step_params:
-            input_param = step_params.get('input_param')
-            output_param = step_params.get('output_param')
-        
-        # Validation of input parameter
-        if step_params and input_param is None:
-            raise ValueError(f"Invalid input parameter: {input_param} for step: {step_id}")
-        
-        # If the input parameter is a JSON file, load the data from the file
-        if input_param and '.json' in input_param:
-            # Load input files list to be used in the workflow
-            with open(os.path.join(conf_path, input_param), 'r') as f:
-                all_input_data = json.load(f)
-        else:
-            # # recuperar os dados produzidos anteriormente indicados por 'input_param'
-            # # input_data será uma lista dos outputs produzidos pelas ativações
-            # for param_name, activity_output in workflow_produced_data.items():
-            #     if input_param == param_name:
-            #         all_input_data = [output['produced_data'] for output in activity_output]
-            #         break
-
-        # recuperar os dados produzidos anteriormente indicados por 'input_param'
+            input_param = None
+            output_param = None
+            step_params = step.get('params')
+            if step_params:
+                input_param = step_params.get('input_param')
+                output_param = step_params.get('output_param')
+            
+            # Validation of input parameter
+            if step_params and input_param is None:
+                raise ValueError(f"Invalid input parameter: {input_param} for step: {step_id}")
+            
+            # recuperar os dados runtime indicados por 'input_param'
             # input_data será uma lista dos outputs produzidos pelas ativações
             all_input_data = []
-            for param_name, activity_output in runtime_produced_data.items():
+            for param_name, runtime_data in workflow_runtime_data.items():
                 if input_param == param_name:
-                    all_input_data = [item['produced_data'] for item in activity_output]
-                    # all_input_data.append(activity_output['produced_data'])
+                    all_input_data = [item['data'] for item in runtime_data]
+                    all_input_data = du.flatten_list(all_input_data, 1)
                     break
-            all_input_data = du.flatten_list(all_input_data, 1)
+            
+            # Validation of input data
+            if all_input_data is None:
+                raise ValueError(f"Invalid input data: {all_input_data} for step_params: {step_params} at step: {step_id}")
+            
+            # Workflow parameters
+            step_params = {
+                'execution_id': execution_id,
+                'start_time_ms': start_time_ms,
+                'end_time_ms': end_time_ms,
+                'action': action,
+                'activity': activity,
+                'execution_env': execution_env,
+                'strategy': strategy,
+                'all_input_data': all_input_data
+            }
+            
+            
+            # Execute the activity
+            results = dem.execute(step_params)
+            
+            # Save the produced data in the dictionary
+            workflow_runtime_data[output_param] = results
+
+        elif action == 'import_provenance':
+
+            step_params = {
+                'execution_id': execution_id,
+                'start_time_ms': start_time_ms,
+                'end_time_ms': end_time_ms,
+                'activity': activity,
+                'execution_env': execution_env,
+                'providers': provider,
+                'workflow': workflow,
+                'statistics': statistics
+            }
+            dprov.import_provenance_from_aws(step_params)
         
-        # Validation of input data
-        if step_params and input_param and all_input_data is None:
-            raise ValueError(f"Invalid input data: {all_input_data} for step_params: {step_params} at step: {step_id}")
-        
-        # Workflow parameters
-        step_params = {
-            'execution_id': execution_id,
-            'start_time_ms': start_time_ms,
-            'end_time_ms': end_time_ms,
-            'action': action,
-            'activity': activity,
-            'execution_env': execution_env,
-            'strategy': strategy,
-            'all_input_data': all_input_data
-        }
-        
-        
-        # Execute the activity
-        results = dem.execute(step_params)
-        
-        # Save the produced data in the dictionary
-        runtime_produced_data[output_param] = results
+        else:
+            raise ValueError(f"Invalid action: {action} at step: {step_id}")
                 
 
         print(f"\n>>> Action: {action} | activity: {activity} completed.")

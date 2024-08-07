@@ -29,13 +29,29 @@ class Provider(BaseModel):
 
     provider_id = Column(Integer, primary_key=True)
     provider_name = Column(String)
-    provider_timeout = Column(Integer)
-    provider_cpu = Column(Integer)
-    provider_ram = Column(Integer)
-    provider_storage_mb = Column(Integer)
+
+    configurations = relationship("ProviderConfiguration", back_populates="provider")
 
     def __str__(self):
-        return (f"[{self.provider_id}]={self.provider_name}, {self.provider_ram}MB, {self.provider_timeout}s, {self.provider_cpu}vCPU, {self.provider_storage_mb}MB")
+        return f"[{self.provider_id}] {self.provider_name}"
+
+
+class ProviderConfiguration(BaseModel):
+    __tablename__ = 'provider_configuration'
+
+    configuration_id = Column(Integer, primary_key=True)
+    provider_id = Column(Integer, ForeignKey('provider.provider_id'))
+    timeout = Column(Integer)
+    cpu = Column(Integer)
+    memory_mb = Column(Integer)
+    storage_mb = Column(Integer)
+
+    provider = relationship("Provider", back_populates="configurations")
+
+    def __str__(self):
+        return (f"[{self.configuration_id}] {self.function_name}, {self.memory_mb}MB RAM, "
+                f"{self.timeout}s timeout, {self.cpu}vCPU, {self.storage_mb}MB storage")
+
 
 class Workflow(BaseModel):
     __tablename__ = 'workflow'

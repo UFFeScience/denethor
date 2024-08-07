@@ -31,7 +31,7 @@ function choose_function_name() {
     1) FUNCTION_NAME="tree_constructor"; DEFAULT_TIMEOUT=30; DEFAULT_MEMORY_SIZE=128 ;;
     2) FUNCTION_NAME="subtree_constructor"; DEFAULT_TIMEOUT=45; DEFAULT_MEMORY_SIZE=256 ;;
     3) FUNCTION_NAME="maf_database_creator"; DEFAULT_TIMEOUT=300; DEFAULT_MEMORY_SIZE=512 ;;
-    4) FUNCTION_NAME="maf_database_aggregator"; DEFAULT_TIMEOUT=15; DEFAULT_MEMORY_SIZE=128 ;;
+    4) FUNCTION_NAME="maf_database_aggregator"; DEFAULT_TIMEOUT=30; DEFAULT_MEMORY_SIZE=128 ;;
     *) echo "Invalid choice. Exiting."; exit 1 ;;
   esac
 }

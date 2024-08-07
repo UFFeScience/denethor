@@ -1,7 +1,5 @@
 from denethor_executor import executor_local, executor_aws
 from denethor_utils.env import LOCAL, AWS_LAMBDA, VM_LINUX
-import denethor_provenance.provenance.aws_log_retriever as retr
-
 
 def execute(params):
     """
@@ -34,33 +32,24 @@ def execute(params):
 
     results = []
     
-    if action == 'execute':
+    if action != 'execute':
+        raise ValueError(f"Invalid action: {action}")
     
-        if strategy == 'for_each_input':
-            i = 0
-            for input in all_input_data:
-                i += 1
-                params['iteration'] = i
-                params['input_data'] = input
-                params['all_input_data'] = all_input_data
-                result = execute_by_env(params)
-                results.append(result)
-
-        elif strategy == 'for_all_inputs':
-            params['input_data'] = all_input_data
+    if strategy == 'for_each_input':
+        i = 0
+        for input in all_input_data:
+            i += 1
+            params['iteration'] = i
+            params['input_data'] = input
+            params['all_input_data'] = all_input_data
             result = execute_by_env(params)
             results.append(result)
 
+    elif strategy == 'for_all_inputs':
+        params['input_data'] = all_input_data
+        result = execute_by_env(params)
+        results.append(result)
 
-    elif action == 'import_provenance':
-        retr.retrieve_logs_from_aws(params)
-    
-    else:
-        raise ValueError(f"Invalid action: {action}")
-    
-    
-    
-    
     return results
 
 

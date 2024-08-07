@@ -1,5 +1,5 @@
 import log_parser  as parser
-from src.denethor_provenance.database.db_model import *
+from denethor_provenance.database.db_model import *
 from database.repository import *
 from denethor_utils import utils
 
