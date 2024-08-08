@@ -24,7 +24,7 @@ def parse_message(message, stats_attributes, default_sep):
         
         sep = attribute.get('separator', f'[{default_sep}\n]')
         # Use regex to extract the attribute value from the message
-        pattern = f'{attribute['searchKey']}:\\s*(.*?){sep}'
+        pattern = f"{attribute['searchKey']}:\\s*(.*?){sep}"
         match = re.search(pattern, message)
         
         if match:
@@ -76,7 +76,7 @@ def parse_execution_logs(request_id, logs, default_stats: dict, custom_stats: di
         
         else:
             print("--------------------------------------------------------------------------")
-            print(f"Could not parse message. LogType unknown: {parsed_message["logType"]}. LogMessage: {log['message']}")
+            print(f"Could not parse message. LogType unknown: {parsed_message['logType']}. LogMessage: {log['message']}")
             print("--------------------------------------------------------------------------")
             
     return service_execution

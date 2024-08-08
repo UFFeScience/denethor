@@ -1,12 +1,10 @@
-import log_parser  as parser
+from . import log_parser  as parser
 from denethor_provenance.database.db_model import *
-from database.repository import *
+from denethor_provenance.database.repository import *
 from denethor_utils import utils
 
 from datetime import datetime
-import json
-import os
-import re
+import json, os, re
 
 def process_and_save_logs(params):
     """

@@ -214,10 +214,10 @@ class ExecutionStatisticsRepository(GenericRepository):
 
 
 
-from database.conn import *
+from . import conn
 
 # Instânciando a sessão do banco de dados
-session = Connection().get_session()
+session = conn.Connection().get_session()
 
 # Instânciando as classes de repositórios
 provider_repo = ProviderRepository(session)

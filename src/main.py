@@ -36,8 +36,11 @@ with open(os.path.join(conf_path, 'env_config.json'), 'r') as f:
 with open(os.path.join(conf_path, 'input_files.json'), 'r') as f:
     input_files = json.load(f)
 
-workflow_runtime_data = {}
-workflow_runtime_data['input_files']['data'] = input_files
+workflow_runtime_data = {
+    'input_files': {
+        'data': input_files
+    }
+}
 
 def main():
 
@@ -134,6 +137,9 @@ def main():
         step_id = step.get('id')
         action = step.get('action')
         activity = step.get('activity')
+        env_name = step.get('execution_env')
+        # Get the execution environment configuration by the name set in the step
+        execution_env = du.get_env_config_by_name(env_name, env_configs)
         
         # Check if the step is active
         if step.get('active') is False:
@@ -141,10 +147,8 @@ def main():
             continue
 
         if action == 'execute':
-            env_name = step.get('execution_env')
+            
             strategy = step.get('execution_strategy')
-            # Get the execution environment configuration by the name set in the step
-            execution_env = du.get_env_config_by_name(env_name, env_configs)
 
             input_param = None
             output_param = None

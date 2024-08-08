@@ -1,7 +1,6 @@
 from denethor_provenance.database.db_model import *
-from database.repository import *
-import aws_log_retriever as retriever
-import aws_log_interpreter as interpreter
+from denethor_provenance.database.repository import *
+from . import aws_log_retriever as alr, aws_log_interpreter as ali
 
 def import_provenance_from_aws(params):
     
@@ -11,7 +10,7 @@ def import_provenance_from_aws(params):
 
     #retriever.retrieve_logs_from_aws(params)
 
-    interpreter.process_and_save_logs(params)
+    ali.process_and_save_logs(params)
 
 
 

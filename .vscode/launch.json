@@ -12,8 +12,10 @@
             "request": "launch",
             "program": "${file}",
             "cwd": "${workspaceRoot}",
-            "env": {"PYTHONPATH": "${workspaceFolder"},
             "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/.env",
+            "env": {"PYTHONPATH": "${workspaceFolder}"},
+            "python": "${workspaceFolder}/.venv/bin/python",
             "justMyCode": true
         }
     ]
