@@ -7,7 +7,7 @@ def generate_uuid():
     return 'uuid_' + str(uuid.uuid4()).replace('-', '_')
 
 def generate_workflow_execution_id(start_time_ms):
-    return 'exec_' + convert_ms_to_str(start_time_ms).replace(':', '-').replace('T', '_').replace('Z', '') + '_UTC'
+    return 'exec_' + convert_ms_to_str(start_time_ms).replace(':', '-').replace('T', '_').replace('Z', '').replace('+00-00', '_UTC')
 
 def get_request_id(context):
     return context.aws_request_id if context else generate_uuid()

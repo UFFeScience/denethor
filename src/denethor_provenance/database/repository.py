@@ -221,6 +221,7 @@ session = conn.Connection().get_session()
 
 # Instânciando as classes de repositórios
 provider_repo = ProviderRepository(session)
+provider_configuration_repo = ProviderConfigurationRepository(session)
 workflow_repo = WorkflowRepository(session)
 workflow_activity_repo = WorkflowActivityRepository(session)
 file_repo = FileRepository(session)

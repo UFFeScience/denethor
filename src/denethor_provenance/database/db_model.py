@@ -12,7 +12,17 @@ class BaseModel(Base):
 
     @classmethod
     def create_from_dict(cls, dict_values):
+        # Certifique-se de que dict_values é um dicionário
+        if not isinstance(dict_values, dict):
+            raise TypeError("dict_values deve ser um dicionário")
+        
+        # Filtre apenas os atributos que pertencem à classe cls
         filtered_dict = {k: v for k, v in dict_values.items() if hasattr(cls, k)}
+        
+        if not filtered_dict or len(filtered_dict) == 0:
+            raise ValueError("No attributes found in the dictionary that belong to the class")
+        
+        # Crie uma instância da classe com os atributos filtrados
         return cls(**filtered_dict)
 
     def update_from_dict(self, dict_values):
@@ -30,7 +40,7 @@ class Provider(BaseModel):
     provider_id = Column(Integer, primary_key=True)
     provider_name = Column(String)
 
-    configurations = relationship("ProviderConfiguration", back_populates="provider")
+    # configurations = relationship("ProviderConfiguration", backref="provider")
 
     def __str__(self):
         return f"[{self.provider_id}] {self.provider_name}"
@@ -46,10 +56,10 @@ class ProviderConfiguration(BaseModel):
     memory_mb = Column(Integer)
     storage_mb = Column(Integer)
 
-    provider = relationship("Provider", back_populates="configurations")
+    provider = relationship("Provider")
 
     def __str__(self):
-        return (f"[{self.configuration_id}] {self.function_name}, {self.memory_mb}MB RAM, "
+        return (f"[{self.configuration_id}], {self.memory_mb}MB RAM, "
                 f"{self.timeout}s timeout, {self.cpu}vCPU, {self.storage_mb}MB storage")
 
 

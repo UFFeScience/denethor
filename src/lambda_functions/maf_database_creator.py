@@ -38,7 +38,7 @@ def handler(event, context):
 
     # Criação do dicionário de similariadades de subárvore ##
     maf_database, max_maf, maf_duration_ms = mdcc.maf_database_create(subtree_list, subtree_matrix, INPUT_PATH, DATA_FORMAT)
-    logger.info(f'MAF_DATABASE_CREATE RequestId: {request_id}\t Duration: {maf_duration_ms} ms\t InputSubtrees: {subtree_list}\t MaxMaf: {max_maf}\t MafDatabase: {maf_database}')
+    logger.info(f'MAF_DATABASE_CREATOR RequestId: {request_id}\t Duration: {maf_duration_ms} ms\t InputSubtrees: {subtree_list}\t MaxMaf: {max_maf}\t MafDatabase: {maf_database}')
     
     return {
             "request_id" : request_id,

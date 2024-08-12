@@ -19,6 +19,9 @@ def parse_message(message, stats_attributes, default_sep):
     # Prepare a dictionary to store the parsed attributes
     parsed_message = {"logType": log_type}
 
+    if log_type not in stats_attributes:
+        return None
+    
     # Iterate over each attribute
     for attribute in stats_attributes[log_type]:
         
@@ -43,20 +46,23 @@ def parse_message(message, stats_attributes, default_sep):
     return parsed_message
 
 
-def parse_execution_logs(request_id, logs, default_stats: dict, custom_stats: dict, default_sep: str):
+def parse_execution_logs(request_id: str, activity_name: str, logs: list, statistics: dict):
     """
     Parse all the execution logs for the same request id and create a ServiceExecution object.
 
     Args:
         request_id (str): The request ID.
+        activity_name (str): The activity name.
         logs (list): The list of logs to parse.
-        default_stats (dict): The default stats dictionary.
-        custom_stats (dict): The custom stats dictionary.
-        default_sep (str): The default separator to use if not specified.
+        statistics (dict): The dictionary containing the statistics.
 
     Returns:
         ServiceExecution: The parsed service execution object.
     """
+    default_stats = statistics['default_statistics']
+    custom_stats = statistics['custom_statistics']
+    default_sep = statistics['default_separator']
+
     service_execution = ServiceExecution()
     stats = default_stats | custom_stats
 
@@ -68,16 +74,18 @@ def parse_execution_logs(request_id, logs, default_stats: dict, custom_stats: di
         
         parsed_message = parse_message(log['message'], stats, default_sep)
         
-        if parsed_message["logType"] in default_stats:
+        if not parsed_message:
+            print(f"Ignoring log message: {log['message']}")
+            continue
+        
+        elif parsed_message["logType"] in default_stats:
             process_default_stats(service_execution, parsed_message, log['timestamp'])
 
         elif parsed_message["logType"] in custom_stats:
             process_custom_stats(service_execution, parsed_message)
         
         else:
-            print("--------------------------------------------------------------------------")
-            print(f"Could not parse message. LogType unknown: {parsed_message['logType']}. LogMessage: {log['message']}")
-            print("--------------------------------------------------------------------------")
+            raise ValueError(f"Could not parse message for activity: {activity_name}. LogType unknown: {parsed_message['logType']}. LogMessage: {log['message']}")
             
     return service_execution
 

@@ -4,7 +4,7 @@ from denethor.src.provenance.log_parser import parse_message
 class TestLogParser(unittest.TestCase):
 
     CONFIG = { 
-        "general_statistics": {
+        "default_statistics": {
             "START": [
                 {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "", "separator": " "},
                 {"searchKey": "Version", "fieldName": "version", "dataType": ""}

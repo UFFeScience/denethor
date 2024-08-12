@@ -1,7 +1,7 @@
 {
     "default_separator": "\t",
     
-    "general_statistics": {
+    "default_statistics": {
         "START": [
             {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string", "separator": " "},
             {"searchKey": "Version", "fieldName": "version", "dataType": "string"}
@@ -19,12 +19,12 @@
         ],
         "FILE_TRANSFER": [
             {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string"},
-            {"searchKey": "FileName", "fieldName": "name", "dataType": "string"},
-            {"searchKey": "Bucket", "fieldName": "bucket", "dataType": "string"},
-            {"searchKey": "FilePath", "fieldName": "path", "dataType": "string"},
-            {"searchKey": "FileSize", "fieldName": "size", "dataType": "integer"},
-            {"searchKey": "TransferDuration", "fieldName": "transfer_duration", "dataType": "float"},
-            {"searchKey": "TransferType", "fieldName": "transfer_type", "dataType": "string"}
+            {"searchKey": "FileName", "fieldName": "file_name", "dataType": "string"},
+            {"searchKey": "Bucket", "fieldName": "file_bucket", "dataType": "string"},
+            {"searchKey": "FilePath", "fieldName": "file_path", "dataType": "string"},
+            {"searchKey": "FileSize", "fieldName": "file_size", "dataType": "integer"},
+            {"searchKey": "TransferType", "fieldName": "transfer_type", "dataType": "string"},
+            {"searchKey": "TransferDuration", "fieldName": "transfer_duration", "dataType": "float"}
         ],
         "CONSUMED_FILES_INFO": [
             {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string"},
@@ -49,11 +49,18 @@
             {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string"},
             {"searchKey": "Duration", "fieldName": "subtree_duration", "dataType": "float", "description": "Execution time of the subtree creation activity"}
         ],
-        "MAF_DATABASE_CREATE": [
+        "MAF_DATABASE_CREATOR": [
+            {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string"},
+            {"searchKey": "InputSubtrees", "fieldName": "input_subtrees", "dataType": "string", "description": "Subtrees used as input for the MAF database creation activity"},
+            {"searchKey": "MaxMaf", "fieldName": "max_maf_partial", "dataType": "integer", "description": "Max MAF value found during input file processing"},
+            {"searchKey": "MafDatabase", "fieldName": "maf_database_partial", "dataType": "string", "description": "Value of the partial \"maf_database\" dictionary obtained at the end of the activity"},
+            {"searchKey": "Duration", "fieldName": "maf_db_creator_duration", "dataType": "float", "description": "Execution time of the MAF database creation activity"}
+        ],
+        "MAF_DATABASE_AGGREGATOR": [
             {"searchKey": "RequestId", "fieldName": "request_id", "dataType": "string"},
             {"searchKey": "MaxMaf", "fieldName": "max_maf", "dataType": "integer", "description": "Max MAF value found during input file processing"},
             {"searchKey": "MafDatabase", "fieldName": "maf_database", "dataType": "string", "description": "Value of the \"maf_database\" dictionary obtained at the end of the activity"},
-            {"searchKey": "Duration", "fieldName": "maf_db_duration", "dataType": "float", "description": "Execution time of the MAF database creation activity"}
+            {"searchKey": "Duration", "fieldName": "maf_db_aggregator_duration", "dataType": "float", "description": "Execution time of the MAF database aggregation activity"}
         ]
     }
 }

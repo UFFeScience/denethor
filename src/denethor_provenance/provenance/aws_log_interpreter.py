@@ -12,12 +12,14 @@ def process_and_save_logs(params):
 
     Args:
         params (dict): A dictionary containing the parameters for log analysis.
-            - execution_id (str): The execution ID.
-            - functions (list): A list of function names.
-            - log_path (str): The path to the log files.
-            - log_file (str): The log file name template.
-            - provider (dict): Information about the service provider.
-            - workflow (dict): Information about the workflow.
+            - execution_id (str): The execution ID (e.g., 'exec_2024-08-02_00-54-08+00-00_UTC').
+            - start_time_ms (float): The start time in milliseconds (e.g., 1722560048000.0).
+            - end_time_ms (float): The end time in milliseconds (e.g., 1722565559000.0).
+            - activity (str): The activity name (e.g., 'tree_constructor').
+            - execution_env (dict): Information about the execution environment.
+            - providers (list): A list of dictionaries containing information about the service providers.
+            - workflow (dict): Information about the workflow, including the activities.
+            - statistics (dict): Information about the statistics.
 
     Raises:
         ValueError: If the activity is not found in the workflow activities JSON file.
@@ -28,36 +30,27 @@ def process_and_save_logs(params):
     # Workflow runtime parameters
     execution_id = params['execution_id']
 
-    ############################################################################################################
-    # If the 'override_...' parameters are present, then the respective variables are updated with the new values
-    # It can be used for testing purposes, or to retrieve logs for a specific time range
-    override_execution_id = params['override_execution_id']
-    if override_execution_id is not None:
-        execution_id = override_execution_id
-    ############################################################################################################
-
-    
     # Step params
-    functions = params['functions']
-    log_path = params['log_path']
-    log_file = params['log_file']
+    activities = params['activity']
+    # IF functions is not a list, convert it to a list
+    if not isinstance(activities, list):
+        activities = [activities]
+
+    log_path = params['execution_env']['log_config']['path']
+    log_file = params['execution_env']['log_config']['file_name']
 
     workflow_dict = params['workflow']
     activities_dict = workflow_dict['activities']
-    default_separator = workflow_dict['default_separator']
-    general_statistics = workflow_dict['general_statistics']
-
+    statistics = params['statistics']
 
     # Workflow Activity
-    for func_name in functions:
+    for activity_name in activities:
 
         # Finding the corresponding activity in the workflow activities JSON file
-        activity = next((act for act in activities_dict if act['activity_name'] == func_name), None)
+        activity = next((act for act in activities_dict if act['activity_name'] == activity_name), None)
         if not activity:
-            raise ValueError(f"Activity {func_name} not found in the workflow activities JSON file")
+            raise ValueError(f"Activity {activity_name} not found in the workflow activities JSON file")
         
-        activity_name = activity['activity_name']
-
         # Retrieving the provider, workflow, and activity from the database and checking if they exist
         workflow_db = workflow_repo.get_by_name(workflow_dict['workflow_name'])
         if not workflow_db:
@@ -72,8 +65,8 @@ def process_and_save_logs(params):
             raise ValueError(f"Provider {activity['provider_name']} not found in Database!")
         
         # Opening the log file for the activity, in json format
-        file_name = log_file.replace('[function_name]', activity_name).replace('[execution_id]', execution_id)
-        file = os.path.join(log_path, file_name)
+        log_file_name = log_file.replace('[activity_name]', activity_name).replace('[execution_id]', execution_id)
+        file = os.path.join(log_path, log_file_name)
         with open(file) as f:
             log_data = json.load(f)
 
@@ -81,16 +74,14 @@ def process_and_save_logs(params):
         # Each set represents a complete execution of the activity for a set of input files
         logs_by_request = group_logs_by_request(log_data)
 
-        activity_custom_statistics = activity['custom_statistics']
-        
         # Iterating over the set of logs for a request_id (an execution of the lambda function)
         for request_id, logs in logs_by_request.items():
             
             print(f"--------------------------------------------------------------------------")
-            print(f'Parsing Logs of {activity_db.activity_name} | RequestId: {request_id}')
+            print(f'Parsing Logs of {activity_name} | RequestId: {request_id}')
             print(f"--------------------------------------------------------------------------")
 
-            service_execution = parser.parse_execution_logs(request_id, logs, general_statistics, activity_custom_statistics, default_separator)
+            service_execution = parser.parse_execution_logs(request_id, activity_name, logs, statistics)
             
             service_execution.provider = provider_db
             service_execution.activity = activity_db
@@ -99,7 +90,7 @@ def process_and_save_logs(params):
 
             
             print(f"--------------------------------------------------------------------------")
-            print(f'Saving Execution info of {activity_db.activity_name} | RequestId: {request_id} to Database...')
+            print(f'Saving Execution info of {activity_name} | RequestId: {request_id} to Database...')
             print(f"--------------------------------------------------------------------------")
 
 

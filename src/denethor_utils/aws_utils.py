@@ -50,7 +50,7 @@ def download_file_from_s3(request_id: str, s3_bucket: str, s3_key: str, file_nam
     file_size = os.stat(local_file_path).st_size
 
     # print(f"Download Successful from S3! File {file_name} | {file_size} bytes | {download_time_ms} milissegundos")
-    print(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: consumed\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key}\t LocalFilePath: {local_file_path}\t TransferDuration: {download_time_ms} ms\t FileSize: {file_size} bytes")
+    print(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: consumed\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key}\t LocalFilePath: {local_file_path}\t FileSize: {file_size} bytes\t TransferDuration: {download_time_ms} ms")
 
     return download_time_ms
       
@@ -100,7 +100,7 @@ def upload_file_to_s3(request_id: str, s3_bucket: str, s3_key: str, file_name: s
         file_size = os.stat(local_file).st_size
         
         # print(f"Upload Successful to S3! File {file_name} | {file_size} bytes | {upload_duration_ms} milissegundos")
-        print(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: produced\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key_upload}\t LocalFilePath: {local_file}\t TransferDuration: {upload_duration_ms} ms\t FileSize: {file_size} bytes")
+        print(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: produced\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key_upload}\t LocalFilePath: {local_file}\t FileSize: {file_size} bytes\t TransferDuration: {upload_duration_ms} ms")
 
     except FileNotFoundError as e:
         print(f"The local file {local_file} was not found!")

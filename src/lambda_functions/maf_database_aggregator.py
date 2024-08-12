@@ -90,7 +90,7 @@ def handler(event, context):
     end_time = timeit.default_timer()
     maf_time_ms = (end_time - start_time) * 1000
     
-    logger.info(f'MAF_DATABASE_AGGREGATE RequestId: {request_id}\t Duration: {maf_time_ms} ms\t InputLength: {len(input_data)}\t MaxMaf: {max_maf}\t MafDatabase: {maf_database}')
+    logger.info(f'MAF_DATABASE_AGGREGATOR RequestId: {request_id}\t Duration: {maf_time_ms} ms\t InputLength: {len(input_data)}\t MaxMaf: {max_maf}\t MafDatabase: {maf_database}')
 
     return {
             "request_id" : request_id,

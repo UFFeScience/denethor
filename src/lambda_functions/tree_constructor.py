@@ -38,7 +38,7 @@ def handler(event, context):
 
     # Building the tree file ##
     tree_files, duration_ms = tcc.tree_constructor(input_files, INPUT_PATH, TMP_PATH, OUTPUT_PATH, CLUSTALW_PATH, DATA_FORMAT)
-    logger.info(f'TREE_CONSTRUCTOR RequestId: {request_id}\t Duration: {duration_ms} ms\t InputFile:{input_files}\t OutputTreeFile:{tree_files}')
+    logger.info(f'TREE_CONSTRUCTOR RequestId: {request_id}\t Duration: {duration_ms} ms\t InputFile:{input_files}\t OutputFile:{tree_files}')
 
     # Upload output files ##
     dau.handle_produced_files(request_id, tree_files, OUTPUT_PATH, s3_params)

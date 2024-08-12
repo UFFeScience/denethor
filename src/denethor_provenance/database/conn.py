@@ -1,18 +1,54 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import OperationalError
 
 # Parâmetros de conexão
-HOST = 'mribeiro-pg-database.ca8aozgznnhf.sa-east-1.rds.amazonaws.com'
-PORT = 9855
-DATABASE = 'denethor'
-USER = 'postgres'
-PASSWORD = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'
+HOST = 'denethor.ctc04wcmu5c6.sa-east-1.rds.amazonaws.com'
+PORT = 5432
+DATABASE = 'postgres'
+USER = 'denethor_master'
+PASSWORD = '2S73y7ZtiW88yIViKAvU'
 
 class Connection:
     def __init__(self):
         self.db_url = f'postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}'
-        self.engine = create_engine(self.db_url)
+        self.engine = create_engine(self.db_url, connect_args={"connect_timeout": 5})  # Timeout de 5 segundos
         self.Session = sessionmaker(bind=self.engine)
 
+    def simple_test(self):
+        try:
+            with self.engine.connect() as connection:
+                connection.execute(text("SELECT 1"))
+            return True
+        except OperationalError:
+            return False
+
+    def detailed_test(self):
+        try:
+            with self.engine.connect() as connection:
+                # Obtenha a data e hora atual do banco de dados
+                result = connection.execute(text("SELECT NOW()"))
+                current_datetime = result.fetchone()[0]
+
+                # Obtenha o SGBD e a versão
+                result = connection.execute(text("SELECT version()"))
+                db_version = result.fetchone()[0]
+
+            return {
+                "status": "success",
+                "current_datetime": current_datetime,
+                "db_version": db_version
+            }
+        except OperationalError as e:
+            return {
+                "status": "failure",
+                "error": str(e)
+            }
+
     def get_session(self):
-        return self.Session()
+        connection_info = self.detailed_test()
+        if connection_info["status"] == "success":
+            print(f"Connected to database. Current datetime: {connection_info['current_datetime']}, DB Version: {connection_info['db_version']}")
+            return self.Session()
+        else:
+            raise ConnectionError(f"Não foi possível conectar ao banco de dados: {connection_info['error']}")

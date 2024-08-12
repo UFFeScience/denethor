@@ -60,7 +60,7 @@ CREATE TABLE service_execution (
     produced_files_size INTEGER,
     produced_files_transfer_duration FLOAT,
     error_message VARCHAR,
-    CONSTRAINT fk_service_execution_service_provider FOREIGN KEY (provider_id) REFERENCES service_provider(provider_id),
+    CONSTRAINT fk_service_execution_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id),
     CONSTRAINT fk_service_execution_workflow_activity FOREIGN KEY (activity_id) REFERENCES workflow_activity(activity_id)
 );
 
