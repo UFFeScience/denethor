@@ -1,13 +1,18 @@
+import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
 
-# Parâmetros de conexão
-HOST = 'denethor.ctc04wcmu5c6.sa-east-1.rds.amazonaws.com'
-PORT = 5432
-DATABASE = 'postgres'
-USER = 'denethor_master'
-PASSWORD = '2S73y7ZtiW88yIViKAvU'
+# Carregar variáveis de ambiente do arquivo .env
+load_dotenv()
+
+# Parâmetros de conexão a partir das variáveis de ambiente
+HOST = os.getenv('HOST')
+PORT = os.getenv('PORT')
+DATABASE = os.getenv('DATABASE')
+USER = os.getenv('USER')
+PASSWORD = os.getenv('PASSWORD')
 
 class Connection:
     def __init__(self):
