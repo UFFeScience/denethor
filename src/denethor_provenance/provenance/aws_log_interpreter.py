@@ -85,6 +85,7 @@ def process_and_save_logs(params):
             
             service_execution.provider = provider_db
             service_execution.activity = activity_db
+            service_execution.workflow_execution_id = execution_id
             
             # print(service_execution)
 
@@ -97,8 +98,8 @@ def process_and_save_logs(params):
             # verificar se os registros presentes no Log já estão cadastrados na base
             # caso positivo -> apenas recupera o registro
             # caso negativo -> realiza a inclusão e retorna o novo registro
-            service_execution_db, provider_created = service_execution_repo.get_or_create(service_execution)
-            print(f'{"Saving" if provider_created else "Retrieving"} Service Execution info: [{service_execution_db.se_id}]={activity_db.activity_name} ({service_execution_db.duration} ms)')
+            service_execution_db, se_created = service_execution_repo.get_or_create(service_execution)
+            print(f'{"Saving" if se_created else "Retrieving"} Service Execution info: [{service_execution_db.se_id}]={activity_db.activity_name} ({service_execution_db.duration} ms)')
 
             # para cada arquivo de entrada e registro de execução do arquivo,
             # verificamos se ambos já estão cadastrados na base
@@ -107,8 +108,8 @@ def process_and_save_logs(params):
                 
                 exec_file.service_execution = service_execution_db
                 exec_file.file = file_db
-                exec_file_db, exec_file_created = execution_file_repo.get_or_create(exec_file)
-                print(f'{"Saving" if file_created else "Retrieving"} File: {file_db} | {"Saving" if exec_file_created else "Retrieving"} Execution_File: {exec_file_db}')
+                exec_file_db, ef_created = execution_file_repo.get_or_create(exec_file)
+                print(f'{"Saving" if file_created else "Retrieving"} File: {file_db} | {"Saving" if ef_created else "Retrieving"} Execution_File: {exec_file_db}')
 
             # para a execução da função verificamos se existem estatísticas adicionais para armazenar
             for  exec_stat in service_execution.execution_statistics:
@@ -118,8 +119,8 @@ def process_and_save_logs(params):
                     raise ValueError(f"Statistics {exec_stat.statistics.name} not found in Database!")
                 exec_stat.statistics = statistics_db
                 exec_stat.service_execution = service_execution_db
-                exec_stat_db, exec_stat_created = execution_statistics_repo.get_or_create(exec_stat)
-                print(f'Retrieving Statistics: {statistics_db} | {"Saving" if exec_stat_created else "Retrieving"} Execution Statistics info: {exec_stat_db}')
+                exec_stat_db, es_created = execution_statistics_repo.get_or_create(exec_stat)
+                print(f'Retrieving Statistics: {statistics_db} | {"Saving" if es_created else "Retrieving"} Execution Statistics info: {exec_stat_db}')
                 
                 
             print(f'Finished saving Service Execution info to Database: {service_execution_db}')

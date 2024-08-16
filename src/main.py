@@ -83,7 +83,7 @@ def main():
     # ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
     action = "import_provenance"
     # activities = ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
-    activities = ["tree_constructor"]
+    activities = ["maf_database_aggregator"]
 
     for step in workflow_steps:
         if step['action'] == action and step['activity'] in activities:

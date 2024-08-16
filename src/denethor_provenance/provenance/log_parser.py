@@ -2,6 +2,19 @@ import re
 from denethor_utils import utils as du
 from denethor_provenance.database.db_model import *
 
+def find_log_type(message, stats_attributes):
+    # verificar o primeiro elemento da mensagem
+    first_element = message.split()[0]
+    if first_element in stats_attributes:
+        return first_element
+    
+    # Caso não econtre, procurar no resto da mensagem
+    for log_type in stats_attributes.keys():
+        if log_type in message:
+            return log_type
+    
+    return None
+
 def parse_message(message, stats_attributes, default_sep):
     """
     Parse the log message field and extract attributes based on the provided stats attributes.
@@ -14,13 +27,13 @@ def parse_message(message, stats_attributes, default_sep):
     Returns:
         dict: The parsed attributes as a dictionary.
     """
-    log_type = message.split()[0]
+    log_type = find_log_type(message, stats_attributes)
+
+    if not log_type or log_type not in stats_attributes:
+        return None
 
     # Prepare a dictionary to store the parsed attributes
     parsed_message = {"logType": log_type}
-
-    if log_type not in stats_attributes:
-        return None
     
     # Iterate over each attribute
     for attribute in stats_attributes[log_type]:

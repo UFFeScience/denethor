@@ -93,6 +93,7 @@ class ServiceExecution(BaseModel):
     se_id = Column(Integer, primary_key=True)
     activity_id = Column(Integer, ForeignKey('workflow_activity.activity_id'))
     provider_id = Column(Integer, ForeignKey('provider.provider_id'))
+    workflow_execution_id = Column(String)
     request_id = Column(String)
     log_stream_name = Column(String)
     start_time = Column(TIMESTAMP)
@@ -120,6 +121,7 @@ class ServiceExecution(BaseModel):
             f"Id: {self.se_id}\n"
             f"Activity ID: {self.activity_id}\n"
             f"Provider ID: {self.provider_id}\n"
+            f"Workflow Execution ID: {self.workflow_execution_id}\n"
             f"Request ID: {self.request_id}\n"
             f"Log Stream Name: {self.log_stream_name}\n"
             f"Start Time: {self.start_time}\n"
