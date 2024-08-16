@@ -1,20 +1,21 @@
 <#tasks> <#config> <#data> <#devices> <#periods> <#buckets> <#ranges> <Max. Financial Cost>
+1000 3 50 1 
 
-<task_id> <type 0-VM 1-FX> <config. -1 se tipo for VM> <cpu_time> <n_input> [<id_input> .. ] < n_output  > [<id_output> .. ] 
+<task_id> <task_type 0-VM 1-FX> <config_id -1 se tipo for VM> <cpu_time> <n_input> [<id_input> .. ] < n_output  > [<id_output> .. ] 
 ...
 
 <data_id> <size> <is_static 0-dinamic 1-static> <n_source_devices - 0 se for dinamico> [<device_id> ... ]         
 ...
 
 <vm1_cpu_slowdown> <vm2_cpu_slowdown> ... <vm*_cpu_slowdown>                 
-<vm1_storage> <vm2 _storage  > ... <vm* _storage  > 
-<vm1_cost> <vm2_cost  > ... <vm*_cost  >
+<vm1_storage> <vm2 _storage> ... <vm* _storage> 
+<vm1_cost> <vm2_cost> ... <vm*_cost>
 
-BANDWIDTH MATRIX (estático)
+BANDWIDTH MATRIX (estático) -- caracteristica da maquina
 <vm_id> <bandwidth>
 
 TIME FUNCTION MATRIX (task/config) (obter a partir das execuções na aws)
-<task_id> <config_id> <time>...
+<task_id> <config_id> <task_time>...
 1 1 12 2 15 3 17
 2...
 
