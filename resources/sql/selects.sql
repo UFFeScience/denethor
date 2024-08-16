@@ -1,5 +1,9 @@
--- service_execution
+-- set the locale to brazilian portuguese
 SET lc_numeric = 'pt_BR';
+
+
+
+-- service_execution
 SELECT se.se_id, 
         pr.provider_name, 
         wo.workflow_name, 
@@ -33,9 +37,9 @@ SELECT se.se_id,
         wa.activity_name,
         fi.file_id,
         fi.file_name,
-        fi.file_size,
-        fi.file_path,
         fi.file_bucket,
+        fi.file_path,
+        fi.file_size,
         to_char(ef.transfer_duration,'fm9999999D99') AS transfer_duration,
         ef.transfer_type
 FROM service_execution se
@@ -45,10 +49,11 @@ JOIN provider pr ON pr.provider_id = se.provider_id
 JOIN execution_file ef ON ef.se_id = se.se_id
 JOIN file fi ON fi.file_id = ef.file_id
 --WHERE fi.file_name LIKE '%ORTHOMCL1000%'
-ORDER BY se.se_id ASC, fi.file_id ASC;
+ORDER BY se.se_id ASC, ef.transfer_type, fi.file_id ASC;
+
+
 
 -- statistics
-SET lc_numeric = 'pt_BR';
 SELECT se.se_id,
         pr.provider_name,
         wo.workflow_name,

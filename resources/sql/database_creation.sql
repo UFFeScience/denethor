@@ -101,3 +101,48 @@ CREATE TABLE execution_statistics (
     CONSTRAINT fk_execution_statistics_service_execution FOREIGN KEY (se_id) REFERENCES service_execution(se_id),
     CONSTRAINT fk_execution_statistics_statistics FOREIGN KEY (statistics_id) REFERENCES statistics(statistics_id)
 );
+
+
+
+
+
+--VIEWS
+-- Criação da view dynamic_files
+CREATE VIEW dynamic_files AS
+SELECT distinct f.file_id, f.file_name
+FROM file f
+JOIN execution_file ef ON ef.file_id = f.file_id
+WHERE ef.transfer_type = 'produced'
+ORDER BY f.file_id;
+
+-- Criação da view static_files
+CREATE VIEW static_files AS
+SELECT distinct f.file_id, f.file_name
+FROM file f
+JOIN execution_file ef ON ef.file_id = f.file_id
+WHERE ef.transfer_type = 'consumed'
+AND f.file_id NOT IN (
+    SELECT file_id
+    FROM execution_file
+    WHERE transfer_type = 'produced'
+)
+
+
+
+CREATE OR REPLACE VIEW vw_file_type AS
+--dynamic_files
+SELECT distinct f.file_id, f.file_name, 'dynamic' as file_type
+FROM file f
+JOIN execution_file ef ON ef.file_id = f.file_id
+WHERE ef.transfer_type = 'produced'
+UNION
+--static_files
+SELECT distinct f.file_id, f.file_name, 'static' as file_type
+FROM file f
+JOIN execution_file ef ON ef.file_id = f.file_id
+WHERE ef.transfer_type = 'consumed'
+AND f.file_id NOT IN (
+    SELECT file_id
+    FROM execution_file
+    WHERE transfer_type = 'produced'
+);
