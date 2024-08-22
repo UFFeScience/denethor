@@ -9,9 +9,21 @@ AWS_REGION="sa-east-1"
 IAM_ROLE="Lambda_S3_access_role"
 
 BASE_LAYER_NAME="base_layer"
-BASE_LAYER_VERSION="4"
 DENETHOR_LAYER_NAME="denethor_layer"
-DENETHOR_LAYER_VERSION="3"
+
+# Função para obter a versão mais recente de uma camada
+get_latest_layer_version() {
+  local layer_name=$1
+  aws lambda list-layer-versions --layer-name "$layer_name" --query 'LayerVersions[0].Version' --output text
+}
+
+# Recuperar a versão mais recente das camadas
+BASE_LAYER_VERSION=$(get_latest_layer_version "$BASE_LAYER_NAME")
+DENETHOR_LAYER_VERSION=$(get_latest_layer_version "$DENETHOR_LAYER_NAME")
+
+# Exibir as versões recuperadas
+echo "Base Layer Version: $BASE_LAYER_VERSION"
+echo "Denethor Layer Version: $DENETHOR_LAYER_VERSION"
 
 BASE_LAYER="arn:aws:lambda:$AWS_REGION:$AWS_ACCOUNT_ID:layer:$BASE_LAYER_NAME:$BASE_LAYER_VERSION"
 DENETHOR_LAYER="arn:aws:lambda:$AWS_REGION:$AWS_ACCOUNT_ID:layer:$DENETHOR_LAYER_NAME:$DENETHOR_LAYER_VERSION"
@@ -81,8 +93,8 @@ if aws lambda get-function --function-name $FUNCTION_NAME --region $AWS_REGION >
   aws lambda update-function-code --function-name $FUNCTION_NAME --zip-file fileb://${FUNCTION_NAME}.zip --region $AWS_REGION
   
   # Sleep for a few seconds to ensure the update-function-code operation completes
-  echo "Sleeping for 5 seconds..."
-  sleep 5
+  echo "Sleeping for 2 seconds..."
+  sleep 2
   
   echo "Updating the function configuration..."
   aws lambda update-function-configuration --function-name $FUNCTION_NAME --layers $LAYERS --timeout $TIMEOUT --memory-size $MEMORY_SIZE --region $AWS_REGION

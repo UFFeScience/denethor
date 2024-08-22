@@ -16,7 +16,8 @@ def process_and_save_logs(params):
             - start_time_ms (float): The start time in milliseconds (e.g., 1722560048000.0).
             - end_time_ms (float): The end time in milliseconds (e.g., 1722565559000.0).
             - activity (str): The activity name (e.g., 'tree_constructor').
-            - execution_env (dict): Information about the execution environment.
+            - log_path (str): The path to save the log files.
+            - log_file (str): The name of the log file.
             - providers (list): A list of dictionaries containing information about the service providers.
             - workflow (dict): Information about the workflow, including the activities.
             - statistics (dict): Information about the statistics.
@@ -36,8 +37,8 @@ def process_and_save_logs(params):
     if not isinstance(activities, list):
         activities = [activities]
 
-    log_path = params['execution_env']['log_config']['path']
-    log_file = params['execution_env']['log_config']['file_name']
+    log_path = params.get('log_path')
+    log_file = params.get('log_file')
 
     workflow_dict = params['workflow']
     activities_dict = workflow_dict['activities']

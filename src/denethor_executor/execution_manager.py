@@ -1,6 +1,9 @@
 from denethor_executor import executor_local, executor_aws
 from denethor_utils.env import LOCAL, AWS_LAMBDA, VM_LINUX
 
+FOR_EACH_INPUT = 'for_each_input'
+FOR_ALL_INPUTS = 'for_all_inputs'
+
 def execute(params):
     """
     Executes the activity based on the provided parameters.
@@ -28,24 +31,27 @@ def execute(params):
     strategy = params.get('strategy')
     all_input_data = params.get('all_input_data')
     
-    print(f"\n>>> Action *{action}* activity *{activity_name}* triggered with execution strategy: *{strategy}* for input data: {all_input_data}")
+    if action != 'execute':
+        raise ValueError(f"Invalid action={action} for Execution Manager of activity={activity_name}")
+    
+    if strategy != FOR_EACH_INPUT and strategy != FOR_ALL_INPUTS:
+        raise ValueError(f"Invalid execution strategy={strategy} for Execution Manager of activity={activity_name}")
+    
+    print(f"\n>>>Execution Manager: {activity_name} | action={action} | strategy:={strategy} | all_input_data:={all_input_data}")
 
     results = []
     
-    if action != 'execute':
-        raise ValueError(f"Invalid action: {action}")
-    
-    if strategy == 'for_each_input':
+    if strategy == FOR_EACH_INPUT:
         i = 0
         for input in all_input_data:
             i += 1
             params['iteration'] = i
             params['input_data'] = input
-            params['all_input_data'] = all_input_data
+            params['all_input_data'] = all_input_data # TODO:Nem todas as funções requerem 'all_input_data'. Verificar a necessidade de passar esse parâmetro.
             result = execute_by_env(params)
             results.append(result)
 
-    elif strategy == 'for_all_inputs':
+    elif strategy == FOR_ALL_INPUTS:
         params['input_data'] = all_input_data
         result = execute_by_env(params)
         results.append(result)

@@ -19,7 +19,7 @@ def import_provenance_from_aws(params):
 
     save_workflow_basic_info(params)
 
-    #retriever.retrieve_logs_from_aws(params)
+    alr.retrieve_logs_from_aws(params)
 
     ali.process_and_save_logs(params)
 

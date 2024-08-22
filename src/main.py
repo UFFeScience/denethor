@@ -1,6 +1,6 @@
 import os, time, json
 from pathlib import Path
-from denethor_utils import utils as du, file_utils as dfu
+from denethor_utils import utils as du, file_utils as dfu, env as denv
 from denethor_executor import execution_manager as dem
 import denethor_provenance.provenance.provenance_importer as dprov
 
@@ -36,16 +36,13 @@ with open(os.path.join(conf_path, 'env_config.json'), 'r') as f:
 with open(os.path.join(conf_path, 'input_files.json'), 'r') as f:
     input_files = json.load(f)
 
+# Dictionary to store the produced data during the workflow execution
+# Initial data is the "input_files" list
 workflow_runtime_data = {
-    'input_files': {
-        'data': input_files
+    "input_files": input_files
     }
-}
 
 def main():
-
-    print('******* Worflow execution started at: ', du.now_str(), ' *******')
-    print('******* Working directory: ', os.getcwd(), ' *******')
 
     # Set the workflow start time in milliseconds
     start_time_ms = int(time.time() * 1000)
@@ -62,34 +59,34 @@ def main():
     # Comment the following lines to run the workflow as usual
     #########################################################################
         
-    from datetime import datetime, timezone
+    # from datetime import datetime, timezone
 
-    # Define the start and end time parameters for log retrieval in aws cloudwatch
+    # # Define the start and end time parameters for log retrieval in aws cloudwatch
     
-    BRAZIL_TZ = "-03:00"
-    UTC_TZ = "-00:00"
-    start_time_human = "2024-08-01T21:54:18" + BRAZIL_TZ
-    end_time_human   = "2024-08-01T23:25:49" + BRAZIL_TZ
+    # BRAZIL_TZ = "-03:00"
+    # UTC_TZ = "-00:00"
+    # start_time_human = "2024-08-01T21:54:18" + BRAZIL_TZ
+    # end_time_human   = "2024-08-01T23:25:49" + BRAZIL_TZ
 
-    # Convert the human-readable time to milliseconds
-    start_time_ms = du.convert_str_to_ms(start_time_human)
-    end_time_ms = du.convert_str_to_ms(end_time_human)
+    # # Convert the human-readable time to milliseconds
+    # start_time_ms = du.convert_str_to_ms(start_time_human)
+    # end_time_ms = du.convert_str_to_ms(end_time_human)
 
-    # Adds a margin of 10 seconds before and after the interval to ensure that all logs are captured
-    start_time_ms -= 10000
-    end_time_ms += 10000
+    # # Adds a margin of 10 seconds before and after the interval to ensure that all logs are captured
+    # start_time_ms -= 10000
+    # end_time_ms += 10000
 
-    # Setting the active steps for testing
-    # ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
-    action = "import_provenance"
-    # activities = ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
-    activities = ["maf_database_aggregator"]
+    # # Setting the active steps for testing
+    # # ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
+    # action = "import_provenance"
+    # # activities = ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
+    # activities = ["maf_database_aggregator"]
 
-    for step in workflow_steps:
-        if step['action'] == action and step['activity'] in activities:
-            step['active'] = True
-        else:
-            step['active'] = False
+    # for step in workflow_steps:
+    #     if step['action'] == action and step['activity'] in activities:
+    #         step['active'] = True
+    #     else:
+    #         step['active'] = False
 
     #########################################################################
 
@@ -129,7 +126,11 @@ def main():
     
     execution_id = du.generate_workflow_execution_id(start_time_ms)
     
-    
+    print('>>>>>>> Main program started at: ', du.now_str())
+    print('>>>>>>> Workflow start time is (ms):  ', start_time_ms)
+    print('>>>>>>> Workflow start time is (str): ', du.convert_ms_to_str(start_time_ms))
+    print('>>>>>>> Execution ID: ', execution_id)
+    print('>>>>>>> Working directory: ', os.getcwd())
     
     # For each step in the workflow
     for step in workflow_steps:
@@ -146,9 +147,15 @@ def main():
             print(f"\n>>> Step [{step_id}], action: {action}, activity: {activity} is inactive. Skipping...")
             continue
 
+        if action != 'execute' and action != 'import_provenance':
+            raise ValueError(f"Invalid action: {action} at step: {step_id} of activity: {activity}")
+        
         if action == 'execute':
             
-            strategy = step.get('execution_strategy')
+            strategy = step.get('strategy')
+
+            if strategy != 'for_each_input' and strategy != 'for_all_inputs':
+                raise ValueError(f"Invalid strategy: {strategy} at step: {step_id} of activity: {activity}")
 
             input_param = None
             output_param = None
@@ -162,17 +169,19 @@ def main():
                 raise ValueError(f"Invalid input parameter: {input_param} for step: {step_id}")
             
             # recuperar os dados runtime indicados por 'input_param'
-            # input_data será uma lista dos outputs produzidos pelas ativações
-            all_input_data = []
-            for param_name, runtime_data in workflow_runtime_data.items():
-                if input_param == param_name:
-                    all_input_data = [item['data'] for item in runtime_data]
-                    all_input_data = du.flatten_list(all_input_data, 1)
-                    break
+            # input_data será uma lista dos outputs produzidos pelas ativações para uma atividade
+            input_data = []
+            if input_param == 'input_files':
+                input_data = workflow_runtime_data['input_files']
+            else:
+                for param, data in workflow_runtime_data.items():
+                    if param == input_param:
+                        input_data = [item['data'] for item in data]
+                        break
             
             # Validation of input data
-            if all_input_data is None:
-                raise ValueError(f"Invalid input data: {all_input_data} for step_params: {step_params} at step: {step_id}")
+            if input_data is None:
+                raise ValueError(f"Invalid input data: {input_data} for step_params: {step_params} at step: {step_id}")
             
             # Workflow parameters
             step_params = {
@@ -183,7 +192,7 @@ def main():
                 'activity': activity,
                 'execution_env': execution_env,
                 'strategy': strategy,
-                'all_input_data': all_input_data
+                'all_input_data': input_data
             }
             
             
@@ -195,23 +204,25 @@ def main():
 
         elif action == 'import_provenance':
 
+            # Mesmo que o ambiente de execução seja local, é necessário obter as informações de log da AWS
+            # com isso, tempo que pegar o env_config da AWS
+            aws_env = du.get_env_config_by_name(denv.AWS_LAMBDA, env_configs)
+            
             step_params = {
                 'execution_id': execution_id,
                 'start_time_ms': start_time_ms,
                 'end_time_ms': end_time_ms,
                 'activity': activity,
-                'execution_env': execution_env,
+                'log_path': aws_env.get('log_config').get('path'),
+                'log_file': aws_env.get('log_config').get('file_name'),
                 'providers': provider,
                 'workflow': workflow,
                 'statistics': statistics
             }
             dprov.import_provenance_from_aws(step_params)
         
-        else:
-            raise ValueError(f"Invalid action: {action} at step: {step_id}")
-                
 
-        print(f"\n>>> Action: {action} | activity: {activity} completed.")
+        print(f"\n>>> {activity} | action: {action} completed.")
 
 
     print('******* Workflow execution finished at: ', du.now_str(), ' *******')

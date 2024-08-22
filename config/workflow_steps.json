@@ -4,7 +4,7 @@
         "action": "execute",
         "activity": "tree_constructor",
         "execution_env": "aws_lambda",
-        "execution_strategy": "for_each_input",
+        "strategy": "for_each_input",
         "params": {
             "input_param": "input_files",
             "output_param": "tree_files"
@@ -16,7 +16,7 @@
         "action": "execute",
         "activity": "subtree_constructor",
         "execution_env": "aws_lambda",
-        "execution_strategy": "for_each_input",
+        "strategy": "for_each_input",
         "params": {
             "input_param": "tree_files",
             "output_param": "subtree_files"
@@ -28,7 +28,7 @@
         "action": "execute",
         "activity": "maf_database_creator",
         "execution_env": "aws_lambda",
-        "execution_strategy": "for_each_input",
+        "strategy": "for_each_input",
         "params": {
             "input_param": "subtree_files",
             "output_param": "maf_databases"
@@ -40,7 +40,7 @@
         "action": "execute",
         "activity": "maf_database_aggregator",
         "execution_env": "aws_lambda",
-        "execution_strategy": "for_all_inputs",
+        "strategy": "for_all_inputs",
         "params": {
             "input_param": "maf_databases",
             "output_param": "final_maf_database"
@@ -59,20 +59,20 @@
         "action": "import_provenance",
         "activity": "subtree_constructor",
         "execution_env": "local",
-        "active": false
+        "active": true
     },
     {
         "id": 7,
         "action": "import_provenance",
         "activity": "maf_database_creator",
         "execution_env": "local",
-        "active": false
+        "active": true
     },
     {
         "id": 8,
         "action": "import_provenance",
         "activity": "maf_database_aggregator",
         "execution_env": "local",
-        "active": false
+        "active": true
     }
 ]

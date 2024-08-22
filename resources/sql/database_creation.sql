@@ -43,6 +43,7 @@ CREATE TABLE service_execution (
     se_id SERIAL  PRIMARY KEY,
     activity_id INTEGER,
     provider_id INTEGER,
+    configuration_id INTEGER,
     workflow_execution_id VARCHAR,
     request_id VARCHAR,
     log_stream_name VARCHAR,
@@ -61,7 +62,8 @@ CREATE TABLE service_execution (
     produced_files_transfer_duration FLOAT,
     error_message VARCHAR,
     CONSTRAINT fk_service_execution_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id),
-    CONSTRAINT fk_service_execution_workflow_activity FOREIGN KEY (activity_id) REFERENCES workflow_activity(activity_id)
+    CONSTRAINT fk_service_execution_configuration FOREIGN KEY (configuration_id) REFERENCES provider_configuration(configuration_id),
+    CONSTRAINT fk_service_execution_activity FOREIGN KEY (activity_id) REFERENCES workflow_activity(activity_id)
 );
 
 
@@ -146,3 +148,11 @@ AND f.file_id NOT IN (
     FROM execution_file
     WHERE transfer_type = 'produced'
 );
+
+
+ALTER TABLE service_execution
+ADD COLUMN configuration_id INTEGER;
+
+ALTER TABLE service_execution
+ADD CONSTRAINT fk_configuration
+FOREIGN KEY (configuration_id) REFERENCES provider_configuration(configuration_id)

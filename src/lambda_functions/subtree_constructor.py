@@ -49,5 +49,5 @@ def handler(event, context):
     
     return {
             "request_id" : request_id,
-            "produced_data" : subtree_files
+            "data" : subtree_files
         }

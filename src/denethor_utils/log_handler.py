@@ -1,4 +1,4 @@
-import logging
+import sys, logging
 
 def get_logger(execution_id: str, execution_env: dict) -> logging.Logger:
     
@@ -8,7 +8,10 @@ def get_logger(execution_id: str, execution_env: dict) -> logging.Logger:
         logger.setLevel(logging.DEBUG)
 
         # Define o formato do log
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        
+        # Configuração do formatter personalizado para ISO 8601
+        formatter = logging.Formatter('[%(levelname)s] %(asctime)sZ', datefmt='%Y-%m-%dT%H:%M:%S.%f')
 
         log_config = execution_env.get('log_config')
         output_type = log_config.get('output_type')
@@ -25,7 +28,7 @@ def get_logger(execution_id: str, execution_env: dict) -> logging.Logger:
         
         if 'stdout' in output_type:
             # Se o ambiente for AWS, registra os logs na saída padrão
-            stream_handler = logging.StreamHandler()
+            stream_handler = logging.StreamHandler(sys.stdout)
             stream_handler.setFormatter(formatter)
             logger.addHandler(stream_handler)
 

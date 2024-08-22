@@ -1,5 +1,5 @@
 import time, boto3, datetime, os, json
-from denethor_utils import utils as du
+from denethor_utils import utils as du, env as denv
 
 client = boto3.client('logs')
 
@@ -23,7 +23,8 @@ def retrieve_logs_from_aws(params):
             - start_time_ms (int): The start timestamp in milliseconds.
             - end_time_ms (int, optional): The end timestamp in milliseconds. Defaults to the current timestamp.
             - activity (list): A list of lambda function names.
-            - execution_env: The execution environment configuration.
+            - log_path (str): The path to save the log files.
+            - log_file (str): The name of the log file.
 
     Raises:
         ValueError: If no log records were found.
@@ -41,14 +42,14 @@ def retrieve_logs_from_aws(params):
     if log_filter_end is None:
         log_filter_end = int(time.time() * 1000)
 
-    function_name = params.get('activity')
-    execution_env = params.get('execution_env')
-    log_path = execution_env.get('log_config').get('path')
-    log_file = execution_env.get('log_config').get('file_name')
+    activity_name = params.get('activity')
     
-    log_file = log_file.replace('[activity_name]', function_name).replace('[execution_id]', execution_id)
+    log_path = params.get('log_path')
+    log_file = params.get('log_file')
     
-    log_group_name = f"/aws/lambda/{function_name}"
+    log_file = log_file.replace('[activity_name]', activity_name).replace('[execution_id]', execution_id)
+    
+    log_group_name = f"/aws/lambda/{activity_name}"
     
     # response = client.filter_log_events(
     #     logGroupName=log_group_name,
@@ -59,12 +60,12 @@ def retrieve_logs_from_aws(params):
 
     logs = get_all_log_events(log_group_name, log_filter_start, log_filter_end)
     if logs == None or len(logs) == 0:
-        raise ValueError("No log records were found!")
+        raise ValueError("No log records were found! log_group_name={log_group_name}, start_time={log_filter_start}, end_time={log_filter_end}")
     
     
     save_log_file(logs, log_path, log_file)
 
-    print(f"Logs saved to {log_path}/{log_file} in json format")
+    print(f"Logs for function {activity_name} saved to {log_path}/{log_file} in json format")
 
 
 

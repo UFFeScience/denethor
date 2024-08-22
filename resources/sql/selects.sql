@@ -4,23 +4,25 @@ SET lc_numeric = 'pt_BR';
 
 
 -- service_execution
-SELECT se.se_id, 
+SELECT se.se_id,
+        se.workflow_execution_id,
         pr.provider_name, 
         wo.workflow_name, 
         wa.activity_name, 
         se.request_id, 
         se.start_time, 
         se.end_time, 
-        to_char(se.duration,'fm9999999D99') AS duration,
-        to_char(se.billed_duration,'fm9999999D99') AS billed_duration,
-        to_char(se.init_duration,'fm9999999D99') AS init_duration,
-        se.memory_size, se.max_memory_used, 
+        to_char(se.duration,'fm9999990D00') AS duration,
+        to_char(se.billed_duration,'fm9999990D00') AS billed_duration,
+        to_char(se.init_duration,'fm9999990D00') AS init_duration,
+        se.memory_size,
+	se.max_memory_used, 
         se.consumed_files_count,
         se.consumed_files_size, 
-        to_char(se.consumed_files_transfer_duration,'fm9999999D99') AS consumed_files_transfer_duration,
+        to_char(se.consumed_files_transfer_duration,'fm9999990D00') AS consumed_files_transfer_duration,
         se.produced_files_count, 
         se.produced_files_size,
-        to_char(se.produced_files_transfer_duration,'fm9999999D99') AS produced_files_transfer_duration
+        to_char(se.produced_files_transfer_duration,'fm9999990D00') AS produced_files_transfer_duration
 FROM service_execution se
 JOIN workflow_activity wa ON wa.activity_id = se.activity_id
 JOIN workflow wo ON wo.workflow_id = wa.workflow_id
