@@ -106,53 +106,18 @@ CREATE TABLE execution_statistics (
 
 
 
-
-
---VIEWS
--- Criação da view dynamic_files
-CREATE VIEW dynamic_files AS
-SELECT distinct f.file_id, f.file_name
-FROM file f
-JOIN execution_file ef ON ef.file_id = f.file_id
-WHERE ef.transfer_type = 'produced'
-ORDER BY f.file_id;
-
--- Criação da view static_files
-CREATE VIEW static_files AS
-SELECT distinct f.file_id, f.file_name
-FROM file f
-JOIN execution_file ef ON ef.file_id = f.file_id
-WHERE ef.transfer_type = 'consumed'
-AND f.file_id NOT IN (
-    SELECT file_id
-    FROM execution_file
-    WHERE transfer_type = 'produced'
-)
-
-
-
-CREATE OR REPLACE VIEW vw_file_type AS
---dynamic_files
-SELECT distinct f.file_id, f.file_name, 'dynamic' as file_type
-FROM file f
-JOIN execution_file ef ON ef.file_id = f.file_id
-WHERE ef.transfer_type = 'produced'
-UNION
---static_files
-SELECT distinct f.file_id, f.file_name, 'static' as file_type
-FROM file f
-JOIN execution_file ef ON ef.file_id = f.file_id
-WHERE ef.transfer_type = 'consumed'
-AND f.file_id NOT IN (
-    SELECT file_id
-    FROM execution_file
-    WHERE transfer_type = 'produced'
-);
-
-
 ALTER TABLE service_execution
 ADD COLUMN configuration_id INTEGER;
 
 ALTER TABLE service_execution
 ADD CONSTRAINT fk_configuration
-FOREIGN KEY (configuration_id) REFERENCES provider_configuration(configuration_id)
+FOREIGN KEY (configuration_id) REFERENCES provider_configuration(configuration_id);
+
+
+
+update service_execution se set configuration_id = case 
+			when se.activity_id = 1 then 1
+			when se.activity_id = 2 then 2
+			when se.activity_id = 3 then 3
+			when se.activity_id = 4 then 1
+		end ;
