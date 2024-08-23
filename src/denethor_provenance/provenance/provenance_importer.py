@@ -1,5 +1,5 @@
-from denethor_provenance.database.db_model import *
-from denethor_provenance.database.repository import *
+from denethor.database.model import *
+from denethor.database.repository import *
 from . import aws_log_retriever as alr, aws_log_interpreter as ali
 
 # params = {

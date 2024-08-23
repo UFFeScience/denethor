@@ -1,6 +1,6 @@
 import re
 from denethor_utils import utils as du
-from denethor_provenance.database.db_model import *
+from denethor.database.model import *
 
 def find_log_type(message, stats_attributes):
     # verificar o primeiro elemento da mensagem

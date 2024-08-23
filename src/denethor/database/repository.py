@@ -1,6 +1,6 @@
 from typing import Tuple, Any
 from sqlalchemy.orm import Session
-from denethor_provenance.database.db_model import *
+from denethor.database.model import *
 
 class GenericRepository:
     def __init__(self, session: Session, model: type):
