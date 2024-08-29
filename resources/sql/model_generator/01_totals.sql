@@ -1,9 +1,9 @@
 --Totais
 --<#tasks> <#config> <#data> <#devices> <#periods> <#buckets> <#ranges> <max_financial_cost>
 SELECT 
-	(SELECT count(*) AS _tasks FROM service_execution se WHERE se.workflow_execution_id = 'weid_1724184708846'),
+	(SELECT count(*) AS _tasks FROM service_execution se WHERE se.workflow_execution_id = '[weid]'),
 	(SELECT count(*) AS _config FROM provider_configuration),
-	(SELECT count(*) AS _data FROM file),
+	(SELECT count(*) AS _data FROM file), -- colcoar DISTINCT e filtrar pelo weid
 	(SELECT 3 AS _devices),
 	(SELECT 1 AS _periods),
 	(SELECT 1 AS _buckets),

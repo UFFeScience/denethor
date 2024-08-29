@@ -5,7 +5,7 @@ SELECT
 	1 AS task_type__0vm__1fx,
 	configuration_id AS config_id,
 	1 AS cpu_time, --tempo base
-	(SELECT count(*) 
+	(SELECT count(*) -- sem virgulas na lista de arquivos
 		FROM file fi
 		JOIN execution_file ef ON ef.file_id = fi.file_id and ef.se_id = se.se_id
 		WHERE ef.transfer_type = 'consumed') AS n_input,
@@ -23,5 +23,5 @@ SELECT
 		WHERE ef.transfer_type = 'produced') AS output_list
 FROM service_execution se
 JOIN workflow_activity wa ON wa.activity_id = se.activity_id
-WHERE se.workflow_execution_id = 'weid_1724184708846'
+WHERE se.workflow_execution_id = '[weid]'
 ORDER BY task_id;

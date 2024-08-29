@@ -5,8 +5,8 @@
 SELECT 
 	se.se_id AS task_id,
 	configuration_id AS config_id,
-	se.duration AS task_time_ms
+	se.duration*0.001 AS task_time_s
 FROM service_execution se
 JOIN workflow_activity wa ON wa.activity_id = se.activity_id
-WHERE se.workflow_execution_id = 'weid_1724184708846'
+WHERE se.workflow_execution_id = '[weid]'
 ORDER BY task_id;

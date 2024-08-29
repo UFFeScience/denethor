@@ -13,5 +13,5 @@ SELECT
 	'denethor_bucket' AS device_list
 FROM file f
 JOIN vw_file_type ft ON f.file_id = ft.file_id
-WHERE ft.workflow_execution_id = 'weid_1724184708846'
+WHERE ft.workflow_execution_id = '[weid]'
 order by is_static desc, f.file_id;
