@@ -1,4 +1,4 @@
-import os
+import os, re
 from denethor.database.conn import Connection
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -10,11 +10,22 @@ OUTPUT_FILE_NAME = f'model_{WEID}.txt'  # Nome do arquivo de saída contendo o m
 
 SQL_FILES_PATH = 'resources/sql/model_generator'  # Diretório onde os arquivos SQL estão localizados
 
-
+# Remover Comentários de um Script SQL
 def remove_comments(sql):
     lines = sql.split('\n')
     filtered_lines = [line for line in lines if not line.strip().startswith('--')]
     return '\n'.join(filtered_lines)
+
+# Buscar todas as ocorrências de weid_\d+ ou '[weid]' no script SQL
+def find_weid_occurrences(sql):
+    pattern = r'weid_\d+|\[weid\]'
+    return list(set(re.findall(pattern, sql)))
+
+def replace_weid(sql):
+    weid_occurrences = find_weid_occurrences(sql)
+    for occurrence in weid_occurrences:
+        sql = sql.replace(occurrence, WEID)
+    return sql
 
 def execute_sql_with_weid(sql_file):
     print(f"Executing {sql_file} with weid {WEID}")
@@ -24,8 +35,12 @@ def execute_sql_with_weid(sql_file):
     with open(sql_file_path, 'r') as file:
         sql = file.read()
     
+    # remove comments
     sql = remove_comments(sql)
-    sql = sql.replace('[weid]', WEID)
+
+    # replace weid
+    sql = replace_weid(sql)
+    
     
     # Conecte-se ao banco de dados PostgreSQL
     connection = Connection()
@@ -36,7 +51,7 @@ def execute_sql_with_weid(sql_file):
         results = result.fetchall()
         
         with open(OUTPUT_FILE_NAME, 'a') as out_file:
-            # out_file.write(f"-----------{sql_file}\n")
+            out_file.write(f"-----------{sql_file}\n")
             for row in results:
                 out_file.write('\t'.join(map(str, row)) + '\n')
     

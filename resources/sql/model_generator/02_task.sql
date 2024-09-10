@@ -3,7 +3,7 @@
 SELECT 
 	se.se_id AS task_id,
 	1 AS task_type__0vm__1fx,
-	configuration_id AS config_id,
+	--configuration_id AS config_id,
 	1 AS cpu_time, --tempo base
 	(SELECT count(*) -- sem virgulas na lista de arquivos
 		FROM file fi

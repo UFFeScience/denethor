@@ -1,0 +1,72 @@
+-----------01_totals.sql
+<#tasks> <#config> <#data> <#devices> <#buckets> <#ranges> <max_running_time> <max_financial_cost>
+
+9	3	15	3	10	1	3	100000
+-----------02_task.sql
+<task_id> <task_type 0-VM 1-FX>  <vm_cpu_time> <n_input> [<id_input> .. ] < n_output  > [<id_output> .. ] 
+
+153	1	3.56	1	1	ORTHOMCL1	1	tree_ORTHOMCL1.nexus
+154	1	3.59	    1	1	ORTHOMCL256	1	tree_ORTHOMCL256.nexus
+155	1	2	    1	1	tree_ORTHOMCL1.nexus	3	tree_ORTHOMCL1_Inner1.nexus, tree_ORTHOMCL1_Inner2.nexus, tree_ORTHOMCL1_Inner3.nexus
+156	1	2	    1	1	tree_ORTHOMCL256.nexus	8	tree_ORTHOMCL256_Inner1.nexus, tree_ORTHOMCL256_Inner2.nexus, tree_ORTHOMCL256_Inner3.nexus, tree_ORTHOMCL256_Inner4.nexus, tree_ORTHOMCL256_Inner5.nexus, tree_ORTHOMCL256_Inner6.nexus, tree_ORTHOMCL256_Inner7.nexus, tree_ORTHOMCL256_Inner8.nexus
+157	1	3	    1	11	tree_ORTHOMCL1_Inner1.nexus, tree_ORTHOMCL1_Inner2.nexus, tree_ORTHOMCL1_Inner3.nexus, tree_ORTHOMCL256_Inner1.nexus, tree_ORTHOMCL256_Inner2.nexus, tree_ORTHOMCL256_Inner3.nexus, tree_ORTHOMCL256_Inner4.nexus, tree_ORTHOMCL256_Inner5.nexus, tree_ORTHOMCL256_Inner6.nexus, tree_ORTHOMCL256_Inner7.nexus, tree_ORTHOMCL256_Inner8.nexus	1	xyz1
+158	1	3	    1	11	tree_ORTHOMCL1_Inner1.nexus, tree_ORTHOMCL1_Inner2.nexus, tree_ORTHOMCL1_Inner3.nexus, tree_ORTHOMCL256_Inner1.nexus, tree_ORTHOMCL256_Inner2.nexus, tree_ORTHOMCL256_Inner3.nexus, tree_ORTHOMCL256_Inner4.nexus, tree_ORTHOMCL256_Inner5.nexus, tree_ORTHOMCL256_Inner6.nexus, tree_ORTHOMCL256_Inner7.nexus, tree_ORTHOMCL256_Inner8.nexus	1	xyz2
+159	1	1	    1	2	xyz1, xyz2	0 None
+
+
+-- CIRAR ID UNICO PARA O PAR ATIVIDADE X ENTRADA
+-- RETIRAR CONFIG ID DA 2A PARTE DO ARQUIVO DE MODELO
+-- ESCREVER O MAF EM ARQUIVO DA ATIV3 -> ATIV4
+-- CPU_TIME na parte 2, será o da VM de base. quando for fx, usar None
+-- pesquisar sobre aumento de poder de cpu com o aumento de memória da lambda
+-- questão do tempo de transferência de arquivos e de execução para ser usado no _cpu_slowdown
+
+-----------03_data.sql
+
+ORTHOMCL1	1662.0	1	1	denethor_bucket
+ORTHOMCL256	2666.0	1	1	denethor_bucket
+tree_ORTHOMCL1.nexus	339.0	0	0	denethor_bucket
+tree_ORTHOMCL256.nexus	640.0	0	0	denethor_bucket
+tree_ORTHOMCL1_Inner1.nexus	185.0	0	0	denethor_bucket
+tree_ORTHOMCL1_Inner2.nexus	185.0	0	0	denethor_bucket
+tree_ORTHOMCL1_Inner3.nexus	339.0	0	0	denethor_bucket
+tree_ORTHOMCL256_Inner1.nexus	187.0	0	0	denethor_bucket
+tree_ORTHOMCL256_Inner2.nexus	245.0	0	0	denethor_bucket
+tree_ORTHOMCL256_Inner3.nexus	301.0	0	0	denethor_bucket
+tree_ORTHOMCL256_Inner4.nexus	191.0	0	0	denethor_bucket
+tree_ORTHOMCL256_Inner5.nexus	421.0	0	0	denethor_bucket
+tree_ORTHOMCL256_Inner6.nexus	481.0	0	0	denethor_bucket
+tree_ORTHOMCL256_Inner7.nexus	539.0	0	0	denethor_bucket
+tree_ORTHOMCL256_Inner8.nexus	640.0	0	0	denethor_bucket
+-----------04_vms.sql
+<vm1_cpu_slowdown> <vm2_cpu_slowdown> ... <vm*_cpu_slowdown>                 
+1	0.8	0.75
+10000	10000	10000
+1	1.3	1.5
+-----------05_bandwidth_matrix.sql
+1	1000
+2	1000
+3	1000
+-----------06_time_matrix.sql
+153	1	3.45
+153 0   3.55 
+154	1	1324.28
+155	2	1861.3
+156	2	1858.81
+157	3	1912.86
+158	3	1364.29
+159	1	19.14
+-----------07_financial_cost.sql
+153	1	0.0000073976394
+154	1	0.00000295892218
+155	2	0.00000407771609
+156	2	0.00000407252858
+157	3	0.00000418513297
+158	3	0.00000304227652
+159	1	0.00000023987508
+-----------08_bucket_ranges.sql
+1	0	50	0.0405
+2	50	450	0.039
+3	450	999999999999	0.037
+--time:3333
+--cost:0.00000033

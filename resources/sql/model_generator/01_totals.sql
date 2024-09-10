@@ -1,16 +1,33 @@
---Totais
---<#tasks> <#config> <#data> <#devices> <#periods> <#buckets> <#ranges> <max_financial_cost>
+--Totals: <#tasks> <#config> <#data> <#devices> <#buckets> <#ranges> <max_running_time> <max_financial_cost>
 SELECT 
-	(SELECT count(*) AS _tasks FROM service_execution se WHERE se.workflow_execution_id = '[weid]'),
-	(SELECT count(*) AS _config FROM provider_configuration),
-	(SELECT count(*) AS _data FROM file), -- colcoar DISTINCT e filtrar pelo weid
-	(SELECT 3 AS _devices),
-	(SELECT 1 AS _periods),
-	(SELECT 1 AS _buckets),
-	(SELECT 2 AS _ranges),
-	(SELECT 100000 AS _max_financial_cost)
+	(SELECT count(*) AS _tasks
+		FROM service_execution se
+		WHERE se.workflow_execution_id in ('weid_1724184708846')
+	),
+	(SELECT count(distinct configuration_id) AS _configs
+		FROM service_execution se
+		WHERE se.workflow_execution_id in ('weid_1724184708846')
+	),
+	(SELECT count(distinct ef.file_id ) AS _files
+		FROM service_execution se 
+		JOIN execution_file ef ON ef.se_id = se.se_id 
+		WHERE se.workflow_execution_id in ('weid_1724184708846')
+	),
+	(SELECT 3 AS _devices_vms
+	),
+	(SELECT count(distinct fi.file_bucket ) AS _buckets
+		FROM service_execution se 
+		JOIN execution_file ef ON ef.se_id = se.se_id
+		JOIN  file fi ON fi.file_id = ef.file_id
+		WHERE se.workflow_execution_id in ('weid_1724184708846')
+	),
+	(SELECT 3 AS _bucket_ranges
+	),
+	(SELECT 1000 AS _max_running_time
+	),
+	(SELECT 999999 AS _max_financial_cost
+	);
 ;
-
 
 
 -- SELECT * FROM vw_service_execution_info_last;

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, TIMESTAMP
+from sqlalchemy import Column, Integer, String, Float, TIMESTAMP, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import DateTime
@@ -84,6 +84,9 @@ class WorkflowActivity(BaseModel):
 
     workflow = relationship('Workflow')
 
+    tasks = relationship("Task", back_populates="workflow_activity")
+
+
     def __str__(self):
         return (f"[{self.activity_id}]={self.activity_name}")
 
@@ -93,6 +96,7 @@ class ServiceExecution(BaseModel):
     se_id = Column(Integer, primary_key=True)
     activity_id = Column(Integer, ForeignKey('workflow_activity.activity_id'))
     provider_id = Column(Integer, ForeignKey('provider.provider_id'))
+    configuration_id = Column(Integer, ForeignKey('provider_configuration.configuration_id'))
     workflow_execution_id = Column(String)
     request_id = Column(String)
     log_stream_name = Column(String)
@@ -115,12 +119,14 @@ class ServiceExecution(BaseModel):
     execution_statistics = relationship('ExecutionStatistics')
     activity = relationship('WorkflowActivity')
     provider = relationship('Provider')
+    configuration = relationship('ProviderConfiguration')
 
     def __str__(self):
         return (
             f"Id: {self.se_id}\n"
             f"Activity ID: {self.activity_id}\n"
             f"Provider ID: {self.provider_id}\n"
+            f"Configuration ID: {self.configuration_id}\n"
             f"Workflow Execution ID: {self.workflow_execution_id}\n"
             f"Request ID: {self.request_id}\n"
             f"Log Stream Name: {self.log_stream_name}\n"
@@ -151,6 +157,8 @@ class File(BaseModel):
     file_size = Column(Float)
     file_hash_code = Column(String)
 
+    task_files = relationship("TaskFile", back_populates="file")    
+    
     def __str__(self):
         return (f"[{self.file_id}]={self.file_name} ({self.file_size} bytes)")
 
@@ -203,3 +211,26 @@ class ExecutionStatistics(BaseModel):
             return str(self.value_string)
         else:
             return ''
+        
+class Task(Base):
+    __tablename__ = 'task'
+    
+    task_id = Column(Integer, primary_key=True, autoincrement=True)
+    workflow_activity_id = Column(Integer, ForeignKey('workflow_activity.activity_id'), nullable=False)
+    
+    workflow_activity = relationship("WorkflowActivity", back_populates="tasks")
+    files = relationship("TaskFile", back_populates="task")
+    
+    __table_args__ = (UniqueConstraint('workflow_activity_id', name='uq_workflow_activity_id'),)
+
+class TaskFile(Base):
+    __tablename__ = 'task_file'
+    
+    tf_id = Column(Integer, primary_key=True, autoincrement=True)
+    task_id = Column(Integer, ForeignKey('task.task_id'), nullable=False)
+    file_id = Column(Integer, ForeignKey('file.file_id'), nullable=False)
+    
+    task = relationship("Task", back_populates="files")
+    file = relationship("File", back_populates="task_files")
+    
+    __table_args__ = (UniqueConstraint('task_id', 'file_id', name='uq_task_file'),)

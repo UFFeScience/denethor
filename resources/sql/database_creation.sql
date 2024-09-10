@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS task_file;
+DROP TABLE IF EXISTS task;
 DROP TABLE IF EXISTS execution_statistics;
 DROP TABLE IF EXISTS execution_file;
 DROP TABLE IF EXISTS service_execution;
@@ -105,13 +107,24 @@ CREATE TABLE execution_statistics (
 );
 
 
+-- Criação da tabela task
+CREATE TABLE task (
+    task_id SERIAL PRIMARY KEY,
+    workflow_activity_id INTEGER NOT NULL,
+    FOREIGN KEY (workflow_activity_id) REFERENCES workflow_activity(activity_id)
+);
 
-ALTER TABLE service_execution
-ADD COLUMN configuration_id INTEGER;
 
-ALTER TABLE service_execution
-ADD CONSTRAINT fk_configuration
-FOREIGN KEY (configuration_id) REFERENCES provider_configuration(configuration_id);
+
+-- Criação da tabela task_file para associar tasks a múltiplos arquivos de entrada
+CREATE TABLE task_file (
+    tf_id SERIAL PRIMARY KEY,
+    task_id INTEGER NOT NULL,
+    file_id INTEGER NOT NULL,
+    FOREIGN KEY (task_id) REFERENCES task(task_id),
+    FOREIGN KEY (file_id) REFERENCES file(file_id),
+    UNIQUE (task_id, file_id)
+);
 
 
 
