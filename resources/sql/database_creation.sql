@@ -1,14 +1,13 @@
-DROP TABLE IF EXISTS task_file;
-DROP TABLE IF EXISTS task;
-DROP TABLE IF EXISTS execution_statistics;
-DROP TABLE IF EXISTS execution_file;
-DROP TABLE IF EXISTS service_execution;
-DROP TABLE IF EXISTS workflow_activity;
-DROP TABLE IF EXISTS file;
-DROP TABLE IF EXISTS provider_configuration;
-DROP TABLE IF EXISTS provider;
-DROP TABLE IF EXISTS workflow;
-DROP TABLE IF EXISTS statistics;
+-- DROP TABLE IF EXISTS task;
+-- DROP TABLE IF EXISTS execution_statistics;
+-- DROP TABLE IF EXISTS execution_file;
+-- DROP TABLE IF EXISTS service_execution;
+-- DROP TABLE IF EXISTS workflow_activity;
+-- DROP TABLE IF EXISTS file;
+-- DROP TABLE IF EXISTS provider_configuration;
+-- DROP TABLE IF EXISTS provider;
+-- DROP TABLE IF EXISTS workflow;
+-- DROP TABLE IF EXISTS statistics;
 
 
 
@@ -110,21 +109,15 @@ CREATE TABLE execution_statistics (
 -- Criação da tabela task
 CREATE TABLE task (
     task_id SERIAL PRIMARY KEY,
-    workflow_activity_id INTEGER NOT NULL,
-    FOREIGN KEY (workflow_activity_id) REFERENCES workflow_activity(activity_id)
+    activity_id INTEGER NOT NULL,
+    input_files TEXT NOT NULL,
+    FOREIGN KEY (activity_id) REFERENCES workflow_activity(activity_id)
 );
 
+select * from task_file;
 
 
--- Criação da tabela task_file para associar tasks a múltiplos arquivos de entrada
-CREATE TABLE task_file (
-    tf_id SERIAL PRIMARY KEY,
-    task_id INTEGER NOT NULL,
-    file_id INTEGER NOT NULL,
-    FOREIGN KEY (task_id) REFERENCES task(task_id),
-    FOREIGN KEY (file_id) REFERENCES file(file_id),
-    UNIQUE (task_id, file_id)
-);
+
 
 
 

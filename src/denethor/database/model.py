@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, TIMESTAMP, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Float, TIMESTAMP, Text, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import DateTime
@@ -216,21 +216,9 @@ class Task(Base):
     __tablename__ = 'task'
     
     task_id = Column(Integer, primary_key=True, autoincrement=True)
-    workflow_activity_id = Column(Integer, ForeignKey('workflow_activity.activity_id'), nullable=False)
+    activity_id = Column(Integer, ForeignKey('workflow_activity.activity_id'), nullable=False)
     
-    workflow_activity = relationship("WorkflowActivity", back_populates="tasks")
-    files = relationship("TaskFile", back_populates="task")
+    activity = relationship("WorkflowActivity", back_populates="tasks")
+    input_files = Column(Text, nullable=False)
     
-    __table_args__ = (UniqueConstraint('workflow_activity_id', name='uq_workflow_activity_id'),)
-
-class TaskFile(Base):
-    __tablename__ = 'task_file'
-    
-    tf_id = Column(Integer, primary_key=True, autoincrement=True)
-    task_id = Column(Integer, ForeignKey('task.task_id'), nullable=False)
-    file_id = Column(Integer, ForeignKey('file.file_id'), nullable=False)
-    
-    task = relationship("Task", back_populates="files")
-    file = relationship("File", back_populates="task_files")
-    
-    __table_args__ = (UniqueConstraint('task_id', 'file_id', name='uq_task_file'),)
+    __table_args__ = (UniqueConstraint('activity_id', name='uq_workflow_activity_id'),)
