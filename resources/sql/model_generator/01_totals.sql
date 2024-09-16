@@ -1,6 +1,7 @@
---Totals: <#tasks> <#config> <#data> <#devices> <#buckets> <#ranges> <max_running_time> <max_financial_cost>
+--TOTALS
+--<#tasks> <#config> <#data> <#devices> <#buckets> <#ranges> <max_running_time> <max_financial_cost>
 SELECT 
-	(SELECT count(*) AS _tasks
+	(SELECT count(distinct se.task_id) AS _tasks
 		FROM service_execution se
 		WHERE se.workflow_execution_id in ('weid_1724184708846')
 	),
@@ -28,8 +29,3 @@ SELECT
 	(SELECT 999999 AS _max_financial_cost
 	);
 ;
-
-
--- SELECT * FROM vw_service_execution_info_last;
--- SELECT * FROM provider_configuration;
--- SELECT * FROM workflow_activity;

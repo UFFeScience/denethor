@@ -83,12 +83,28 @@ class WorkflowActivity(BaseModel):
     workflow_id = Column(Integer, ForeignKey('workflow.workflow_id'))
 
     workflow = relationship('Workflow')
-
-    tasks = relationship("Task", back_populates="workflow_activity")
-
+    tasks = relationship("Task", back_populates="activity")
 
     def __str__(self):
         return (f"[{self.activity_id}]={self.activity_name}")
+
+
+
+class Task(Base):
+    __tablename__ = 'task'
+    
+    task_id = Column(Integer, primary_key=True, autoincrement=True)
+    activity_id = Column(Integer, ForeignKey('workflow_activity.activity_id'), nullable=False)
+    task_type = Column(Integer, nullable=False)
+    input_count = Column(Text, nullable=False)
+    input_list = Column(Text, nullable=False)
+    output_count = Column(Text, nullable=False)
+    output_list = Column(Text, nullable=False)
+
+    # Define relationships if needed
+    activity = relationship("WorkflowActivity", back_populates="tasks")
+
+
 
 class ServiceExecution(BaseModel):
     __tablename__ = 'service_execution'
@@ -212,13 +228,3 @@ class ExecutionStatistics(BaseModel):
         else:
             return ''
         
-class Task(Base):
-    __tablename__ = 'task'
-    
-    task_id = Column(Integer, primary_key=True, autoincrement=True)
-    activity_id = Column(Integer, ForeignKey('workflow_activity.activity_id'), nullable=False)
-    
-    activity = relationship("WorkflowActivity", back_populates="tasks")
-    input_files = Column(Text, nullable=False)
-    
-    __table_args__ = (UniqueConstraint('activity_id', name='uq_workflow_activity_id'),)

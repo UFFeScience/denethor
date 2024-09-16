@@ -1,7 +1,5 @@
 -- BUCKET RANGE LIST
 -- <range_id> <size1> <size2> <cost>
--- [range1 0 100 0.15 ]
--- [range2 100 500 0.138]
 SELECT 1 AS range_id, 0 AS size1_tb, 50*1024 AS size2_tb, 0.0405 AS cost_per_gb
 UNION ALL
 SELECT 2 AS range_id, 50*1024 AS size1_tb, 450*1024 AS size2_tb, 0.039 AS cost_per_gb

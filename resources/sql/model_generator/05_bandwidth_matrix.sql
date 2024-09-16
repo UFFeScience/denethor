@@ -1,4 +1,4 @@
---BANDWIDTH MATRIX (estático)
+--BANDWIDTH MATRIX
 --<vm_id> <bandwidth>
 SELECT 1 AS vm_id, 1000 AS bandwidth
 UNION ALL

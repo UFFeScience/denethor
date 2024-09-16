@@ -1,0 +1,207 @@
+--TOTALS
+--<#tasks> <#config> <#data> <#devices> <#buckets> <#ranges> <max_running_time> <max_financial_cost>
+22	3	86	3	1	3	1000	999999
+
+--TASKS
+--<task_id> <task_type 0-VM 1-FX> <cpu_time> <n_input> [<id_input> ...] <n_output> [<id_output> ...]
+1	1	None	1	[2]	1	[3]
+2	1	None	1	[4]	1	[5]
+3	1	None	1	[6]	1	[7]
+4	1	None	1	[8]	1	[9]
+5	1	None	1	[10]	1	[11]
+6	1	None	1	[12]	1	[13]
+7	1	None	1	[14]	1	[15]
+8	1	None	1	[16]	1	[17]
+9	1	None	1	[18]	1	[19]
+10	1	None	1	[20]	1	[21]
+51	1	None	1	[3]	3	[102,103,104]
+52	1	None	1	[5]	8	[105,106,107,108,109,110,111,112]
+53	1	None	1	[7]	8	[113,114,115,116,117,118,119,120]
+54	1	None	1	[9]	7	[121,122,123,124,125,126,127]
+55	1	None	1	[11]	7	[128,129,130,131,132,133,134]
+56	1	None	1	[13]	7	[135,136,137,138,139,140,141]
+57	1	None	1	[15]	7	[142,143,144,145,146,147,148]
+58	1	None	1	[17]	6	[149,150,151,152,153,154]
+59	1	None	1	[19]	7	[155,156,157,158,159,160,161]
+60	1	None	1	[21]	6	[162,163,164,165,166,167]
+103	1	None	66	[102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167]	0	[None]
+105	1	None	0	[None]	0	[None]
+
+--DATA
+--<data_id> <size> <is_static 0-dinamic 1-static> <n_source_devices - 0 se for dinamico> [<device_id> ... ]
+2	1662	1	1	[denethor_bucket]
+4	2666	1	1	[denethor_bucket]
+6	2666	1	1	[denethor_bucket]
+8	3358	1	1	[denethor_bucket]
+10	3213	1	1	[denethor_bucket]
+12	3265	1	1	[denethor_bucket]
+14	3224	1	1	[denethor_bucket]
+16	2771	1	1	[denethor_bucket]
+18	2627	1	1	[denethor_bucket]
+20	2439	1	1	[denethor_bucket]
+3	339	0	0	[denethor_bucket]
+5	640	0	0	[denethor_bucket]
+7	640	0	0	[denethor_bucket]
+9	595	0	0	[denethor_bucket]
+11	581	0	0	[denethor_bucket]
+13	567	0	0	[denethor_bucket]
+15	575	0	0	[denethor_bucket]
+17	511	0	0	[denethor_bucket]
+19	563	0	0	[denethor_bucket]
+21	521	0	0	[denethor_bucket]
+102	185	0	0	[denethor_bucket]
+103	185	0	0	[denethor_bucket]
+104	339	0	0	[denethor_bucket]
+105	187	0	0	[denethor_bucket]
+106	245	0	0	[denethor_bucket]
+107	301	0	0	[denethor_bucket]
+108	191	0	0	[denethor_bucket]
+109	421	0	0	[denethor_bucket]
+110	481	0	0	[denethor_bucket]
+111	539	0	0	[denethor_bucket]
+112	640	0	0	[denethor_bucket]
+113	187	0	0	[denethor_bucket]
+114	245	0	0	[denethor_bucket]
+115	301	0	0	[denethor_bucket]
+116	191	0	0	[denethor_bucket]
+117	421	0	0	[denethor_bucket]
+118	481	0	0	[denethor_bucket]
+119	539	0	0	[denethor_bucket]
+120	640	0	0	[denethor_bucket]
+121	187	0	0	[denethor_bucket]
+122	245	0	0	[denethor_bucket]
+123	309	0	0	[denethor_bucket]
+124	199	0	0	[denethor_bucket]
+125	367	0	0	[denethor_bucket]
+126	187	0	0	[denethor_bucket]
+127	595	0	0	[denethor_bucket]
+128	187	0	0	[denethor_bucket]
+129	191	0	0	[denethor_bucket]
+130	243	0	0	[denethor_bucket]
+131	363	0	0	[denethor_bucket]
+132	421	0	0	[denethor_bucket]
+133	191	0	0	[denethor_bucket]
+134	581	0	0	[denethor_bucket]
+135	187	0	0	[denethor_bucket]
+136	187	0	0	[denethor_bucket]
+137	183	0	0	[denethor_bucket]
+138	239	0	0	[denethor_bucket]
+139	355	0	0	[denethor_bucket]
+140	243	0	0	[denethor_bucket]
+141	567	0	0	[denethor_bucket]
+142	187	0	0	[denethor_bucket]
+143	243	0	0	[denethor_bucket]
+144	299	0	0	[denethor_bucket]
+145	187	0	0	[denethor_bucket]
+146	183	0	0	[denethor_bucket]
+147	415	0	0	[denethor_bucket]
+148	575	0	0	[denethor_bucket]
+149	187	0	0	[denethor_bucket]
+150	183	0	0	[denethor_bucket]
+151	299	0	0	[denethor_bucket]
+152	357	0	0	[denethor_bucket]
+153	185	0	0	[denethor_bucket]
+154	511	0	0	[denethor_bucket]
+155	183	0	0	[denethor_bucket]
+156	239	0	0	[denethor_bucket]
+157	183	0	0	[denethor_bucket]
+158	297	0	0	[denethor_bucket]
+159	353	0	0	[denethor_bucket]
+160	465	0	0	[denethor_bucket]
+161	563	0	0	[denethor_bucket]
+162	185	0	0	[denethor_bucket]
+163	249	0	0	[denethor_bucket]
+164	187	0	0	[denethor_bucket]
+165	305	0	0	[denethor_bucket]
+166	187	0	0	[denethor_bucket]
+167	521	0	0	[denethor_bucket]
+
+--VMS
+--<vm1_cpu_slowdown> <vm2_cpu_slowdown> ... <vm*_cpu_slowdown>
+--<vm1_storage> <vm2 _storage> ... <vm* _storage>
+--<vm1_cost> <vm2_cost> ... <vm*_cost>
+1	0.8	0.75
+10000	10000	10000
+1	1.3	1.5
+
+--BANDWIDTH MATRIX
+--<vm_id> <bandwidth>
+1	1000
+2	1000
+3	1000
+
+--TIME FUNCTION MATRIX (task/config)
+--<task_id> <config_id> <task_time>...
+1	1	3.49689
+2	1	1.30809
+3	1	1.3243399999999999
+4	1	1.44603
+5	1	1.5435999999999999
+6	1	1.72873
+7	1	1.5163900000000001
+8	1	1.24898
+9	1	1.63047
+10	1	1.0625799999999999
+51	2	1.89412
+52	2	1.8170899999999999
+53	2	2.12897
+54	2	1.62209
+55	2	1.63304
+56	2	1.5986
+57	2	1.91251
+58	2	1.47981
+59	2	1.6358800000000002
+60	2	1.43104
+103	3	9.99963
+103	3	9.4558
+103	3	9.91403
+103	3	9.507209999999999
+103	3	9.37821
+103	3	9.206959999999999
+103	3	9.28547
+103	3	8.868920000000001
+103	3	9.149420000000001
+103	3	8.921190000000001
+105	1	0.00933
+
+--FINANCIAL COST FUNCTION MATRIX (task/config)
+--<task_id> <config_id>  <cost>
+-- cost = duration (s) x memory (gb) x computation cost x fixed cost
+1	1	0.00000748520207
+2	1	0.00000292519295
+3	1	0.00000295904718
+4	1	0.00000321256853
+5	1	0.00000341583976
+6	1	0.00000380152804
+7	1	0.00000335915215
+8	1	0.00000280204687
+9	1	0.00000359681929
+10	1	0.00000241371276
+51	2	0.00000809218245
+52	2	0.00000777122348
+53	2	0.00000907072607
+54	2	0.00000695872185
+55	2	0.00000700434694
+56	2	0.00000686084665
+57	2	0.0000081688076
+58	2	0.00000636588733
+59	2	0.0000070161803
+60	2	0.00000616267859
+103	3	0.00008353041666
+103	3	0.00007899849093
+103	3	0.0000828170819
+103	3	0.00007942690845
+103	3	0.0000783519063
+103	3	0.00007692482012
+103	3	0.00007757907142
+103	3	0.00007410781448
+103	3	0.00007644531916
+103	3	0.00007454339869
+105	1	0.00000021943754
+
+-- BUCKET RANGE LIST
+-- <range_id> <size1> <size2> <cost>
+1	0	51200	0.0405
+2	51200	460800	0.039
+3	460800	99999999999999	0.037
+

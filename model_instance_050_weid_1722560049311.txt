@@ -1,0 +1,801 @@
+--TOTALS
+--<#tasks> <#config> <#data> <#devices> <#buckets> <#ranges> <max_running_time> <max_financial_cost>
+102	3	360	3	1	3	1000	999999
+
+--TASKS
+--<task_id> <task_type 0-VM 1-FX> <cpu_time> <n_input> [<id_input> ...] <n_output> [<id_output> ...]
+1	1	None	1	[2]	1	[3]
+2	1	None	1	[4]	1	[5]
+3	1	None	1	[6]	1	[7]
+4	1	None	1	[8]	1	[9]
+5	1	None	1	[10]	1	[11]
+6	1	None	1	[12]	1	[13]
+7	1	None	1	[14]	1	[15]
+8	1	None	1	[16]	1	[17]
+9	1	None	1	[18]	1	[19]
+10	1	None	1	[20]	1	[21]
+11	1	None	1	[22]	1	[23]
+12	1	None	1	[24]	1	[25]
+13	1	None	1	[26]	1	[27]
+14	1	None	1	[28]	1	[29]
+15	1	None	1	[30]	1	[31]
+16	1	None	1	[32]	1	[33]
+17	1	None	1	[34]	1	[35]
+18	1	None	1	[36]	1	[37]
+19	1	None	1	[38]	1	[39]
+20	1	None	1	[40]	1	[41]
+21	1	None	1	[42]	1	[43]
+22	1	None	1	[44]	1	[45]
+23	1	None	1	[46]	1	[47]
+24	1	None	1	[48]	1	[49]
+25	1	None	1	[50]	1	[51]
+26	1	None	1	[52]	1	[53]
+27	1	None	1	[54]	1	[55]
+28	1	None	1	[56]	1	[57]
+29	1	None	1	[58]	1	[59]
+30	1	None	1	[60]	1	[61]
+31	1	None	1	[62]	1	[63]
+32	1	None	1	[64]	1	[65]
+33	1	None	1	[66]	1	[67]
+34	1	None	1	[68]	1	[69]
+35	1	None	1	[70]	1	[71]
+36	1	None	1	[72]	1	[73]
+37	1	None	1	[74]	1	[75]
+38	1	None	1	[76]	1	[77]
+39	1	None	1	[78]	1	[79]
+40	1	None	1	[80]	1	[81]
+41	1	None	1	[82]	1	[83]
+42	1	None	1	[84]	1	[85]
+43	1	None	1	[86]	1	[87]
+44	1	None	1	[88]	1	[89]
+45	1	None	1	[90]	1	[91]
+46	1	None	1	[92]	1	[93]
+47	1	None	1	[94]	1	[95]
+48	1	None	1	[96]	1	[97]
+49	1	None	1	[98]	1	[99]
+50	1	None	1	[100]	1	[101]
+51	1	None	1	[3]	3	[102,103,104]
+52	1	None	1	[5]	8	[105,106,107,108,109,110,111,112]
+53	1	None	1	[7]	8	[113,114,115,116,117,118,119,120]
+54	1	None	1	[9]	7	[121,122,123,124,125,126,127]
+55	1	None	1	[11]	7	[128,129,130,131,132,133,134]
+56	1	None	1	[13]	7	[135,136,137,138,139,140,141]
+57	1	None	1	[15]	7	[142,143,144,145,146,147,148]
+58	1	None	1	[17]	6	[149,150,151,152,153,154]
+59	1	None	1	[19]	7	[155,156,157,158,159,160,161]
+60	1	None	1	[21]	6	[162,163,164,165,166,167]
+61	1	None	1	[23]	6	[168,169,170,171,172,173]
+62	1	None	1	[25]	6	[174,175,176,177,178,179]
+63	1	None	1	[27]	5	[180,181,182,183,184]
+64	1	None	1	[29]	6	[185,186,187,188,189,190]
+65	1	None	1	[31]	5	[191,192,193,194,195]
+66	1	None	1	[33]	5	[196,197,198,199,200]
+67	1	None	1	[35]	5	[201,202,203,204,205]
+68	1	None	1	[37]	5	[206,207,208,209,210]
+69	1	None	1	[39]	5	[211,212,213,214,215]
+70	1	None	1	[41]	5	[216,217,218,219,220]
+71	1	None	1	[43]	5	[221,222,223,224,225]
+72	1	None	1	[45]	5	[226,227,228,229,230]
+73	1	None	1	[47]	5	[231,232,233,234,235]
+74	1	None	1	[49]	5	[236,237,238,239,240]
+75	1	None	1	[51]	5	[241,242,243,244,245]
+76	1	None	1	[53]	5	[246,247,248,249,250]
+77	1	None	1	[55]	5	[251,252,253,254,255]
+78	1	None	1	[57]	5	[256,257,258,259,260]
+79	1	None	1	[59]	5	[261,262,263,264,265]
+80	1	None	1	[61]	5	[266,267,268,269,270]
+81	1	None	1	[63]	5	[271,272,273,274,275]
+82	1	None	1	[65]	5	[276,277,278,279,280]
+83	1	None	1	[67]	5	[281,282,283,284,285]
+84	1	None	1	[69]	5	[286,287,288,289,290]
+85	1	None	1	[71]	5	[291,292,293,294,295]
+86	1	None	1	[73]	5	[296,297,298,299,300]
+87	1	None	1	[75]	5	[301,302,303,304,305]
+88	1	None	1	[77]	5	[306,307,308,309,310]
+89	1	None	1	[79]	5	[311,312,313,314,315]
+90	1	None	1	[81]	5	[316,317,318,319,320]
+91	1	None	1	[83]	5	[321,322,323,324,325]
+92	1	None	1	[85]	4	[326,327,328,329]
+93	1	None	1	[87]	4	[330,331,332,333]
+94	1	None	1	[89]	4	[334,335,336,337]
+95	1	None	1	[91]	4	[338,339,340,341]
+96	1	None	1	[93]	4	[342,343,344,345]
+97	1	None	1	[95]	4	[346,347,348,349]
+98	1	None	1	[97]	4	[350,351,352,353]
+99	1	None	1	[99]	4	[354,355,356,357]
+100	1	None	1	[101]	4	[358,359,360,361]
+104	1	None	260	[102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361]	0	[None]
+105	1	None	0	[None]	0	[None]
+
+--DATA
+--<data_id> <size> <is_static 0-dinamic 1-static> <n_source_devices - 0 se for dinamico> [<device_id> ... ]
+2	1662	1	1	[denethor_bucket]
+4	2666	1	1	[denethor_bucket]
+6	2666	1	1	[denethor_bucket]
+8	3358	1	1	[denethor_bucket]
+10	3213	1	1	[denethor_bucket]
+12	3265	1	1	[denethor_bucket]
+14	3224	1	1	[denethor_bucket]
+16	2771	1	1	[denethor_bucket]
+18	2627	1	1	[denethor_bucket]
+20	2439	1	1	[denethor_bucket]
+22	3233	1	1	[denethor_bucket]
+24	1865	1	1	[denethor_bucket]
+26	2258	1	1	[denethor_bucket]
+28	4105	1	1	[denethor_bucket]
+30	4715	1	1	[denethor_bucket]
+32	4851	1	1	[denethor_bucket]
+34	4496	1	1	[denethor_bucket]
+36	4047	1	1	[denethor_bucket]
+38	4012	1	1	[denethor_bucket]
+40	2659	1	1	[denethor_bucket]
+42	3952	1	1	[denethor_bucket]
+44	4336	1	1	[denethor_bucket]
+46	4743	1	1	[denethor_bucket]
+48	4502	1	1	[denethor_bucket]
+50	4561	1	1	[denethor_bucket]
+52	4110	1	1	[denethor_bucket]
+54	3605	1	1	[denethor_bucket]
+56	4071	1	1	[denethor_bucket]
+58	3406	1	1	[denethor_bucket]
+60	3356	1	1	[denethor_bucket]
+62	4347	1	1	[denethor_bucket]
+64	4424	1	1	[denethor_bucket]
+66	4072	1	1	[denethor_bucket]
+68	3872	1	1	[denethor_bucket]
+70	4045	1	1	[denethor_bucket]
+72	2329	1	1	[denethor_bucket]
+74	2621	1	1	[denethor_bucket]
+76	3551	1	1	[denethor_bucket]
+78	3356	1	1	[denethor_bucket]
+80	3481	1	1	[denethor_bucket]
+82	3949	1	1	[denethor_bucket]
+84	4302	1	1	[denethor_bucket]
+86	3332	1	1	[denethor_bucket]
+88	2270	1	1	[denethor_bucket]
+90	3549	1	1	[denethor_bucket]
+92	4494	1	1	[denethor_bucket]
+94	5130	1	1	[denethor_bucket]
+96	5130	1	1	[denethor_bucket]
+98	3040	1	1	[denethor_bucket]
+100	4877	1	1	[denethor_bucket]
+3	339	0	0	[denethor_bucket]
+5	640	0	0	[denethor_bucket]
+7	640	0	0	[denethor_bucket]
+9	595	0	0	[denethor_bucket]
+11	581	0	0	[denethor_bucket]
+13	567	0	0	[denethor_bucket]
+15	575	0	0	[denethor_bucket]
+17	511	0	0	[denethor_bucket]
+19	563	0	0	[denethor_bucket]
+21	521	0	0	[denethor_bucket]
+23	527	0	0	[denethor_bucket]
+25	514	0	0	[denethor_bucket]
+27	453	0	0	[denethor_bucket]
+29	515	0	0	[denethor_bucket]
+31	465	0	0	[denethor_bucket]
+33	465	0	0	[denethor_bucket]
+35	463	0	0	[denethor_bucket]
+37	465	0	0	[denethor_bucket]
+39	455	0	0	[denethor_bucket]
+41	457	0	0	[denethor_bucket]
+43	461	0	0	[denethor_bucket]
+45	461	0	0	[denethor_bucket]
+47	463	0	0	[denethor_bucket]
+49	469	0	0	[denethor_bucket]
+51	455	0	0	[denethor_bucket]
+53	463	0	0	[denethor_bucket]
+55	456	0	0	[denethor_bucket]
+57	455	0	0	[denethor_bucket]
+59	463	0	0	[denethor_bucket]
+61	455	0	0	[denethor_bucket]
+63	463	0	0	[denethor_bucket]
+65	469	0	0	[denethor_bucket]
+67	463	0	0	[denethor_bucket]
+69	451	0	0	[denethor_bucket]
+71	461	0	0	[denethor_bucket]
+73	461	0	0	[denethor_bucket]
+75	471	0	0	[denethor_bucket]
+77	469	0	0	[denethor_bucket]
+79	461	0	0	[denethor_bucket]
+81	459	0	0	[denethor_bucket]
+83	461	0	0	[denethor_bucket]
+85	415	0	0	[denethor_bucket]
+87	415	0	0	[denethor_bucket]
+89	415	0	0	[denethor_bucket]
+91	415	0	0	[denethor_bucket]
+93	407	0	0	[denethor_bucket]
+95	407	0	0	[denethor_bucket]
+97	407	0	0	[denethor_bucket]
+99	405	0	0	[denethor_bucket]
+101	405	0	0	[denethor_bucket]
+102	185	0	0	[denethor_bucket]
+103	185	0	0	[denethor_bucket]
+104	339	0	0	[denethor_bucket]
+105	187	0	0	[denethor_bucket]
+106	245	0	0	[denethor_bucket]
+107	301	0	0	[denethor_bucket]
+108	191	0	0	[denethor_bucket]
+109	421	0	0	[denethor_bucket]
+110	481	0	0	[denethor_bucket]
+111	539	0	0	[denethor_bucket]
+112	640	0	0	[denethor_bucket]
+113	187	0	0	[denethor_bucket]
+114	245	0	0	[denethor_bucket]
+115	301	0	0	[denethor_bucket]
+116	191	0	0	[denethor_bucket]
+117	421	0	0	[denethor_bucket]
+118	481	0	0	[denethor_bucket]
+119	539	0	0	[denethor_bucket]
+120	640	0	0	[denethor_bucket]
+121	187	0	0	[denethor_bucket]
+122	245	0	0	[denethor_bucket]
+123	309	0	0	[denethor_bucket]
+124	199	0	0	[denethor_bucket]
+125	367	0	0	[denethor_bucket]
+126	187	0	0	[denethor_bucket]
+127	595	0	0	[denethor_bucket]
+128	187	0	0	[denethor_bucket]
+129	191	0	0	[denethor_bucket]
+130	243	0	0	[denethor_bucket]
+131	363	0	0	[denethor_bucket]
+132	421	0	0	[denethor_bucket]
+133	191	0	0	[denethor_bucket]
+134	581	0	0	[denethor_bucket]
+135	187	0	0	[denethor_bucket]
+136	187	0	0	[denethor_bucket]
+137	183	0	0	[denethor_bucket]
+138	239	0	0	[denethor_bucket]
+139	355	0	0	[denethor_bucket]
+140	243	0	0	[denethor_bucket]
+141	567	0	0	[denethor_bucket]
+142	187	0	0	[denethor_bucket]
+143	243	0	0	[denethor_bucket]
+144	299	0	0	[denethor_bucket]
+145	187	0	0	[denethor_bucket]
+146	183	0	0	[denethor_bucket]
+147	415	0	0	[denethor_bucket]
+148	575	0	0	[denethor_bucket]
+149	187	0	0	[denethor_bucket]
+150	183	0	0	[denethor_bucket]
+151	299	0	0	[denethor_bucket]
+152	357	0	0	[denethor_bucket]
+153	185	0	0	[denethor_bucket]
+154	511	0	0	[denethor_bucket]
+155	183	0	0	[denethor_bucket]
+156	239	0	0	[denethor_bucket]
+157	183	0	0	[denethor_bucket]
+158	297	0	0	[denethor_bucket]
+159	353	0	0	[denethor_bucket]
+160	465	0	0	[denethor_bucket]
+161	563	0	0	[denethor_bucket]
+162	185	0	0	[denethor_bucket]
+163	249	0	0	[denethor_bucket]
+164	187	0	0	[denethor_bucket]
+165	305	0	0	[denethor_bucket]
+166	187	0	0	[denethor_bucket]
+167	521	0	0	[denethor_bucket]
+168	185	0	0	[denethor_bucket]
+169	199	0	0	[denethor_bucket]
+170	185	0	0	[denethor_bucket]
+171	187	0	0	[denethor_bucket]
+172	313	0	0	[denethor_bucket]
+173	527	0	0	[denethor_bucket]
+174	185	0	0	[denethor_bucket]
+175	183	0	0	[denethor_bucket]
+176	297	0	0	[denethor_bucket]
+177	355	0	0	[denethor_bucket]
+178	413	0	0	[denethor_bucket]
+179	513	0	0	[denethor_bucket]
+180	185	0	0	[denethor_bucket]
+181	243	0	0	[denethor_bucket]
+182	299	0	0	[denethor_bucket]
+183	185	0	0	[denethor_bucket]
+184	453	0	0	[denethor_bucket]
+185	185	0	0	[denethor_bucket]
+186	249	0	0	[denethor_bucket]
+187	305	0	0	[denethor_bucket]
+188	363	0	0	[denethor_bucket]
+189	183	0	0	[denethor_bucket]
+190	515	0	0	[denethor_bucket]
+191	187	0	0	[denethor_bucket]
+192	243	0	0	[denethor_bucket]
+193	187	0	0	[denethor_bucket]
+194	307	0	0	[denethor_bucket]
+195	465	0	0	[denethor_bucket]
+196	187	0	0	[denethor_bucket]
+197	243	0	0	[denethor_bucket]
+198	187	0	0	[denethor_bucket]
+199	245	0	0	[denethor_bucket]
+200	465	0	0	[denethor_bucket]
+201	185	0	0	[denethor_bucket]
+202	249	0	0	[denethor_bucket]
+203	187	0	0	[denethor_bucket]
+204	185	0	0	[denethor_bucket]
+205	463	0	0	[denethor_bucket]
+206	193	0	0	[denethor_bucket]
+207	187	0	0	[denethor_bucket]
+208	187	0	0	[denethor_bucket]
+209	303	0	0	[denethor_bucket]
+210	465	0	0	[denethor_bucket]
+211	185	0	0	[denethor_bucket]
+212	187	0	0	[denethor_bucket]
+213	185	0	0	[denethor_bucket]
+214	299	0	0	[denethor_bucket]
+215	455	0	0	[denethor_bucket]
+216	187	0	0	[denethor_bucket]
+217	187	0	0	[denethor_bucket]
+218	243	0	0	[denethor_bucket]
+219	243	0	0	[denethor_bucket]
+220	457	0	0	[denethor_bucket]
+221	185	0	0	[denethor_bucket]
+222	187	0	0	[denethor_bucket]
+223	183	0	0	[denethor_bucket]
+224	249	0	0	[denethor_bucket]
+225	461	0	0	[denethor_bucket]
+226	185	0	0	[denethor_bucket]
+227	191	0	0	[denethor_bucket]
+228	305	0	0	[denethor_bucket]
+229	187	0	0	[denethor_bucket]
+230	461	0	0	[denethor_bucket]
+231	187	0	0	[denethor_bucket]
+232	185	0	0	[denethor_bucket]
+233	245	0	0	[denethor_bucket]
+234	249	0	0	[denethor_bucket]
+235	463	0	0	[denethor_bucket]
+236	187	0	0	[denethor_bucket]
+237	243	0	0	[denethor_bucket]
+238	307	0	0	[denethor_bucket]
+239	193	0	0	[denethor_bucket]
+240	469	0	0	[denethor_bucket]
+241	185	0	0	[denethor_bucket]
+242	187	0	0	[denethor_bucket]
+243	185	0	0	[denethor_bucket]
+244	241	0	0	[denethor_bucket]
+245	455	0	0	[denethor_bucket]
+246	185	0	0	[denethor_bucket]
+247	185	0	0	[denethor_bucket]
+248	249	0	0	[denethor_bucket]
+249	187	0	0	[denethor_bucket]
+250	463	0	0	[denethor_bucket]
+251	185	0	0	[denethor_bucket]
+252	241	0	0	[denethor_bucket]
+253	297	0	0	[denethor_bucket]
+254	187	0	0	[denethor_bucket]
+255	455	0	0	[denethor_bucket]
+256	187	0	0	[denethor_bucket]
+257	187	0	0	[denethor_bucket]
+258	243	0	0	[denethor_bucket]
+259	243	0	0	[denethor_bucket]
+260	455	0	0	[denethor_bucket]
+261	187	0	0	[denethor_bucket]
+262	245	0	0	[denethor_bucket]
+263	309	0	0	[denethor_bucket]
+264	365	0	0	[denethor_bucket]
+265	463	0	0	[denethor_bucket]
+266	185	0	0	[denethor_bucket]
+267	243	0	0	[denethor_bucket]
+268	299	0	0	[denethor_bucket]
+269	185	0	0	[denethor_bucket]
+270	455	0	0	[denethor_bucket]
+271	185	0	0	[denethor_bucket]
+272	185	0	0	[denethor_bucket]
+273	187	0	0	[denethor_bucket]
+274	301	0	0	[denethor_bucket]
+275	463	0	0	[denethor_bucket]
+276	193	0	0	[denethor_bucket]
+277	183	0	0	[denethor_bucket]
+278	187	0	0	[denethor_bucket]
+279	299	0	0	[denethor_bucket]
+280	469	0	0	[denethor_bucket]
+281	193	0	0	[denethor_bucket]
+282	187	0	0	[denethor_bucket]
+283	185	0	0	[denethor_bucket]
+284	301	0	0	[denethor_bucket]
+285	463	0	0	[denethor_bucket]
+286	183	0	0	[denethor_bucket]
+287	241	0	0	[denethor_bucket]
+288	185	0	0	[denethor_bucket]
+289	241	0	0	[denethor_bucket]
+290	451	0	0	[denethor_bucket]
+291	183	0	0	[denethor_bucket]
+292	185	0	0	[denethor_bucket]
+293	241	0	0	[denethor_bucket]
+294	243	0	0	[denethor_bucket]
+295	461	0	0	[denethor_bucket]
+296	187	0	0	[denethor_bucket]
+297	243	0	0	[denethor_bucket]
+298	307	0	0	[denethor_bucket]
+299	183	0	0	[denethor_bucket]
+300	461	0	0	[denethor_bucket]
+301	187	0	0	[denethor_bucket]
+302	243	0	0	[denethor_bucket]
+303	199	0	0	[denethor_bucket]
+304	371	0	0	[denethor_bucket]
+305	471	0	0	[denethor_bucket]
+306	187	0	0	[denethor_bucket]
+307	193	0	0	[denethor_bucket]
+308	183	0	0	[denethor_bucket]
+309	257	0	0	[denethor_bucket]
+310	469	0	0	[denethor_bucket]
+311	185	0	0	[denethor_bucket]
+312	249	0	0	[denethor_bucket]
+313	305	0	0	[denethor_bucket]
+314	361	0	0	[denethor_bucket]
+315	461	0	0	[denethor_bucket]
+316	185	0	0	[denethor_bucket]
+317	183	0	0	[denethor_bucket]
+318	185	0	0	[denethor_bucket]
+319	297	0	0	[denethor_bucket]
+320	459	0	0	[denethor_bucket]
+321	183	0	0	[denethor_bucket]
+322	241	0	0	[denethor_bucket]
+323	305	0	0	[denethor_bucket]
+324	187	0	0	[denethor_bucket]
+325	461	0	0	[denethor_bucket]
+326	193	0	0	[denethor_bucket]
+327	187	0	0	[denethor_bucket]
+328	245	0	0	[denethor_bucket]
+329	415	0	0	[denethor_bucket]
+330	187	0	0	[denethor_bucket]
+331	193	0	0	[denethor_bucket]
+332	193	0	0	[denethor_bucket]
+333	415	0	0	[denethor_bucket]
+334	187	0	0	[denethor_bucket]
+335	251	0	0	[denethor_bucket]
+336	187	0	0	[denethor_bucket]
+337	415	0	0	[denethor_bucket]
+338	193	0	0	[denethor_bucket]
+339	187	0	0	[denethor_bucket]
+340	257	0	0	[denethor_bucket]
+341	415	0	0	[denethor_bucket]
+342	185	0	0	[denethor_bucket]
+343	187	0	0	[denethor_bucket]
+344	245	0	0	[denethor_bucket]
+345	407	0	0	[denethor_bucket]
+346	187	0	0	[denethor_bucket]
+347	243	0	0	[denethor_bucket]
+348	187	0	0	[denethor_bucket]
+349	407	0	0	[denethor_bucket]
+350	185	0	0	[denethor_bucket]
+351	187	0	0	[denethor_bucket]
+352	245	0	0	[denethor_bucket]
+353	407	0	0	[denethor_bucket]
+354	185	0	0	[denethor_bucket]
+355	187	0	0	[denethor_bucket]
+356	243	0	0	[denethor_bucket]
+357	405	0	0	[denethor_bucket]
+358	185	0	0	[denethor_bucket]
+359	187	0	0	[denethor_bucket]
+360	243	0	0	[denethor_bucket]
+361	405	0	0	[denethor_bucket]
+
+--VMS
+--<vm1_cpu_slowdown> <vm2_cpu_slowdown> ... <vm*_cpu_slowdown>
+--<vm1_storage> <vm2 _storage> ... <vm* _storage>
+--<vm1_cost> <vm2_cost> ... <vm*_cost>
+1	0.8	0.75
+10000	10000	10000
+1	1.3	1.5
+
+--BANDWIDTH MATRIX
+--<vm_id> <bandwidth>
+1	1000
+2	1000
+3	1000
+
+--TIME FUNCTION MATRIX (task/config)
+--<task_id> <config_id> <task_time>...
+1	1	2.75223
+2	1	0.97276
+3	1	0.9888600000000001
+4	1	1.09753
+5	1	1.17427
+6	1	1.37974
+7	1	1.1566800000000002
+8	1	0.9647100000000001
+9	1	1.23387
+10	1	0.7956799999999999
+11	1	0.94343
+12	1	1.18903
+13	1	0.87013
+14	1	0.8715499999999999
+15	1	1.61939
+16	1	1.12806
+17	1	0.9600700000000001
+18	1	1.2941300000000002
+19	1	1.01238
+20	1	0.97011
+21	1	0.95162
+22	1	0.92522
+23	1	1.0229700000000002
+24	1	1.05246
+25	1	1.2591400000000001
+26	1	1.21874
+27	1	1.19726
+28	1	1.8925
+29	1	1.17683
+30	1	1.226
+31	1	1.31973
+32	1	1.33098
+33	1	1.31394
+34	1	1.0953
+35	1	1.02879
+36	1	0.7048200000000001
+37	1	0.7675599999999999
+38	1	0.95943
+39	1	1.09694
+40	1	1.35379
+41	1	1.11085
+42	1	1.14816
+43	1	0.9680700000000001
+44	1	0.7122999999999999
+45	1	1.30202
+46	1	1.2428
+47	1	1.7536
+48	1	1.74719
+49	1	0.92842
+50	1	1.57158
+51	2	2.0251900000000003
+52	2	1.9523599999999999
+53	2	2.11156
+54	2	1.6576400000000002
+55	2	1.6721
+56	2	1.6585
+57	2	1.99729
+58	2	1.47746
+59	2	1.7345899999999999
+60	2	1.5181600000000002
+61	2	1.44843
+62	2	1.4897500000000001
+63	2	1.27745
+64	2	1.43729
+65	2	1.26501
+66	2	1.49233
+67	2	1.23673
+68	2	1.29021
+69	2	1.31633
+70	2	1.30778
+71	2	1.2339200000000001
+72	2	1.30594
+73	2	1.25215
+74	2	1.79523
+75	2	1.25951
+76	2	1.2695999999999998
+77	2	1.4993900000000002
+78	2	1.23078
+79	2	1.20775
+80	2	1.27009
+81	2	1.25899
+82	2	1.25851
+83	2	1.52268
+84	2	1.26798
+85	2	1.26126
+86	2	1.2179900000000001
+87	2	1.22021
+88	2	1.2769000000000001
+89	2	1.2489700000000001
+90	2	1.49418
+91	2	1.3733499999999998
+92	2	1.03805
+93	2	1.07875
+94	2	1.2694100000000001
+95	2	1.08931
+96	2	1.32732
+97	2	1.12274
+98	2	1.0329300000000001
+99	2	1.0406099999999998
+100	2	1.07852
+104	3	32.096830000000004
+104	3	36.58468
+104	3	40.999739999999996
+104	3	39.11485
+104	3	36.4512
+104	3	36.51879
+104	3	37.42325
+104	3	36.51363
+104	3	35.81772
+104	3	36.2431
+104	3	35.05736
+104	3	33.64764
+104	3	35.014720000000004
+104	3	34.13892
+104	3	34.5039
+104	3	33.06199
+104	3	34.046510000000005
+104	3	33.26406
+104	3	33.329930000000004
+104	3	33.198949999999996
+104	3	32.84386
+104	3	32.536590000000004
+104	3	33.21041
+104	3	33.02334
+104	3	33.23715
+104	3	33.90374
+104	3	33.50508
+104	3	33.13911
+104	3	32.538720000000005
+104	3	33.03839
+104	3	33.14936
+104	3	32.7909
+104	3	33.0168
+104	3	33.09798000000001
+104	3	33.26846
+104	3	32.999739999999996
+104	3	33.222970000000004
+104	3	34.84379
+104	3	35.05973
+104	3	34.35788
+104	3	33.15629
+104	3	32.97132
+104	3	32.046490000000006
+104	3	31.97251
+104	3	31.6921
+104	3	31.820439999999998
+104	3	32.13508
+104	3	32.17205
+104	3	32.12854
+104	3	33.7265
+105	1	0.03243
+
+--FINANCIAL COST FUNCTION MATRIX (task/config)
+--<task_id> <config_id>  <cost>
+-- cost = duration (s) x memory (gb) x computation cost x fixed cost
+1	1	0.00000593382397
+2	1	0.00000222658739
+3	1	0.00000226012912
+4	1	0.00000248652541
+5	1	0.00000264640073
+6	1	0.00000307446408
+7	1	0.00000260975482
+8	1	0.00000220981652
+9	1	0.00000277056764
+10	1	0.00000185766998
+11	1	0.0000021654831
+12	1	0.00000267715079
+13	1	0.00000201277446
+14	1	0.0000020157328
+15	1	0.00000357373591
+16	1	0.0000025501297
+17	1	0.00000220014983
+18	1	0.00000289610956
+19	1	0.00000230912922
+20	1	0.00000222106654
+21	1	0.00000218254563
+22	1	0.00000212754552
+23	1	0.00000233119176
+24	1	0.00000239262939
+25	1	0.00000282321358
+26	1	0.00000273904674
+27	1	0.00000269429666
+28	1	0.00000414271622
+29	1	0.00000265173407
+30	1	0.00000275417178
+31	1	0.000002949443
+32	1	0.00000297288055
+33	1	0.00000293738047
+34	1	0.00000248187956
+35	1	0.00000234331679
+36	1	0.00000166837794
+37	1	0.00000179908653
+38	1	0.0000021988165
+39	1	0.00000248529624
+40	1	0.00000302040147
+41	1	0.00000251427546
+42	1	0.00000259200478
+43	1	0.00000221681653
+44	1	0.0000016839613
+45	1	0.00000291254709
+46	1	0.00000278917184
+47	1	0.00000385334064
+48	1	0.00000383998645
+49	1	0.0000021342122
+50	1	0.00000347413155
+51	2	0.00000863830854
+52	2	0.0000083348496
+53	2	0.00000899818426
+54	2	0.00000710684715
+55	2	0.00000716709727
+56	2	0.00000711043049
+57	2	0.00000852205831
+58	2	0.00000635609565
+59	2	0.00000742747279
+60	2	0.00000652567932
+61	2	0.00000623513707
+62	2	0.00000640730408
+63	2	0.00000552271898
+64	2	0.00000618872031
+65	2	0.00000547088554
+66	2	0.0000064180541
+67	2	0.00000535305197
+68	2	0.00000557588575
+69	2	0.0000056847193
+70	2	0.00000564909423
+71	2	0.00000534134362
+72	2	0.00000564142755
+73	2	0.0000054173021
+74	2	0.00000768013996
+75	2	0.00000544796883
+76	2	0.00000549001058
+77	2	0.00000644747083
+78	2	0.00000532826026
+79	2	0.00000523230173
+80	2	0.00000549205225
+81	2	0.00000544580216
+82	2	0.00000544380215
+83	2	0.00000654451269
+84	2	0.00000548326057
+85	2	0.00000545526051
+86	2	0.00000527496848
+87	2	0.0000052842185
+88	2	0.00000552042731
+89	2	0.00000540405207
+90	2	0.00000642576245
+91	2	0.00000592230311
+92	2	0.00000452521698
+93	2	0.00000469480066
+94	2	0.00000548921891
+95	2	0.00000473880074
+96	2	0.00000573051106
+97	2	0.00000487809269
+98	2	0.00000450388361
+99	2	0.00000453588367
+100	2	0.00000469384232
+104	3	0.00026767411828
+104	3	0.00030507294308
+104	3	0.00034186518333
+104	3	0.00032615773525
+104	3	0.00030396060752
+104	3	0.00030452385865
+104	3	0.00031206104039
+104	3	0.00030448085856
+104	3	0.00029868159696
+104	3	0.00030222643739
+104	3	0.00029234525096
+104	3	0.00028059756079
+104	3	0.00029198991691
+104	3	0.00028469156898
+104	3	0.00028773307507
+104	3	0.00027571713437
+104	3	0.00028392148411
+104	3	0.0002774010544
+104	3	0.00027794997217
+104	3	0.00027685846998
+104	3	0.00027389938073
+104	3	0.00027133879228
+104	3	0.00027695397017
+104	3	0.00027539505039
+104	3	0.00027717680395
+104	3	0.00028273173173
+104	3	0.00027940955842
+104	3	0.00027635980232
+104	3	0.00027135654231
+104	3	0.00027552046731
+104	3	0.00027644521916
+104	3	0.00027345804652
+104	3	0.00027534055028
+104	3	0.00027601705163
+104	3	0.00027743772114
+104	3	0.00027519838333
+104	3	0.00027705863705
+104	3	0.0002905654974
+104	3	0.000292365001
+104	3	0.0002865162393
+104	3	0.00027650296927
+104	3	0.00027496154952
+104	3	0.00026725461744
+104	3	0.00026663811621
+104	3	0.00026430136154
+104	3	0.00026537086367
+104	3	0.00026799286892
+104	3	0.00026830095287
+104	3	0.00026793836881
+104	3	0.00028125472878
+105	1	0.00000026756264
+
+-- BUCKET RANGE LIST
+-- <range_id> <size1> <size2> <cost>
+1	0	51200	0.0405
+2	51200	460800	0.039
+3	460800	99999999999999	0.037
+

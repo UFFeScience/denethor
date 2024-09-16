@@ -110,11 +110,15 @@ CREATE TABLE execution_statistics (
 CREATE TABLE task (
     task_id SERIAL PRIMARY KEY,
     activity_id INTEGER NOT NULL,
-    input_files TEXT NOT NULL,
+    task_type INTEGER NOT NULL,
+    input_count TEXT NOT NULL,
+    input_list TEXT NOT NULL,
+    output_count TEXT NOT NULL,
+    output_list TEXT NOT NULL,
     FOREIGN KEY (activity_id) REFERENCES workflow_activity(activity_id)
 );
 
-select * from task_file;
+select * from task;
 
 
 
