@@ -1,32 +1,24 @@
 --view file_type: dynamic_files + tatic_files
 CREATE OR REPLACE VIEW vw_file_type AS
     SELECT distinct
-        se.se_id, 
-        se.workflow_execution_id, 
-        f.file_id, 
-        f.file_name, 
+        ef.se_id, 
+        ef.file_id, 
         'dynamic' AS file_type
-    FROM file f
-    JOIN execution_file ef ON ef.file_id = f.file_id
-    JOIN service_execution se ON se.se_id = ef.se_id
+    FROM execution_file ef
     WHERE ef.transfer_type = 'produced'
     
     UNION
     
     SELECT distinct
-        se.se_id, 
-        se.workflow_execution_id, 
-        f.file_id, 
-        f.file_name, 
+        ef.se_id, 
+        ef.file_id, 
         'static' AS file_type
-    FROM file f
-    JOIN execution_file ef ON ef.file_id = f.file_id
-    JOIN service_execution se ON se.se_id = ef.se_id
+    FROM execution_file ef
     WHERE ef.transfer_type = 'consumed'
-    AND f.file_id NOT IN (
-        SELECT file_id
-        FROM execution_file
-        WHERE transfer_type = 'produced'
+    AND ef.file_id NOT IN (
+        SELECT ef2.file_id
+        FROM execution_file ef2
+        WHERE ef2.transfer_type = 'produced'
 );
 
 
