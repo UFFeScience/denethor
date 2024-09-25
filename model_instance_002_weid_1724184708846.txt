@@ -1,72 +1,63 @@
---TOTALS
---<#tasks> <#config> <#data> <#devices> <#buckets> <#ranges> <max_running_time> <max_financial_cost>
-6	3	15	3	1	3	1000	999999
+# <#tasks> <#config> <#data> <#devices> <#buckets> <#ranges> <max_running_time> <max_financial_cost>
+7	3	15	3	1	3	1000	999999
 
---TASKS
---<task_id> <task_type 0-VM 1-FX> <vm_cpu_time> <n_input> [<id_input> ...] <n_output> [<id_output> ...]
-1	1	1.2033	[2]	1	[3]
-2	1	2.222	1	[4]	1	[5]
-51	1	None	1	[3]	3	[102,103,104]
-52	1	None	1	[5]	8	[105,106,107,108,109,110,111,112]
-1011	1	None	11	[102,103,104,105,106,107,108,109,110,111,112]	1	[maf_inst1]
-1012	1	None	11	[102,103,104,105,106,107,108,109,110,111,112]	1	[maf_inst2]
-105	1	None	2	[maf_inst1,maf_inst2]	0	[maf_final]
+# <task_id> <task_type 0-VM 1-FX> <vm_cpu_time> <n_input> [<id_input> ...] <n_output> [<id_output> ...]
+1	1	1	1	[2]	1	[3]
+2	1	1	1	[4]	1	[5]
+51	1	1	1	[3]	3	[102,103,104]
+52	1	1	1	[5]	8	[105,106,107,108,109,110,111,112]
+1011	1	1	11	[102,103,104,105,106,107,108,109,110,111,112]	0	[None]
+1012	1	1	11	[102,103,104,105,106,107,108,109,110,111,112]	0	[None]
+105	1	1	0	[None]	0	[None]
 
---DATA
---<data_id> <size> <is_static 0-dinamic 1-static> <MEDIA DO TEMPO DE LEITURA> <MEDIA DO TEMPO DE ESCRITA> <n_source_devices - 0 se for dinamico> [<device_id> ... ]
-2	1662	1	1	[denethor_bucket]
-4	2666	1	1	[denethor_bucket]
-3	339	0	0	[denethor_bucket]
-5	640	0	0	[denethor_bucket]
-102	185	0	0	[denethor_bucket]
-103	185	0	0	[denethor_bucket]
-104	339	0	0	[denethor_bucket]
-105	187	0	0	[denethor_bucket]
-106	245	0	0	[denethor_bucket]
-107	301	0	0	[denethor_bucket]
-108	191	0	0	[denethor_bucket]
-109	421	0	0	[denethor_bucket]
-110	481	0	0	[denethor_bucket]
-111	539	0	0	[denethor_bucket]
-112	640	0	0	[denethor_bucket]
+# <data_id> <data_size> <read_time_avg> <write_time_avg> <is_static 0-dinamic 1-static> <n_source_devices - 0 se for dinamico> [<device_id> ... ]
+2	1662	2.7700260119999887	None	1	1	[denethor_bucket]
+3	339	1.202782816999985	0.3544134789999873	0	0	[denethor_bucket]
+4	2666	0.38246714699999984	None	1	1	[denethor_bucket]
+5	640	0.19666352699999834	0.3822253289999935	0	0	[denethor_bucket]
+102	185	0.3820558760000097	0.16927556199999572	0	0	[denethor_bucket]
+103	185	0.11379584949997934	0.1925359379999918	0	0	[denethor_bucket]
+104	339	0.11261141399999985	0.1833665820000192	0	0	[denethor_bucket]
+105	187	0.11089089149999154	0.174796017999995	0	0	[denethor_bucket]
+106	245	0.11677154649999011	0.16991440099999977	0	0	[denethor_bucket]
+107	301	0.10892362799998523	0.20684858300000997	0	0	[denethor_bucket]
+108	191	0.11612237349999077	0.193034530999995	0	0	[denethor_bucket]
+109	421	0.11730882700000222	0.18135811100000865	0	0	[denethor_bucket]
+110	481	0.11632452850000163	0.19672210599998152	0	0	[denethor_bucket]
+111	539	0.11284158400000877	0.20286891399999263	0	0	[denethor_bucket]
+112	640	0.11663368749999847	0.18601260599999137	0	0	[denethor_bucket]
 
---VMS
---<vm1_cpu_slowdown> <vm2_cpu_slowdown> ... <vm*_cpu_slowdown>
---<vm1_storage> <vm2 _storage> ... <vm* _storage>
---<vm1_cost> <vm2_cost> ... <vm*_cost>
+# <vm1_cpu_slowdown> <vm2_cpu_slowdown> ... <vm*_cpu_slowdown>
+# <vm1_storage> <vm2 _storage> ... <vm* _storage>
+# <vm1_cost> <vm2_cost> ... <vm*_cost>
 1	0.8	0.75
 10000	10000	10000
 1	1.3	1.5
 
---BANDWIDTH MATRIX
---<vm_id> <bandwidth>
+# <vm_id> <bandwidth>
 1	1000
 2	1000
 3	1000
 
---TIME FUNCTION MATRIX (task/config)
---<task_id> <config_id> <task_time_total> <task_time_cpu> <task_time_read> <task_time_write>......
-1	1	3.45486
-2	1	1.32428
-51	2	1.8613
-52	2	1.85881
-101	3	1.91286
-101	3	1.36429
-105	1	0.01914
+# <task_id> <config_id> <task_time_total> <task_time_cpu> <task_time_read> <task_time_write>
+1	1	3.45486	0.3304205090000244	2.7700260119999887	0.3544134789999873
+2	1	1.32428	0.5595875240000067	0.38246714699999984	0.3822253289999935
+51	2	1.8613	0.11333910100000821	1.202782816999985	0.5451780820000067
+52	2	1.85881	0.1505912030000277	0.19666352699999834	1.511555269999974
+1011	3	1.91286	0.11042719700004046	1.8024328029999594	0.0
+1012	3	1.36429	0.11816239100004418	1.2461276089999558	0.0
+105	1	0.01914	0.01914	0.0	0.0
 
---FINANCIAL COST FUNCTION MATRIX (task/config)
---<task_id> <config_id>  <cost>
--- cost = duration (s) x memory (gb) x computation cost x fixed cost
+# <task_id> <config_id> <task_cost>
 1	1	0.0000073976394
 2	1	0.00000295892218
 51	2	0.00000795543218
 52	2	0.00000794505716
-101	3	0.00001614053188
-101	3	0.00001156910607
+1011	3	0.00001614053188
+1012	3	0.00001156910607
 105	1	0.00000023987508
 
--- BUCKET RANGE LIST
--- <range_id> <size1> <size2> <cost>
+# <range_id> <size1_tb> <size2_tb> <cost_per_gb>
 1	0	51200	0.0405
 2	51200	460800	0.039
 3	460800	99999999999999	0.037

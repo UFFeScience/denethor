@@ -4,10 +4,10 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 
-# WEID = 'weid_1724184708846' #002
+WEID = 'weid_1724184708846' #002
 # WEID = 'weid_1724428668735' #005
 # WEID = 'weid_1724433692051' #010
-WEID = 'weid_1722560049311' #050
+# WEID = 'weid_1722560049311' #050
 
 SQL_FILES_PATH = 'resources/sql/model_generator'  # Diretório onde os arquivos SQL estão localizados
 
@@ -19,14 +19,14 @@ def remove_comments(sql):
     filtered_lines = [line for line in lines if not line.strip().startswith('--')]
     return '\n'.join(filtered_lines)
 
-def separate_comments_and_code(sql):
+def separate_comments_and_code(sql: str):
     lines = sql.split('\n')
     comments = []
     code = []
     
     for line in lines:
-        if line.strip().startswith('--'):
-            comments.append(line.strip())
+        if line.strip().startswith('--#'):
+            comments.append(line.strip().replace('--',''))
         else:
             code.append(line)
     
