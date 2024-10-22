@@ -7,19 +7,17 @@ from denethor_utils.env import LOCAL, AWS_LAMBDA, VM_LINUX
 ##
 def handle_consumed_files(request_id: str, files_name: list, path: str, params: dict):
     download_time_ms = None
-    files_name_flat = du.flatten_list(files_name)
+    files_name_list = du.flatten_list(files_name)
     
     if params.get('env_name') == AWS_LAMBDA:
         # Get the bucket from the payload
         bucket = params.get('bucket')
         key = params.get('input_key')
-        
-        
         # Download file from s3 bucket into lambda function
-        download_time_ms = download_from_s3(request_id, bucket, key, files_name_flat, path)
-        
-    info = get_files_info(files_name_flat, path)      
-    print(f"CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {info.get('files_count')} files\t FilesSize: {info.get('files_size')} bytes\t TransferDuration: {download_time_ms} ms\t ConsumedFiles: {files_name_flat}")
+        download_time_ms = download_from_s3(request_id, bucket, key, files_name_list, path)
+     
+    info = get_files_info(files_name_list, path)      
+    print(f"CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {info.get('files_count')} files\t FilesSize: {info.get('files_size')} bytes\t TransferDuration: {download_time_ms} ms\t ConsumedFiles: {files_name_list}")
 
 def download_from_s3(request_id: str, s3_bucket: str, s3_key: str, files_name: list, local_path: str) -> int:
     total_download_duration_ms = 0
@@ -62,17 +60,16 @@ def download_file_from_s3(request_id: str, s3_bucket: str, s3_key: str, file_nam
 ##
 def handle_produced_files(request_id: str, files_name: list, files_path: str, params: dict):
     upload_duration_ms = None
+    files_name_list = du.flatten_list(files_name)
+
     if params.get('env_name') == AWS_LAMBDA:
         bucket = params.get('bucket')
         key = params.get('output_key')
-
-        files_name_list = du.flatten_list(files_name)
-
         # Upload files from lambda function into s3
         upload_duration_ms = upload_to_s3(request_id, bucket, key, files_name_list, files_path)
     
-    info = get_files_info(files_name, files_path)      
-    print(f"PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {info.get('files_count')} files\t FilesSize: {info.get('files_size')} bytes\t TransferDuration: {upload_duration_ms} ms\t ProducedFiles: {files_name}")
+    info = get_files_info(files_name_list, files_path)      
+    print(f"PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {info.get('files_count')} files\t FilesSize: {info.get('files_size')} bytes\t TransferDuration: {upload_duration_ms} ms\t ProducedFiles: {files_name_list}")
   
 
 def upload_to_s3(request_id: str, s3_bucket: str, s3_key: str, file_list: list, local_path: str) -> int:

@@ -1,5 +1,7 @@
 from Bio import Phylo
-import os, copy, timeit
+import os, json, re, copy, time, timeit
+import hashlib
+
 
 # 
 # ## Preencher as células vazias com o valor de preenchimento ##
@@ -53,31 +55,31 @@ def init_maf_database(matrix):
     return maf
 
 
-def maf_database_create(subtree_list: list, subtree_matrix: list, file_path: str, data_format: str):
-    
+def maf_database_creator(subtrees: list, compare_matrix: list, input_path: str, output_path: str, data_format: str) -> str:    
     start_time = timeit.default_timer()
 
     maf_database: dict = None
     max_maf: int = 0
 
-    # filled_matrix = fill_matrix(subtree_matrix, value=None)
+    sorted_subtrees = sorted(subtrees)
+    sorted_compare_matrix= [sorted(row) for row in compare_matrix]
+    
 
     if maf_database is None:
-        # maf_database = init_maf_database(subtree_matrix)
         maf_database = {}
 
-    #subtree_list equivale a uma linha da matriz de subárvores
-    for main_file  in subtree_list:
-        print(f'subtree_matrix: processing file {main_file } of {subtree_list}')
+    #subtrees equivale a uma linha da matriz de subárvores
+    for main_file  in sorted_subtrees:
+        print(f'subtree_matrix: processing file {main_file } of {sorted_subtrees}')
         
-        for row in subtree_matrix:
+        for row in sorted_compare_matrix:
             # evitando comparações entre os arquivos de subárvores idênticos ou originados da mesma árvore
             if main_file in row:
                 continue
             
             for current_file in row:
                 # print(f'Comparing file {main_file} with {current_file}')
-                g_maf = grade_maf(main_file , current_file, file_path, data_format)
+                g_maf = grade_maf(main_file , current_file, input_path, data_format)
                 # print('g_maf=', g_maf)
 
                 if max_maf < g_maf:
@@ -100,11 +102,40 @@ def maf_database_create(subtree_list: list, subtree_matrix: list, file_path: str
     maf_duration_ms = (end_time - start_time) * 1000
     print(f'Tempo de construção do maf_database: {maf_duration_ms} milissegundos')
 
-    sorted_maf_database= {k: maf_database[k] for k in sorted(maf_database)}
+    mafdb_file = write_maf_database(sorted_subtrees, maf_database, max_maf, output_path)
+    
+    return mafdb_file, maf_duration_ms
 
-    return sorted_maf_database, max_maf, maf_duration_ms
 
 
+
+def write_maf_database(subtrees: list, maf_database: dict, max_maf: int, output_path: str) -> str:
+
+    sorted_subtrees = sorted(subtrees)
+    sorted_maf_database = {k: maf_database[k] for k in sorted(maf_database)}
+
+    file_data = {
+        "subtrees": sorted_subtrees,
+        "max_maf": max_maf,
+        "maf_database": sorted_maf_database
+    }
+    
+    mafdb_name = generate_identifier(file_data)
+    mafdb_file = os.path.join(output_path, f'mafdb_{mafdb_name}.json')
+
+    with open(mafdb_file, 'w') as f:
+        json.dump(file_data, f, indent=4)
+    
+    return mafdb_file
+
+
+def generate_identifier(data_dict: dict) -> str:
+    # Converte o dicionário em uma string JSON ordenada
+    ordered_string = json.dumps(data_dict, sort_keys=True)
+    
+    # Calcula o hash da string ordenada
+    return hashlib.sha256(ordered_string.encode()).hexdigest()
+    
 
 
 

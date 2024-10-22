@@ -1,5 +1,6 @@
-import timeit
-from denethor_utils import log_handler as dlh, utils as du
+import timeit, json
+import maf_database_creator_core as mdcc
+from denethor_utils import file_utils as dfu, log_handler as dlh, utils as du, aws_utils as dau
 
 def handler(event, context):
 
@@ -10,8 +11,32 @@ def handler(event, context):
 
     du.log_env_info(execution_env, logger)
 
+    path_config = execution_env.get('path_config')
+    TMP_PATH = path_config.get('tmp') # usado para escrever arquivos 'nopipe' durante o processo de validação
+    INPUT_PATH = path_config.get('mafdb')
+    OUTPUT_PATH = path_config.get('mafdb')
+
+    bucket_config = execution_env.get('bucket_config')
+    s3_params = {
+        'env_name': execution_env.get('env_name'),
+        'bucket': bucket_config.get('bucket_name'),
+        'input_key': bucket_config.get('key_subtree_files'),
+        'output_key': bucket_config.get('key_mafdb_files')
+    }
+    
+    # Cleaning old temporary files and creating directories ##
+    # dfu.remove_files(TMP_PATH)
+    dfu.create_directory_if_not_exists(INPUT_PATH, OUTPUT_PATH, TMP_PATH)
+    
+    # Get the input_file from the payload
+    input_fles = event.get('input_data')
+
+    # Download input files ##
+    dau.handle_consumed_files(request_id, input_fles, INPUT_PATH, s3_params)
+
+
+
     # Get the input_data from the payload
-    input_data = event.get('input_data')
     
     # input_data contem uma lista de instâncias de maf_databases
     # gerados comparando cada grupo de subárvores com todas as outras
@@ -63,38 +88,51 @@ def handler(event, context):
     # Criação do dicionário de similariadades de subárvore ##
     start_time = timeit.default_timer()
     
-    maf_database = {}
-    max_maf = 0
+    final_maf_database = {}
+    final_max_maf = 0
+
+    maf_databases = []
+    subtrees = []
     
-    n1_list = input_data
-    for n1_item in n1_list:
+    # open input_file and read the data
+    for input_file in input_fles:
+        with open(input_file, 'r') as f:
+            file_data = json.load(f)
+            file_subtrees = file_data.get('subtrees')
+            subtrees.append(file_subtrees)
+            file_mafdb = file_data.get('maf_database')
+            maf_databases.append(file_mafdb)
+
+    for n1_mafdb in maf_databases:
         # print(f"___________ N1 - item: {n1_item} _______________")
-        for n2_grade, n2_dict in n1_item.items():
+        for n2_grade, n2_dict in n1_mafdb.items():
             # print(f"___________ N2 - grade: {n2_grade}  _______________")
-            max_maf = max(max_maf, du.parse_int(n2_grade))
+            final_max_maf = max(final_max_maf, du.parse_int(n2_grade))
             # se o id do grau de similaridade não existe no dicionário de similaridades
             # então cria-se uma nova entrada
-            if n2_grade not in maf_database:
-                maf_database[n2_grade] = {}
-            for n3_subtree, n3_subtree_list in n2_dict.items():
-                # print(f'>> N3: {n3_subtree}: {n3_subtree_list} \n')
+            if n2_grade not in final_maf_database:
+                final_maf_database[n2_grade] = {}
+            for n3_subtree, n3_subtrees in n2_dict.items():
+                # print(f'>> N3: {n3_subtree}: {n3_subtrees} \n')
                 # para um determinado grau de similaridade, adiciona-se a lista de subárvores similares em maf_database
-                if n3_subtree not in maf_database[n2_grade]:
-                    maf_database[n2_grade][n3_subtree] = n3_subtree_list
+                if n3_subtree not in final_maf_database[n2_grade]:
+                    final_maf_database[n2_grade][n3_subtree] = n3_subtrees
                 else:
                     raise ValueError(f"Subtree {n3_subtree} already exists in maf_database[{n2_grade}]!!")
             # print("_______________________________")
 
     # print(maf_database)
 
+    final_mafdb_file = mdcc.write_maf_database(subtrees, final_maf_database, final_max_maf, OUTPUT_PATH)
+
     end_time = timeit.default_timer()
     maf_time_ms = (end_time - start_time) * 1000
     
-    logger.info(f'MAF_DATABASE_AGGREGATOR RequestId: {request_id}\t Duration: {maf_time_ms} ms\t InputLength: {len(input_data)}\t MaxMaf: {max_maf}\t MafDatabase: {maf_database}')
+    logger.info(f'MAF_DATABASE_AGGREGATOR RequestId: {request_id}\t Duration: {maf_time_ms} ms\t InputLength: {len(maf_databases)}\t MaxMaf: {final_max_maf}\t MafDatabase: {final_maf_database}')
 
     return {
             "request_id" : request_id,
-            "data" : maf_database
+            "data" : final_mafdb_file
         }
         
 

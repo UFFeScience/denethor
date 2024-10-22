@@ -11,7 +11,7 @@ def get_logger(execution_id: str, execution_env: dict) -> logging.Logger:
         # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         
         # Configuração do formatter personalizado para ISO 8601
-        formatter = logging.Formatter('[%(levelname)s] %(asctime)sZ', datefmt='%Y-%m-%dT%H:%M:%S.%f')
+        formatter = logging.Formatter('[%(levelname)s] %(asctime)s %(message)s', datefmt='%Y-%m-%dT%H:%M:%S%Z')
 
         log_config = execution_env.get('log_config')
         output_type = log_config.get('output_type')

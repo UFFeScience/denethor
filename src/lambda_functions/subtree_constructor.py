@@ -28,7 +28,7 @@ def handler(event, context):
     }
     
     # Cleaning old temporary files and creating directories ##
-    dfu.remove_files(TMP_PATH)
+    # dfu.remove_files(TMP_PATH)
     dfu.create_directory_if_not_exists(INPUT_PATH, OUTPUT_PATH, TMP_PATH)
     
     # Get the input_file from the payload

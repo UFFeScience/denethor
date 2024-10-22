@@ -2,7 +2,7 @@
 SELECT DISTINCT 
 	ta.task_id, --se.se_id, se.activity_id,
 	task_type,
-	1 AS vm_cpu_time, --tempo base em vm,
+	99999 AS vm_cpu_time, --tempo base em vm,
 	ta.input_count AS n_input,
 	'[' || ta.input_list || ']' AS input_list,
 	ta.output_count AS n_output,

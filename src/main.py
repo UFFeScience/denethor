@@ -1,5 +1,6 @@
 import os, time, json
 from pathlib import Path
+from denethor_utils import env
 from denethor_utils import utils as du, file_utils as dfu, env as denv
 from denethor_executor import execution_manager as dem
 import denethor_provenance.provenance.provenance_importer as dprov
@@ -7,6 +8,8 @@ import denethor_provenance.provenance.provenance_importer as dprov
 # import sys
 # sys.path.append("../src")
 # from denethor_utils import log_handler as dlh
+
+FORCE_ENV = env.LOCAL
 
 # Obter o caminho do arquivo atual
 current_file = Path(__file__).resolve()
@@ -139,6 +142,8 @@ def main():
         action = step.get('action')
         activity = step.get('activity')
         env_name = step.get('execution_env')
+        if FORCE_ENV:
+            env_name = FORCE_ENV
         # Get the execution environment configuration by the name set in the step
         execution_env = du.get_env_config_by_name(env_name, env_configs)
         

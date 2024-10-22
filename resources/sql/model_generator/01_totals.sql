@@ -1,4 +1,4 @@
---# <#tasks> <#config> <#data> <#devices> <#buckets> <#ranges> <max_running_time> <max_financial_cost>
+--# <#tasks> <#config> <#data> <#devices_vms> <#buckets> <#ranges> <max_running_time> <max_financial_cost>
 SELECT 
 	(SELECT count(distinct se.task_id) AS _tasks
 		FROM service_execution se

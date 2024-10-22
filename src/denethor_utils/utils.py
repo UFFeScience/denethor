@@ -106,8 +106,10 @@ def flatten_list(input_list: list) -> list:
     """
     Flatten a list of lists into a single one
     """
-    flattened_list = []
+    if not isinstance(input_list, list):
+        return [input_list]
     
+    flattened_list = []
     for item in input_list:
         if isinstance(item, list):
             flattened_list.extend(flatten_list(item))
