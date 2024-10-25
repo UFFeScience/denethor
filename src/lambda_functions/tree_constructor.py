@@ -6,7 +6,7 @@ def handler(event, context):
     request_id = du.get_request_id(context)
     execution_id = du.get_execution_id(event)
     execution_env = du.get_execution_env(event)
-    logger = dlh.get_logger(execution_id, execution_env)
+    logger = dlh.get_logger(execution_id, 'tree_constructor', execution_env)
 
     du.log_env_info(execution_env, logger)
     path_config = execution_env.get('path_config')

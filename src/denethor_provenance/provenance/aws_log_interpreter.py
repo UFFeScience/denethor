@@ -1,9 +1,5 @@
 from . import log_parser  as parser
-from denethor.database.model import *
-from denethor.database.repository import *
-from denethor_utils import utils
-
-from datetime import datetime
+from denethor.database.repository.BaseRepository import *
 import json, os, re
 
 def process_and_save_logs(params):
@@ -65,6 +61,12 @@ def process_and_save_logs(params):
         if not provider_db:
             raise ValueError(f"Provider {activity['provider_name']} not found in Database!")
         
+        configurations_db = provider_configuration_repo.get_by_provider(provider_db)
+        if not configurations_db:
+            raise ValueError(f"Provider Configuration for {provider_db} not found in Database!")
+        
+
+
         # Opening the log file for the activity, in json format
         log_file_name = log_file.replace('[activity_name]', activity_name).replace('[execution_id]', execution_id)
         file = os.path.join(log_path, log_file_name)
@@ -87,6 +89,13 @@ def process_and_save_logs(params):
             service_execution.provider = provider_db
             service_execution.activity = activity_db
             service_execution.workflow_execution_id = execution_id
+
+            # find the proper configuration by the memory size recovered from the log
+            memory = service_execution.memory_size
+            for config in configurations_db:
+                if config.memory_size == memory:
+                    service_execution.provider_configuration = config
+                    break
             
             # print(service_execution)
 
@@ -129,7 +138,8 @@ def process_and_save_logs(params):
 
 
 
-# Agrupando logs pelo valor de 'RequestId' no campo 'message' 
+## Filters and organizes log records by RequestId
+# Each set represents a complete execution of the activity for a set of input files 
 def group_logs_by_request(logs: dict) -> dict:
     
     # Dicionário para armazenar os logs filtrados

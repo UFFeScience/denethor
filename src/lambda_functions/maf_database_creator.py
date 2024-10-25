@@ -7,7 +7,7 @@ def handler(event, context):
     request_id = du.get_request_id(context)
     execution_id = du.get_execution_id(event)
     execution_env = du.get_execution_env(event)
-    logger = dlh.get_logger(execution_id, execution_env)
+    logger = dlh.get_logger(execution_id, 'maf_database_creator', execution_env)
 
     du.log_env_info(execution_env, logger)
 

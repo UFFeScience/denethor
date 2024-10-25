@@ -124,6 +124,21 @@ select * from task;
 
 
 
+INSERT INTO provider_configuration (provider_id, timeout, cpu, memory_mb, storage_mb)
+VALUES (1, 30, 1, 128, 512);
+
+INSERT INTO provider_configuration (provider_id, timeout, cpu, memory_mb, storage_mb)
+VALUES (1, 45, 1, 256, 512);
+
+INSERT INTO provider_configuration (provider_id, timeout, cpu, memory_mb, storage_mb)
+VALUES (1, 300, 1, 512, 512);
+
+INSERT INTO provider_configuration (provider_id, timeout, cpu, memory_mb, storage_mb)
+VALUES (1, 300, 1, 1024, 512);
+
+INSERT INTO provider_configuration (provider_id, timeout, cpu, memory_mb, storage_mb)
+VALUES (1, 300, 1, 2048, 512);
+
 
 update service_execution se set configuration_id = case 
 			when se.activity_id = 1 then 1

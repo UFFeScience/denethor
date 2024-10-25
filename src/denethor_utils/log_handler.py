@@ -1,8 +1,8 @@
 import sys, logging
 
-def get_logger(execution_id: str, execution_env: dict) -> logging.Logger:
+def get_logger(execution_id: str, activity_name: str, execution_env: dict) -> logging.Logger:
     
-    logger = logging.getLogger(execution_env.get('env_name'))
+    logger = logging.getLogger(execution_env.get('env_name')+'_'+execution_id+'_'+activity_name)
     
     if not logger.handlers:
         logger.setLevel(logging.DEBUG)
@@ -21,7 +21,7 @@ def get_logger(execution_id: str, execution_env: dict) -> logging.Logger:
         if 'file' in output_type:
             file = log_config.get('path')+'/'+log_config.get('file_name')
             if execution_id:
-                file = file.replace('.log', f'_{execution_id}.log')
+                file = file.replace('[execution_id]', execution_id).replace('[activity_name]', activity_name)
             file_handler = logging.FileHandler(file)
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)

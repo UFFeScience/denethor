@@ -1,5 +1,5 @@
-from denethor.database.model import *
-from denethor.database.repository import *
+from denethor.database.models import Provider, ProviderConfiguration, Workflow, WorkflowActivity, Statistics
+from denethor.database.repository.BaseRepository import *
 from . import aws_log_retriever as alr, aws_log_interpreter as ali
 
 # params = {

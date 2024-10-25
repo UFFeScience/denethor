@@ -1,6 +1,6 @@
 import re
 from denethor_utils import utils as du
-from denethor.database.model import *
+from denethor.database.models import ServiceExecution, ExecutionFile, File, Statistics, ExecutionStatistics
 
 def find_log_type(message, stats_attributes):
     # verificar o primeiro elemento da mensagem
@@ -59,7 +59,7 @@ def parse_message(message, stats_attributes, default_sep):
     return parsed_message
 
 
-def parse_execution_logs(request_id: str, activity_name: str, logs: list, statistics: dict):
+def parse_execution_logs(request_id: str, activity_name: str, logs: list, statistics: dict) -> ServiceExecution:
     """
     Parse all the execution logs for the same request id and create a ServiceExecution object.
 
