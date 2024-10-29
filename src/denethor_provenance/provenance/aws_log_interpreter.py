@@ -1,6 +1,41 @@
 from . import log_parser  as parser
-from denethor.database.repository.BaseRepository import *
+from denethor.database.models.Provider import Provider
+from denethor.database.models.ProviderConfiguration import ProviderConfiguration
+from denethor.database.models.Workflow import Workflow
+from denethor.database.models.WorkflowActivity import WorkflowActivity
+from denethor.database.models.File import File
+from denethor.database.models.ExecutionFile import ExecutionFile
+from denethor.database.models.Statistics import Statistics
+from denethor.database.models.ExecutionStatistics import ExecutionStatistics
+from denethor.database.models.ServiceExecution import ServiceExecution
+
+from denethor.database.repository.ProviderRepository import ProviderRepository
+from denethor.database.repository.ProviderConfigurationRepository import ProviderConfigurationRepository
+from denethor.database.repository.WorkflowRepository import WorkflowRepository
+from denethor.database.repository.WorkflowActivityRepository import WorkflowActivityRepository
+from denethor.database.repository.FileRepository import FileRepository
+from denethor.database.repository.ExecutionFileRepository import ExecutionFileRepository
+from denethor.database.repository.StatisticsRepository import StatisticsRepository
+from denethor.database.repository.ExecutionStatisticsRepository import ExecutionStatisticsRepository
+from denethor.database.repository.ServiceExecutionRepository import ServiceExecutionRepository
+
 import json, os, re
+
+from denethor.database import conn
+
+# Instânciando a sessão do banco de dados
+session = conn.Connection().get_session()
+
+# Instânciando as classes de repositórios
+provider_repo = ProviderRepository(session)
+provider_configuration_repo = ProviderConfigurationRepository(session)
+workflow_repo = WorkflowRepository(session)
+workflow_activity_repo = WorkflowActivityRepository(session)
+file_repo = FileRepository(session)
+execution_file_repo = ExecutionFileRepository(session)
+statistics_repo = StatisticsRepository(session)
+execution_statistics_repo = ExecutionStatisticsRepository(session)
+service_execution_repo = ServiceExecutionRepository(session)
 
 def process_and_save_logs(params):
     """
@@ -61,7 +96,7 @@ def process_and_save_logs(params):
         if not provider_db:
             raise ValueError(f"Provider {activity['provider_name']} not found in Database!")
         
-        configurations_db = provider_configuration_repo.get_by_provider(provider_db)
+        configurations_db = provider_configuration_repo.get_by_provider_id(provider_db.provider_id)
         if not configurations_db:
             raise ValueError(f"Provider Configuration for {provider_db} not found in Database!")
         
@@ -93,7 +128,7 @@ def process_and_save_logs(params):
             # find the proper configuration by the memory size recovered from the log
             memory = service_execution.memory_size
             for config in configurations_db:
-                if config.memory_size == memory:
+                if config.memory_mb == memory:
                     service_execution.provider_configuration = config
                     break
             

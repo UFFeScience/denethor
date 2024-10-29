@@ -39,10 +39,17 @@ function choose_function_name() {
   echo "4. maf_database_aggregator"
   read -p "Enter the number corresponding to your choice: " choice
 
+  # case $choice in
+  #   1) FUNCTION_NAME="tree_constructor"; DEFAULT_TIMEOUT=30; DEFAULT_MEMORY_SIZE=128 ;;
+  #   2) FUNCTION_NAME="subtree_constructor"; DEFAULT_TIMEOUT=45; DEFAULT_MEMORY_SIZE=256 ;;
+  #   3) FUNCTION_NAME="maf_database_creator"; DEFAULT_TIMEOUT=300; DEFAULT_MEMORY_SIZE=512 ;;
+  #   4) FUNCTION_NAME="maf_database_aggregator"; DEFAULT_TIMEOUT=30; DEFAULT_MEMORY_SIZE=128 ;;
+  #   *) echo "Invalid choice. Exiting."; exit 1 ;;
+  # esac
   case $choice in
-    1) FUNCTION_NAME="tree_constructor"; DEFAULT_TIMEOUT=30; DEFAULT_MEMORY_SIZE=128 ;;
-    2) FUNCTION_NAME="subtree_constructor"; DEFAULT_TIMEOUT=45; DEFAULT_MEMORY_SIZE=256 ;;
-    3) FUNCTION_NAME="maf_database_creator"; DEFAULT_TIMEOUT=300; DEFAULT_MEMORY_SIZE=512 ;;
+    1) FUNCTION_NAME="tree_constructor"; DEFAULT_TIMEOUT=30; DEFAULT_MEMORY_SIZE=256 ;;
+    2) FUNCTION_NAME="subtree_constructor"; DEFAULT_TIMEOUT=45; DEFAULT_MEMORY_SIZE=512 ;;
+    3) FUNCTION_NAME="maf_database_creator"; DEFAULT_TIMEOUT=300; DEFAULT_MEMORY_SIZE=1024 ;;
     4) FUNCTION_NAME="maf_database_aggregator"; DEFAULT_TIMEOUT=30; DEFAULT_MEMORY_SIZE=128 ;;
     *) echo "Invalid choice. Exiting."; exit 1 ;;
   esac

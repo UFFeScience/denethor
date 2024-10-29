@@ -1,5 +1,7 @@
-from denethor.database.repository.BaseRepository import *
-from denethor.database.models import  Workflow, WorkflowActivity
+from sqlalchemy.orm import Session
+from denethor.database.repository.BaseRepository import BaseRepository
+from denethor.database.models.Workflow import  Workflow
+from denethor.database.models.WorkflowActivity import  WorkflowActivity
 
 class WorkflowActivityRepository(BaseRepository):
     def __init__(self, session: Session):

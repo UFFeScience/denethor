@@ -1,5 +1,6 @@
-from denethor.database.repository.BaseRepository import *
-from denethor.database.models import Statistics
+from sqlalchemy.orm import Session
+from denethor.database.repository.BaseRepository import BaseRepository
+from denethor.database.models.Statistics import Statistics
 
 class StatisticsRepository(BaseRepository):
     def __init__(self, session: Session):

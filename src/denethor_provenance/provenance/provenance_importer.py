@@ -1,6 +1,41 @@
-from denethor.database.models import Provider, ProviderConfiguration, Workflow, WorkflowActivity, Statistics
-from denethor.database.repository.BaseRepository import *
 from . import aws_log_retriever as alr, aws_log_interpreter as ali
+from denethor.database.models.Provider import Provider
+from denethor.database.models.ProviderConfiguration import ProviderConfiguration
+from denethor.database.models.Workflow import Workflow
+from denethor.database.models.WorkflowActivity import WorkflowActivity
+from denethor.database.models.File import File
+from denethor.database.models.ExecutionFile import ExecutionFile
+from denethor.database.models.Statistics import Statistics
+from denethor.database.models.ExecutionStatistics import ExecutionStatistics
+from denethor.database.models.ServiceExecution import ServiceExecution
+
+from denethor.database.repository.ProviderRepository import ProviderRepository
+from denethor.database.repository.ProviderConfigurationRepository import ProviderConfigurationRepository
+from denethor.database.repository.WorkflowRepository import WorkflowRepository
+from denethor.database.repository.WorkflowActivityRepository import WorkflowActivityRepository
+from denethor.database.repository.FileRepository import FileRepository
+from denethor.database.repository.ExecutionFileRepository import ExecutionFileRepository
+from denethor.database.repository.StatisticsRepository import StatisticsRepository
+from denethor.database.repository.ExecutionStatisticsRepository import ExecutionStatisticsRepository
+from denethor.database.repository.ServiceExecutionRepository import ServiceExecutionRepository
+
+
+from denethor.database import conn
+
+# Instânciando a sessão do banco de dados
+session = conn.Connection().get_session()
+
+
+# Instânciando as classes de repositórios
+provider_repo = ProviderRepository(session)
+provider_configuration_repo = ProviderConfigurationRepository(session)
+workflow_repo = WorkflowRepository(session)
+workflow_activity_repo = WorkflowActivityRepository(session)
+file_repo = FileRepository(session)
+execution_file_repo = ExecutionFileRepository(session)
+statistics_repo = StatisticsRepository(session)
+execution_statistics_repo = ExecutionStatisticsRepository(session)
+service_execution_repo = ServiceExecutionRepository(session)
 
 # params = {
 #     'execution_id': execution_id,

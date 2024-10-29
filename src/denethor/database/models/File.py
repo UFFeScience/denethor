@@ -10,7 +10,5 @@ class File(BaseModel):
     file_size = Column(Float)
     file_hash_code = Column(String)
 
-    task_files = relationship("TaskFile", back_populates="file")    
-    
     def __str__(self):
         return (f"[{self.file_id}]={self.file_name} ({self.file_size} bytes)")

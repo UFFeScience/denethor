@@ -1,5 +1,6 @@
-from denethor.database.repository.BaseRepository import *
-from denethor.database.models import ProviderConfiguration
+from sqlalchemy.orm import Session
+from denethor.database.repository.BaseRepository import BaseRepository
+from denethor.database.models.ProviderConfiguration import ProviderConfiguration
 
 class ProviderConfigurationRepository(BaseRepository):
     def __init__(self, session: Session):

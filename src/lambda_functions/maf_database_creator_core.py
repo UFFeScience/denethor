@@ -120,13 +120,14 @@ def write_maf_database(subtrees: list, maf_database: dict, max_maf: int, output_
         "maf_database": sorted_maf_database
     }
     
-    mafdb_name = generate_identifier(file_data)
-    mafdb_file = os.path.join(output_path, f'mafdb_{mafdb_name}.json')
+    mafdb_identifier = generate_identifier(file_data)
+    mafdb_name = f"mafdb_{mafdb_identifier}.json"
+    mafdb_file = os.path.join(output_path, mafdb_name)
 
     with open(mafdb_file, 'w') as f:
         json.dump(file_data, f, indent=4)
     
-    return mafdb_file
+    return mafdb_name
 
 
 def generate_identifier(data_dict: dict) -> str:

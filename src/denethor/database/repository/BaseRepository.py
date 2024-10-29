@@ -1,6 +1,5 @@
 from typing import Tuple, Any
 from sqlalchemy.orm import Session
-from denethor.database.repository import ProviderRepository, ProviderConfigurationRepository, WorkflowRepository, WorkflowActivityRepository, FileRepository, ExecutionFileRepository, StatisticsRepository, ExecutionStatisticsRepository, ServiceExecutionRepository
 
 class BaseRepository:
     def __init__(self, session: Session, model: type):
@@ -42,19 +41,3 @@ class BaseRepository:
         instance = self.get_by_id(id)
         self.db.delete(instance)
         self.db.commit()
-
-from denethor.database import conn
-
-# Instânciando a sessão do banco de dados
-session = conn.Connection().get_session()
-
-# Instânciando as classes de repositórios
-provider_repo = ProviderRepository(session)
-provider_configuration_repo = ProviderConfigurationRepository(session)
-workflow_repo = WorkflowRepository(session)
-workflow_activity_repo = WorkflowActivityRepository(session)
-file_repo = FileRepository(session)
-execution_file_repo = ExecutionFileRepository(session)
-statistics_repo = StatisticsRepository(session)
-execution_statistics_repo = ExecutionStatisticsRepository(session)
-service_execution_repo = ServiceExecutionRepository(session)

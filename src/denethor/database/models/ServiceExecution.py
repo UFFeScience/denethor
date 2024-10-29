@@ -29,7 +29,7 @@ class ServiceExecution(BaseModel):
     execution_statistics = relationship('ExecutionStatistics')
     activity = relationship('WorkflowActivity')
     provider = relationship('Provider')
-    configuration = relationship('ProviderConfiguration')
+    provider_configuration = relationship('ProviderConfiguration')
 
     def __str__(self):
         return (

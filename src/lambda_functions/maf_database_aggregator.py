@@ -1,4 +1,4 @@
-import timeit, json
+import os, timeit, json
 import maf_database_creator_core as mdcc
 from denethor_utils import file_utils as dfu, log_handler as dlh, utils as du, aws_utils as dau
 
@@ -20,7 +20,7 @@ def handler(event, context):
     s3_params = {
         'env_name': execution_env.get('env_name'),
         'bucket': bucket_config.get('bucket_name'),
-        'input_key': bucket_config.get('key_subtree_files'),
+        'input_key': bucket_config.get('key_mafdb_files'),
         'output_key': bucket_config.get('key_mafdb_files')
     }
     
@@ -95,8 +95,9 @@ def handler(event, context):
     subtrees = []
     
     # open input_file and read the data
-    for input_file in input_fles:
-        with open(input_file, 'r') as f:
+    for input_file_name in input_fles:
+        file = os.path.join(INPUT_PATH, input_file_name)
+        with open(file, 'r') as f:
             file_data = json.load(f)
             file_subtrees = file_data.get('subtrees')
             subtrees.append(file_subtrees)
@@ -129,6 +130,9 @@ def handler(event, context):
     maf_time_ms = (end_time - start_time) * 1000
     
     logger.info(f'MAF_DATABASE_AGGREGATOR RequestId: {request_id}\t Duration: {maf_time_ms} ms\t InputLength: {len(maf_databases)}\t MaxMaf: {final_max_maf}\t MafDatabase: {final_maf_database}')
+
+    # Upload output files ##
+    dau.handle_produced_files(request_id, final_mafdb_file, OUTPUT_PATH, s3_params)
 
     return {
             "request_id" : request_id,

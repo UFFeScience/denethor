@@ -9,7 +9,8 @@ import denethor_provenance.provenance.provenance_importer as dprov
 # sys.path.append("../src")
 # from denethor_utils import log_handler as dlh
 
-FORCE_ENV = env.LOCAL
+# FORCE_ENV = env.LOCAL
+FORCE_ENV = ''
 
 # Obter o caminho do arquivo atual
 current_file = Path(__file__).resolve()
@@ -52,46 +53,47 @@ def main():
     end_time_ms = None
 
 
-    # execution_env = du.get_env_config_by_name("local", env_configs)
+    ########################################################################
+    # FOR LOCAL TESTING!!!!
+    # Comment the following lines to run the workflow as usual
+    ########################################################################
+        
+    from datetime import datetime, timezone
 
+    # Define the start and end time parameters for log retrieval in aws cloudwatch
+    
+    BRAZIL_TZ = "-03:00"
+    UTC_TZ = "-00:00"
+    start_time_human = "2024-10-25T13:00:49" + BRAZIL_TZ
+    end_time_human   = "2024-10-25T13:08:35" + BRAZIL_TZ
+
+    # Convert the human-readable time to milliseconds
+    start_time_ms = du.convert_str_to_ms(start_time_human)
+    end_time_ms = du.convert_str_to_ms(end_time_human)
+
+    # Adds a margin of 10 seconds before and after the interval to ensure that all logs are captured
+    start_time_ms -= 10000
+    end_time_ms += 10000
+
+    # execution_id = du.generate_workflow_execution_id(start_time_ms)
+    # execution_env = du.get_env_config_by_name("local", env_configs)
+    # import denethor_utils.log_handler as dlh
     # logger = dlh.get_logger(execution_id, execution_env)
     # du.log_env_info(execution_env, logger)
 
-    #########################################################################
-    # FOR LOCAL TESTING!!!!
-    # Comment the following lines to run the workflow as usual
-    #########################################################################
-        
-    # from datetime import datetime, timezone
-
-    # # Define the start and end time parameters for log retrieval in aws cloudwatch
-    
-    # BRAZIL_TZ = "-03:00"
-    # UTC_TZ = "-00:00"
-    # start_time_human = "2024-08-01T21:54:18" + BRAZIL_TZ
-    # end_time_human   = "2024-08-01T23:25:49" + BRAZIL_TZ
-
-    # # Convert the human-readable time to milliseconds
-    # start_time_ms = du.convert_str_to_ms(start_time_human)
-    # end_time_ms = du.convert_str_to_ms(end_time_human)
-
-    # # Adds a margin of 10 seconds before and after the interval to ensure that all logs are captured
-    # start_time_ms -= 10000
-    # end_time_ms += 10000
-
-    # # Setting the active steps for testing
-    # # ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
-    # action = "import_provenance"
-    # # activities = ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
+    # Setting the active steps for testing
+    # ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
+    action = "import_provenance"
+    activities = ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
     # activities = ["maf_database_aggregator"]
 
-    # for step in workflow_steps:
-    #     if step['action'] == action and step['activity'] in activities:
-    #         step['active'] = True
-    #     else:
-    #         step['active'] = False
+    for step in workflow_steps:
+        if step['action'] == action and step['activity'] in activities:
+            step['active'] = True
+        else:
+            step['active'] = False
 
-    #########################################################################
+    ########################################################################
 
 
     # tree_path = "data/executions/tree"

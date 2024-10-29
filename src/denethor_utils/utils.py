@@ -8,7 +8,7 @@ def generate_uuid():
 
 def generate_workflow_execution_id(start_time_ms):
     # return 'exec_' + convert_ms_to_str(start_time_ms).replace(':', '-').replace('T', '_').replace('Z', '').replace('+00-00', '_UTC')
-    return 'weid_' + str(start_time_ms)
+    return 'weid_' + str(int(start_time_ms))
 
 
 def get_request_id(context):

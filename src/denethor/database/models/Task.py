@@ -12,4 +12,4 @@ class Task(Base):
     output_list = Column(Text, nullable=False)
 
     # Define relationships if needed
-    activity = relationship("WorkflowActivity", back_populates="tasks")
+    # activity = relationship("WorkflowActivity", back_populates="tasks")

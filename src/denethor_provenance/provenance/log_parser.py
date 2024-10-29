@@ -1,6 +1,15 @@
 import re
 from denethor_utils import utils as du
-from denethor.database.models import ServiceExecution, ExecutionFile, File, Statistics, ExecutionStatistics
+
+from denethor.database.models.Provider import Provider
+from denethor.database.models.ProviderConfiguration import ProviderConfiguration
+from denethor.database.models.Workflow import Workflow
+from denethor.database.models.WorkflowActivity import WorkflowActivity
+from denethor.database.models.File import File
+from denethor.database.models.ExecutionFile import ExecutionFile
+from denethor.database.models.Statistics import Statistics
+from denethor.database.models.ExecutionStatistics import ExecutionStatistics
+from denethor.database.models.ServiceExecution import ServiceExecution
 
 def find_log_type(message, stats_attributes):
     # verificar o primeiro elemento da mensagem
