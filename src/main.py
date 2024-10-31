@@ -64,8 +64,8 @@ def main():
     
     BRAZIL_TZ = "-03:00"
     UTC_TZ = "-00:00"
-    start_time_human = "2024-10-25T13:00:49" + BRAZIL_TZ
-    end_time_human   = "2024-10-25T13:08:35" + BRAZIL_TZ
+    start_time_human = "2024-10-25T16:07:57" + UTC_TZ
+    end_time_human   = "2024-10-25T16:08:35" + UTC_TZ
 
     # Convert the human-readable time to milliseconds
     start_time_ms = du.convert_str_to_ms(start_time_human)

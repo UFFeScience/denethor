@@ -1,4 +1,4 @@
---# <task_id> <task_type 0-VM 1-FX> <vm_cpu_time> <n_input> [<id_input> ...] <n_output> [<id_output> ...]
+--#<task_id> <task_type__0-VM__1-FX> <vm_cpu_time> <n_input> [<id_input>...] <n_output> [<id_output>...]
 SELECT DISTINCT 
 	ta.task_id, --se.se_id, se.activity_id,
 	task_type,

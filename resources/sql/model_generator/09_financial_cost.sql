@@ -1,4 +1,4 @@
---# <task_id> <config_id> <task_cost>
+--#<task_id> <config_id> <task_cost>
 SELECT 
 	ta.task_id,
 	se.configuration_id AS config_id,

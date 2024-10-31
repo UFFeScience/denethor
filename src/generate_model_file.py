@@ -3,11 +3,15 @@ from denethor.database.conn import Connection
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
-
+#config basica: 128 + 256 + 512 + 128
 # WEID = 'weid_1724184708846' #002
-WEID = 'weid_1724428668735' #005
+# WEID = 'weid_1724428668735' #005
 # WEID = 'weid_1724433692051' #010
 # WEID = 'weid_1722560049311' #050
+
+# config: 256 + 512 + 1024 + 128
+WEID = 'weid_1729872467000' #005
+
 
 SQL_FILES_PATH = 'resources/sql/model_generator'  # Diretório onde os arquivos SQL estão localizados
 

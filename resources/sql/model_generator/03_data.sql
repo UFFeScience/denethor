@@ -1,4 +1,6 @@
---# <data_id> <data_size> <read_time_avg> <write_time_avg> <is_static 0-dynamic 1-static> <n_source_devices - 0 if dynamic > [<device_id> ... ]
+--#<data_id> <data_size> <read_time_avg> <write_time_avg> <is_static> <n_source_devices> [<device_id>...]
+--is_static: 0-dynamic / 1-static
+--n_source_devices: 0 if dynamic
 WITH 
 produced_file AS (
 	SELECT

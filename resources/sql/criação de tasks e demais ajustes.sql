@@ -34,19 +34,23 @@ with service_execution_with_input_output_list as (
 insert into task(activity_id, input_count, input_list, output_count, output_list)
 select 	activity_id, input_count, input_list, output_count, output_list from (
 	SELECT DISTINCT
-			activity_id,
-			first_input_id,
-			first_output_id,
-			input_count,
-			output_count,
-			input_list,
-			output_list
-	FROM service_execution_with_input_output_list
+			t1.activity_id,
+			t1.first_input_id,
+			t1.first_output_id,
+			t1.input_count,
+			t1.output_count,
+			t1.input_list,
+			t1.output_list
+	FROM service_execution_with_input_output_list t1
+	WHERE NOT EXISTS (select 1 from task ta 
+						where t1.activity_id = ta.activity_id and
+							  t1.input_list  = ta.input_list and
+							  t1.output_list = ta.output_list)
 	ORDER BY activity_id, first_input_id
 );
 
 
-select * from task;
+select * from task order by task_id desc;
 
 
 --update de service execution com os novos task_id
@@ -82,14 +86,18 @@ with service_execution_with_input_output_list as (
 	GROUP BY se.se_id ,se.activity_id
 	ORDER BY se_id, activity_id, first_input_id
 )
---select * from service_execution_with_input_output_list;
+--select * from service_execution_with_input_output_list t1
 update service_execution se
 set task_id = (select ta.task_id 
-				from service_execution_with_input_output_list t1
-				join task ta on ta.activity_id = t1.activity_id and ta.input_list = t1.input_list and ta.output_list = t1.output_list
-				where t1.se_id = se.se_id
+					from service_execution_with_input_output_list t1
+					join task ta on ta.activity_id = t1.activity_id and 
+									ta.input_list  = t1.input_list and
+									ta.output_list = t1.output_list
+					where t1.se_id = se.se_id
 				)
+where se.task_id = -1
 ;
 
-
+select * from task
+order by 1 desc;
 select distinct se_id, task_id from service_execution order by 1;
