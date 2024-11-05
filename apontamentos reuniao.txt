@@ -27,4 +27,18 @@
  ---> no modelo parece que o tempo da função está tudo junto (exec. + leitura + escrita) por config k
 - no modela (2a parte) não leva em conta de onde os dados são lidos ou escritos (vm ou fx)
 
-- executar as funçõe pra cada config
+
+01/11/2024
+- executar as funções pra cada config
+- todas as tasks devem aparecer em todas as configurações (left join para inserir um limite superior de tempo quando não houver)
+- fazer a media de tempo e custo de tasks na mesma config
+- ordernar por config id
+
+- investigar pq config 2 ficou mais lenta
+ 1	2	1.93178	
+ --> R. Tempo de init_duration
+
+investigar none em read TIME
+377	597	None	0.35784697750001015	0	0	[denethor_bucket]
+-- R.
+- obs geral: usar a vm pra chamar a função (proxy)

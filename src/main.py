@@ -58,77 +58,44 @@ def main():
     # Comment the following lines to run the workflow as usual
     ########################################################################
         
-    from datetime import datetime, timezone
+    # from datetime import datetime, timezone
 
-    # Define the start and end time parameters for log retrieval in aws cloudwatch
+    # # Define the start and end time parameters for log retrieval in aws cloudwatch
     
-    BRAZIL_TZ = "-03:00"
-    UTC_TZ = "-00:00"
-    start_time_human = "2024-10-25T16:07:57" + UTC_TZ
-    end_time_human   = "2024-10-25T16:08:35" + UTC_TZ
+    # BRAZIL_TZ = "-03:00"
+    # UTC_TZ = "-00:00"
+    # start_time_human = "2024-10-25T16:07:57" + UTC_TZ #005 nova config
+    # end_time_human   = "2024-10-25T16:08:35" + UTC_TZ
 
-    # Convert the human-readable time to milliseconds
-    start_time_ms = du.convert_str_to_ms(start_time_human)
-    end_time_ms = du.convert_str_to_ms(end_time_human)
+    # # Convert the human-readable time to milliseconds
+    # start_time_ms = du.convert_str_to_ms(start_time_human)
+    # end_time_ms = du.convert_str_to_ms(end_time_human)
 
-    # Adds a margin of 10 seconds before and after the interval to ensure that all logs are captured
-    start_time_ms -= 10000
-    end_time_ms += 10000
+    # # Adds a margin of 10 seconds before and after the interval to ensure that all logs are captured
+    # start_time_ms -= 10000
+    # end_time_ms += 10000
 
-    # execution_id = du.generate_workflow_execution_id(start_time_ms)
-    # execution_env = du.get_env_config_by_name("local", env_configs)
-    # import denethor_utils.log_handler as dlh
-    # logger = dlh.get_logger(execution_id, execution_env)
-    # du.log_env_info(execution_env, logger)
+    # # execution_id = du.generate_workflow_execution_id(start_time_ms)
+    # # execution_env = du.get_env_config_by_name("local", env_configs)
+    # # import denethor_utils.log_handler as dlh
+    # # logger = dlh.get_logger(execution_id, execution_env)
+    # # du.log_env_info(execution_env, logger)
 
-    # Setting the active steps for testing
-    # ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
-    action = "import_provenance"
-    activities = ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
-    # activities = ["maf_database_aggregator"]
+    # # Setting the active steps for testing
+    # # ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
+    # action = "import_provenance"
+    # activities = ["tree_constructor", "subtree_constructor", "maf_database_creator", "maf_database_aggregator"]
+    # # activities = ["maf_database_aggregator"]
 
-    for step in workflow_steps:
-        if step['action'] == action and step['activity'] in activities:
-            step['active'] = True
-        else:
-            step['active'] = False
+    # for step in workflow_steps:
+    #     if step['action'] == action and step['activity'] in activities:
+    #         step['active'] = True
+    #     else:
+    #         step['active'] = False
 
     ########################################################################
 
 
-    # tree_path = "data/executions/tree"
-    # subtree_path = "data/executions/subtree"
-    # dfu.remove_files(tree_path) #TODO: provisório, remover após ajustar a execução local
-    # dfu.remove_files(subtree_path) #TODO: provisório, remover após ajustar a execução local
-
-
-
-    # testing_execution = False
-    # # testing_execution = True
-
-    # if testing_execution:
-
-    #     test_path = 'src/lambda_functions/tests/json'
-        
-    #     #open src/lambda_functions/tests/json/tree_constructor_10.json
-    #     with open(os.path.join(test_path, 'subtree_constructor_10.json'), 'r') as f:
-    #         tree_constructor_10 = json.load(f)
-    #         data = [{
-    #             "request_id" : "test_tree",
-    #             "produced_data" : tree_constructor_10['all_input_data']
-    #         }]
-    #         workflow_produced_data['tree_files'] = data
-
-    #     #open src/lambda_functions/tests/json/maf_db_creator_01st_x_05.json
-    #     with open(os.path.join(test_path, 'maf_db_creator_01st_x_05.json'), 'r') as f:
-    #         maf_db_creator_01st_x_05 = json.load(f)
-    #         data = [{
-    #             "request_id" : "test_subtree",
-    #             "produced_data" : maf_db_creator_01st_x_05['all_input_data']
-    #         }]
-    #         workflow_produced_data['subtree_files'] = data
-
-    
     execution_id = du.generate_workflow_execution_id(start_time_ms)
     
     print('>>>>>>> Main program started at: ', du.now_str())
@@ -137,6 +104,8 @@ def main():
     print('>>>>>>> Execution ID: ', execution_id)
     print('>>>>>>> Working directory: ', os.getcwd())
     
+    executed_activities = []
+
     # For each step in the workflow
     for step in workflow_steps:
 
@@ -144,6 +113,7 @@ def main():
         action = step.get('action')
         activity = step.get('activity')
         env_name = step.get('execution_env')
+        
         if FORCE_ENV:
             env_name = FORCE_ENV
         # Get the execution environment configuration by the name set in the step
@@ -154,85 +124,95 @@ def main():
             print(f"\n>>> Step [{step_id}], action: {action}, activity: {activity} is inactive. Skipping...")
             continue
 
-        if action != 'execute' and action != 'import_provenance':
+        if action != 'execute':
             raise ValueError(f"Invalid action: {action} at step: {step_id} of activity: {activity}")
         
-        if action == 'execute':
-            
-            strategy = step.get('strategy')
+        strategy = step.get('strategy')
 
-            if strategy != 'for_each_input' and strategy != 'for_all_inputs':
-                raise ValueError(f"Invalid strategy: {strategy} at step: {step_id} of activity: {activity}")
+        if strategy != 'for_each_input' and strategy != 'for_all_inputs':
+            raise ValueError(f"Invalid strategy: {strategy} at step: {step_id} of activity: {activity}")
 
-            input_param = None
-            output_param = None
-            step_params = step.get('params')
-            if step_params:
-                input_param = step_params.get('input_param')
-                output_param = step_params.get('output_param')
-            
-            # Validation of input parameter
-            if step_params and input_param is None:
-                raise ValueError(f"Invalid input parameter: {input_param} for step: {step_id}")
-            
-            # recuperar os dados runtime indicados por 'input_param'
-            # input_data será uma lista dos outputs produzidos pelas ativações para uma atividade
-            input_data = []
-            if input_param == 'input_files':
-                input_data = workflow_runtime_data['input_files']
-            else:
-                for param, data in workflow_runtime_data.items():
-                    if param == input_param:
-                        input_data = [item['data'] for item in data]
-                        break
-            
-            # Validation of input data
-            if input_data is None:
-                raise ValueError(f"Invalid input data: {input_data} for step_params: {step_params} at step: {step_id}")
-            
-            # Workflow parameters
-            step_params = {
-                'execution_id': execution_id,
-                'start_time_ms': start_time_ms,
-                'end_time_ms': end_time_ms,
-                'action': action,
-                'activity': activity,
-                'execution_env': execution_env,
-                'strategy': strategy,
-                'all_input_data': input_data
-            }
-            
-            
-            # Execute the activity
-            results = dem.execute(step_params)
-            
-            # Save the produced data in the dictionary
-            workflow_runtime_data[output_param] = results
-
-        elif action == 'import_provenance':
-
-            # Mesmo que o ambiente de execução seja local, é necessário obter as informações de log da AWS
-            # com isso, tempo que pegar o env_config da AWS
-            aws_env = du.get_env_config_by_name(denv.AWS_LAMBDA, env_configs)
-            
-            step_params = {
-                'execution_id': execution_id,
-                'start_time_ms': start_time_ms,
-                'end_time_ms': end_time_ms,
-                'activity': activity,
-                'log_path': aws_env.get('log_config').get('path'),
-                'log_file': aws_env.get('log_config').get('file_name'),
-                'providers': provider,
-                'workflow': workflow,
-                'statistics': statistics
-            }
-            dprov.import_provenance_from_aws(step_params)
+        input_param = None
+        output_param = None
+        step_params = step.get('params')
+        if step_params:
+            input_param = step_params.get('input_param')
+            output_param = step_params.get('output_param')
         
+        # Validation of input parameter
+        if step_params and input_param is None:
+            raise ValueError(f"Invalid input parameter: {input_param} for step: {step_id}")
+        
+        # recuperar os dados runtime indicados por 'input_param'
+        # input_data será uma lista dos outputs produzidos pelas ativações para uma atividade
+        input_data = []
+        if input_param == 'input_files':
+            input_data = workflow_runtime_data['input_files']
+        else:
+            for param, data in workflow_runtime_data.items():
+                if param == input_param:
+                    input_data = [item['data'] for item in data]
+                    break
+        
+        # Validation of input data
+        if input_data is None:
+            raise ValueError(f"Invalid input data: {input_data} for step_params: {step_params} at step: {step_id}")
+        
+        # Workflow parameters
+        step_params = {
+            'execution_id': execution_id,
+            'start_time_ms': start_time_ms,
+            'end_time_ms': end_time_ms,
+            'action': action,
+            'activity': activity,
+            'execution_env': execution_env,
+            'strategy': strategy,
+            'all_input_data': input_data
+        }
+        
+        # Execute the activity
+        results = dem.execute(step_params)
+        
+        # Save the produced data in the dictionary
+        workflow_runtime_data[output_param] = results
+
+        executed_activities.append(activity)
 
         print(f"\n>>> {activity} | action: {action} completed.")
 
 
-    print('******* Workflow execution finished at: ', du.now_str(), ' *******')
+
+    #################################
+    #  Import provenance data
+    #################################
+    
+    # Mesmo que o ambiente de execução seja local, é necessário obter as informações de log da AWS
+    # com isso, tempo que pegar o env_config da AWS
+    aws_env = du.get_env_config_by_name(denv.AWS_LAMBDA, env_configs)
+        
+    provenance_imported_activities = []
+
+    for exec_activity in executed_activities:
+        step_params = {
+            'execution_id': execution_id,
+            'start_time_ms': start_time_ms,
+            'end_time_ms': end_time_ms,
+            'activity': exec_activity,
+            'log_path': aws_env.get('log_config').get('path'),
+            'log_file': aws_env.get('log_config').get('file_name'),
+            'providers': provider,
+            'workflow': workflow,
+            'statistics': statistics
+        }
+
+        dprov.import_provenance_from_aws(step_params)
+        provenance_imported_activities.append(exec_activity)
+
+    print('******* Workflow execution ', execution_id, ' finished at: ', du.now_str(), ' *******')
+    print('******* Executed activities: ', executed_activities, ' *******')
+    print('******* Provenance imported activities: ', provenance_imported_activities, ' *******')
+
+
 
 
 
