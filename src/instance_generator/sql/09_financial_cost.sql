@@ -26,6 +26,5 @@ SELECT  distinct t1.task_id,
 		'99999' AS task_cost,
 		00000 AS task_count
 FROM provider_configuration pc, task_cost t1
-WHERE (t1.task_id, pc.configuration_id) NOT IN (
-		SELECT task_id, config_id FROM task_cost)
+WHERE (t1.task_id, pc.configuration_id) NOT IN (SELECT task_id, config_id FROM task_cost)
 ORDER BY task_id, activity_id, config_id;

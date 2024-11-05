@@ -41,13 +41,9 @@ def replace_weid(weid_str, sql):
     return sql
 
 
-def execute_sql_with_weid(weid_str, sql_file, sql_file_path, output_file, wirte_comments, session):
-    
-    print(f"Executing {sql_file} with weid {weid_str}")
+def execute_sql_with_weid(weid_str, sql_file, out_file, wirte_comments, session):
 
-    sql_file_path = os.path.join(sql_file_path, sql_file)
-
-    with open(sql_file_path, 'r') as file:
+    with open(sql_file, 'r') as file:
         sql = file.read()
     
     # separate comments and code
@@ -60,13 +56,13 @@ def execute_sql_with_weid(weid_str, sql_file, sql_file_path, output_file, wirte_
         result = session.execute(text(sql))
         results = result.fetchall()
         
-        with open(output_file, 'a') as out_file:
+        with open(out_file, 'a') as file:
             # out_file.write(f"-----------{sql_file}\n")
             if wirte_comments:
-                out_file.write(comments + '\n')
+                file.write(comments + '\n')
             for row in results:
-                out_file.write('\t'.join(map(str, row)) + '\n')
-            out_file.write('\n')
+                file.write('\t'.join(map(str, row)) + '\n')
+            file.write('\n')
     
     except SQLAlchemyError as e:
         print(f"Error executing {sql_file}: {e}")

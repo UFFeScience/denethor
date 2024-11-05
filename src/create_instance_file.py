@@ -13,13 +13,15 @@ from instance_generator import utils as igu
 # WEID = 'weid_1729872467000' #005
 
 # 002 / config n1 + n2
-# WEID = ['weid_1730480017077', 'weid_1730474091468']
+WEID = ['weid_1730480017077', 'weid_1730474091468']
 
 # 005 / config n1 + n2
-WEID = ['weid_1730479857730', 'weid_1729872467000']
+# WEID = ['weid_1730479857730', 'weid_1729872467000']
 
 
 SQL_FILES_PATH = 'src/instance_generator/sql'  # Diretório onde os arquivos SQL estão localizados
+
+INSTANCE_FILE_PATH = 'resources/data/instance_files'  # Diretório onde os arquivos de instância serão salvos
 
 WRITE_COMMENTS_TO_FILE = True
 
@@ -37,16 +39,22 @@ def main():
 
     # execute sql instance count
     count = igu.execute_sql_instance_count(weid_str, session)
-    OUTPUT_FILE_NAME = f'model_instance_{count}_{weid_str}.txt'.replace(',', '__').replace("'", '')
+    out_file_name = f'model_instance_{count}_{weid_str}.txt'.replace(',', '__').replace("'", '')
     
-    if os.path.exists(OUTPUT_FILE_NAME):
-        os.remove(OUTPUT_FILE_NAME)
+    out_file = os.path.join(INSTANCE_FILE_PATH, out_file_name)
+
+    if os.path.exists(out_file):
+        os.remove(out_file)
     
     # Listar todos os arquivos .sql no diretório especificado e ordenar por nome
     sql_files = sorted([f for f in os.listdir(SQL_FILES_PATH) if f.endswith('.sql')])
 
-    for sql_file in sql_files:
-        igu.execute_sql_with_weid(weid_str, sql_file, SQL_FILES_PATH, OUTPUT_FILE_NAME, WRITE_COMMENTS_TO_FILE, session)
+    for sql_file_name in sql_files:
+        
+        print(f"Executing {sql_file_name} with weid {weid_str}")
+        sql_file = os.path.join(SQL_FILES_PATH, sql_file_name)
+
+        igu.execute_sql_with_weid(weid_str, sql_file, out_file, WRITE_COMMENTS_TO_FILE, session)
 
 if __name__ == "__main__":
     main()
