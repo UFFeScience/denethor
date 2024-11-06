@@ -13,10 +13,10 @@ from instance_generator import utils as igu
 # WEID = 'weid_1729872467000' #005
 
 # 002 / config n1 + n2
-WEID = ['weid_1730480017077', 'weid_1730474091468']
+# WEID = ['weid_1730480017077', 'weid_1730474091468']
 
 # 005 / config n1 + n2
-# WEID = ['weid_1730479857730', 'weid_1729872467000']
+WEID = ['weid_1730479857730', 'weid_1729872467000']
 
 
 SQL_FILES_PATH = 'src/instance_generator/sql'  # Diretório onde os arquivos SQL estão localizados
