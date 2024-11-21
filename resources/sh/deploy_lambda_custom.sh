@@ -37,12 +37,21 @@ function choose_memory_size() {
   MEMORY_SIZE=${memory_size:-$DEFAULT_MEMORY_SIZE}
 }
 
+# Function to ask if the user wants to append memory size to the function name
+function choose_append_memory() {
+  read -p "Append memory size to function name? (y/n): " append_memory
+  if [[ "$append_memory" =~ ^[Yy]$ ]]; then
+    APPEND_MEMORY=true
+  else
+    APPEND_MEMORY=false
+  fi
+}
 
 # Call the functions to get user inputs
 choose_function_name
 choose_timeout
 choose_memory_size
-
+choose_append_memory
 
 # Call the deploy_lambda.sh script with the user inputs
-./deploy_lambda.sh -f $FUNCTION_NAME -t $TIMEOUT -m $MEMORY_SIZE
+./deploy_lambda.sh -f $FUNCTION_NAME -t $TIMEOUT -m $MEMORY_SIZE -a $APPEND_MEMORY
