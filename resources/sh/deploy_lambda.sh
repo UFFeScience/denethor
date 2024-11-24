@@ -8,7 +8,7 @@
 # If append_memory is true, the memory size is appended to the function name,
 # indicating the memory size used by the function, i.e., "configuration"
 
-# The script uses the latest versrions of the base and denethor layers to deploy.
+# The script uses the latest versrions of the 'base' and 'denethor' layers.
 
 ##################################################################################
 
@@ -150,11 +150,11 @@ ORIGINAL_DIR=$(pwd)
 cd $DENETHOR_DIR || { echo "Error: Cannot change to required directory $DENETHOR_DIR"; exit 1; }
 
 # Remove existing lambda function directory and recreate it
-rm -Rf .lambda/lambda_functions/$function_name/ || { echo "Error: Cannot remove existing lambda function directory"; exit 1; }
-mkdir -p .lambda/lambda_functions/$function_name/ || { echo "Error: Cannot create lambda function directory"; exit 1; }
+rm -Rf .lambda/lambda_functions/$function_name/
+mkdir -p .lambda/lambda_functions/$function_name/
 
 # Copy lambda function files
-cp -R src/lambda_functions/${function_name}* .lambda/lambda_functions/$function_name/ || { echo "Error: Cannot copy lambda function files"; exit 1; }
+cp -R src/lambda_functions/${function_name}* .lambda/lambda_functions/$function_name/ || { echo "Error: Cannot copy $function_name files"; exit 1; }
 
 # Copy additional dependency files if any
 for dep in ${dependencies[$function_name]}; do
@@ -162,7 +162,7 @@ for dep in ${dependencies[$function_name]}; do
 done
 
 # Change to the lambda function directory
-cd .lambda/lambda_functions/$function_name/ || { echo "Error: Cannot change to lambda function directory"; exit 1; }
+cd .lambda/lambda_functions/$function_name/
 
 # Zip the lambda function
 zip ${function_name}.zip * || { echo "Error: Cannot zip lambda function"; exit 1; }
