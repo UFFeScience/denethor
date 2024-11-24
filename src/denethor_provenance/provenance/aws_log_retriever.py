@@ -22,7 +22,8 @@ def retrieve_logs_from_aws(params):
             - execution_id (str): The execution ID.
             - start_time_ms (int): The start timestamp in milliseconds.
             - end_time_ms (int, optional): The end timestamp in milliseconds. Defaults to the current timestamp.
-            - activity (list): A list of lambda function names.
+            - activity (str): The name of the activity (lambda function).
+            - configuration_id (int): The configuration ID.
             - log_path (str): The path to save the log files.
             - log_file (str): The name of the log file.
 
@@ -43,13 +44,16 @@ def retrieve_logs_from_aws(params):
         log_filter_end = int(time.time() * 1000)
 
     activity_name = params.get('activity')
+    configuration_id = params.get('configuration_id')
+
+    lambda_function_name = f"{activity_name}_{configuration_id}"
     
     log_path = params.get('log_path')
     log_file = params.get('log_file')
     
     log_file = log_file.replace('[activity_name]', activity_name).replace('[execution_id]', execution_id)
     
-    log_group_name = f"/aws/lambda/{activity_name}"
+    log_group_name = f"/aws/lambda/{lambda_function_name}"
     
     # response = client.filter_log_events(
     #     logGroupName=log_group_name,
@@ -65,7 +69,7 @@ def retrieve_logs_from_aws(params):
     
     save_log_file(logs, log_path, log_file)
 
-    print(f"Logs for function {activity_name} saved to {log_path}/{log_file} in json format")
+    print(f"Logs for function {lambda_function_name} saved to {log_path}/{log_file} in json format")
 
 
 

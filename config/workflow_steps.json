@@ -4,6 +4,7 @@
         "action": "execute",
         "activity": "tree_constructor",
         "execution_env": "aws_lambda",
+        "configuration": 128,
         "strategy": "for_each_input",
         "params": {
             "input_param": "input_files",
@@ -16,6 +17,7 @@
         "action": "execute",
         "activity": "subtree_constructor",
         "execution_env": "aws_lambda",
+        "configuration": 128,
         "strategy": "for_each_input",
         "params": {
             "input_param": "tree_files",
@@ -28,6 +30,7 @@
         "action": "execute",
         "activity": "maf_database_creator",
         "execution_env": "aws_lambda",
+        "configuration": 128,
         "strategy": "for_each_input",
         "params": {
             "input_param": "subtree_files",
@@ -40,6 +43,7 @@
         "action": "execute",
         "activity": "maf_database_aggregator",
         "execution_env": "aws_lambda",
+        "configuration": 128,
         "strategy": "for_all_inputs",
         "params": {
             "input_param": "intermediate_mafdb_files",

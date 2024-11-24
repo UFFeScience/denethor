@@ -47,6 +47,7 @@ def process_and_save_logs(params):
             - start_time_ms (float): The start time in milliseconds (e.g., 1722560048000.0).
             - end_time_ms (float): The end time in milliseconds (e.g., 1722565559000.0).
             - activity (str): The activity name (e.g., 'tree_constructor').
+            - configuration_id (int): The configuration id used to run the activity (e.g., 128).
             - log_path (str): The path to save the log files.
             - log_file (str): The name of the log file.
             - providers (list): A list of dictionaries containing information about the service providers.
@@ -62,6 +63,8 @@ def process_and_save_logs(params):
     # Workflow runtime parameters
     execution_id = params['execution_id']
 
+    configuration_id = params.get('configuration_id') # ver como usar isso
+    
     # Step params
     activities = params['activity']
     # IF functions is not a list, convert it to a list

@@ -104,8 +104,6 @@ def main():
     print('>>>>>>> Execution ID: ', execution_id)
     print('>>>>>>> Working directory: ', os.getcwd())
     
-    executed_activities = []
-
     # For each step in the workflow
     for step in workflow_steps:
 
@@ -113,6 +111,8 @@ def main():
         action = step.get('action')
         activity = step.get('activity')
         env_name = step.get('execution_env')
+        lambda_configuration_id = step.get('configuration')
+
         
         if FORCE_ENV:
             env_name = FORCE_ENV
@@ -134,13 +134,13 @@ def main():
 
         input_param = None
         output_param = None
-        step_params = step.get('params')
-        if step_params:
-            input_param = step_params.get('input_param')
-            output_param = step_params.get('output_param')
+        params = step.get('params')
+        if params:
+            input_param = params.get('input_param')
+            output_param = params.get('output_param')
         
         # Validation of input parameter
-        if step_params and input_param is None:
+        if params and input_param is None:
             raise ValueError(f"Invalid input parameter: {input_param} for step: {step_id}")
         
         # recuperar os dados runtime indicados por 'input_param'
@@ -156,27 +156,26 @@ def main():
         
         # Validation of input data
         if input_data is None:
-            raise ValueError(f"Invalid input data: {input_data} for step_params: {step_params} at step: {step_id}")
+            raise ValueError(f"Invalid input data: {input_data} for step_params: {params} at step: {step_id}")
         
         # Workflow parameters
-        step_params = {
+        params = {
             'execution_id': execution_id,
             'start_time_ms': start_time_ms,
             'end_time_ms': end_time_ms,
             'action': action,
             'activity': activity,
             'execution_env': execution_env,
+            'configuration_id': lambda_configuration_id,
             'strategy': strategy,
             'all_input_data': input_data
         }
         
         # Execute the activity
-        results = dem.execute(step_params)
+        results = dem.execute(params)
         
         # Save the produced data in the dictionary
         workflow_runtime_data[output_param] = results
-
-        executed_activities.append(activity)
 
         print(f"\n>>> {activity} | action: {action} completed.")
 
@@ -190,14 +189,21 @@ def main():
     # com isso, tempo que pegar o env_config da AWS
     aws_env = du.get_env_config_by_name(denv.AWS_LAMBDA, env_configs)
         
-    provenance_imported_activities = []
+    # For each step in the workflow
+    for step in workflow_steps:
 
-    for exec_activity in executed_activities:
-        step_params = {
+        step_id = step.get('id')
+        action = step.get('action')
+        activity = step.get('activity')
+        env_name = step.get('execution_env')
+        lambda_configuration_id = step.get('configuration')
+
+        params = {
             'execution_id': execution_id,
             'start_time_ms': start_time_ms,
             'end_time_ms': end_time_ms,
-            'activity': exec_activity,
+            'activity': activity,
+            'configuration_id': lambda_configuration_id,
             'log_path': aws_env.get('log_config').get('path'),
             'log_file': aws_env.get('log_config').get('file_name'),
             'providers': provider,
@@ -205,12 +211,11 @@ def main():
             'statistics': statistics
         }
 
-        dprov.import_provenance_from_aws(step_params)
-        provenance_imported_activities.append(exec_activity)
+        dprov.import_provenance_from_aws(params)
 
     print('******* Workflow execution ', execution_id, ' finished at: ', du.now_str(), ' *******')
-    print('******* Executed activities: ', executed_activities, ' *******')
-    print('******* Provenance imported activities: ', provenance_imported_activities, ' *******')
+    # print('******* Executed activities: ', executed_activities, ' *******')
+    # print('******* Provenance imported activities: ', provenance_imported_activities, ' *******')
 
 
 

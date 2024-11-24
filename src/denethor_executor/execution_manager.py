@@ -14,7 +14,8 @@ def execute(params):
         - end_time_ms (int): The end time of the execution in milliseconds.
         - action (str): The name of the action to execute.
         - activity (str): The name of the activity to execute.
-        - execution_env (dict): The execution environment configuration.
+        - execution_env (dict): The execution environment.
+        - configuration_id (dict): The configuration for the activity execution.
         - strategy (str): The execution strategy for the activity.
         - all_input_data (list): The complete input data for the activity execution.
 
