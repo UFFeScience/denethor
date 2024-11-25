@@ -19,9 +19,9 @@ from instance_generator import utils as igu
 WEID = ['weid_1730479857730', 'weid_1729872467000']
 
 
-SQL_FILES_PATH = 'src/instance_generator/sql'  # Diretório onde os arquivos SQL estão localizados
+SQL_FILES_PATH = 'resources/instances/sql/'  # Diretório onde os arquivos SQL estão localizados
 
-INSTANCE_FILE_PATH = 'resources/data/instance_files'  # Diretório onde os arquivos de instância serão salvos
+INSTANCE_FILE_PATH = 'resources/instances/'  # Diretório onde os arquivos de instância serão salvos
 
 WRITE_COMMENTS_TO_FILE = True
 

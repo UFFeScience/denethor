@@ -1,0 +1,3 @@
+AWS_LAMBDA = 'AWS Lambda'
+AWS_EC2 = 'AWS EC2'
+LOCAL = 'Local'

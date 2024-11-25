@@ -1,13 +1,14 @@
 import os, time, json
 from pathlib import Path
-from denethor_utils import env
-from denethor_utils import utils as du, file_utils as dfu, env as denv
-from denethor_executor import execution_manager as dem
-import denethor_provenance.provenance.provenance_importer as dprov
+from denethor import environment as denv
+from denethor import environment
+from denethor.utils import utils as du, file_utils as dfu
+from denethor.executor import execution_manager as dem
+import denethor.provenance.provenance_importer as dprov
 
 # import sys
 # sys.path.append("../src")
-# from denethor_utils import log_handler as dlh
+# from denethor.utils import log_handler as dlh
 
 # FORCE_ENV = env.LOCAL
 FORCE_ENV = ''
@@ -18,33 +19,26 @@ current_file = Path(__file__).resolve()
 # Navegar até o diretório raiz do projeto
 project_root = current_file.parent.parent
 
-conf_path = os.path.join(project_root, 'config')
+conf_path = os.path.join(project_root, 'resources/conf')
 # Load JSON files
-with open(os.path.join(conf_path, 'provider_info.json'), 'r') as f:
+with open(os.path.join(conf_path, 'provider.json'), 'r') as f:
     provider = json.load(f)
 
-with open(os.path.join(conf_path, 'workflow_info.json'), 'r') as f:
+with open(os.path.join(conf_path, 'workflow.json'), 'r') as f:
     workflow = json.load(f)
 
-with open(os.path.join(conf_path, 'workflow_steps.json'), 'r') as f:
+with open(os.path.join(conf_path, 'workflow_execution.json'), 'r') as f:
     workflow_steps = json.load(f)
 
 with open(os.path.join(conf_path, 'statistics.json'), 'r') as f:
     statistics = json.load(f)
 
-# Load the execution environment configuration
-with open(os.path.join(conf_path, 'env_config.json'), 'r') as f:
-    env_configs = json.load(f)
-
-# Load input files list to be used in the workflow
-with open(os.path.join(conf_path, 'input_files.json'), 'r') as f:
-    input_files = json.load(f)
+# Load the environment parameters
+with open(os.path.join(conf_path, 'env_params.json'), 'r') as f:
+    env_params = json.load(f)
 
 # Dictionary to store the produced data during the workflow execution
-# Initial data is the "input_files" list
-workflow_runtime_data = {
-    "input_files": input_files
-    }
+workflow_runtime_data = {}
 
 def main():
 
@@ -77,7 +71,7 @@ def main():
 
     # # execution_id = du.generate_workflow_execution_id(start_time_ms)
     # # execution_env = du.get_env_config_by_name("local", env_configs)
-    # # import denethor_utils.log_handler as dlh
+    # # import denethor.utils.log_handler as dlh
     # # logger = dlh.get_logger(execution_id, execution_env)
     # # du.log_env_info(execution_env, logger)
 
@@ -117,7 +111,7 @@ def main():
         if FORCE_ENV:
             env_name = FORCE_ENV
         # Get the execution environment configuration by the name set in the step
-        execution_env = du.get_env_config_by_name(env_name, env_configs)
+        execution_env = du.get_env_config_by_name(env_name, env_params)
         
         # Check if the step is active
         if step.get('active') is False:
@@ -134,8 +128,8 @@ def main():
 
         input_param = None
         output_param = None
-        params = step.get('params')
-        if params:
+        data_params = step.get('data_params')
+        if data_params:
             input_param = params.get('input_param')
             output_param = params.get('output_param')
         
@@ -146,8 +140,9 @@ def main():
         # recuperar os dados runtime indicados por 'input_param'
         # input_data será uma lista dos outputs produzidos pelas ativações para uma atividade
         input_data = []
-        if input_param == 'input_files':
-            input_data = workflow_runtime_data['input_files']
+        if input_param and os.path.exists(os.path.join(project_root, input_param)):
+            input_data = [str(p) for p in Path(os.path.join(project_root, input_param)).glob('*')]
+            workflow_runtime_data["input_files"] = input_data
         else:
             for param, data in workflow_runtime_data.items():
                 if param == input_param:
@@ -186,8 +181,8 @@ def main():
     #################################
     
     # Mesmo que o ambiente de execução seja local, é necessário obter as informações de log da AWS
-    # com isso, tempo que pegar o env_config da AWS
-    aws_env = du.get_env_config_by_name(denv.AWS_LAMBDA, env_configs)
+    # com isso, tempo que pegar o environment_params da AWS
+    aws_env = du.get_env_config_by_name(denv.AWS_LAMBDA, env_params)
         
     # For each step in the workflow
     for step in workflow_steps:
@@ -204,8 +199,8 @@ def main():
             'end_time_ms': end_time_ms,
             'activity': activity,
             'configuration_id': lambda_configuration_id,
-            'log_path': aws_env.get('log_config').get('path'),
-            'log_file': aws_env.get('log_config').get('file_name'),
+            'log_path': aws_env.get('log_params').get('path'),
+            'log_file': aws_env.get('log_params').get('file_name'),
             'providers': provider,
             'workflow': workflow,
             'statistics': statistics
