@@ -4,9 +4,8 @@ SELECT
 		FROM service_execution se
 		WHERE se.workflow_execution_id in ('[weid]')
 	),
-	(SELECT count(distinct configuration_id) AS _configs_count
-		FROM service_execution se
-		WHERE se.workflow_execution_id in ('[weid]')
+	(SELECT count(configuration_id) AS _configs_count
+		FROM provider_configuration pc
 	),
 	(SELECT count(distinct ef.file_id ) AS _files_count
 		FROM service_execution se 
