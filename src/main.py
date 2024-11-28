@@ -13,13 +13,10 @@ import denethor.provenance.provenance_importer as dprov
 # FORCE_ENV = env.LOCAL
 FORCE_ENV = ''
 
-# Obter o caminho do arquivo atual
-current_file = Path(__file__).resolve()
+# Raiz do projeto
+project_root = Path(__file__).resolve().parent.parent
 
-# Navegar até o diretório raiz do projeto
-project_root = current_file.parent.parent
-
-conf_path = os.path.join(project_root, 'resources/conf')
+conf_path = os.path.join(project_root, 'conf')
 # Load JSON files
 with open(os.path.join(conf_path, 'provider.json'), 'r') as f:
     provider = json.load(f)
@@ -102,7 +99,6 @@ def main():
     for step in workflow_steps:
 
         step_id = step.get('id')
-        action = step.get('action')
         activity = step.get('activity')
         env_name = step.get('execution_env')
         lambda_configuration_id = step.get('configuration')
@@ -118,9 +114,6 @@ def main():
             print(f"\n>>> Step [{step_id}], action: {action}, activity: {activity} is inactive. Skipping...")
             continue
 
-        if action != 'execute':
-            raise ValueError(f"Invalid action: {action} at step: {step_id} of activity: {activity}")
-        
         strategy = step.get('strategy')
 
         if strategy != 'for_each_input' and strategy != 'for_all_inputs':
