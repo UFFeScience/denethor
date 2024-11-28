@@ -12,6 +12,9 @@ class ProviderRepository(BaseRepository):
     def get_by_name(self, name: str):
         return self.db.query(self.model).filter_by(provider_name=name).first()
     
+    def get_by_code(self, code: str):
+        return self.db.query(self.model).filter_by(provider_code=code).first()
+    
     def get_or_create(self, obj: Provider):
         if type(obj) != Provider:
             raise ValueError("The argument must be a Provider object")
