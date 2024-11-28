@@ -23,9 +23,9 @@ def get_execution_id(event):
 def get_execution_env(event):
     return event.get('execution_env')
 
-def get_env_config_by_name(env_name, configs):
-    for config in configs:
-        if config.get('env_name') == env_name:
+def get_env_params_by_name(provider_code, env_properties):
+    for p in env_properties:
+        if p.get('provider') == provider_code:
             return config
     raise ValueError(f"Invalid environment name: {env_name}")
 
@@ -131,4 +131,14 @@ def log_env_info(env, logger: Logger):
 
 # Function to convert a section to a dictionary
 def config_section_to_dict(config: ConfigParser, section: str) -> Dict[str, str]:
-    return {option: config.get(section, option) for option in config.options(section)}
+    if config.has_section(section):
+        return {option: config.get(section, option) for option in config.options(section)}
+    else:
+        raise ValueError(f"Section {section} not found in the configuration file. Existing sections: {config.sections()}")
+    
+
+# Load the environment parameters from properties file
+def load_env_config(file_path: str) -> ConfigParser:
+    config = ConfigParser()
+    config.read(file_path)
+    return {section: config_section_to_dict(config, section) for section in config.sections()}

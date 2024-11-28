@@ -30,3 +30,19 @@ def directory_has_single_file(dir_path: str) -> bool:
         return False
     return True
 
+# Check if a path exists
+def is_valid_path(path: str) -> bool:
+    return os.path.exists(path)
+    
+# List all files in a directory
+def list_all_files(dir_path: str) -> list:
+    if not os.path.exists(dir_path):
+        print(f'Sorry, directory {dir_path} does not exist.')
+        return []
+    
+    file_list = []
+    for root, dirs, files in os.walk(dir_path):
+        for file in files:
+            file_list.append(file)
+    
+    return file_list

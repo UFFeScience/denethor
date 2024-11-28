@@ -1,4 +1,4 @@
-import os, time, json, configparser
+import os, time, json
 from pathlib import Path
 from denethor import environment as denv
 from denethor.utils import utils as du, file_utils as dfu
@@ -25,14 +25,8 @@ with open(os.path.join(conf_path, 'workflow_execution.json'), 'r') as f:
 with open(os.path.join(conf_path, 'statistics.json'), 'r') as f:
     statistics = json.load(f)
 
-# Load the environment parameters from properties file
-config = configparser.ConfigParser()
-config.read(os.path.join(conf_path, 'env_params.properties'))
-
-# Create a dictionary for the 'aws_lambda' section
-data_format_config = du.config_section_to_dict(config, 'data_format')
-bucket_config = du.config_section_to_dict(config, 'bucket')
-aws_lambda_config = du.config_section_to_dict(config, 'aws_lambda')
+# Load the environment configuration
+env_properties = du.load_env_config(os.path.join(conf_path, 'env.properties'))
 
 # Dictionary to store the produced data during the workflow execution
 workflow_runtime_data = {}
@@ -98,16 +92,14 @@ def main():
     # For each step in the workflow
     for step in workflow_steps:
 
-        step_id = step.get('id')
         activity = step.get('activity')
-        env_name = step.get('execution_env')
-        lambda_configuration_id = step.get('configuration')
+        provider_code = step.get('provider')
+        memory = step.get('memory')
 
         
         if FORCE_ENV:
-            env_name = FORCE_ENV
-        # Get the execution environment configuration by the name set in the step
-        execution_env = du.get_env_config_by_name(env_name, env_params)
+            provider = FORCE_ENV
+        
         
         # Check if the step is active
         if step.get('active') is False:
@@ -119,28 +111,32 @@ def main():
         if strategy != 'for_each_input' and strategy != 'for_all_inputs':
             raise ValueError(f"Invalid strategy: {strategy} at step: {step_id} of activity: {activity}")
 
-        input_param = None
-        output_param = None
+        input_param_name = None
+        output_param_name = None
         data_params = step.get('data_params')
         if data_params:
-            input_param = params.get('input_param')
-            output_param = params.get('output_param')
+            input_dir = data_params.get('input_dir')
+            input_param_name = data_params.get('input_param')
+            output_param_name = data_params.get('output_param')
         
         # Validation of input parameter
-        if params and input_param is None:
-            raise ValueError(f"Invalid input parameter: {input_param} for step: {step_id}")
+        if data_params and input_param_name is None:
+            raise ValueError(f"Invalid input parameter: {input_param_name} for activity: {activity}")
         
-        # recuperar os dados runtime indicados por 'input_param'
-        # input_data será uma lista dos outputs produzidos pelas ativações para uma atividade
+        
+        # caso input_dir esteja presente, significa que os dados de entrada serão lidos de um diretório
+        if input_dir and dfu.is_valid_path(input_dir):
+            input_files = dfu.list_all_files(input_dir)
+            workflow_runtime_data[input_param_name] = input_files
+
+        
+        # recuperar os dados  em runtime indicados por 'input_param_name'
+        # input_data será uma lista dos dados necessários para a atividade corrente
         input_data = []
-        if input_param and os.path.exists(os.path.join(project_root, input_param)):
-            input_data = [str(p) for p in Path(os.path.join(project_root, input_param)).glob('*')]
-            workflow_runtime_data["input_files"] = input_data
-        else:
-            for param, data in workflow_runtime_data.items():
-                if param == input_param:
-                    input_data = [item['data'] for item in data]
-                    break
+        for key, data in workflow_runtime_data.items():
+            if key == input_param_name:
+                input_data = [item['data'] for item in data]
+                break
         
         # Validation of input data
         if input_data is None:
@@ -153,7 +149,7 @@ def main():
             'end_time_ms': end_time_ms,
             'action': action,
             'activity': activity,
-            'execution_env': execution_env,
+            'execution_env': env_params,
             'configuration_id': lambda_configuration_id,
             'strategy': strategy,
             'all_input_data': input_data
@@ -163,7 +159,7 @@ def main():
         results = dem.execute(params)
         
         # Save the produced data in the dictionary
-        workflow_runtime_data[output_param] = results
+        workflow_runtime_data[output_param_name] = results
 
         print(f"\n>>> {activity} | action: {action} completed.")
 
@@ -175,7 +171,7 @@ def main():
     
     # Mesmo que o ambiente de execução seja local, é necessário obter as informações de log da AWS
     # com isso, tempo que pegar o environment_params da AWS
-    aws_env = du.get_env_config_by_name(denv.AWS_LAMBDA, env_params)
+    aws_env = du.get_env_params_by_name(denv.AWS_LAMBDA, env_params)
         
     # For each step in the workflow
     for step in workflow_steps:
@@ -183,7 +179,7 @@ def main():
         step_id = step.get('id')
         action = step.get('action')
         activity = step.get('activity')
-        env_name = step.get('execution_env')
+        provider = step.get('execution_env')
         lambda_configuration_id = step.get('configuration')
 
         params = {
