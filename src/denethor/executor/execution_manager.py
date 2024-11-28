@@ -1,5 +1,5 @@
 from denethor.executor import executor_local, executor_aws
-from denethor.environment import LOCAL, AWS_LAMBDA, VM_LINUX
+from denethor.environment import LOCAL, AWS_LAMBDA, AWS_EC2
 
 FOR_EACH_INPUT = 'for_each_input'
 FOR_ALL_INPUTS = 'for_all_inputs'

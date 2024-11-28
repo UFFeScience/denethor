@@ -1,3 +1,3 @@
-AWS_LAMBDA = 'AWS Lambda'
-AWS_EC2 = 'AWS EC2'
-LOCAL = 'Local'
+AWS_LAMBDA = 'aws_lambda'
+AWS_EC2 = 'aws_ec2'
+LOCAL = 'local'

@@ -1,6 +1,9 @@
 from datetime import datetime, timezone
 from logging import Logger
 import os, re, json, uuid
+from typing import Dict
+from configparser import ConfigParser
+
 
 
 def generate_uuid():
@@ -126,3 +129,6 @@ def log_env_info(env, logger: Logger):
         # logger.info(os.listdir(value) if 'PATH' in label else '')  
     
 
+# Function to convert a section to a dictionary
+def config_section_to_dict(config: ConfigParser, section: str) -> Dict[str, str]:
+    return {option: config.get(section, option) for option in config.options(section)}

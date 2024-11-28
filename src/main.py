@@ -1,14 +1,9 @@
-import os, time, json
+import os, time, json, configparser
 from pathlib import Path
 from denethor import environment as denv
-from denethor import environment
 from denethor.utils import utils as du, file_utils as dfu
 from denethor.executor import execution_manager as dem
 import denethor.provenance.provenance_importer as dprov
-
-# import sys
-# sys.path.append("../src")
-# from denethor.utils import log_handler as dlh
 
 # FORCE_ENV = env.LOCAL
 FORCE_ENV = ''
@@ -30,9 +25,14 @@ with open(os.path.join(conf_path, 'workflow_execution.json'), 'r') as f:
 with open(os.path.join(conf_path, 'statistics.json'), 'r') as f:
     statistics = json.load(f)
 
-# Load the environment parameters
-with open(os.path.join(conf_path, 'env_params.json'), 'r') as f:
-    env_params = json.load(f)
+# Load the environment parameters from properties file
+config = configparser.ConfigParser()
+config.read(os.path.join(conf_path, 'env_params.properties'))
+
+# Create a dictionary for the 'aws_lambda' section
+data_format_config = du.config_section_to_dict(config, 'data_format')
+bucket_config = du.config_section_to_dict(config, 'bucket')
+aws_lambda_config = du.config_section_to_dict(config, 'aws_lambda')
 
 # Dictionary to store the produced data during the workflow execution
 workflow_runtime_data = {}

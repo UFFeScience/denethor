@@ -1,7 +1,7 @@
 [
     {
         "activity": "tree_constructor",
-        "provider": "AWS Lambda",
+        "provider": "aws_lambda",
         "memory": 128,
         "strategy": "for_each_input",
         "data_params": {
@@ -11,7 +11,7 @@
     },
     {
         "activity": "subtree_constructor",
-        "provider": "AWS Lambda",
+        "provider": "aws_lambda",
         "memory": 128,
         "strategy": "for_each_input",
         "data_params": {
@@ -21,7 +21,7 @@
     },
     {
         "activity": "maf_database_creator",
-        "provider": "AWS Lambda",
+        "provider": "aws_lambda",
         "memory": 128,
         "strategy": "for_each_input",
         "data_params": {
@@ -31,7 +31,7 @@
     },
     {
         "activity": "maf_database_aggregator",
-        "provider": "AWS Lambda",
+        "provider": "aws_lambda",
         "memory": 128,
         "strategy": "for_all_inputs",
         "data_params": {
