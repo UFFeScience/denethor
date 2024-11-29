@@ -5,8 +5,8 @@ from denethor.utils import utils as du, file_utils as dfu
 from denethor.executor import execution_manager as dem
 import denethor.provenance.provenance_importer as dprov
 
-# FORCE_ENV = env.LOCAL
-FORCE_ENV = ''
+FORCE_ENV = denv.LOCAL
+# FORCE_ENV = ''
 
 # Raiz do projeto
 project_root = Path(__file__).resolve().parent.parent
@@ -125,9 +125,9 @@ def main():
         
         
         # caso input_dir esteja presente, significa que os dados de entrada serão lidos de um diretório
-        if input_dir and dfu.is_valid_path(input_dir):
-            input_files = dfu.list_all_files(input_dir)
-            workflow_runtime_data[input_param_name] = input_files
+        if input_dir:
+            input_files = dfu.list_all_files(os.path.join(project_root, input_dir))
+            workflow_runtime_data[input_param_name] = [{'data': f} for f in input_files]
 
         
         # recuperar os dados  em runtime indicados por 'input_param_name'
@@ -147,12 +147,12 @@ def main():
             'execution_id': execution_id,
             'start_time_ms': start_time_ms,
             'end_time_ms': end_time_ms,
-            'action': action,
+            'provider': provider_code,
             'activity': activity,
-            'execution_env': env_params,
-            'configuration_id': lambda_configuration_id,
+            'memory': memory,
             'strategy': strategy,
-            'all_input_data': input_data
+            'all_input_data': input_data,
+            'env_properties': env_properties
         }
         
         # Execute the activity

@@ -5,9 +5,9 @@ from denethor.utils import file_utils as dfu, log_handler as dlh, utils as du
 
 def handler(event, context):
 
-    request_id = du.get_request_id(context)
+    request_id = du.resolve_request_id(context)
     execution_id = du.get_execution_id(event)
-    execution_env = du.get_execution_env(event)
+    execution_env = du.get_env_properties(event)
     logger = dlh.get_logger(execution_id, 'maf_database_creator', execution_env)
 
     du.log_env_info(execution_env, logger)

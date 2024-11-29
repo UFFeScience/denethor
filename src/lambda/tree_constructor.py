@@ -4,27 +4,26 @@ from denethor.utils import file_utils as dfu, log_handler as dlh, utils as du
 
 def handler(event, context):
 
-    request_id = du.get_request_id(context)
-    execution_id = du.get_execution_id(event)
-    execution_env = du.get_execution_env(event)
-    logger = dlh.get_logger(execution_id, 'tree_constructor', execution_env)
+    request_id = du.resolve_request_id(context)
+    execution_id = event.get('execution_id')
+    provider = event.get('provider')
+    env_properties = event.get('env_properties')
+    logger = dlh.get_logger(execution_id, 'tree_constructor', provider, env_properties)
 
-    du.log_env_info(execution_env, logger)
-    path_params = execution_env.get('path_params')
-    TMP_PATH = path_params.get('tmp') # usado para escrever arquivos 'nopipe' durante o processo de validação
-    INPUT_PATH = path_params.get('input_file')
-    OUTPUT_PATH = path_params.get('tree')
-    CLUSTALW_PATH = path_params.get('clustalw')
+    TMP_PATH = env_properties.get(provider).get('path.tmp') # usado para escrever arquivos 'nopipe' durante o processo de validação
+    INPUT_PATH = env_properties.get(provider).get('path.input_file')
+    OUTPUT_PATH = env_properties.get(provider).get('path.tree')
+    CLUSTALW_PATH = env_properties.get(provider).get('path.clustalw')
 
     # formato das sequências: newick ou nexus
-    DATA_FORMAT = execution_env.get('data_format') 
+    DATA_FORMAT = env_properties.get(provider).get('data_format') 
 
-    bucket_params = execution_env.get('bucket_params')
+    bucket_properties = event.get('bucket')
     s3_params = {
-        'env_name': execution_env.get('env_name'),
-        'bucket': bucket_params.get('bucket_name'),
-        'input_key': bucket_params.get('key_input_files'),
-        'output_key': bucket_params.get('key_tree_files')
+        'provider': provider,
+        'bucket': bucket_properties.get('name'),
+        'input_key': bucket_properties.get('key.input'),
+        'output_key': bucket_properties.get('key.tree')
     }
     
     # Cleaning old temporary files and creating directories ##

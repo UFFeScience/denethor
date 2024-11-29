@@ -14,20 +14,9 @@ def generate_workflow_execution_id(start_time_ms):
     return 'weid_' + str(int(start_time_ms))
 
 
-def get_request_id(context):
+def resolve_request_id(context):
     return context.aws_request_id if context else generate_uuid()
 
-def get_execution_id(event):
-    return event.get('execution_id')
-
-def get_execution_env(event):
-    return event.get('execution_env')
-
-def get_env_params_by_name(provider_code, env_properties):
-    for p in env_properties:
-        if p.get('provider') == provider_code:
-            return config
-    raise ValueError(f"Invalid environment name: {env_name}")
 
 # Define a regex pattern to match only valid characters in file names or directories
 def sanitize(file_name):
@@ -121,13 +110,6 @@ def flatten_list(input_list: list) -> list:
     
     return flattened_list
 
-
-def log_env_info(env, logger: Logger):
-    logger.info(f"[ENV_INFO] env_name: {env.get('env_name')} | current_time: {now_str()} | pwd: {os.getcwd()}")
-    for label, value in env.items():
-        logger.info(f'[ENV_INFO] {label}: {value}')
-        # logger.info(os.listdir(value) if 'PATH' in label else '')  
-    
 
 # Function to convert a section to a dictionary
 def config_section_to_dict(config: ConfigParser, section: str) -> Dict[str, str]:
