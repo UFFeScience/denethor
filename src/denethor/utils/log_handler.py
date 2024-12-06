@@ -1,6 +1,6 @@
 import os, sys, logging
 
-def get_logger(execution_id: str, activity: str, provider: str, env_properties: dict) -> logging.Logger:
+def get_logger(execution_id: str, provider: str, activity: str, env_properties: dict) -> logging.Logger:
     
     logger = logging.getLogger(provider + '_' + execution_id + '_' + activity)
     

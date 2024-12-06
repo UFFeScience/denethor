@@ -6,26 +6,26 @@ from denethor.utils import file_utils as dfu, log_handler as dlh, utils as du
 def handler(event, context):
 
     request_id = du.resolve_request_id(context)
-    execution_id = du.get_execution_id(event)
-    execution_env = du.get_env_properties(event)
-    logger = dlh.get_logger(execution_id, 'subtree_constructor', execution_env)
-
-    du.log_env_info(execution_env, logger)
-
-    path_params = execution_env.get('path_params')
-    TMP_PATH = path_params.get('tmp') # usado para escrever arquivos 'nopipe' durante o processo de validação
-    INPUT_PATH = path_params.get('tree')
-    OUTPUT_PATH = path_params.get('subtree')
+    execution_id = event.get('execution_id')
+    provider = event.get('provider')
+    activity = event.get('activity')
+    env_props = event.get('env_properties')
     
-    # formato das sequências: newick ou nexus
-    DATA_FORMAT = execution_env.get('data_format') 
+    logger = dlh.get_logger(execution_id, provider, activity, env_props)
 
-    bucket_params = execution_env.get('bucket_params')
+    TMP_PATH = env_props.get(provider).get('path.tmp') # usado para escrever arquivos 'nopipe' durante o processo de validação
+    INPUT_PATH = env_props.get(provider).get('path.input_file')
+    OUTPUT_PATH = env_props.get(provider).get('path.subtree')
+
+    # formato das sequências: newick ou nexus
+    DATA_FORMAT = env_props.get(provider).get('data_format') 
+
+    bucket_props = event.get('bucket')
     s3_params = {
-        'env_name': execution_env.get('env_name'),
-        'bucket': bucket_params.get('bucket_name'),
-        'input_key': bucket_params.get('key_tree_files'),
-        'output_key': bucket_params.get('key_subtree_files')
+        'provider': provider,
+        'bucket': bucket_props.get('name'),
+        'input_key': bucket_props.get('key.input'),
+        'output_key': bucket_props.get('key.tree')
     }
     
     # Cleaning old temporary files and creating directories ##
@@ -41,10 +41,10 @@ def handler(event, context):
     # Building the subtree files ##
     subtree_files, duration_ms = smc.subtree_constructor(input_files, INPUT_PATH, OUTPUT_PATH, DATA_FORMAT)
     logger.info(f'SUBTREE_CONSTRUCTOR RequestId: {request_id}\t Duration: {duration_ms} ms\t InputTree: {input_files}\t OutputSubtrees: {subtree_files}')
-
+    
     # para evitar: 'PermissionError: [Errno 13] Permission denied' ao tentar abrir os arquivos logo após terem sido escritos
     time.sleep(0.100)
-
+    
     # Upload output files ##
     dau.handle_produced_files(request_id, subtree_files, OUTPUT_PATH, s3_params)
     

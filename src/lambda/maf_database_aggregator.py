@@ -6,13 +6,13 @@ from denethor.utils import file_utils as dfu, log_handler as dlh, utils as du
 def handler(event, context):
 
     request_id = du.resolve_request_id(context)
-    execution_id = du.get_execution_id(event)
-    execution_env = du.get_env_properties(event)
-    logger = dlh.get_logger(execution_id, 'maf_database_aggregator', execution_env)
+    execution_id = event.get('execution_id')
+    provider = event.get('provider')
+    activity = event.get('activity')
+    env_properties = event.get('env_properties')
+    
+    logger = dlh.get_logger(execution_id, provider, activity, env_properties)
 
-    du.log_env_info(execution_env, logger)
-
-    path_params = execution_env.get('path_params')
     TMP_PATH = path_params.get('tmp') # usado para escrever arquivos 'nopipe' durante o processo de validação
     INPUT_PATH = path_params.get('mafdb')
     OUTPUT_PATH = path_params.get('mafdb')
