@@ -110,7 +110,7 @@ Lambda Function for the activity of constructing Phylogenetic Trees. Initially, 
 rm -Rf .lambda/lambda_functions/tree_constructor/
 mkdir -p .lambda/lambda_functions/tree_constructor/
 
-cp -R src/lambda_functions/tree_constructor* .lambda/lambda_functions/tree_constructor/
+cp -R src/lambda/tree_constructor* .lambda/lambda_functions/tree_constructor/
 
 cd .lambda/lambda_functions/tree_constructor/
 
@@ -141,7 +141,7 @@ This will be the Lambda Function for the subtree constructor activity. Initially
 rm -Rf .lambda/lambda_functions/subtree_constructor/
 mkdir -p .lambda/lambda_functions/subtree_constructor/
 
-cp -R src/lambda_functions/subtree_constructor* .lambda/lambda_functions/subtree_constructor/
+cp -R src/lambda/subtree_constructor* .lambda/lambda_functions/subtree_constructor/
 
 cd .lambda/lambda_functions/subtree_constructor/
 
@@ -171,7 +171,7 @@ ___
 rm -Rf .lambda/lambda_functions/maf_database_creator/
 mkdir -p .lambda/lambda_functions/maf_database_creator/
 
-cp -R src/lambda_functions/maf_database_creator* .lambda/lambda_functions/maf_database_creator/
+cp -R src/lambda/maf_database_creator* .lambda/lambda_functions/maf_database_creator/
 
 cd .lambda/lambda_functions/maf_database_creator/
 
@@ -200,7 +200,7 @@ ___
 rm -Rf .lambda/lambda_functions/maf_database_aggregator/
 mkdir -p .lambda/lambda_functions/maf_database_aggregator/
 
-cp -R src/lambda_functions/maf_database_aggregator* .lambda/lambda_functions/maf_database_aggregator/
+cp -R src/lambda/maf_database_aggregator* .lambda/lambda_functions/maf_database_aggregator/
 
 cd .lambda/lambda_functions/maf_database_aggregator/
 

@@ -2,9 +2,12 @@
 
 ##################################################################################
 
-# Script to deploy a lambda function to AWS based on the function name, timeout, 
-# memory size and append_memory flag provided as command line parameters.
-
+# Script to deploy a lambda function to AWS based on command line parameters:
+# - function name
+# - timeout
+# - memory size
+# - append_memory flag
+#
 # If append_memory is true, the memory size is appended to the function name,
 # indicating the memory size used by the function, i.e., "configuration"
 
@@ -150,19 +153,19 @@ ORIGINAL_DIR=$(pwd)
 cd $DENETHOR_DIR || { echo "Error: Cannot change to required directory $DENETHOR_DIR"; exit 1; }
 
 # Remove existing lambda function directory and recreate it
-rm -Rf .lambda/lambda_functions/$function_name/
-mkdir -p .lambda/lambda_functions/$function_name/
+rm -Rf .tmp/lambda/$function_name/
+mkdir -p .tmp/lambda/$function_name/
 
 # Copy lambda function files
-cp -R src/lambda_functions/${function_name}* .lambda/lambda_functions/$function_name/ || { echo "Error: Cannot copy $function_name files"; exit 1; }
+cp -R src/lambda/${function_name}* .tmp/lambda/$function_name/ || { echo "Error: Cannot copy $function_name files"; exit 1; }
 
 # Copy additional dependency files if any
 for dep in ${dependencies[$function_name]}; do
-  cp src/lambda_functions/$dep .lambda/lambda_functions/$function_name/ || { echo "Error: Cannot copy dependency file $dep"; exit 1; }
+  cp src/lambda/$dep .tmp/lambda/$function_name/ || { echo "Error: Cannot copy dependency file $dep"; exit 1; }
 done
 
 # Change to the lambda function directory
-cd .lambda/lambda_functions/$function_name/
+cd .tmp/lambda/$function_name/
 
 # Zip the lambda function
 zip ${function_name}.zip * || { echo "Error: Cannot zip lambda function"; exit 1; }

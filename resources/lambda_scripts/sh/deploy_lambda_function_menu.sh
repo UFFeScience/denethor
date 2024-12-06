@@ -54,4 +54,4 @@ choose_memory_size
 choose_append_memory
 
 # Call the deploy_lambda.sh script with the user inputs
-./deploy_lambda.sh -f $FUNCTION_NAME -t $TIMEOUT -m $MEMORY_SIZE -a $APPEND_MEMORY
+./deploy_lambda_function.sh -f $FUNCTION_NAME -t $TIMEOUT -m $MEMORY_SIZE -a $APPEND_MEMORY

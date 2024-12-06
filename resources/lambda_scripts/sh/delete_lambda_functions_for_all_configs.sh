@@ -22,7 +22,7 @@ for function_name in "${function_names[@]}"; do
       --output text)
     
     if [ "$function_exists" == "$function_name_aws" ]; then
-      ./delete_lambda.sh -f "$function_name_aws" -r "$region" -y || exit 1
+      ./delete_lambda_function.sh -f "$function_name_aws" -r "$region" -y || exit 1
     fi
   done
 done

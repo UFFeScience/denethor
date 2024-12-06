@@ -3,7 +3,7 @@
 # Define global variables
 DENETHOR_DIR="/home/marcello/Documents/denethor"
 LAYER_NAME="base_layer"
-BASE_PATH=".lambda/lambda_layers"
+BASE_PATH=".lambda"
 PYTHON_VERSION="3.10"
 PYTHON_RUNTIME="python$PYTHON_VERSION"
 AWS_REGION="sa-east-1"

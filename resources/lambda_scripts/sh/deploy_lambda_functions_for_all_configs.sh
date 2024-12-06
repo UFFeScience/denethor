@@ -30,7 +30,7 @@ for function_name in "${function_names[@]}"; do
     echo -e "\n>>>> Memory size: $memory_size\n"
     
     # Call deploy_lambda.sh with the current configuration
-    ./deploy_lambda.sh -f "$function_name" -t "$timeout" -m "$memory_size" -a "$append_memory"
+    ./deploy_lambda_function.sh -f "$function_name" -t "$timeout" -m "$memory_size" -a "$append_memory"
   
   done
 done
