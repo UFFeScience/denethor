@@ -7,7 +7,7 @@ def invoke_local_python(
     module_identifier: str,
     module_path: str,
     target_method: str,
-    payload: Dict[str, str],
+    payload: dict[str, str],
 ) -> Any:
     """
     Invokes a local Python function with the given module indentifer, path, method name, and payload.

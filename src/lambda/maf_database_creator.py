@@ -1,3 +1,4 @@
+import time
 from denethor.utils.aws import aws_utils as dau
 import maf_database_creator_core as mdcc
 from denethor.utils import file_utils as dfu, log_handler as dlh, utils as du
@@ -8,45 +9,55 @@ def handler(event, context):
     execution_id = event.get('execution_id')
     provider = event.get('provider')
     activity = event.get('activity')
-    env_properties = event.get('env_properties')
     
-    logger = dlh.get_logger(execution_id, provider, activity, env_properties)
+    previous_activity = event.get('previous_activity')
+    if previous_activity is None:
+        input_files_props_sufix = 'input_files'
+    else:
+        input_files_props_sufix = previous_activity
+    
+    index_data = event.get('index_data')
+    if index_data is None:
+        input_files = event.get('input_data')
+    else:
+        input_files = event.get('input_data')[index_data]
+    
+    env_props = event.get('env_properties')
+    s3_bucket = env_props.get('bucket').get('name')
+    s3_key_input  = env_props.get('bucket').get('key.' + input_files_props_sufix)
+    s3_key_output = env_props.get('bucket').get('key.' + activity)
+    
+    # Format of the sequences: newick or nexus
+    DATA_FORMAT = env_props.get(provider).get('data_format') 
 
-    TMP_PATH = path_params.get('tmp') # usado para escrever arquivos 'nopipe' durante o processo de validação
-    INPUT_PATH = path_params.get('subtree')
-    OUTPUT_PATH = path_params.get('mafdb')
+    TMP_PATH = env_props.get(provider).get('path.tmp') # usado para escrever arquivos 'nopipe' durante o processo de validação
+    INPUT_PATH = env_props.get(provider).get('path.' + input_files_props_sufix)
+    OUTPUT_PATH = env_props.get(provider).get('path.' + activity)
+    CLUSTALW_PATH = env_props.get(provider).get('path.clustalw')
 
-    # formato das sequências: newick ou nexus
-    DATA_FORMAT = execution_env.get('data_format') 
-
-    bucket_params = execution_env.get('bucket_params')
-    s3_params = {
-        'env_name': execution_env.get('env_name'),
-        'bucket': bucket_params.get('bucket_name'),
-        'input_key': bucket_params.get('key_subtree_files'),
-        'output_key': bucket_params.get('key_mafdb_files')
-    }
+    logger = dlh.get_logger(execution_id, provider, activity, env_props)
     
     # Cleaning old temporary files and creating directories ##
     # dfu.remove_files(TMP_PATH)
     dfu.create_directory_if_not_exists(INPUT_PATH, OUTPUT_PATH, TMP_PATH)
     
-    # Get the input_file from the payload
-    subtree_list = event.get('input_data')
-    subtree_matrix = event.get('all_input_data')
+    # Use the full input data list tp create the MAF database
+    compare_subtree_matrix = event.get('input_data')
 
     # Download input files ##
-    dau.handle_consumed_files(request_id, subtree_matrix, INPUT_PATH, s3_params)
+    dau.handle_consumed_files(request_id, provider, compare_subtree_matrix, INPUT_PATH, s3_bucket, s3_key_input)
 
-    # Criação do dicionário de similariadades de subárvore ##
-    mafdb_file, maf_duration_ms = mdcc.maf_database_creator(subtree_list, subtree_matrix, INPUT_PATH, OUTPUT_PATH, DATA_FORMAT)
-    logger.info(f'MAF_DATABASE_CREATOR RequestId: {request_id}\t Duration: {maf_duration_ms} ms\t InputSubtrees: {subtree_list}\t MafDatabaseFile: {mafdb_file}')
+    # Creation of the subtree similarity dictionary (maf database) ##
+    produced_files, maf_duration_ms = mdcc.maf_database_creator(input_files, compare_subtree_matrix, INPUT_PATH, OUTPUT_PATH, DATA_FORMAT)
+    logger.info(f'MAF_DATABASE_CREATOR RequestId: {request_id}\t Duration: {maf_duration_ms} ms\t InputSubtrees: {input_files}\t MafDatabaseFile: {produced_files}')
+    
+    # para evitar: 'PermissionError: [Errno 13] Permission denied' ao tentar abrir os arquivos logo após terem sido escritos
+    time.sleep(0.100)
     
     # Upload output files ##
-    dau.handle_produced_files(request_id, mafdb_file, OUTPUT_PATH, s3_params)
-
+    dau.handle_produced_files(request_id, provider, produced_files, OUTPUT_PATH, s3_bucket, s3_key_output)
+    
     return {
             "request_id" : request_id,
-            "data" : mafdb_file
+            "data" : produced_files
         }
-        

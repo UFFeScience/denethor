@@ -11,6 +11,7 @@ def execute_activity(
     provider: str,
     strategy: str,
     activity: str,
+    previous_activity: str,
     memory: int,
     input_data: List[str],
     env_properties: Dict[str, str],
@@ -22,6 +23,7 @@ def execute_activity(
     - provider (str): The provider code for the execution environment.
     - strategy (str): The execution strategy for the activity.
     - activity (str): The name of the activity to execute.
+    - previous_activity (str): The name of the previous activity.
     - memory (int): The memory allocated for the activity execution.
     - input_data (list): The complete input data for the activity execution.
     - env_properties (dict): The properties of the execution environment.
@@ -51,6 +53,7 @@ def execute_activity(
                 execution_id,
                 provider,
                 activity,
+                previous_activity,
                 memory,
                 input_data,
                 index_data,
@@ -60,7 +63,14 @@ def execute_activity(
 
     elif strategy == FOR_ALL_INPUTS:
         result = execute_by_provider(
-            execution_id, provider, activity, memory, input_data, None, env_properties
+            execution_id,
+            provider,
+            activity,
+            previous_activity,
+            memory,
+            input_data,
+            None,
+            env_properties,
         )
         results.append(result)
 
@@ -75,6 +85,7 @@ def execute_by_provider(
     execution_id: str,
     provider: str,
     activity: str,
+    previous_activity: str,
     memory: int,
     input_data: List[Dict],
     index_data: Optional[int],
@@ -85,6 +96,7 @@ def execute_by_provider(
         "execution_id": execution_id,
         "provider": provider,
         "activity": activity,
+        "previous_activity": previous_activity,
         "input_data": input_data,
         "index_data": index_data,
         "env_properties": env_properties,

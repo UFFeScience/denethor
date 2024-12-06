@@ -9,31 +9,40 @@ def handler(event, context):
     execution_id = event.get('execution_id')
     provider = event.get('provider')
     activity = event.get('activity')
-    env_properties = event.get('env_properties')
     
-    logger = dlh.get_logger(execution_id, provider, activity, env_properties)
+    previous_activity = event.get('previous_activity')
+    if previous_activity is None:
+        input_files_props_sufix = 'input_files'
+    else:
+        input_files_props_sufix = previous_activity
+    
+    index_data = event.get('index_data')
+    if index_data is None:
+        input_files = event.get('input_data')
+    else:
+        input_files = event.get('input_data')[index_data]
+    
+    env_props = event.get('env_properties')
+    s3_bucket = env_props.get('bucket').get('name')
+    s3_key_input  = env_props.get('bucket').get('key.' + input_files_props_sufix)
+    s3_key_output = env_props.get('bucket').get('key.' + activity)
+    
+    # Format of the sequences: newick or nexus
+    DATA_FORMAT = env_props.get(provider).get('data_format') 
 
-    TMP_PATH = path_params.get('tmp') # usado para escrever arquivos 'nopipe' durante o processo de validação
-    INPUT_PATH = path_params.get('mafdb')
-    OUTPUT_PATH = path_params.get('mafdb')
+    TMP_PATH = env_props.get(provider).get('path.tmp') # usado para escrever arquivos 'nopipe' durante o processo de validação
+    INPUT_PATH = env_props.get(provider).get('path.' + input_files_props_sufix)
+    OUTPUT_PATH = env_props.get(provider).get('path.' + activity)
+    CLUSTALW_PATH = env_props.get(provider).get('path.clustalw')
 
-    bucket_params = execution_env.get('bucket_params')
-    s3_params = {
-        'env_name': execution_env.get('env_name'),
-        'bucket': bucket_params.get('bucket_name'),
-        'input_key': bucket_params.get('key_mafdb_files'),
-        'output_key': bucket_params.get('key_mafdb_files')
-    }
+    logger = dlh.get_logger(execution_id, provider, activity, env_props)
     
     # Cleaning old temporary files and creating directories ##
     # dfu.remove_files(TMP_PATH)
     dfu.create_directory_if_not_exists(INPUT_PATH, OUTPUT_PATH, TMP_PATH)
-    
-    # Get the input_file from the payload
-    input_fles = event.get('input_data')
 
     # Download input files ##
-    dau.handle_consumed_files(request_id, input_fles, INPUT_PATH, s3_params)
+    dau.handle_consumed_files(request_id, provider, input_files, INPUT_PATH, s3_bucket, s3_key_input)
 
 
 
@@ -96,7 +105,7 @@ def handler(event, context):
     subtrees = []
     
     # open input_file and read the data
-    for input_file_name in input_fles:
+    for input_file_name in input_files:
         file = os.path.join(INPUT_PATH, input_file_name)
         with open(file, 'r') as f:
             file_data = json.load(f)
@@ -125,7 +134,7 @@ def handler(event, context):
 
     # print(maf_database)
 
-    final_mafdb_file = mdcc.write_maf_database(subtrees, final_maf_database, final_max_maf, OUTPUT_PATH)
+    produced_files = mdcc.write_maf_database(subtrees, final_maf_database, final_max_maf, OUTPUT_PATH)
 
     end_time = timeit.default_timer()
     maf_time_ms = (end_time - start_time) * 1000
@@ -133,11 +142,9 @@ def handler(event, context):
     logger.info(f'MAF_DATABASE_AGGREGATOR RequestId: {request_id}\t Duration: {maf_time_ms} ms\t InputLength: {len(maf_databases)}\t MaxMaf: {final_max_maf}\t MafDatabase: {final_maf_database}')
 
     # Upload output files ##
-    dau.handle_produced_files(request_id, final_mafdb_file, OUTPUT_PATH, s3_params)
-
+    dau.handle_produced_files(request_id, provider, produced_files, OUTPUT_PATH, s3_bucket, s3_key_output)
+    
     return {
             "request_id" : request_id,
-            "data" : final_mafdb_file
+            "data" : produced_files
         }
-        
-

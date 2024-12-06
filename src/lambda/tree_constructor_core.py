@@ -73,21 +73,19 @@ def tree_constructor(input_files: list, input_path: str, tmp_path: str, output_p
     
     start_time = timeit.default_timer()
 
-    if not isinstance(input_files, list):
-        files = [input_files]
-    else:
-        files = input_files
-
     match data_format:
         case 'nexus':
             file_format = 'nexus' # Nexus: 'nexus'
         case 'newick':
             file_format = 'nwk' # Newick: 'nwk'
     
+    if not isinstance(input_files, list):
+        input_files = [input_files]
+        
     produced_files = []
     
-    for f in files:
-        input_file_name = os.path.basename(f)
+    for file in input_files:
+        input_file_name = os.path.basename(file)
         
         #configurando caminhos relativos padrões do diretorio
         fasta_file = os.path.join(input_path, input_file_name)

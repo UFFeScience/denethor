@@ -88,6 +88,8 @@ def main():
     print(">>>>>>> Execution ID: ", execution_id)
     print(">>>>>>> Working directory: ", os.getcwd())
 
+    previous_activity = None
+    
     # For each step in the workflow
     for step in workflow_steps:
 
@@ -138,7 +140,7 @@ def main():
         # Validation of input data
         if input_data is None:
             raise ValueError(
-                f"Invalid input data: {input_data} for step_params: {params} at step: {step_id}"
+                f"Invalid input data: {input_data} for step_params: {params} at activity: {activity}"
             )
 
         # Execute the activity
@@ -147,6 +149,7 @@ def main():
             provider_code,
             strategy,
             activity,
+            previous_activity,
             memory,
             input_data,
             env_properties,
@@ -154,6 +157,7 @@ def main():
 
         # Save the produced data in the dictionary
         workflow_runtime_data[output_param_name] = results
+        previous_activity = activity
 
         print(f"\n>>> {activity} | Memory: {memory} | Strategy: {strategy} completed.")
 
