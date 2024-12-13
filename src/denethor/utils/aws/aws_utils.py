@@ -67,7 +67,7 @@ def handle_produced_files(request_id: str,
                           file_path: str, 
                           s3_bucket: str ="",
                           s3_key: str ="") -> None:
-    upload_duration_ms = None
+    upload_duration_ms = 0
     file_list_flat = du.flatten_list(file_list)
 
     if provider == AWS_LAMBDA:
@@ -89,7 +89,7 @@ def upload_single_file_to_s3(request_id: str,
                              s3_key: str) -> int:
     start_time = timeit.default_timer()
     
-    validade_required_params(request_id, s3_bucket, file_name, local_path)
+    validade_required_params(request_id, file_name, file_path, s3_bucket)
     
     try:
         s3_key_upload = os.path.join(s3_key, file_name)

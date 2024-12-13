@@ -116,11 +116,11 @@ def config_section_to_dict(config: ConfigParser, section: str) -> Dict[str, str]
     if config.has_section(section):
         return {option: config.get(section, option) for option in config.options(section)}
     else:
-        raise ValueError(f"Section {section} not found in the configuration file. Existing sections: {config.sections()}")
+        raise ValueError(f"Section {section} not found in the properties file. Existing sections: {config.sections()}")
     
 
-# Load the environment parameters from properties file
-def load_env_config(file_path: str) -> ConfigParser:
+# Load the properties from a file
+def load_properties(file_path: str) -> ConfigParser:
     config = ConfigParser()
     config.read(file_path)
     return {section: config_section_to_dict(config, section) for section in config.sections()}

@@ -2,6 +2,9 @@ import os, sys, logging
 
 def get_logger(execution_id: str, provider: str, activity: str, env_properties: dict) -> logging.Logger:
     
+    if not execution_id or not provider or not activity:
+        raise ValueError(f"Invalid parameters for get_logger function: execution_id={execution_id}, provider={provider}, activity={activity}")
+    
     logger = logging.getLogger(provider + '_' + execution_id + '_' + activity)
     
     if not logger.handlers:
@@ -13,17 +16,17 @@ def get_logger(execution_id: str, provider: str, activity: str, env_properties: 
         # Configuração do formatter personalizado para ISO 8601
         formatter = logging.Formatter('[%(levelname)s] %(asctime)s %(message)s', datefmt='%Y-%m-%dT%H:%M:%S%Z')
 
-        log_path = env_properties.get(provider).get('log.path')
-        log_file_name = env_properties.get(provider).get('log.file_name')
         log_output_type = env_properties.get(provider).get('log.output_type')
         
         # Permite que o log seja registrado em um arquivo e/ou na saída padrão
         
         if 'file' in log_output_type:
-            file = os.path.join(log_path, log_file_name)
-            if execution_id:
-                file = file.replace('[execution_id]', execution_id).replace('[activity_name]', activity)
-            file_handler = logging.FileHandler(file)
+            log_path = env_properties.get(provider).get('log.path')
+            log_file = env_properties.get(provider).get('log.file')
+            log_file_name_with_path = os.path.join(log_path, log_file)
+            
+            log_file_name_with_path = log_file_name_with_path.replace('[execution_id]', execution_id).replace('[activity_name]', activity)
+            file_handler = logging.FileHandler(log_file_name_with_path)
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
         

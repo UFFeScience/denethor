@@ -5,18 +5,16 @@ def retrieve_logs_from_aws(execution_id: str,
                            function_name: str, 
                            start_time_ms: int, 
                            end_time_ms: int, 
-                           log_path: str, 
-                           log_file: str):
+                           log_file_with_path: str):
     """
     Retrieves logs from AWS Lambda and saves them to a file.
 
     Args:
         execution_id (str): The execution ID of the workflow.
-        function_name (str): The name of the Lambda function.
+        function_name (str): The name of the Lambda function to retrieve logs from.
         start_time_ms (int): The start time of the log retrieval interval in milliseconds.
         end_time_ms (int): The end time of the log retrieval interval in milliseconds.
-        log_path (str): The path where the log file will be saved.
-        log_file (str): The name of the log file.
+        log_file_with_path (str): The path and name of the log file.
 
     Raises:
         ValueError: If no log records were found.
@@ -31,11 +29,9 @@ def retrieve_logs_from_aws(execution_id: str,
     if logs == None or len(logs) == 0:
         raise ValueError("No log records were found! log_group_name={log_group_name}, start_time={log_filter_start}, end_time={log_filter_end}")
     
-    log_file = log_file.replace('[activity_name]', function_name).replace('[execution_id]', execution_id)
-    
-    save_log_file(logs, log_path, log_file)
+    save_log_file(logs, log_file_with_path)
 
-    print(f"Logs for function {function_name} saved to {log_path}/{log_file} in json format")
+    print(f"Logs for function {function_name}, execution {execution_id} saved to {log_file_with_path} in JSON format")
 
 
 
@@ -82,7 +78,7 @@ def get_all_log_events(log_group_name: str,
 
 
 # Save logs to a single file ordered by logStreamName
-def save_log_file(json_logs, file_path: str, file_name: str):
+def save_log_file(json_logs: list, file_name_with_path: str) -> None:
     
     # Ensure that logs contain the 'logStreamName' and 'timestamp' fields
     if not all('logStreamName' in log and 'timestamp' in log for log in json_logs):
@@ -91,21 +87,15 @@ def save_log_file(json_logs, file_path: str, file_name: str):
     json_logs.sort(key=lambda x: (x['logStreamName'], x['timestamp']))
     
     # Sanitize file name
-    file_name = du.sanitize(file_name)
+    file_name_with_path = du.sanitize(file_name_with_path)
 
-    # Create the directory if it does not exist
-    os.makedirs(file_path, exist_ok=True)
-
-    file = os.path.join(file_path, file_name)
-    with open(file=file, mode='w', encoding='utf-8') as file:
+    with open(file=file_name_with_path, mode='w', encoding='utf-8') as file:
         json.dump(json_logs, file, ensure_ascii=False, indent=4)
     
-    print(f"Logs saved to {file_name} in json format")
-
 
 
 # Define a function to print logs in an organized manner
-def print_logs_to_console(logs):
+def print_logs_to_console(logs: list) -> None:
     print("-" * 80)
     for log_item in logs:
         # Convert Unix timestamp to human-readable date and time

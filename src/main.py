@@ -5,8 +5,8 @@ from denethor.utils import utils as du, file_utils as dfu
 from denethor.executor import execution_manager as dem
 import denethor.provenance.provenance_importer as dprov
 
-FORCE_ENV = denv.LOCAL
-# FORCE_ENV = ''
+# FORCE_ENV = denv.LOCAL
+FORCE_ENV = ""
 
 # Raiz do projeto
 project_root = Path(__file__).resolve().parent.parent
@@ -26,7 +26,7 @@ with open(os.path.join(conf_path, "statistics.json"), "r") as f:
     statistics_info = json.load(f)
 
 # Load the environment configuration
-env_properties = du.load_env_config(os.path.join(conf_path, "env.properties"))
+env_properties = du.load_properties(os.path.join(conf_path, "env.properties"))
 
 # Dictionary to store the produced data during the workflow execution
 workflow_runtime_data = {}
@@ -89,7 +89,7 @@ def main():
     print(">>>>>>> Working directory: ", os.getcwd())
 
     previous_activity = None
-    
+
     # For each step in the workflow
     for step in workflow_steps:
 
@@ -140,7 +140,7 @@ def main():
         # Validation of input data
         if input_data is None:
             raise ValueError(
-                f"Invalid input data: {input_data} for step_params: {params} at activity: {activity}"
+                f"Invalid input data: {input_data} for data_params: {data_params} at activity: {activity}"
             )
 
         # Execute the activity
@@ -161,6 +161,14 @@ def main():
 
         print(f"\n>>> {activity} | Memory: {memory} | Strategy: {strategy} completed.")
 
+    end_time_ms = int(time.time() * 1000)
+
+    print(">>>>>>> Workflow end time is (ms):  ", end_time_ms)
+    print(">>>>>>> Workflow end time is (str): ", du.convert_ms_to_str(end_time_ms))
+    print(
+        f"******* Workflow execution {execution_id} finished at: {du.now_str()} *******"
+    )
+
     #################################
     #  Import provenance data
     #################################
@@ -168,42 +176,40 @@ def main():
     # # Mesmo que o ambiente de execução seja local, é necessário obter as informações de log da AWS
     # # com isso, tempo que pegar o environment_params da AWS
     # aws_env = du.get_env_params_by_name(denv.AWS_LAMBDA, env_params)
+    
+    print(f"******* Provenance import started at: {du.now_str()} *******")
 
     if provider_code != "aws_lambda":
         exit(0)
+
+    log_path = env_properties.get("provenance").get("log.path")
+    log_file_name = env_properties.get("provenance").get("log.file")
+    log_file_name = log_file_name.replace("[execution_id]", execution_id).replace(
+        "[activity_name]", activity
+    )
+    log_file = os.path.join(log_path, log_file_name)
 
     # For each step in the workflow
     for step in workflow_steps:
 
         activity = step.get("activity")
         providers_info = step.get("execution_env")
-        lambda_configuration_id = step.get("configuration")
+        memory = step.get("memory")
+        env_properties.get()
 
-        params = {
-            "execution_id": execution_id,
-            "start_time_ms": start_time_ms,
-            "end_time_ms": end_time_ms,
-            "provider": provider_code,
-            "activity": activity,
-            "memory": memory,
-            "strategy": strategy,
-            "env_properties": env_properties,
-            "providers_info": providers_info,
-            "workflow_info": workflow_info,
-            "statistics_info": statistics_info,
-        }
+        dprov.import_provenance_from_aws(
+            execution_id,
+            activity,
+            memory,
+            start_time_ms,
+            end_time_ms,
+            log_file,
+            providers_info,
+            workflow_info,
+            statistics_info,
+        )
 
-        dprov.import_provenance_from_aws(params)
-
-    print(
-        "******* Workflow execution ",
-        execution_id,
-        " finished at: ",
-        du.now_str(),
-        " *******",
-    )
-    # print('******* Executed activities: ', executed_activities, ' *******')
-    # print('******* Provenance imported activities: ', provenance_imported_activities, ' *******')
+    print(f"******* Provenance import finished at: {du.now_str()} *******")
 
 
 if __name__ == "__main__":
