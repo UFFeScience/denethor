@@ -31,13 +31,16 @@ def invoke_aws_lambda(
 
     if payload.get("index_data"):
         print(
-            f">>> index_data={payload.get('index_data')}..{len(payload.get('input_data'))}"
+            f">>> index_data={payload.get('index_data')}..{len(payload.get('input_data'))-1}"
         )
 
     lambda_client = boto3.client(
         "lambda", config=boto3.session.Config(read_timeout=timeout)
     )
     invocation_type = "Event" if async_invoke else "RequestResponse"
+    
+    print(f"\n {json.dumps(payload)}")
+    
     response = lambda_client.invoke(
         FunctionName=function_to_invoke,
         InvocationType=invocation_type,
@@ -50,7 +53,6 @@ def invoke_aws_lambda(
             raise Exception(
                 f"Function error: {response['FunctionError']}, {payload_response}"
             )
-        print(f">>> Lambda function {function_to_invoke} invoked successfully!")
     
     elif response["StatusCode"] == 400:
         raise Exception(f"Bad Request: {response}")
@@ -63,6 +65,8 @@ def invoke_aws_lambda(
     
     else:
         raise Exception(f"Error invoking Lambda function: {response}")
+
+    print(f"\n>>> Lambda function {function_to_invoke} invoked successfully!")
 
     if async_invoke:
         return response["ResponseMetadata"]["RequestId"]
