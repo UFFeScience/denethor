@@ -6,6 +6,7 @@ memory_sizes=(128 256 512 1024 2048)
 
 # Array of function names
 function_names=("tree_constructor" "subtree_constructor" "maf_database_creator" "maf_database_aggregator")
+#function_names=("tree_constructor")
 
 # Associating timeouts to functions
 declare -A timeouts
@@ -32,5 +33,10 @@ for function_name in "${function_names[@]}"; do
     # Call deploy_lambda.sh with the current configuration
     ./deploy_lambda_function.sh -f "$function_name" -t "$timeout" -m "$memory_size" -a "$append_memory"
   
+    # Check the exit code of the script
+    if [ $? -ne 0 ]; then
+      echo ">>>> ERROR: Deploy failed for function $function_name with memory size $memory_size. Exiting..."
+      exit 1
+    fi
   done
 done

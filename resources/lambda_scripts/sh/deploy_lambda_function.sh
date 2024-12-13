@@ -110,6 +110,8 @@ echo "Append memory to function name: $append_memory"
 ##################################################################################
 
 # Define global variables
+SLEEP_DURATION=10
+
 DENETHOR_DIR="/home/marcello/Documents/denethor"
 AWS_ACCOUNT_ID="058264090960"
 PYTHON_VERSION="3.10"
@@ -189,19 +191,21 @@ function_exists=$( \
 
 if [ "$function_exists" = "$function_name_aws" ]; then
   
-  echo -e "\nFunction $function_name_aws already exists!"
-  
-  echo -e "\nUpdating the $function_name_aws function code..."
+  echo -e "\n>>>>Function $function_name_aws already exists! Updating the function code..."
+
   aws lambda update-function-code \
   --function-name $function_name_aws \
   --zip-file fileb://${function_name}.zip \
-  --region $AWS_REGION
+  --region $AWS_REGION \
+  || { echo -e "\n>>>> ERROR: Cannot update $function_name_aws function code.\n"; exit 1; }
+
+  
+  echo -e "\n>>>>Updating the $function_name_aws function configuration..."
   
   # Sleep for a few seconds to ensure the update-function-code operation completes
-  echo -e "\nSleeping for a few seconds..."
-  sleep 2
-  
-  echo "Updating the $function_name_aws function configuration..."
+  echo -e "\n>>>>Waiting $SLEEP_DURATION seconds to ensure the update-function-code operation completes"
+  sleep $SLEEP_DURATION
+
   aws lambda update-function-configuration \
   --function-name $function_name_aws \
   --layers $LAYERS \
@@ -212,7 +216,8 @@ if [ "$function_exists" = "$function_name_aws" ]; then
 
 else
   # Create the lambda function on AWS
-  echo -e "\n Function $function_name_aws does not exist. Creating the function."
+  echo -e "\n>>>>Function $function_name_aws does not exist. Creating the function."
+  
   aws lambda create-function \
   --function-name $function_name_aws \
   --zip-file fileb://${function_name}.zip \
@@ -227,10 +232,9 @@ else
 fi
 
 # Return to the original directory
-# cd ../../..
 cd $ORIGINAL_DIR
 
 # End of script
-echo -e "\n-------------------------------------------------------------------------------\n"
-echo -e "Deployment completed successfully for function $function_name_aws!"
-echo -e "\n-------------------------------------------------------------------------------\n"
+echo -e "\n-----------------------------------------------------------------------------------------------\n"
+echo -e "Deployment completed successfully for function $function_name_aws! with memory size $memory_size"
+echo -e "\n-----------------------------------------------------------------------------------------------\n"
