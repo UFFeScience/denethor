@@ -44,9 +44,27 @@ def invoke_aws_lambda(
         Payload=json.dumps(payload),
     )
 
-    print(f">>> Lambda function {function_to_invoke} invoked successfully!")
+    if response["StatusCode"] == 200:
+        payload_response = json.loads(response["Payload"].read())
+        if "FunctionError" in response:
+            raise Exception(
+                f"Function error: {response['FunctionError']}, {payload_response}"
+            )
+        print(f">>> Lambda function {function_to_invoke} invoked successfully!")
+    
+    elif response["StatusCode"] == 400:
+        raise Exception(f"Bad Request: {response}")
+    
+    elif response["StatusCode"] == 403:
+        raise Exception(f"Forbidden: {response}")
+    
+    elif response["StatusCode"] == 500:
+        raise Exception(f"Internal Server Error: {response}")
+    
+    else:
+        raise Exception(f"Error invoking Lambda function: {response}")
 
     if async_invoke:
         return response["ResponseMetadata"]["RequestId"]
     else:
-        return json.loads(response["Payload"].read())
+        return payload_response
