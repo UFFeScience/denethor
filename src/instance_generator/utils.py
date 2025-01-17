@@ -41,41 +41,14 @@ def replace_weid(weid_str, sql):
     return sql
 
 
-def execute_sql_with_weid(weid_str, sql_file, out_file, wirte_comments, session):
-
-    with open(sql_file, 'r') as file:
-        sql = file.read()
-    
-    # separate comments and code
-    comments, sql = separate_comments_and_code(sql)
-
-    # replace weid
-    sql = replace_weid(weid_str, sql)
-    
-    try:
-        result = session.execute(text(sql))
-        results = result.fetchall()
-        
-        with open(out_file, 'a') as file:
-            # out_file.write(f"-----------{sql_file}\n")
-            if wirte_comments:
-                file.write(comments + '\n')
-            for row in results:
-                file.write('\t'.join(map(str, row)) + '\n')
-            file.write('\n')
-    
-    except SQLAlchemyError as e:
-        print(f"Error executing {sql_file}: {e}")
-    
-    finally:
-        session.close()
-
 def execute_sql_instance_count(weid_str: list, session):
     SQL_COUNT = f"\
         SELECT to_char(count(distinct se.task_id), 'fm000') AS inst_count \
         FROM service_execution se \
         WHERE se.activity_id = 1 and \
               se.workflow_execution_id in ({weid_str})"
+    
+    print(f"Executing SQL: {SQL_COUNT}")
 
     try:
         result = session.execute(text(SQL_COUNT))

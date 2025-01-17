@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from denethor.database.repository.BaseRepository import BaseRepository
-from denethor.database.models.ExecutionStatistics import ExecutionStatistics
+from denethor.database.model.ExecutionStatistics import ExecutionStatistics
 
 class ExecutionStatisticsRepository(BaseRepository):
     def __init__(self, session: Session):

@@ -1,5 +1,5 @@
 import time
-from denethor.utils.aws import aws_utils as dau
+from denethor.utils import aws_utils as dau
 import tree_constructor_core  as tcc
 from denethor.utils import file_utils as dfu, log_handler as dlh, utils as du
 

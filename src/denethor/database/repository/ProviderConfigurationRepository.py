@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
+from denethor.database.model.Provider import Provider
+from denethor.database.model.ProviderConfiguration import ProviderConfiguration
 from denethor.database.repository.BaseRepository import BaseRepository
-from denethor.database.models.ProviderConfiguration import ProviderConfiguration
 
 class ProviderConfigurationRepository(BaseRepository):
     def __init__(self, session: Session):
@@ -12,6 +13,9 @@ class ProviderConfigurationRepository(BaseRepository):
     def get_by_provider_id(self, provider_id: int):
         return self.db.query(self.model).filter_by(provider_id=provider_id).all()
     
+    def get_by_provider_and_memory(self, provider: Provider, memory: int):
+        return self.db.query(self.model).filter_by(provider=provider, memory_mb=memory).first()
+
     def get_or_create(self, obj: ProviderConfiguration):
         if type(obj) != ProviderConfiguration:
             raise ValueError("The argument must be a ProviderConfiguration object")

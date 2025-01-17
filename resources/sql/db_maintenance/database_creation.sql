@@ -14,7 +14,8 @@
 
 CREATE TABLE provider (
     provider_id SERIAL PRIMARY KEY,
-    provider_name VARCHAR
+    provider_name VARCHAR,
+    provider_code VARCHAR
 );
 
 CREATE TABLE provider_configuration (

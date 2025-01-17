@@ -1,50 +1,7 @@
-from ..utils.aws import aws_log_retriever as alr
-from . import aws_log_interpreter as ali
-from denethor.database.models.Provider import Provider
-from denethor.database.models.ProviderConfiguration import ProviderConfiguration
-from denethor.database.models.Workflow import Workflow
-from denethor.database.models.WorkflowActivity import WorkflowActivity
-from denethor.database.models.File import File
-from denethor.database.models.ExecutionFile import ExecutionFile
-from denethor.database.models.Statistics import Statistics
-from denethor.database.models.ExecutionStatistics import ExecutionStatistics
-from denethor.database.models.ServiceExecution import ServiceExecution
-
-from denethor.database.repository.ProviderRepository import ProviderRepository
-from denethor.database.repository.ProviderConfigurationRepository import (
-    ProviderConfigurationRepository,
-)
-from denethor.database.repository.WorkflowRepository import WorkflowRepository
-from denethor.database.repository.WorkflowActivityRepository import (
-    WorkflowActivityRepository,
-)
-from denethor.database.repository.FileRepository import FileRepository
-from denethor.database.repository.ExecutionFileRepository import ExecutionFileRepository
-from denethor.database.repository.StatisticsRepository import StatisticsRepository
-from denethor.database.repository.ExecutionStatisticsRepository import (
-    ExecutionStatisticsRepository,
-)
-from denethor.database.repository.ServiceExecutionRepository import (
-    ServiceExecutionRepository,
-)
-
-
-from denethor.database import conn
-
-# Instânciando a sessão do banco de dados
-session = conn.Connection().get_session()
-
-
-# Instânciando as classes de repositórios
-provider_repo = ProviderRepository(session)
-provider_configuration_repo = ProviderConfigurationRepository(session)
-workflow_repo = WorkflowRepository(session)
-workflow_activity_repo = WorkflowActivityRepository(session)
-file_repo = FileRepository(session)
-execution_file_repo = ExecutionFileRepository(session)
-statistics_repo = StatisticsRepository(session)
-execution_statistics_repo = ExecutionStatisticsRepository(session)
-service_execution_repo = ServiceExecutionRepository(session)
+from denethor.database.model import *
+from denethor.database.repository import *
+from . import aws_log_retriever as alr
+from . import aws_log_analyzer as ala
 
 
 def import_provenance_from_aws(
@@ -54,51 +11,48 @@ def import_provenance_from_aws(
     start_time_ms: int,
     end_time_ms: int,
     log_file_with_path: str,
-    providers: dict,
-    workflow_dict: dict,
-    statistics_dict: dict,
+    providers_info: dict,
+    workflow_info: dict,
+    statistics_info: dict,
 ) -> None:
 
-    function_name = activity_name + "_" + str(memory)
+    function_name = activity_name
+    if memory:
+        function_name += "_" + str(memory)
+
     print(
-        f"Importing provenance from AWS:\n \
-            Execution ID: {execution_id}\n \
-            Activity Name: {activity_name}\n \
-            Memory: {memory}\n \
-            Function Name: {function_name}\n \
-            Start Time: {start_time_ms}\n \
-            End Time: {end_time_ms}\n \
-            Log File: {log_file_with_path}"
+        f"Importing provenance from AWS:\n Execution ID: {execution_id}\n Activity Name: {activity_name}\n Memory: {memory}\n Function Name: {function_name}\n Start Time: {start_time_ms}\n End Time: {end_time_ms}\n Log File: {log_file_with_path}"
     )
 
-    save_workflow_basic_info(providers, workflow_dict, statistics_dict)
+    save_workflow_basic_info(providers_info, workflow_info, statistics_info)
 
     alr.retrieve_logs_from_aws(
         execution_id, function_name, start_time_ms, end_time_ms, log_file_with_path
     )
 
-    ali.process_and_save_logs(
+    ala.process_and_save_logs(
         execution_id,
         activity_name,
+        memory,
         log_file_with_path,
-        providers,
-        workflow_dict,
-        statistics_dict,
+        providers_info,
+        workflow_info,
+        statistics_info,
     )
 
     print("Finished importing provenance from AWS")
 
 
 def save_workflow_basic_info(
-    providers: dict, workflow_dict: dict, statistics_dict: dict
+    providers_dict: dict, workflow_dict: dict, statistics_dict: dict
 ) -> None:
 
     print(
-        f"Providers: {providers} \nWorkflow: {workflow_dict} \nStatistics: {statistics_dict}"
+        f"Providers: {providers_dict} \nWorkflow: {workflow_dict} \nStatistics: {statistics_dict}"
     )
 
     # Service Provider: iterating over the list of service providers and inserting into the database, if not already present
-    for provider in providers:
+    for provider in providers_dict:
         provider_model = Provider.create_from_dict(provider)
         provider_db, provider_created = provider_repo.get_or_create(provider_model)
         print(

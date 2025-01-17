@@ -1,4 +1,4 @@
-from denethor.database.models.BaseModel import *
+from denethor.database.model.BaseModel import *
 
 class ExecutionFile(BaseModel):
     __tablename__ = 'execution_file'

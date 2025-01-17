@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from denethor.database.repository.BaseRepository import BaseRepository
-from denethor.database.models.File import File
+from denethor.database.model.File import File
 
 class FileRepository(BaseRepository):
     def __init__(self, session: Session):

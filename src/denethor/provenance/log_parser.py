@@ -1,37 +1,16 @@
 import re
 from denethor.utils import utils as du
+from denethor.database.model import *
 
-from denethor.database.models.Provider import Provider
-from denethor.database.models.ProviderConfiguration import ProviderConfiguration
-from denethor.database.models.Workflow import Workflow
-from denethor.database.models.WorkflowActivity import WorkflowActivity
-from denethor.database.models.File import File
-from denethor.database.models.ExecutionFile import ExecutionFile
-from denethor.database.models.Statistics import Statistics
-from denethor.database.models.ExecutionStatistics import ExecutionStatistics
-from denethor.database.models.ServiceExecution import ServiceExecution
 
-def find_log_type(message, stats_attributes):
-    # verificar o primeiro elemento da mensagem
-    first_element = message.split()[0]
-    if first_element in stats_attributes:
-        return first_element
-    
-    # Caso não econtre, procurar no resto da mensagem
-    for log_type in stats_attributes.keys():
-        if log_type in message:
-            return log_type
-    
-    return None
-
-def parse_message(message, stats_attributes, default_sep):
+def parse_message(message, stats_attributes, default_separator):
     """
     Parse the log message field and extract attributes based on the provided stats attributes.
 
     Args:
         message (str): The log message to parse.
         stats_attributes (dict): The dictionary containing the stats attributes.
-        default_sep (str): The default separator to use.
+        default_separator (str): The default separator to use.
 
     Returns:
         dict: The parsed attributes as a dictionary.
@@ -47,7 +26,7 @@ def parse_message(message, stats_attributes, default_sep):
     # Iterate over each attribute
     for attribute in stats_attributes[log_type]:
         
-        sep = attribute.get('separator', f'[{default_sep}\n]')
+        sep = attribute.get('separator', f'[{default_separator}\n]')
         # Use regex to extract the attribute value from the message
         pattern = f"{attribute['searchKey']}:\\s*(.*?){sep}"
         match = re.search(pattern, message)
@@ -68,24 +47,25 @@ def parse_message(message, stats_attributes, default_sep):
     return parsed_message
 
 
-def parse_execution_logs(request_id: str, activity_name: str, logs: list, statistics: dict) -> ServiceExecution:
+def parse_execution_logs(request_id: str, logs: list, statistics: dict) -> ServiceExecution:
     """
     Parse all the execution logs for the same request id and create a ServiceExecution object.
 
     Args:
         request_id (str): The request ID.
-        activity_name (str): The activity name.
         logs (list): The list of logs to parse.
         statistics (dict): The dictionary containing the statistics.
 
     Returns:
         ServiceExecution: The parsed service execution object.
     """
+
+    service_execution = ServiceExecution()
+
     default_stats = statistics['default_statistics']
     custom_stats = statistics['custom_statistics']
     default_sep = statistics['default_separator']
 
-    service_execution = ServiceExecution()
     stats = default_stats | custom_stats
 
     # iterate over each log in the logs list
@@ -107,8 +87,11 @@ def parse_execution_logs(request_id: str, activity_name: str, logs: list, statis
             process_custom_stats(service_execution, parsed_message)
         
         else:
-            raise ValueError(f"Could not parse message for activity: {activity_name}. LogType unknown: {parsed_message['logType']}. LogMessage: {log['message']}")
-            
+            raise ValueError(f"Could not parse message for activity: {service_execution.activity}. LogType unknown: {parsed_message['logType']}. LogMessage: {log['message']}")
+
+
+    validate_service_execution(service_execution)
+    
     return service_execution
 
 
@@ -168,3 +151,40 @@ def process_custom_stats(service_execution, parsed_message: dict):
             
             service_execution.execution_statistics.append(execution_stat)
 
+def find_log_type(message, stats_attributes):
+    # verificar o primeiro elemento da mensagem
+    first_element = message.split()[0]
+    if first_element in stats_attributes:
+        return first_element
+    
+    # Caso não econtre, procurar no resto da mensagem
+    for log_type in stats_attributes.keys():
+        if log_type in message:
+            return log_type
+    
+    return None
+
+def validate_service_execution(service_execution):
+        """
+        Validate the service execution object to ensure all required fields are present.
+    
+        Args:
+            service_execution (ServiceExecution): The service execution object to validate.
+    
+        Raises:
+            ValueError: If any required field is missing.
+        """
+        if not service_execution.request_id:
+            raise ValueError("ServiceExecution is missing request_id for: {service_execution}")
+        if not service_execution.start_time:
+            raise ValueError("ServiceExecution is missing start_time for: {service_execution}")
+        if not service_execution.end_time:
+            raise ValueError("ServiceExecution is missing end_time for: {service_execution}")
+        if not service_execution.duration:
+            raise ValueError("ServiceExecution is missing duration for: {service_execution}")
+        if not service_execution.billed_duration:
+            raise ValueError("ServiceExecution is missing billed_duration for: {service_execution}")
+        if not service_execution.memory_size:
+            raise ValueError("ServiceExecution is missing memory_size for: {service_execution}")
+        if not service_execution.max_memory_used:
+            raise ValueError("ServiceExecution is missing max_memory_used for : {service_execution}")

@@ -7,6 +7,7 @@ import denethor.provenance.provenance_importer as dprov
 
 # FORCE_ENV = denv.LOCAL
 FORCE_ENV = ""
+FORCE_MEMORY = 2048
 
 # Raiz do projeto
 project_root = Path(__file__).resolve().parent.parent
@@ -14,7 +15,7 @@ project_root = Path(__file__).resolve().parent.parent
 conf_path = os.path.join(project_root, "conf")
 # Load JSON files
 with open(os.path.join(conf_path, "provider.json"), "r") as f:
-    provider = json.load(f)
+    provider_info = json.load(f)
 
 with open(os.path.join(conf_path, "workflow.json"), "r") as f:
     workflow_info = json.load(f)
@@ -35,8 +36,8 @@ workflow_runtime_data = {}
 def main():
 
     # Set the workflow start time in milliseconds
-    start_time_ms = int(time.time() * 1000)
-    end_time_ms = None
+    workflow_start_time_ms = int(time.time() * 1000)
+    workflow_end_time_ms = None
 
     ########################################################################
     # FOR LOCAL TESTING!!!!
@@ -80,13 +81,16 @@ def main():
 
     ########################################################################
 
-    execution_id = du.generate_workflow_execution_id(start_time_ms)
+    execution_id = du.generate_workflow_execution_id(workflow_start_time_ms)
 
-    print(">>>>>>> Main program started at: ", du.now_str())
-    print(">>>>>>> Workflow start time is (ms):  ", start_time_ms)
-    print(">>>>>>> Workflow start time is (str): ", du.convert_ms_to_str(start_time_ms))
-    print(">>>>>>> Execution ID: ", execution_id)
-    print(">>>>>>> Working directory: ", os.getcwd())
+    print(">>> Main program started at: ", du.now_str())
+    print(">>> Workflow start time is (ms):  ", workflow_start_time_ms)
+    print(
+        ">>> Workflow start time is (str): ",
+        du.convert_ms_to_str(workflow_start_time_ms),
+    )
+    print(">>> Execution ID: ", execution_id)
+    print(">>> Working directory: ", os.getcwd())
 
     previous_activity = None
 
@@ -101,6 +105,9 @@ def main():
 
         if FORCE_ENV:
             provider_code = FORCE_ENV
+        
+        if FORCE_MEMORY:
+            memory = FORCE_MEMORY
 
         # Check if the step is active
         if step.get("active") is False:
@@ -159,57 +166,93 @@ def main():
         workflow_runtime_data[output_param_name] = results
         previous_activity = activity
 
-        print(f"\n>>> {activity} | Memory: {memory} | Strategy: {strategy} completed.")
+        print(
+            f"\n>>> Activity {activity} | Memory: {memory} | Strategy: {strategy} completed."
+        )
 
-    end_time_ms = int(time.time() * 1000)
+    workflow_end_time_ms = int(time.time() * 1000)
 
-    print(">>>>>>> Workflow end time is (ms):  ", end_time_ms)
-    print(">>>>>>> Workflow end time is (str): ", du.convert_ms_to_str(end_time_ms))
     print(
-        f"******* Workflow execution {execution_id} finished at: {du.now_str()} *******"
+        f"\n>>> Workflow {execution_id} start time is: {workflow_start_time_ms} ms | {du.convert_ms_to_str(workflow_start_time_ms)}"
+    )
+    print(
+        f">>> Workflow {execution_id} end time is: {workflow_end_time_ms} ms | {du.convert_ms_to_str(workflow_end_time_ms)}"
+    )
+    print(
+        f">>> Workflow {execution_id} duration: {workflow_end_time_ms - workflow_start_time_ms} ms"
     )
 
-    #################################
-    #  Import provenance data
-    #################################
 
-    # # Mesmo que o ambiente de execução seja local, é necessário obter as informações de log da AWS
-    # # com isso, tempo que pegar o environment_params da AWS
-    # aws_env = du.get_env_params_by_name(denv.AWS_LAMBDA, env_params)
-    
-    print(f"******* Provenance import started at: {du.now_str()} *******")
+
+
+    ############################################################
+    #
+    #  Import provenance data
+    #
+    ############################################################
+
+    sleep_time = 5
+    print(f"\n>>> Sleeping for {sleep_time} seconds before importing provenance data...")
+    time.sleep(sleep_time)
+
+    prov_start_time_ms = int(time.time() * 1000)
+    prov_end_time_ms = None
+
+    print(
+        f"\n>>> Provenance import start time is: {prov_start_time_ms} ms | {du.convert_ms_to_str(prov_start_time_ms)}"
+    )
 
     if provider_code != "aws_lambda":
         exit(0)
 
-    log_path = env_properties.get("provenance").get("log.path")
-    log_file_name = env_properties.get("provenance").get("log.file")
-    log_file_name = log_file_name.replace("[execution_id]", execution_id).replace(
-        "[activity_name]", activity
-    )
-    log_file = os.path.join(log_path, log_file_name)
-
     # For each step in the workflow
     for step in workflow_steps:
 
+        # Check if the step is active
+        if step.get("active") is False:
+            print(f"\n>>> Activity: {activity} is inactive. Skipping...")
+            continue
+
         activity = step.get("activity")
-        providers_info = step.get("execution_env")
         memory = step.get("memory")
-        env_properties.get()
+
+        if FORCE_MEMORY:
+            memory = FORCE_MEMORY
+        
+        log_path = env_properties.get("provenance").get("log.path")
+        log_file_name = env_properties.get("provenance").get("log.file")
+        
+        log_path = log_path.replace("[provider_code]", provider_code)
+        log_file_name = log_file_name.replace("[execution_id]", execution_id)
+        log_file_name = log_file_name.replace("[activity_name]", activity)
+        
+        log_file = os.path.join(log_path, log_file_name)
 
         dprov.import_provenance_from_aws(
             execution_id,
             activity,
             memory,
-            start_time_ms,
-            end_time_ms,
+            workflow_start_time_ms,
+            workflow_end_time_ms,
             log_file,
-            providers_info,
+            provider_info,
             workflow_info,
             statistics_info,
         )
 
-    print(f"******* Provenance import finished at: {du.now_str()} *******")
+    prov_end_time_ms = int(time.time() * 1000)
+    
+    print(
+        f">>> Provenance import start time: {du.convert_ms_to_str(prov_start_time_ms)}"
+    )
+
+    print(
+        f">>> Provenance import end time: {du.convert_ms_to_str(prov_end_time_ms)}"
+    )
+
+    print(
+        f">>> Provenance import duration: {prov_end_time_ms - prov_start_time_ms} ms"
+    )
 
 
 if __name__ == "__main__":

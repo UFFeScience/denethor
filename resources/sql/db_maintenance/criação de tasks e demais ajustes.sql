@@ -98,6 +98,8 @@ set task_id = (select ta.task_id
 where se.task_id = -1
 ;
 
-select * from task
-order by 1 desc;
-select distinct se_id, task_id from service_execution order by 1;
+
+select * from task order by task_id desc;
+
+
+select distinct workflow_execution_id, se_id, task_id from service_execution order by se_id desc;

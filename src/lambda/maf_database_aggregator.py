@@ -1,5 +1,5 @@
 import os, timeit, json
-from denethor.utils.aws import aws_utils as dau
+from denethor.utils import aws_utils as dau
 import maf_database_creator_core as mdcc
 from denethor.utils import file_utils as dfu, log_handler as dlh, utils as du
 

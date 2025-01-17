@@ -29,25 +29,17 @@ SELECT
 	COALESCE(consumed_file_size, produced_file_size) AS data_size,
 	read_time_avg,
 	write_time_avg,
-	-- CASE 
-	-- 	WHEN produced_file_id IS NOT NULL THEN 'dynamic'
-	-- 	WHEN produced_file_id IS NULL AND consumed_file_id IS NOT NULL THEN 'static'
-	-- 	ELSE 'error'
-	-- END AS data_type,
 	CASE 
-		WHEN produced_file_id IS NOT NULL THEN 0
-		WHEN produced_file_id IS NULL AND consumed_file_id IS NOT NULL THEN 1
+		WHEN produced_file_id IS NOT NULL THEN 0 --dynamic
+		WHEN produced_file_id IS NULL AND consumed_file_id IS NOT NULL THEN 1 --static
 		ELSE -1
 	END AS is_static,
 	CASE 
-		WHEN produced_file_id IS NOT NULL THEN 0
-		WHEN produced_file_id IS NULL AND consumed_file_id IS NOT NULL THEN 1
+		WHEN produced_file_id IS NOT NULL THEN 0 --dynamic has zero sources
+		WHEN produced_file_id IS NULL AND consumed_file_id IS NOT NULL THEN 1 --static has one source
 		ELSE -1
 	END AS n_source_devices,
 	'[denethor_bucket]' AS device_list
 FROM consumed_files 
 FULL OUTER JOIN  produced_file ON produced_file_id = consumed_file_id	
 ORDER BY consumed_file_id;
--- select * from consumed_files
--- full outer join  produced_file on produced_file_id = consumed_file_id	
--- order by consumed_file_id;

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from denethor.database.repository.BaseRepository import BaseRepository
-from denethor.database.models.ServiceExecution import ServiceExecution
+from denethor.database.model.ServiceExecution import ServiceExecution
 
 class ServiceExecutionRepository(BaseRepository):
     def __init__(self, session: Session):
