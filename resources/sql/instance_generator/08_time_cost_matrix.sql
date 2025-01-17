@@ -1,10 +1,12 @@
---#<task_id> <activity_id> <config_id> <task_time_total> <task_time_init> <task_time_cpu> <task_time_read> <task_time_write> <task_count>
+--#<task_id> <activity_id> <config_id> <task_cost> <task_time_total> <task_time_init> <task_time_cpu> <task_time_read> <task_time_write> <task_count>
 WITH 
 task_time AS (
 	SELECT 
 		ta.task_id,
 		ta.activity_id,
 		se.configuration_id AS config_id,
+		--cost = duration (s) x memory (gb) x computation cost x fixed cost
+		to_char(avg(se.duration*0.001*se.memory_size*0.0009765625*0.0000166667 + 0.0000002),'fm999990D9999999999999999') AS task_cost,		
 		avg(se.duration)*0.001 AS task_time_total,
 		avg(COALESCE(se.init_duration, 0)*0.001) AS task_time_init,
 		avg(se.duration - COALESCE(se.consumed_files_transfer_duration, 0) - COALESCE(se.produced_files_transfer_duration, 0))*0.001 AS task_time_cpu,
@@ -20,6 +22,7 @@ task_time AS (
 SELECT  task_id,
 		activity_id,
 		config_id,
+		task_cost,
 		task_time_total,
 		task_time_init, 
 		task_time_cpu,
@@ -31,6 +34,7 @@ UNION ALL
 SELECT  distinct t1.task_id,
 		t1.activity_id,
 		pc.configuration_id AS config_id, 
+		'99999' AS task_cost,
 		99999 AS task_time_total,
 		99999 AS task_time_init,
 		99999 AS task_time_cpu,

@@ -24,10 +24,10 @@ from datetime import datetime
 # 2 files with:
 
 #       128mb
-WEID = ['weid_1735311414938']
+# WEID = ['weid_1735311414938']
 
 #       128mb               / 256mb               / 512                  / 1024               / 2048 execution
-# WEID = ['weid_1735311414938', 'weid_1735318446694', 'weid_1735319031426', 'weid_1735319100179', 'weid_1735319150437']
+WEID = ['weid_1735311414938', 'weid_1735318446694', 'weid_1735319031426', 'weid_1735319100179', 'weid_1735319150437']
 
 
 SQL_FILES_PATH = 'resources/sql/instance_generator/'  # Diretório onde os arquivos SQL estão localizados

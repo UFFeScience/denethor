@@ -18,15 +18,10 @@ e mais: para fx, teria que separar por config??
 BANDWIDTH MATRIX (estático) -- caracteristica da maquina
 <vm_id> <bandwidth>
 
-TIME FUNCTION MATRIX (task/config) (obter a partir das execuções na aws)
-<task_id> <activity_id> <config_id> <task_time_total> <task_time_cpu> <task_time_read> <task_time_write> <task_count>
+TIME AND COST FUNCTION MATRIX (task/config) (obter a partir das execuções na aws)
+<task_id> <activity_id> <config_id> <task_cost> <task_time_total> <task_time_cpu> <task_time_read> <task_time_write> <task_count>
 1 1 12 2 15 3 17
 2...
-
-
-FINANCIAL COST FUNCTION MATRIX (task/config) (multiplicar o tempo x custo??)
-<task_id> <activity_id> <config_id>  <task_cost> <task_count>
-
 
 BUCKET RANGE LIST
 <bucket_range_id> <size1_gb> <size2_gb> <cost_per_gb>

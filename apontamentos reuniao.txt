@@ -48,7 +48,20 @@ investigar none em read TIME
 
 10/01/2025
 - Passar para Miguel arquivo com  2 inst e 5 configs
-- Verificar tempo de init (possível enviesamento na primeira tarefa)
-- Rodada de aquecimento
-- Custo quando usar VM (como precificar uma tarefa para comparar com Função - olhar o modelo)
-- Balanceamento entre tempo e custo (alfa)
+- Verificar se tempo de init está sendo contabilizado no tempo total da tarefa
+  -- possível enviesamento na primeira tarefa?
+  -- Rodada de aquecimento
+- Custo quando usar VM (como precificar uma tarefa para comparar com Função? - olhar o modelo)
+- Balanceamento entre tempo e custo das tarefas (parâmetro alfa)
+
+-OBS.: No AWS Lambda, o tempo de inicialização (`init_duration`) não é cobrado separadamente. 
+O que é cobrado é o tempo de execução (`duration`), que é o tempo que a função leva para processar um evento,
+arredondado para o milissegundo mais próximo
+* Types of metrics for Lambda functions - AWS Lambda. https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics-types.html.
+* AWS Lambda changes duration billing granularity from 100ms down to 1ms. https://aws.amazon.com/about-aws/whats-new/2020/12/aws-lambda-changes-duration-billing-granularity-from-100ms-to-1ms/.
+
+
+
+
+17/01/2025
+
