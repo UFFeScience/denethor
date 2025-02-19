@@ -5,7 +5,7 @@ class Provider(BaseModel):
 
     provider_id = Column(Integer, primary_key=True)
     provider_name = Column(String)
-    provider_code = Column(String)
+    provider_tag = Column(String)
 
     # configurations = relationship("ProviderConfiguration", backref="provider")
 

@@ -19,7 +19,7 @@
 CREATE TABLE provider (
     provider_id SERIAL PRIMARY KEY,
     provider_name VARCHAR,
-    provider_code VARCHAR
+    provider_tag VARCHAR
 );
 
 -- TODO: remover provider_id da tabela provider_configuration??
@@ -48,7 +48,7 @@ CREATE TABLE workflow_activity (
 
 CREATE TABLE workflow_execution (
     we_id SERIAL  PRIMARY KEY,
-    we_label VARCHAR,
+    we_tag VARCHAR,
     workflow_id INTEGER,
     start_time TIMESTAMP WITH TIME ZONE,
     end_time TIMESTAMP WITH TIME ZONE,
@@ -68,7 +68,7 @@ CREATE TABLE service_execution (
     activity_id INTEGER NOT NULL,
     provider_id INTEGER NOT NULL,
     configuration_id INTEGER,
-    workflow_execution_id VARCHAR, --sera movido para workflow_execution como we_label
+    workflow_execution_id VARCHAR, --sera movido para workflow_execution como we_tag
     request_id VARCHAR,
     log_stream_name VARCHAR,
     start_time TIMESTAMP WITH TIME ZONE,

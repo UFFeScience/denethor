@@ -4,7 +4,7 @@ class WorkflowExecution(BaseModel):
     __tablename__ = "workflow_execution"
 
     we_id = Column(Integer, primary_key=True)
-    we_label = Column(String(255))
+    we_tag = Column(String(255))
     workflow_id = Column(Integer, ForeignKey("workflow.workflow_id"))
     input_files_count = Column(Integer)
     output_files_count = Column(Integer)
@@ -17,4 +17,4 @@ class WorkflowExecution(BaseModel):
     workflow = relationship("Workflow")
 
     def __str__(self):
-        return f"[{self.we_id}]={self.we_label}"
+        return f"[{self.we_id}]={self.we_tag}"

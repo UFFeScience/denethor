@@ -98,13 +98,13 @@ def main():
     for step in workflow_steps:
 
         activity = step.get("activity")
-        provider_code = step.get("provider")
+        provider_tag = step.get("provider")
         memory = step.get("memory")
         strategy = step.get("strategy")
         data_params = step.get("data_params")
 
         if FORCE_ENV:
-            provider_code = FORCE_ENV
+            provider_tag = FORCE_ENV
         
         if FORCE_MEMORY:
             memory = FORCE_MEMORY
@@ -153,7 +153,7 @@ def main():
         # Execute the activity
         results = dem.execute_activity(
             execution_id,
-            provider_code,
+            provider_tag,
             strategy,
             activity,
             previous_activity,
@@ -202,7 +202,7 @@ def main():
         f"\n>>> Provenance import start time is: {prov_start_time_ms} ms | {du.convert_ms_to_str(prov_start_time_ms)}"
     )
 
-    if provider_code != "aws_lambda":
+    if provider_tag != "aws_lambda":
         exit(0)
 
     # For each step in the workflow
@@ -222,7 +222,7 @@ def main():
         log_path = env_properties.get("provenance").get("log.path")
         log_file_name = env_properties.get("provenance").get("log.file")
         
-        log_path = log_path.replace("[provider_code]", provider_code)
+        log_path = log_path.replace("[provider_tag]", provider_tag)
         log_file_name = log_file_name.replace("[execution_id]", execution_id)
         log_file_name = log_file_name.replace("[activity_name]", activity)
         

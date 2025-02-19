@@ -9,8 +9,8 @@ class WorkflowExecutionRepository(BaseRepository):
     def get_by_id(self, id: int):
         return self.db.query(self.model).filter_by(we_id=id).first()
     
-    def get_by_label(self, label: str):
-        return self.db.query(self.model).filter_by(we_label=label).first()
+    def get_by_tag(self, tag: str):
+        return self.db.query(self.model).filter_by(we_tag=tag).first()
     
     def get_or_create(self, obj: WorkflowExecution):
         if type(obj) != WorkflowExecution:

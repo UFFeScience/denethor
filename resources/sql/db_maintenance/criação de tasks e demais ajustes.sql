@@ -120,10 +120,10 @@ order by se.se_id;
 
 --- popular workflow_execution com dados de service_execution,
 --- incluindo a contagem de arquivos de entrada da atividade 1
-INSERT INTO workflow_execution (we_label, workflow_id, start_time, end_time, duration, input_count, task_count, service_execution_count, input_list, runtime_data, info)
+INSERT INTO workflow_execution (we_tag, workflow_id, start_time, end_time, duration, input_count, task_count, service_execution_count, input_list, runtime_data, info)
 SELECT
 	--ROW_NUMBER() OVER (ORDER BY workflow_execution_id, task_id) AS rownum,
-		se.workflow_execution_id AS we_label,
+		se.workflow_execution_id AS we_tag,
 --		se.task_id,
 --		se.activity_id,
 		1 AS workflow_id,
