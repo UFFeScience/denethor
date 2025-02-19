@@ -51,8 +51,8 @@ investigar none em read TIME
 - Verificar se tempo de init está sendo contabilizado no tempo total da tarefa
   -- possível enviesamento na primeira tarefa?
   -- Rodada de aquecimento
-- Custo quando usar VM (como precificar uma tarefa para comparar com Função? - olhar o modelo)
-- Balanceamento entre tempo e custo das tarefas (parâmetro alfa)
+- Custo quando usar VM (como precificar uma tarefa para comparar com Função? - olhar o modelo): Custo da VM por hora / tempo de alocação para a tarefa
+- Balanceamento entre tempo e custo das tarefas - parâmetro φ (phi)
 
 -OBS.: No AWS Lambda, o tempo de inicialização (`init_duration`) não é cobrado separadamente. 
 O que é cobrado é o tempo de execução (`duration`), que é o tempo que a função leva para processar um evento,
@@ -64,4 +64,22 @@ arredondado para o milissegundo mais próximo
 
 
 17/01/2025
+- Conversar com o Ubiratam sobre o modelo
+- Passar a leitura do arquivo que Miguel fez
 
+
+25/01/2025
+ - manter o uso do UFFLP, mesmo descontinuado, para montar o modelo (altertiva seria o Concert)
+   - https://www.ibm.com/docs/en/cofz/12.9.0?topic=cplex-using-concert-technology-in
+
+- ajustar artigo do peerj e mandar outro pro sbpo para garantir A4
+- sbbd final de março/abril. mandar algo mais simples? 31/03-abstract | 07/04-submissão
+- pedir prorrogação penúltima semana de fevereiro
+- relembrar os pedidos de ajuste no peerj
+- criar tabela no bd para controlar a execução do workflow de maneira ampla (weid_xxxxx),
+  dessa forma conseguiremos ter informações mais gerais e não apenas de uma instância de task (service_execution)
+
+
+14/02/2025
+ - Verificar como as VMs RHEL funcionam em termos de alocação e pagamento por unidade de tempo
+ - Incluir cobrança por segundo no arquivo de instância para VMs

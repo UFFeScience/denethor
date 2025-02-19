@@ -3,6 +3,12 @@ SET lc_numeric = 'pt_BR';
 
 
 
+select * from workflow;
+
+select * from workflow_execution;
+
+select * from provider_configuration;
+
 -- service_execution
 
 select * from vw_service_execution_info;

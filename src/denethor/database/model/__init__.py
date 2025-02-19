@@ -1,6 +1,7 @@
 from .Provider import Provider
 from .ProviderConfiguration import ProviderConfiguration
 from .Workflow import Workflow
+from .WorkflowExecution import WorkflowExecution
 from .WorkflowActivity import WorkflowActivity
 from .File import File
 from .ExecutionFile import ExecutionFile
