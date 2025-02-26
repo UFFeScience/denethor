@@ -1,79 +1,77 @@
--- DROP TABLE IF EXISTS task;
--- DROP TABLE IF EXISTS execution_statistics;
--- DROP TABLE IF EXISTS execution_file;
--- DROP TABLE IF EXISTS service_execution;
--- DROP TABLE IF EXISTS workflow_activity;
--- DROP TABLE IF EXISTS workflow_execution;
--- DROP TABLE IF EXISTS task;
--- DROP TABLE IF EXISTS file;
--- DROP TABLE IF EXISTS provider_configuration;
--- DROP TABLE IF EXISTS provider;
--- DROP TABLE IF EXISTS workflow;
--- DROP TABLE IF EXISTS statistics;
+-- DROP VIEW IF EXISTS vw_file_type;
+-- DROP VIEW IF EXISTS vw_service_execution_info_last;
+-- DROP VIEW IF EXISTS vw_service_execution_info;
+
+DROP TABLE IF EXISTS public.execution_statistics;
+DROP TABLE IF EXISTS public.execution_file;
+DROP TABLE IF EXISTS public.task_execution;
+DROP TABLE IF EXISTS public.service_execution;
+DROP TABLE IF EXISTS public.workflow_execution;
+DROP TABLE IF EXISTS public.provider_configuration;
+DROP TABLE IF EXISTS public.workflow_activity;
+DROP TABLE IF EXISTS public.task;
+DROP TABLE IF EXISTS public.file;
+DROP TABLE IF EXISTS public.provider;
+DROP TABLE IF EXISTS public.workflow;
+DROP TABLE IF EXISTS public.statistics;
 
 
---DROP COLUMN we_id;
---ALTER TABLE service_execution DROP COLUMN we_id;
 
 
 CREATE TABLE provider (
     provider_id SERIAL PRIMARY KEY,
-    provider_name VARCHAR,
-    provider_tag VARCHAR
+    provider_name VARCHAR NOT NULL,
+    provider_tag VARCHAR NOT NULL
 );
 
--- TODO: remover provider_id da tabela provider_configuration??
 CREATE TABLE provider_configuration (
-    configuration_id SERIAL PRIMARY KEY,
-    provider_id INTEGER REFERENCES provider(provider_id),
-    timeout INTEGER,
-    cpu INTEGER,
-    memory_mb INTEGER,
-    storage_mb INTEGER
+    conf_id SERIAL PRIMARY KEY,
+    provider_id INTEGER NOT NULL,
+    timeout INTEGER NOT NULL,
+    cpu INTEGER NOT NULL,
+    memory_mb INTEGER NOT NULL,
+    storage_mb INTEGER NOT NULL,
+    FOREIGN KEY (provider_id) REFERENCES provider(provider_id)
 );
 
 CREATE TABLE workflow (
-    workflow_id SERIAL  PRIMARY KEY,
-    workflow_name VARCHAR,
+    workflow_id SERIAL PRIMARY KEY,
+    workflow_name VARCHAR NOT NULL,
     workflow_description VARCHAR
 );
 
 CREATE TABLE workflow_activity (
-    activity_id SERIAL  PRIMARY KEY,
-    workflow_id INTEGER,
-    activity_name VARCHAR,
+    activity_id SERIAL PRIMARY KEY,
+    workflow_id INTEGER NOT NULL,
+    activity_name VARCHAR NOT NULL,
     activity_description VARCHAR,
-    CONSTRAINT fk_workflow_activity_workflow FOREIGN KEY (workflow_id) REFERENCES workflow(workflow_id)
+    FOREIGN KEY (workflow_id) REFERENCES workflow(workflow_id)
 );
 
 CREATE TABLE workflow_execution (
-    we_id SERIAL  PRIMARY KEY,
-    we_tag VARCHAR,
-    workflow_id INTEGER,
-    start_time TIMESTAMP WITH TIME ZONE,
-    end_time TIMESTAMP WITH TIME ZONE,
-    duration FLOAT,
-    input_count INTEGER,
-    task_count INTEGER,
-    service_execution_count INTEGER,
+    we_id SERIAL PRIMARY KEY,
+    workflow_id INTEGER NOT NULL,
+    execution_tag VARCHAR NOT NULL,
+    start_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    end_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    duration FLOAT NOT NULL,
+    input_count INTEGER NOT NULL,
     input_list TEXT,
     runtime_data TEXT,
     info TEXT,
-    CONSTRAINT fk_workflow_execution_workflow FOREIGN KEY (workflow_id) REFERENCES workflow(workflow_id)
+    FOREIGN KEY (workflow_id) REFERENCES workflow(id)
 );
 
 CREATE TABLE service_execution (
     se_id SERIAL  PRIMARY KEY,
     we_id INTEGER NOT NULL,
     activity_id INTEGER NOT NULL,
-    provider_id INTEGER NOT NULL,
-    configuration_id INTEGER,
-    workflow_execution_id VARCHAR, --sera movido para workflow_execution como we_tag
-    request_id VARCHAR,
+    provider_conf_id INTEGER NOT NULL,
+    request_id VARCHAR NOT NULL,
     log_stream_name VARCHAR,
-    start_time TIMESTAMP WITH TIME ZONE,
-    end_time TIMESTAMP WITH TIME ZONE,
-    duration FLOAT,
+    start_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    end_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    duration FLOAT NOT NULL,
     billed_duration FLOAT,
     init_duration FLOAT,
     memory_size INTEGER,
@@ -85,15 +83,10 @@ CREATE TABLE service_execution (
     produced_files_size INTEGER,
     produced_files_transfer_duration FLOAT,
     error_message VARCHAR,
-    CONSTRAINT fk_service_execution_workflow_execution FOREIGN KEY (we_id) REFERENCES workflow_execution(we_id),
-    CONSTRAINT fk_service_execution_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id),
-    CONSTRAINT fk_service_execution_configuration FOREIGN KEY (configuration_id) REFERENCES provider_configuration(configuration_id),
-    CONSTRAINT fk_service_execution_activity FOREIGN KEY (activity_id) REFERENCES workflow_activity(activity_id)
+    FOREIGN KEY (activity_id) REFERENCES workflow_activity(activity_id)
+    FOREIGN KEY (we_id) REFERENCES workflow_execution(we_id),
+    FOREIGN KEY (provider_conf_id) REFERENCES provider_configuration(conf_id),
 );
-
-ALTER TABLE service_execution
-ADD COLUMN we_id INTEGER NOT NULL,
-ADD CONSTRAINT fk_service_execution_workflow_execution FOREIGN KEY (we_id) REFERENCES workflow_execution(we_id);
 
 
 CREATE TABLE file (
@@ -103,17 +96,18 @@ CREATE TABLE file (
     file_path VARCHAR,
     file_size FLOAT NOT NULL,
     file_hash_code VARCHAR NOT NULL,
-    CONSTRAINT uk_file_data UNIQUE (file_name, file_bucket, file_path, file_size)
+    UNIQUE (file_name, file_bucket, file_path, file_size)
 );
 
 CREATE TABLE execution_file (
     ef_id SERIAL  PRIMARY KEY,
     se_id INTEGER NOT NULL,
     file_id INTEGER NOT NULL,
-    transfer_duration FLOAT,
-    transfer_type VARCHAR NOT NULL CONSTRAINT check_action_type CHECK (transfer_type IN ('consumed', 'produced')),
-    CONSTRAINT fk_execution_file_service_execution FOREIGN KEY (se_id) REFERENCES service_execution(se_id),
-    CONSTRAINT fk_execution_file_file FOREIGN KEY (file_id) REFERENCES file(file_id)
+    transfer_duration FLOAT NOT NULL,
+    transfer_type VARCHAR NOT NULL,
+    CHECK (transfer_type IN ('consumed', 'produced')),
+    FOREIGN KEY (service_execution_id) REFERENCES service_execution(id),
+    FOREIGN KEY (file_id) REFERENCES file(id)
 );
 
 CREATE TABLE statistics (
@@ -129,24 +123,24 @@ CREATE TABLE execution_statistics (
     value_float FLOAT,
     value_integer INTEGER,
     value_string VARCHAR,
-    CONSTRAINT fk_execution_statistics_service_execution FOREIGN KEY (se_id) REFERENCES service_execution(se_id),
-    CONSTRAINT fk_execution_statistics_statistics FOREIGN KEY (statistics_id) REFERENCES statistics(statistics_id)
+    FOREIGN KEY (se_id) REFERENCES service_execution(se_id),
+    FOREIGN KEY (statistics_id) REFERENCES statistics(statistics_id)
 );
 
 
 -- Criação da tabela task
-CREATE TABLE task (
-    task_id SERIAL PRIMARY KEY,
-    activity_id INTEGER NOT NULL,
-    task_type INTEGER NOT NULL,
-    input_count INTEGER NOT NULL,
-    input_list TEXT NOT NULL,
-    output_count INTEGER NOT NULL,
-    output_list TEXT NOT NULL,
-    FOREIGN KEY (activity_id) REFERENCES workflow_activity(activity_id)
-);
+-- CREATE TABLE task (
+--     task_id SERIAL PRIMARY KEY,
+--     activity_id INTEGER NOT NULL,
+--     task_type INTEGER NOT NULL,
+--     input_count INTEGER NOT NULL,
+--     input_list TEXT NOT NULL,
+--     output_count INTEGER NOT NULL,
+--     output_list TEXT NOT NULL,
+--     FOREIGN KEY (activity_id) REFERENCES workflow_activity(activity_id)
+-- );
 
-select * from task;
+-- select * from task;
 
 
 

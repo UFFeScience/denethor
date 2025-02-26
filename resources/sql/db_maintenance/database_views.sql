@@ -1,26 +1,27 @@
---view file_type: dynamic_files + tatic_files
+--view file_type: dynamic_files + static_files
 CREATE OR REPLACE VIEW vw_file_type AS
     SELECT distinct
-        ef.se_id, 
-        ef.file_id, 
+        ef.se_id,
+        ef.file_id,
         'dynamic' AS file_type
-    FROM execution_file ef
+    FROM backup_19_02_2025.execution_file ef
     WHERE ef.transfer_type = 'produced'
     
     UNION
     
     SELECT distinct
-        ef.se_id, 
-        ef.file_id, 
+        ef.se_id,
+        ef.file_id,
         'static' AS file_type
-    FROM execution_file ef
+    FROM backup_19_02_2025.execution_file ef
     WHERE ef.transfer_type = 'consumed'
     AND ef.file_id NOT IN (
         SELECT ef2.file_id
-        FROM execution_file ef2
+        FROM backup_19_02_2025.execution_file ef2
         WHERE ef2.transfer_type = 'produced'
 );
 
+DROP VIEW IF EXISTS vw_file_type;
 DROP VIEW IF EXISTS vw_service_execution_info_last;
 DROP VIEW IF EXISTS vw_service_execution_info;
 CREATE OR REPLACE VIEW  vw_service_execution_info AS 
@@ -59,3 +60,50 @@ CREATE OR REPLACE VIEW vw_service_execution_info_last AS
                                     FROM service_execution se
                                     WHERE se.end_time = (SELECT max(se2.end_time)
                                                             FROM service_execution se2))
+;
+
+
+
+--NOVO MODELO: 23/02/2025
+CREATE OR REPLACE VIEW vw_task AS
+    with 
+        service_execution_input as ( 
+            SELECT 
+                se.se_id,
+                se.activity_id,
+                COALESCE(MIN(ef.file_id),0) AS first_input_id,
+                COUNT(ef.file_id) AS input_count,
+                COALESCE(STRING_AGG(ef.file_id::CHAR(30), ',' ORDER BY ef.file_id), 'None') AS  input_list
+            FROM backup_19_02_2025.service_execution se
+            LEFT OUTER JOIN backup_19_02_2025.execution_file ef on ef.se_id = se.se_id and ef.transfer_type = 'consumed'
+            GROUP BY se.id, se.activity_id
+            ORDER BY first_input_id, se.activity_id
+        ),
+        service_execution_output as ( 
+            SELECT 
+                se.se_id,
+                se.activity_id,
+                COALESCE(MIN(ef.file_id),0) AS first_output_id,
+                COUNT(ef.file_id) AS output_count,
+                COALESCE(STRING_AGG(ef.file_id::CHAR(30), ',' ORDER BY ef.file_id), 'None') AS  output_list
+            FROM backup_19_02_2025.service_execution se
+            LEFT OUTER JOIN backup_19_02_2025.execution_file ef on ef.se_id = se.se_id and ef.transfer_type = 'produced'
+            GROUP BY se.id, se.activity_id
+            ORDER BY first_output_id, se.activity_id
+        )
+    select min(t1.se_id) as task_id,
+           count(*) as execution_count,
+           t1.activity_id,
+           t1.input_count,
+           t1.input_list,
+           t2.output_count,
+           t2.output_list
+    FROM service_execution_input t1
+    LEFT OUTER JOIN service_execution_output t2 ON t1.se_id = t2.se_id
+    GROUP BY t1.activity_id,
+             t1.input_count,
+             t1.input_list,
+             t2.output_count,
+             t2.output_list			
+    order by task_id, t1.activity_id, t1.input_count
+;

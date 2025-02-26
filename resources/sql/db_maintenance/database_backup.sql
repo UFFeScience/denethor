@@ -1,17 +1,54 @@
-CREATE TABLE bkp2_service_provider AS SELECT * FROM service_provider;
-CREATE TABLE bkp2_workflow AS SELECT * FROM workflow;
-CREATE TABLE bkp2_workflow_activity AS SELECT * FROM workflow_activity;
-CREATE TABLE bkp2_service_execution AS SELECT * FROM service_execution;
-CREATE TABLE bkp2_file AS SELECT * FROM file;
-CREATE TABLE bkp2_execution_file AS SELECT * FROM execution_file;
-CREATE TABLE bkp2_statistics AS SELECT * FROM statistics;
-CREATE TABLE bkp2_execution_statistics AS SELECT * FROM execution_statistics;
 
-DECLARE @prefix VARCHAR(100) = 'bkp2';
-DECLARE @sql NVARCHAR(MAX) = '';
+--Copiar Tabelas
+DO $$
+DECLARE
+    table_record RECORD;
+    sequence_record RECORD;
+    create_table_sql TEXT;
+    insert_data_sql TEXT;
+    create_sequence_sql TEXT;
+    setval_sequence_sql TEXT;
+BEGIN
+    FOR table_record IN
+        SELECT tablename
+        FROM pg_tables
+        WHERE schemaname = 'public'
+    LOOP
+        create_table_sql := format('CREATE TABLE backup_19_02_2025.%s (LIKE public.%s INCLUDING ALL);', table_record.tablename, table_record.tablename);
+        RAISE NOTICE '%', create_table_sql;
+        --EXECUTE create_table_sql;
+        
+        insert_data_sql := format('INSERT INTO backup_19_02_2025.%s SELECT * FROM public.%s;', table_record.tablename, table_record.tablename);
+        RAISE NOTICE '%', insert_data_sql;
+        --EXECUTE insert_data_sql;
+    END LOOP;
+END $$;
 
-SELECT @sql += 'DROP TABLE ' + QUOTENAME(TABLE_SCHEMA) + '.' + QUOTENAME(TABLE_NAME) + ';'
-FROM INFORMATION_SCHEMA.TABLES
-WHERE TABLE_NAME LIKE @prefix + '%';
+--Alterar Tabelas para remover dependência das sequences:
+DO $$
+DECLARE
+    table_record RECORD;
+    column_record RECORD;
+    alter_column_sql TEXT;
+BEGIN
+    FOR table_record IN
+        SELECT tablename
+        FROM pg_tables
+        WHERE schemaname = 'backup_19_02_2025'
+    LOOP
+        FOR column_record IN
+            SELECT column_name
+            FROM information_schema.columns
+            WHERE table_schema = 'backup_19_02_2025' AND table_name = table_record.tablename AND column_default LIKE 'nextval%'
+        LOOP
+            alter_column_sql := format('ALTER TABLE backup_19_02_2025.%I ALTER COLUMN %I DROP DEFAULT', table_record.tablename, column_record.column_name);
+            RAISE NOTICE '%', alter_column_sql;
+            EXECUTE alter_column_sql;
+        END LOOP;
+    END LOOP;
+END $$;
 
-EXEC sp_executesql @sql;
+
+
+
+
