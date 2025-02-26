@@ -59,7 +59,7 @@ CREATE TABLE workflow_execution (
     input_list TEXT,
     runtime_data TEXT,
     info TEXT,
-    FOREIGN KEY (workflow_id) REFERENCES workflow(id)
+    FOREIGN KEY (workflow_id) REFERENCES workflow(workflow_id)
 );
 
 CREATE TABLE service_execution (
@@ -83,9 +83,9 @@ CREATE TABLE service_execution (
     produced_files_size INTEGER,
     produced_files_transfer_duration FLOAT,
     error_message VARCHAR,
-    FOREIGN KEY (activity_id) REFERENCES workflow_activity(activity_id)
+    FOREIGN KEY (activity_id) REFERENCES workflow_activity(activity_id),
     FOREIGN KEY (we_id) REFERENCES workflow_execution(we_id),
-    FOREIGN KEY (provider_conf_id) REFERENCES provider_configuration(conf_id),
+    FOREIGN KEY (provider_conf_id) REFERENCES provider_configuration(conf_id)
 );
 
 
@@ -106,8 +106,8 @@ CREATE TABLE execution_file (
     transfer_duration FLOAT NOT NULL,
     transfer_type VARCHAR NOT NULL,
     CHECK (transfer_type IN ('consumed', 'produced')),
-    FOREIGN KEY (service_execution_id) REFERENCES service_execution(id),
-    FOREIGN KEY (file_id) REFERENCES file(id)
+    FOREIGN KEY (se_id) REFERENCES service_execution(se_id),
+    FOREIGN KEY (file_id) REFERENCES file(file_id)
 );
 
 CREATE TABLE statistics (
@@ -146,25 +146,25 @@ CREATE TABLE execution_statistics (
 
 
 
-INSERT INTO provider_configuration (provider_id, timeout, cpu, memory_mb, storage_mb)
-VALUES (1, 30, 1, 128, 512);
+-- INSERT INTO provider_configuration (provider_id, timeout, cpu, memory_mb, storage_mb)
+-- VALUES (1, 30, 1, 128, 512);
 
-INSERT INTO provider_configuration (provider_id, timeout, cpu, memory_mb, storage_mb)
-VALUES (1, 45, 1, 256, 512);
+-- INSERT INTO provider_configuration (provider_id, timeout, cpu, memory_mb, storage_mb)
+-- VALUES (1, 45, 1, 256, 512);
 
-INSERT INTO provider_configuration (provider_id, timeout, cpu, memory_mb, storage_mb)
-VALUES (1, 300, 1, 512, 512);
+-- INSERT INTO provider_configuration (provider_id, timeout, cpu, memory_mb, storage_mb)
+-- VALUES (1, 300, 1, 512, 512);
 
-INSERT INTO provider_configuration (provider_id, timeout, cpu, memory_mb, storage_mb)
-VALUES (1, 300, 1, 1024, 512);
+-- INSERT INTO provider_configuration (provider_id, timeout, cpu, memory_mb, storage_mb)
+-- VALUES (1, 300, 1, 1024, 512);
 
-INSERT INTO provider_configuration (provider_id, timeout, cpu, memory_mb, storage_mb)
-VALUES (1, 300, 1, 2048, 512);
+-- INSERT INTO provider_configuration (provider_id, timeout, cpu, memory_mb, storage_mb)
+-- VALUES (1, 300, 1, 2048, 512);
 
 
-update service_execution se set configuration_id = case 
-			when se.activity_id = 1 then 1
-			when se.activity_id = 2 then 2
-			when se.activity_id = 3 then 3
-			when se.activity_id = 4 then 1
-		end ;
+-- update service_execution se set configuration_id = case 
+-- 			when se.activity_id = 1 then 1
+-- 			when se.activity_id = 2 then 2
+-- 			when se.activity_id = 3 then 3
+-- 			when se.activity_id = 4 then 1
+-- 		end ;
