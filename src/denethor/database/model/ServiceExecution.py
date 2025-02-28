@@ -4,15 +4,14 @@ class ServiceExecution(BaseModel):
     __tablename__ = 'service_execution'
 
     se_id = Column(Integer, primary_key=True)
-    activity_id = Column(Integer, ForeignKey('workflow_activity.activity_id'))
-    provider_id = Column(Integer, ForeignKey('provider.provider_id'))
-    configuration_id = Column(Integer, ForeignKey('provider_configuration.configuration_id'))
-    workflow_execution_id = Column(String)
-    request_id = Column(String)
+    we_id = Column(Integer, ForeignKey('workflow_execution.we_id'), nullable=False)
+    activity_id = Column(Integer, ForeignKey('workflow_activity.activity_id'), nullable=False)
+    provider_conf_id = Column(Integer, ForeignKey('provider_configuration.conf_id'), nullable=False)
+    request_id = Column(String, nullable=False)
     log_stream_name = Column(String)
-    start_time = Column(TIMESTAMP)
-    end_time = Column(TIMESTAMP)
-    duration = Column(Float)
+    start_time = Column(TIMESTAMP(timezone=True), nullable=False)
+    end_time = Column(TIMESTAMP(timezone=True), nullable=False)
+    duration = Column(Float, nullable=False)
     billed_duration = Column(Float)
     init_duration = Column(Float)
     memory_size = Column(Integer)
@@ -25,19 +24,18 @@ class ServiceExecution(BaseModel):
     produced_files_transfer_duration = Column(Float)
     error_message = Column(String)
 
+    workflow_execution = relationship('WorkflowExecution')
+    activity = relationship('WorkflowActivity')
+    provider_conf = relationship('ProviderConfiguration')
     execution_files = relationship('ExecutionFile')
     execution_statistics = relationship('ExecutionStatistics')
-    activity = relationship('WorkflowActivity')
-    provider = relationship('Provider')
-    provider_configuration = relationship('ProviderConfiguration')
 
     def __str__(self):
         return (
             f"Id: {self.se_id}\n"
+            f"We ID: {self.we_id}\n"
             f"Activity ID: {self.activity_id}\n"
-            f"Provider ID: {self.provider_id}\n"
-            f"Configuration ID: {self.configuration_id}\n"
-            f"Workflow Execution ID: {self.workflow_execution_id}\n"
+            f"Provider Conf ID: {self.provider_conf_id}\n"
             f"Request ID: {self.request_id}\n"
             f"Log Stream Name: {self.log_stream_name}\n"
             f"Start Time: {self.start_time}\n"

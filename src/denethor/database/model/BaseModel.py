@@ -12,6 +12,16 @@ class BaseModel(Base):
 
     @classmethod
     def create_from_dict(cls, dict_values):
+        """
+        Create an instance of the class from a dictionary of values.
+        Args:
+            dict_values (dict): A dictionary containing attribute names and values.
+        Returns:
+            An instance of the class with attributes set according to the dictionary.
+        Raises:
+            TypeError: If dict_values is not a dictionary.
+            ValueError: If no attributes in the dictionary belong to the class.
+        """
         # Certifique-se de que dict_values é um dicionário
         if not isinstance(dict_values, dict):
             raise TypeError("dict_values deve ser um dicionário")
@@ -25,7 +35,20 @@ class BaseModel(Base):
         # Crie uma instância da classe com os atributos filtrados
         return cls(**filtered_dict)
 
+    
+    
     def update_from_dict(self, dict_values):
+        """
+        Updates the attributes of the instance based on the provided dictionary.
+
+        Args:
+            dict_values (dict): A dictionary containing key-value pairs where the key is the attribute name
+                                and the value is the value to be set for that attribute.
+
+        Note:
+            Only the attributes that already exist in the instance will be updated. Any key in the dictionary
+            that does not correspond to an existing attribute will be ignored.
+        """
         filtered_dict = {k: v for k, v in dict_values.items() if hasattr(self, k)}
         for key, value in filtered_dict.items():
             setattr(self, key, value)

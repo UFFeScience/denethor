@@ -9,9 +9,9 @@ from configparser import ConfigParser
 def generate_uuid():
     return 'uuid_' + str(uuid.uuid4()).replace('-', '_')
 
-def generate_workflow_execution_id(start_time_ms):
+def generate_execution_tag(start_time_ms):
     # return 'exec_' + convert_ms_to_str(start_time_ms).replace(':', '-').replace('T', '_').replace('Z', '').replace('+00-00', '_UTC')
-    return 'weid_' + str(int(start_time_ms))
+    return 'wetag_' + str(int(start_time_ms))
 
 
 def resolve_request_id(context):

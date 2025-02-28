@@ -11,7 +11,7 @@ class ExecutionFileRepository(BaseRepository):
     
     def get_or_create(self, obj: ExecutionFile):
         if type(obj) != ExecutionFile:
-            raise ValueError("The argument must be a ExecutionFile object")
+            raise ValueError("The argument must be an ExecutionFile object")
         if obj.file:
             obj.file_id = obj.file.file_id
         if obj.service_execution:  

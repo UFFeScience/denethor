@@ -7,7 +7,7 @@ FOR_ALL_INPUTS = "for_all_inputs"
 
 
 def execute_activity(
-    execution_id: str,
+    execution_tag: str,
     provider: str,
     strategy: str,
     activity: str,
@@ -19,7 +19,7 @@ def execute_activity(
     """
     Executes the activity by provider and strategy and returns the results.
     Parameters:
-    - execution_id (str): The ID of the execution.
+    - execution_tag (str): The TAG of the execution.
     - provider (str): The provider code for the execution environment.
     - strategy (str): The execution strategy for the activity.
     - activity (str): The name of the activity to execute.
@@ -50,7 +50,7 @@ def execute_activity(
     if strategy == FOR_EACH_INPUT:
         for index_data in range(len(input_data)):
             result = execute_by_provider(
-                execution_id,
+                execution_tag,
                 provider,
                 activity,
                 previous_activity,
@@ -63,7 +63,7 @@ def execute_activity(
 
     elif strategy == FOR_ALL_INPUTS:
         result = execute_by_provider(
-            execution_id,
+            execution_tag,
             provider,
             activity,
             previous_activity,
@@ -82,7 +82,7 @@ def execute_activity(
 
 # Execute the activity by provider
 def execute_by_provider(
-    execution_id: str,
+    execution_tag: str,
     provider: str,
     activity: str,
     previous_activity: str,
@@ -93,7 +93,7 @@ def execute_by_provider(
 ) -> Dict[str, str]:
 
     payload = {
-        "execution_id": execution_id,
+        "execution_id": execution_tag,
         "provider": provider,
         "activity": activity,
         "previous_activity": previous_activity,

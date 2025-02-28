@@ -1,13 +1,14 @@
 import os, time, json
 from pathlib import Path
 from denethor import environment as denv
+from denethor.core.service import *
 from denethor.utils import utils as du, file_utils as dfu
 from denethor.executor import execution_manager as dem
 import denethor.provenance.provenance_importer as dprov
 
 # FORCE_ENV = denv.LOCAL
 FORCE_ENV = ""
-FORCE_MEMORY = 2048
+FORCE_MEMORY = 256
 
 # Raiz do projeto
 project_root = Path(__file__).resolve().parent.parent
@@ -34,6 +35,11 @@ workflow_runtime_data = {}
 
 
 def main():
+
+    # Save Workflow Basic Information: Provider, Workflow, Activities, Statistics, Configurations
+    provider_service.get_or_create(provider_info)
+    workflow_service.get_or_create(workflow_info)
+    statistics_service.get_or_create(statistics_info)
 
     # Set the workflow start time in milliseconds
     workflow_start_time_ms = int(time.time() * 1000)
@@ -81,7 +87,7 @@ def main():
 
     ########################################################################
 
-    execution_id = du.generate_workflow_execution_id(workflow_start_time_ms)
+    execution_tag = du.generate_execution_tag(workflow_start_time_ms)
 
     print(">>> Main program started at: ", du.now_str())
     print(">>> Workflow start time is (ms):  ", workflow_start_time_ms)
@@ -89,7 +95,7 @@ def main():
         ">>> Workflow start time is (str): ",
         du.convert_ms_to_str(workflow_start_time_ms),
     )
-    print(">>> Execution ID: ", execution_id)
+    print(">>> Execution TAG: ", execution_tag)
     print(">>> Working directory: ", os.getcwd())
 
     previous_activity = None
@@ -105,7 +111,7 @@ def main():
 
         if FORCE_ENV:
             provider_tag = FORCE_ENV
-        
+
         if FORCE_MEMORY:
             memory = FORCE_MEMORY
 
@@ -152,7 +158,7 @@ def main():
 
         # Execute the activity
         results = dem.execute_activity(
-            execution_id,
+            execution_tag,
             provider_tag,
             strategy,
             activity,
@@ -173,17 +179,14 @@ def main():
     workflow_end_time_ms = int(time.time() * 1000)
 
     print(
-        f"\n>>> Workflow {execution_id} start time is: {workflow_start_time_ms} ms | {du.convert_ms_to_str(workflow_start_time_ms)}"
+        f"\n>>> Workflow {execution_tag} start time is: {workflow_start_time_ms} ms | {du.convert_ms_to_str(workflow_start_time_ms)}"
     )
     print(
-        f">>> Workflow {execution_id} end time is: {workflow_end_time_ms} ms | {du.convert_ms_to_str(workflow_end_time_ms)}"
+        f">>> Workflow {execution_tag} end time is: {workflow_end_time_ms} ms | {du.convert_ms_to_str(workflow_end_time_ms)}"
     )
     print(
-        f">>> Workflow {execution_id} duration: {workflow_end_time_ms - workflow_start_time_ms} ms"
+        f">>> Workflow {execution_tag} duration: {workflow_end_time_ms - workflow_start_time_ms} ms"
     )
-
-
-
 
     ############################################################
     #
@@ -192,7 +195,9 @@ def main():
     ############################################################
 
     sleep_time = 5
-    print(f"\n>>> Sleeping for {sleep_time} seconds before importing provenance data...")
+    print(
+        f"\n>>> Sleeping for {sleep_time} seconds before importing provenance data..."
+    )
     time.sleep(sleep_time)
 
     prov_start_time_ms = int(time.time() * 1000)
@@ -204,6 +209,15 @@ def main():
 
     if provider_tag != "aws_lambda":
         exit(0)
+
+    workflow_execution_service.create(
+        workflow=workflow_db,
+        execution_tag=execution_tag,
+        start_time_ms=workflow_start_time_ms,
+        end_time_ms=workflow_end_time_ms,
+        runtime_data=workflow_runtime_data,
+        info="",
+    )
 
     # For each step in the workflow
     for step in workflow_steps:
@@ -218,41 +232,36 @@ def main():
 
         if FORCE_MEMORY:
             memory = FORCE_MEMORY
-        
+
         log_path = env_properties.get("provenance").get("log.path")
         log_file_name = env_properties.get("provenance").get("log.file")
-        
+
         log_path = log_path.replace("[provider_tag]", provider_tag)
-        log_file_name = log_file_name.replace("[execution_id]", execution_id)
+        log_file_name = log_file_name.replace("[execution_id]", execution_tag)
         log_file_name = log_file_name.replace("[activity_name]", activity)
-        
+
         log_file = os.path.join(log_path, log_file_name)
 
         dprov.import_provenance_from_aws(
-            execution_id,
+            execution_tag,
             activity,
             memory,
             workflow_start_time_ms,
             workflow_end_time_ms,
             log_file,
-            provider_info,
             workflow_info,
             statistics_info,
         )
 
     prov_end_time_ms = int(time.time() * 1000)
-    
+
     print(
         f">>> Provenance import start time: {du.convert_ms_to_str(prov_start_time_ms)}"
     )
 
-    print(
-        f">>> Provenance import end time: {du.convert_ms_to_str(prov_end_time_ms)}"
-    )
+    print(f">>> Provenance import end time: {du.convert_ms_to_str(prov_end_time_ms)}")
 
-    print(
-        f">>> Provenance import duration: {prov_end_time_ms - prov_start_time_ms} ms"
-    )
+    print(f">>> Provenance import duration: {prov_end_time_ms - prov_start_time_ms} ms")
 
 
 if __name__ == "__main__":

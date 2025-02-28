@@ -28,25 +28,26 @@ def separate_comments_and_code(sql: str):
 
 # Buscar todas as ocorrências de weid_\d+ ou '[weid]' no script SQL
 def find_weid_occurrences(sql):
-    pattern = r'weid_\d+|\[weid\]'
+    pattern = r'wetag_\d+|\[wetag\]'
     return list(set(re.findall(pattern, sql)))
 
 
-def replace_weid(weid_str, sql):
+def replace_weid(execution_tag, sql):
     weid_occurrences = find_weid_occurrences(sql)
     
     for occurrence in weid_occurrences:
-        sql = sql.replace(occurrence, weid_str)
+        sql = sql.replace(occurrence, execution_tag)
         sql = sql.replace("''", "'")
     return sql
 
 
-def execute_sql_instance_count(weid_str: list, session):
+def execute_sql_instance_count(execution_tag: list, session):
     SQL_COUNT = f"\
         SELECT to_char(count(distinct se.task_id), 'fm000') AS inst_count \
         FROM service_execution se \
+        JOIN workflow_execution we on we.we_id = se.we_id\
         WHERE se.activity_id = 1 and \
-              se.workflow_execution_id in ({weid_str})"
+              we.execution_tag in ({execution_tag})"
     
     print(f"Executing SQL: {SQL_COUNT}")
 

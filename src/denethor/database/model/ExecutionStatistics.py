@@ -4,8 +4,8 @@ class ExecutionStatistics(BaseModel):
     __tablename__ = 'execution_statistics'
 
     es_id = Column(Integer, primary_key=True)
-    se_id = Column(Integer, ForeignKey('service_execution.se_id'))
-    statistics_id = Column(Integer, ForeignKey('statistics.statistics_id'))
+    se_id = Column(Integer, ForeignKey('service_execution.se_id'), nullable=False)
+    statistics_id = Column(Integer, ForeignKey('statistics.statistics_id'), nullable=False)
     value_float = Column(Float)
     value_integer = Column(Integer)
     value_string = Column(String)

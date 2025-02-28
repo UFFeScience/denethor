@@ -27,7 +27,7 @@ from datetime import datetime
 # WEID = ['weid_1735311414938']
 
 #       128mb               / 256mb               / 512                  / 1024               / 2048 execution
-WEID = ['weid_1735311414938', 'weid_1735318446694', 'weid_1735319031426', 'weid_1735319100179', 'weid_1735319150437']
+WETAG = ['weid_1735311414938', 'weid_1735318446694', 'weid_1735319031426', 'weid_1735319100179', 'weid_1735319150437']
 
 
 SQL_FILES_PATH = 'resources/sql/instance_generator/'  # Diretório onde os arquivos SQL estão localizados
@@ -40,17 +40,17 @@ WRITE_COMMENTS_TO_FILE = True
 
 def main():
     
-    print(f"Generating model file for WEID: {WEID}")
+    print(f"Generating model file for execution_tag: {WETAG}")
 
     # Conecte-se ao banco de dados PostgreSQL
     connection = Connection()
     session = connection.get_session()
 
-    weid_str = ','.join(f"'{w}'" for w in WEID)  # Adiciona aspas simples ao redor de cada elemento
+    execution_tag = ','.join(f"'{tag}'" for tag in WETAG)  # Adiciona aspas simples ao redor de cada elemento
 
     # execute sql instance count
-    count = igu.execute_sql_instance_count(weid_str, session)
-    out_file_name = f'model_instance_{count}_{weid_str}.txt'.replace(',', '__').replace("'", '')
+    count = igu.execute_sql_instance_count(execution_tag, session)
+    out_file_name = f'model_instance_{count}_{execution_tag}.txt'.replace(',', '__').replace("'", '')
     
     out_file = os.path.join(INSTANCE_FILE_PATH, out_file_name)
 
@@ -66,15 +66,15 @@ def main():
 
     for sql_file_name in sql_files:
         
-        print(f"Executing {sql_file_name} with weid {weid_str}")
+        print(f"Executing {sql_file_name} with execution_tag: {execution_tag}")
         sql_file = os.path.join(SQL_FILES_PATH, sql_file_name)
 
-        execute_sql_and_save_results(weid_str, sql_file, out_file, output_sqls_file, WRITE_COMMENTS_TO_FILE, session)
+        execute_sql_and_save_results(execution_tag, sql_file, out_file, output_sqls_file, WRITE_COMMENTS_TO_FILE, session)
 
 
 
 # Execute SQL script and save results to a file
-def execute_sql_and_save_results(weid_str, input_sql_file, output_results_file, output_sqls_file, write_sql_comments, db):
+def execute_sql_and_save_results(execution_tag, input_sql_file, output_results_file, output_sqls_file, write_sql_comments, db):
 
     with open(input_sql_file, 'r') as file:
         sql_to_execute = file.read()
@@ -83,7 +83,7 @@ def execute_sql_and_save_results(weid_str, input_sql_file, output_results_file, 
     comments, sql_to_execute = igu.separate_comments_and_code(sql_to_execute)
 
     # replace weid
-    sql_to_execute = igu.replace_weid(weid_str, sql_to_execute)
+    sql_to_execute = igu.replace_weid(execution_tag, sql_to_execute)
     
     try:
         result = db.execute(text(sql_to_execute))
@@ -100,7 +100,7 @@ def execute_sql_and_save_results(weid_str, input_sql_file, output_results_file, 
         # write the executed sql to a file
         with open(output_sqls_file, 'a') as file:
             file.write(f"-----------{input_sql_file}\n")
-            file.write(f"-----------{weid_str}\n")
+            file.write(f"-----------{execution_tag}\n")
             file.write(f"-----------Generated at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
             file.write(comments + '\n')
             file.write(sql_to_execute + '\n\n')

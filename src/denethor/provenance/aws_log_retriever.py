@@ -1,7 +1,7 @@
 import os, json, time, boto3, datetime
 from denethor.utils import utils as du
 
-def retrieve_logs_from_aws(execution_id: str, 
+def retrieve_logs_from_aws(execution_tag: str, 
                            function_name: str, 
                            start_time_ms: int, 
                            end_time_ms: int, 
@@ -10,7 +10,7 @@ def retrieve_logs_from_aws(execution_id: str,
     Retrieves logs from AWS Lambda and saves them to a file.
 
     Args:
-        execution_id (str): The execution ID of the workflow.
+        execution_tag (str): The execution TAG of the workflow.
         function_name (str): The name of the Lambda function to retrieve logs from.
         start_time_ms (int): The start time of the log retrieval interval in milliseconds.
         end_time_ms (int): The end time of the log retrieval interval in milliseconds.
@@ -31,7 +31,7 @@ def retrieve_logs_from_aws(execution_id: str,
     
     save_log_file(logs, log_file_with_path)
 
-    print(f"Logs for function {function_name}, execution {execution_id} saved to {log_file_with_path} in JSON format")
+    print(f"Logs for function {function_name}, execution {execution_tag} saved to {log_file_with_path} in JSON format")
 
 
 

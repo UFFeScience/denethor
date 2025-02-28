@@ -5,11 +5,10 @@ from denethor.database.repository import *
 
 
 def process_and_save_logs(
-    execution_id: str,
+    execution_tag: str,
     activity_name: str,
     memory: int,
     log_file: str,
-    providers: dict,
     workflow_dict: dict,
     statistics_dict: dict,
 ):
@@ -17,7 +16,7 @@ def process_and_save_logs(
     Analyzes logs based on the provided parameters.
 
     Args:
-        - execution_id (str): The execution ID (e.g., 'exec_2024-08-02_00-54-08+00-00_UTC').
+        - execution_tag (str): The execution TAG (e.g., 'exec_2024-08-02_00-54-08+00-00_UTC').
         - activity_name (str): The activity name (e.g., 'tree_constructor').
         - memory (int): The memory size of the Lambda function.
         - log_file (str): The name of the log file.
@@ -60,10 +59,10 @@ def process_and_save_logs(
             request_id, logs, statistics_dict
         )
 
-        service_execution.workflow_execution_id = execution_id
+        service_execution.workflow_execution_id = execution_tag
         service_execution.activity = activity_db
         service_execution.provider = provider_db
-        service_execution.provider_configuration = configuration_db
+        service_execution.provider_conf = configuration_db
 
         if memory != service_execution.memory_size:
             raise ValueError(
@@ -197,7 +196,7 @@ def get_provider(workflow_dict: dict, activity_name: str) -> Provider:
 
 
 def get_provider_configuration(provider: Provider, memory: int) -> ProviderConfiguration:
-    provider_configuration_db = provider_configuration_repo.get_by_provider_and_memory(
+    provider_configuration_db = provider_conf_repo.get_by_provider_and_memory(
         provider, memory
     )
     if not provider_configuration_db:
