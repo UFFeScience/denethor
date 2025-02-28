@@ -37,9 +37,9 @@ workflow_runtime_data = {}
 def main():
 
     # Save Workflow Basic Information: Provider, Workflow, Activities, Statistics, Configurations
-    provider_service.get_or_create(provider_info)
-    workflow_service.get_or_create(workflow_info)
-    statistics_service.get_or_create(statistics_info)
+    providers_db = provider_service.get_or_create(provider_info)
+    workflow_db = workflow_service.get_or_create(workflow_info)
+    statistics_db = statistics_service.get_or_create(statistics_info)
 
     # Set the workflow start time in milliseconds
     workflow_start_time_ms = int(time.time() * 1000)
