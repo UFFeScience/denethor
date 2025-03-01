@@ -1,5 +1,5 @@
-from denethor.database.model import *
-from denethor.database.repository import *
+from denethor.core.model import *
+from denethor.core.repository import *
 from denethor.core.service import *
 from . import aws_log_retriever as alr
 from . import aws_log_analyzer as ala

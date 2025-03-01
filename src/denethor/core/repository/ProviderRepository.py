@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from denethor.database.repository.BaseRepository import BaseRepository
-from denethor.database.model.Provider import Provider
+from denethor.core.repository.BaseRepository import BaseRepository
+from denethor.core.model.Provider import Provider
 
 class ProviderRepository(BaseRepository):
     def __init__(self, session: Session):

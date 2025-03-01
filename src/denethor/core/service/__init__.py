@@ -1,11 +1,11 @@
-from denethor.database.repository import *
+from denethor.core.repository import *
 
 from .WorkflowExecutionService import WorkflowExecutionService
 from .StatisticsService import StatisticsService
 from .ProviderService import ProviderService
 from .WorkflowService import WorkflowService
 
-from denethor.database import session
+from denethor.core.database import session
 
 # Initialize repositories
 # workflow_execution_repo = WorkflowExecutionRepository(session)

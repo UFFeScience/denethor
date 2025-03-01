@@ -1,5 +1,5 @@
-from denethor.database.model import Provider, ProviderConfiguration
-from denethor.database.repository import ProviderRepository, ProviderConfigurationRepository
+from denethor.core.model import Provider, ProviderConfiguration
+from denethor.core.repository import ProviderRepository, ProviderConfigurationRepository
 
 class ProviderService:
     def __init__(self, provider_repo: ProviderRepository, provider_conf_repo: ProviderConfigurationRepository):

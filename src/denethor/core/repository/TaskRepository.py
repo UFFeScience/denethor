@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from denethor.database.repository.BaseRepository import BaseRepository
-from denethor.database.model.Task import Task
+from denethor.core.repository.BaseRepository import BaseRepository
+from denethor.core.model.Task import Task
 
 class TaskRepository(BaseRepository):
     def __init__(self, session: Session):

@@ -1,4 +1,4 @@
-from denethor.database.model.BaseModel import *
+from denethor.core.model.BaseModel import *
 
 class File(BaseModel):
     __tablename__ = 'file'

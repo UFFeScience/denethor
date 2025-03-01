@@ -1,4 +1,4 @@
-from denethor.database.model.BaseModel import *
+from denethor.core.model.BaseModel import *
 
 class ProviderConfiguration(BaseModel):
     __tablename__ = 'provider_configuration'
