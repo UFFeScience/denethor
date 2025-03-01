@@ -1,7 +1,7 @@
 import json, os, re
 from . import log_parser as parser
-from denethor.database.model import *
-from denethor.database.repository import *
+from denethor.core.model import *
+from denethor.core.repository import *
 
 
 def process_and_save_logs(

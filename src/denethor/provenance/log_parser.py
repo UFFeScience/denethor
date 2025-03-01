@@ -1,6 +1,6 @@
 import re
 from denethor.utils import utils as du
-from denethor.database.model import *
+from denethor.core.model import *
 
 
 def parse_message(message, stats_attributes, default_separator):

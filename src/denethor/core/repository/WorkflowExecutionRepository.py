@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from denethor.database.repository.BaseRepository import BaseRepository
-from denethor.database.model.WorkflowExecution import WorkflowExecution
+from denethor.core.repository.BaseRepository import BaseRepository
+from denethor.core.model.WorkflowExecution import WorkflowExecution
 
 class WorkflowExecutionRepository(BaseRepository):
     def __init__(self, session: Session):

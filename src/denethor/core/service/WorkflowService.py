@@ -1,5 +1,5 @@
-from denethor.database.model import Workflow, WorkflowActivity
-from denethor.database.repository import WorkflowRepository, WorkflowActivityRepository
+from denethor.core.model import Workflow, WorkflowActivity
+from denethor.core.repository import WorkflowRepository, WorkflowActivityRepository
 
 class WorkflowService:
     def __init__(self, workflow_repo: WorkflowRepository, workflow_activity_repo: WorkflowActivityRepository):

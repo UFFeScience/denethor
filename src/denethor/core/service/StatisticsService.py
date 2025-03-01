@@ -1,5 +1,5 @@
-from denethor.database.model import Statistics
-from denethor.database.repository import StatisticsRepository
+from denethor.core.model import Statistics
+from denethor.core.repository import StatisticsRepository
 
 class StatisticsService:
     def __init__(self, statistics_repo: StatisticsRepository):

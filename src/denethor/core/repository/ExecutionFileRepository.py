@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from denethor.database.repository.BaseRepository import BaseRepository
-from denethor.database.model.ExecutionFile import ExecutionFile
+from denethor.core.repository.BaseRepository import BaseRepository
+from denethor.core.model.ExecutionFile import ExecutionFile
 
 class ExecutionFileRepository(BaseRepository):
     def __init__(self, session: Session):

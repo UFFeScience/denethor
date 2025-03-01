@@ -1,5 +1,5 @@
-from denethor.database.model import Workflow, WorkflowExecution
-from denethor.database.repository import WorkflowExecutionRepository
+from denethor.core.model import Workflow, WorkflowExecution
+from denethor.core.repository import WorkflowExecutionRepository
 import denethor.utils.utils as du
 
 
