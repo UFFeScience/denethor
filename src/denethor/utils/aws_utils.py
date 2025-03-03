@@ -1,6 +1,6 @@
 import os, boto3, timeit, logging
 from denethor.utils import utils as du
-from denethor.environment import LOCAL, AWS_LAMBDA, AWS_EC2
+from denethor.environments import LOCAL, AWS_LAMBDA, AWS_EC2
 
 s3 = boto3.client('s3')
 

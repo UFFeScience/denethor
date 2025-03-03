@@ -27,3 +27,14 @@ class WorkflowService:
             workflow_db.activities.append(activity_db)
 
         return workflow_db
+
+
+    def get_by_name(self, workflow_name: str) -> Workflow:
+
+        if not workflow_name:
+            raise ValueError("Workflow name is required!")
+
+        workflow_db = self.workflow_repo.get_by_name(workflow_name)
+        if not workflow_db:
+            raise ValueError(f"Workflow {workflow_name} not found in Database!")
+        return workflow_db

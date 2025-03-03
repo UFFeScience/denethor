@@ -1,14 +1,10 @@
 from typing import List, Dict, Optional
 from denethor.executor import invoker_aws, invoker_local
-from denethor.environment import LOCAL, AWS_LAMBDA, AWS_EC2
-
-FOR_EACH_INPUT = "for_each_input"
-FOR_ALL_INPUTS = "for_all_inputs"
-
+from denethor.environments import *
 
 def execute_activity(
     execution_tag: str,
-    provider: str,
+    provider_tag: str,
     strategy: str,
     activity: str,
     previous_activity: str,
@@ -20,7 +16,7 @@ def execute_activity(
     Executes the activity by provider and strategy and returns the results.
     Parameters:
     - execution_tag (str): The TAG of the execution.
-    - provider (str): The provider code for the execution environment.
+    - provider_tag (str): The provider TAG for the execution environment.
     - strategy (str): The execution strategy for the activity.
     - activity (str): The name of the activity to execute.
     - previous_activity (str): The name of the previous activity.
@@ -36,9 +32,25 @@ def execute_activity(
     {'request_id': 'uuid_dc71e784_52ca_428d_8bde_433ed7b0f5b6', 'produced_data': ['tree_ORTHOMCL256.nexus']}
     """
 
-    if strategy != FOR_EACH_INPUT and strategy != FOR_ALL_INPUTS:
+    # Validation of input data
+    if input_data is None:
+        raise ValueError(
+            f"Invalid input data={input_data} for Execution Manager of activity={activity}"
+        )
+
+    if provider_tag not in ExecutionProviderEnum.__members__:
+        raise ValueError(
+            f"Invalid execution provider={provider_tag} for Execution Manager of activity={activity}"
+        )
+    
+    if strategy not in ExecutionStrategyEnum.__members__:
         raise ValueError(
             f"Invalid execution strategy={strategy} for Execution Manager of activity={activity}"
+        )
+    
+    if memory not in MemoryConfigurationEnum.__members__:
+        raise ValueError(
+            f"Invalid memory configuration={memory} for Execution Manager of activity={activity}"
         )
 
     print(
@@ -47,11 +59,11 @@ def execute_activity(
 
     results = []
 
-    if strategy == FOR_EACH_INPUT:
+    if strategy == ExecutionStrategyEnum.FOR_EACH_INPUT:
         for index_data in range(len(input_data)):
             result = execute_by_provider(
                 execution_tag,
-                provider,
+                provider_tag,
                 activity,
                 previous_activity,
                 memory,
@@ -61,10 +73,10 @@ def execute_activity(
             )
             results.append(result)
 
-    elif strategy == FOR_ALL_INPUTS:
+    elif strategy == ExecutionStrategyEnum.FOR_ALL_INPUTS:
         result = execute_by_provider(
             execution_tag,
-            provider,
+            provider_tag,
             activity,
             previous_activity,
             memory,
@@ -102,11 +114,11 @@ def execute_by_provider(
         "env_properties": env_properties,
     }
 
-    if provider == LOCAL:
+    if provider == ExecutionProviderEnum.LOCAL:
         src_path = env_properties.get(provider).get("path.src")
         return invoker_local.invoke_local_python(activity, src_path, "handler", payload)
 
-    elif provider == AWS_LAMBDA:
+    elif provider == ExecutionProviderEnum.AWS_LAMBDA:
         return invoker_aws.invoke_aws_lambda(activity, memory, payload)
 
     else:

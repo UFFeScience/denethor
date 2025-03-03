@@ -1,8 +1,6 @@
 import os
 
-#
-## LIMPEZA ##
-#
+# Limpeza de arquivos #
 def remove_files(dir_path: str) -> None:
     if os.path.exists(dir_path):
         # Walk through all files and directories within dir_path

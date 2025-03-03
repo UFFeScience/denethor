@@ -40,3 +40,23 @@ class ProviderService:
             providers.append(provider_db)
 
         return providers
+
+
+    def get_by_name(self, provider_name: str) -> Provider:
+
+        if not provider_name:
+            raise ValueError("Provider name is required!")
+        
+        provider_db = self.provider_repo.get_by_name(provider_name)
+        if not provider_db:
+            raise ValueError(f"Provider {provider_name} not found in Database!")
+        return provider_db
+
+    def get_by_tag(self, provider_tag: str) -> Provider:
+        if not provider_tag:
+            raise ValueError("Provider tag is required!")
+        
+        provider_db = self.provider_repo.get_by_tag(provider_tag)
+        if not provider_db:
+            raise ValueError(f"Provider with tag {provider_tag} not found in Database!")
+        return provider_db

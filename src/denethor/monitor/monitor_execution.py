@@ -1,6 +1,6 @@
 import boto3
 import time
-from denethor.environment import LOCAL, AWS_LAMBDA, VM_LINUX
+from denethor.environments import LOCAL, AWS_LAMBDA, VM_LINUX
 
 def monitor_execution(params):
 

@@ -1,46 +1,66 @@
 import os, json, time, boto3, datetime
+from typing import Dict
 from denethor.utils import utils as du
 
-def retrieve_logs_from_aws(execution_tag: str, 
-                           function_name: str, 
-                           start_time_ms: int, 
-                           end_time_ms: int, 
-                           log_file_with_path: str):
+
+def retrieve_logs_from_aws(
+    provider_tag: str,
+    execution_tag: str,
+    function_name: str,
+    start_time_ms: int,
+    end_time_ms: int,
+    env_properties: Dict[str, str],
+) -> str:
     """
     Retrieves logs from AWS Lambda and saves them to a file.
 
     Args:
+        provider_tag (str): The provider TAG for the execution environment.
         execution_tag (str): The execution TAG of the workflow.
         function_name (str): The name of the Lambda function to retrieve logs from.
         start_time_ms (int): The start time of the log retrieval interval in milliseconds.
         end_time_ms (int): The end time of the log retrieval interval in milliseconds.
-        log_file_with_path (str): The path and name of the log file.
+        env_properties (Dict[str, str]): The environment properties.
 
     Raises:
         ValueError: If no log records were found.
 
     Returns:
-        None
+        str: The name of the log file with path.
     """
+
+    log_path = env_properties.get("provenance").get("log.path")
+    log_file_name = env_properties.get("provenance").get("log.file")
+
+    log_path = log_path.replace("[provider_tag]", provider_tag)
+    log_file_name = log_file_name.replace("[execution_id]", execution_tag)
+    log_file_name = log_file_name.replace("[function_name]", function_name)
+
+    log_file = os.path.join(log_path, log_file_name)
+
     log_group_name = f"/aws/lambda/{function_name}"
-    
+
     logs = get_all_log_events(log_group_name, start_time_ms, end_time_ms)
-    
+
     if logs == None or len(logs) == 0:
-        raise ValueError("No log records were found! log_group_name={log_group_name}, start_time={log_filter_start}, end_time={log_filter_end}")
-    
-    save_log_file(logs, log_file_with_path)
+        raise ValueError(
+            "No log records were found! log_group_name={log_group_name}, start_time={log_filter_start}, end_time={log_filter_end}"
+        )
 
-    print(f"Logs for function {function_name}, execution {execution_tag} saved to {log_file_with_path} in JSON format")
+    save_log_file(logs, log_file)
+
+    print(
+        f"Logs for function {function_name}, execution {execution_tag} saved to {log_file} in JSON format"
+    )
+
+    return log_file
 
 
+def get_all_log_events(
+    log_group_name: str, start_time_ms: int, end_time_ms: int, filter_pattern: str = ""
+):
 
-def get_all_log_events(log_group_name: str,
-                        start_time_ms: int,
-                        end_time_ms: int,
-                        filter_pattern: str =""):
-
-    client = boto3.client('logs')
+    client = boto3.client("logs")
 
     all_events = []
     next_token = None
@@ -57,41 +77,39 @@ def get_all_log_events(log_group_name: str,
                 startTime=int(start_time_ms),
                 endTime=int(end_time_ms),
                 filterPattern=filter_pattern,
-                nextToken=next_token
+                nextToken=next_token,
             )
         else:
             response = client.filter_log_events(
                 logGroupName=log_group_name,
                 startTime=int(start_time_ms),
                 endTime=int(end_time_ms),
-                filterPattern=filter_pattern
+                filterPattern=filter_pattern,
             )
 
-        all_events.extend(response['events'])
+        all_events.extend(response["events"])
 
-        next_token = response.get('nextToken')
+        next_token = response.get("nextToken")
         if not next_token:
             break
 
     return all_events
 
 
-
 # Save logs to a single file ordered by logStreamName
 def save_log_file(json_logs: list, file_name_with_path: str) -> None:
-    
+
     # Ensure that logs contain the 'logStreamName' and 'timestamp' fields
-    if not all('logStreamName' in log and 'timestamp' in log for log in json_logs):
+    if not all("logStreamName" in log and "timestamp" in log for log in json_logs):
         raise ValueError("Logs must contain 'logStreamName' and 'timestamp' fields")
-    
-    json_logs.sort(key=lambda x: (x['logStreamName'], x['timestamp']))
-    
+
+    json_logs.sort(key=lambda x: (x["logStreamName"], x["timestamp"]))
+
     # Sanitize file name
     file_name_with_path = du.sanitize(file_name_with_path)
 
-    with open(file=file_name_with_path, mode='w', encoding='utf-8') as file:
+    with open(file=file_name_with_path, mode="w", encoding="utf-8") as file:
         json.dump(json_logs, file, ensure_ascii=False, indent=4)
-    
 
 
 # Define a function to print logs in an organized manner
@@ -99,7 +117,9 @@ def print_logs_to_console(logs: list) -> None:
     print("-" * 80)
     for log_item in logs:
         # Convert Unix timestamp to human-readable date and time
-        log_datetime = datetime.fromtimestamp(log_item['timestamp'] / 1000.0).strftime('%Y-%m-%d %H:%M:%S')
+        log_datetime = datetime.fromtimestamp(log_item["timestamp"] / 1000.0).strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
         print(f"Timestamp: {log_item['timestamp']}")
         print(f"DateTime: {log_datetime}")
         # print(f"IngestionTime: {item['ingestionTime']}")

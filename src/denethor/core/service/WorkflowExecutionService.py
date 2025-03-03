@@ -15,7 +15,7 @@ class WorkflowExecutionService:
         start_time_ms: int,
         end_time_ms: int,
         runtime_data: dict,
-        info: str,
+        info: str = None,
     ) -> WorkflowExecution:
 
         files_list = [item["data"] for item in runtime_data.get("input_files")]

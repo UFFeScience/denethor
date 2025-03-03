@@ -1,7 +1,8 @@
 import time
+from denethor.core import denethor_logger as dlh
 from denethor.utils import aws_utils as dau
 import tree_constructor_core  as tcc
-from denethor.utils import file_utils as dfu, log_handler as dlh, utils as du
+from denethor.utils import file_utils as dfu, utils as du
 
 def handler(event, context):
 
