@@ -1,11 +1,11 @@
 import os, sys, logging
 
-def get_logger(execution_id: str, provider: str, activity: str, env_properties: dict) -> logging.Logger:
+def get_logger(execution_tag: str, provider: str, activity: str, env_properties: dict) -> logging.Logger:
     
-    if not execution_id or not provider or not activity:
-        raise ValueError(f"Invalid parameters for get_logger function: execution_id={execution_id}, provider={provider}, activity={activity}")
+    if not execution_tag or not provider or not activity:
+        raise ValueError(f"Invalid parameters for get_logger function: execution_tag={execution_tag}, provider={provider}, activity={activity}")
     
-    logger = logging.getLogger(provider + '_' + execution_id + '_' + activity)
+    logger = logging.getLogger(provider + '_' + execution_tag + '_' + activity)
     
     if not logger.handlers:
         logger.setLevel(logging.DEBUG)
@@ -25,7 +25,7 @@ def get_logger(execution_id: str, provider: str, activity: str, env_properties: 
             log_file = env_properties.get(provider).get('log.file')
             log_file_name_with_path = os.path.join(log_path, log_file)
             
-            log_file_name_with_path = log_file_name_with_path.replace('[execution_id]', execution_id).replace('[activity_name]', activity)
+            log_file_name_with_path = log_file_name_with_path.replace('[execution_tag]', execution_tag).replace('[activity_name]', activity)
             file_handler = logging.FileHandler(log_file_name_with_path)
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)

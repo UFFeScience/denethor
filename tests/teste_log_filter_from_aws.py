@@ -1,7 +1,10 @@
-import json
+import json, sys, os, time
 import boto3
 from datetime import datetime, timedelta
-import time
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+
+from denethor.provenance import aws_log_retriever as alr
 
 
 # Save logs to a single file ordered by logStreamName
@@ -15,13 +18,13 @@ def save_to_file(json_logs, file):
 
 client = boto3.client('logs')
 
-request_ids = ['2c1abb96-1ce9-43e2-ba1d-ce0ef717818f', '9d4ff5e3-30e1-4d45-83d9-b273fb2dfcdd']
+request_ids = ['f3cf4bec-e84f-495e-bac9-c5b69defe4c8', '26b852e3-1a65-4c50-8816-e0c6fcf2ec75']
 query = f"fields @timestamp, @requestId, @message, @logStream | filter @requestId in {request_ids}"
 query2 = 'filter @requestId in ["{}"]'.format('", "'.join(request_ids))
 
-log_group_name = '/aws/lambda/tree_constructor'
-start_time=1707761189969
-end_time=1707761197835
+log_group_name = '/aws/lambda/tree_constructor_256'
+start_time=1741205743183
+end_time=1741205745993
 
 start_query_response = client.start_query(
   logGroupName=log_group_name,
@@ -45,26 +48,17 @@ results = response['results']
 
 print(results)
 
-save_to_file(results, 'executions/logs/teste.json')
+save_to_file(results, f".tmp/logs/teste_1_{start_time}.json")
+
+
+
+logs = alr.get_all_log_events(log_group_name, start_time, end_time)
+
+print(logs)
+
+save_to_file(logs, f".tmp/logs/teste_2_{start_time}.json")
 
 
 
 
 
-
-# filter = '{$.requestId = ' + reqs[0] + ' || $.requestId = ' + reqs[1] + '}'
-# filter = '{$.requestId=2c1abb96-1ce9-43e2-ba1d-ce0ef717818f}'
-
-# response = client.filter_log_events(
-#     logGroupName=log_group,
-#     startTime=start_timestamp_ms,
-#     endTime=end_timestamp_ms,
-#     filterPattern=filter
-# )
-
-# logs = response['events']
-
-# if logs == None:
-#     raise ValueError("No log records were found!")
-
-# print(logs)

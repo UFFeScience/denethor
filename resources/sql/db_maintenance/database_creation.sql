@@ -99,6 +99,9 @@ CREATE TABLE file (
     UNIQUE (file_name, file_bucket, file_path, file_size)
 );
 
+-- Provisoriamente retirando a restrição de NOT NULL para file_hash_code
+ALTER TABLE "file" ALTER COLUMN file_hash_code DROP NOT NULL;
+
 CREATE TABLE execution_file (
     ef_id SERIAL  PRIMARY KEY,
     se_id INTEGER NOT NULL,

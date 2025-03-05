@@ -7,7 +7,7 @@ from denethor.utils import file_utils as dfu, utils as du
 def handler(event, context):
 
     request_id = du.resolve_request_id(context)
-    execution_id = event.get('execution_id')
+    execution_tag = event.get('execution_tag')
     provider = event.get('provider')
     activity = event.get('activity')
     
@@ -36,7 +36,7 @@ def handler(event, context):
     OUTPUT_PATH = env_props.get(provider).get('path.' + activity)
     CLUSTALW_PATH = env_props.get(provider).get('path.clustalw')
 
-    logger = dlh.get_logger(execution_id, provider, activity, env_props)
+    logger = dlh.get_logger(execution_tag, provider, activity, env_props)
     
     # Cleaning old temporary files and creating directories ##
     # dfu.remove_files(TMP_PATH)

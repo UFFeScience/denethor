@@ -8,24 +8,22 @@ import denethor.utils.log_utils as dlu
 
 
 def extract_and_persist_log_data(
+    provider: Provider,
+    workflow_execution: WorkflowExecution,
     activity_name: str,
     memory: int,
     log_file: str,
-    provider: Provider,
-    workflow: Workflow,
-    workflow_execution: WorkflowExecution,
     statistics_dict: dict,
-):
+) -> None:
     """
-    Analyzes logs based on the provided parameters.
+    Extracts and persists the log data from the log file to the database.
 
     Args:
+        - provider: The provider object persisted in the database.
+        - workflow_execution: The workflow execution object persisted in the database.
         - activity_name (str): The activity name (e.g., 'tree_constructor').
         - memory (int): The memory size of the Lambda function.
         - log_file (str): The name of the log file.
-        - provider: The provider object persisted in the database.
-        - workflow: The workflow object persisted in the database.
-        - workflow_execution: The workflow execution object persisted in the database.
         - statistics_dict (dict): Information about the statistics.
 
     Raises:
@@ -37,7 +35,7 @@ def extract_and_persist_log_data(
 
     # Retrieving the provider, workflow, activity and configuration from the database and checking if they exist
     activity = workflow_activity_service.get_by_name_and_workflow(
-        activity_name, workflow
+        activity_name, workflow_execution.workflow
     )
 
     provider_conf = provider_conf_service.get_by_provider_and_memory(
@@ -86,7 +84,7 @@ def extract_and_persist_log_data(
             service_execution
         )
         print(
-            f'{">>Saving" if se_created else "Retrieving"} Service Execution info: [{service_execution_db.se_id}]={activity.activity_name} ({service_execution_db.duration} ms)'
+            f'{">>>>>> Saving" if se_created else "Retrieving"} Service Execution info: [{service_execution_db.se_id}]={activity.activity_name} ({service_execution_db.duration} ms)'
         )
 
         # para cada arquivo de entrada e registro de execução do arquivo,
@@ -98,7 +96,7 @@ def extract_and_persist_log_data(
             exec_file.file = file_db
             exec_file_db, ef_created = execution_file_repo.get_or_create(exec_file)
             print(
-                f'{">>Saving" if file_created else "Retrieving"} File: {file_db} | {"Saving" if ef_created else "Retrieving"} Execution_File: {exec_file_db}'
+                f'{">>>>>> Saving" if file_created else "Retrieving"} File: {file_db} | {"Saving" if ef_created else "Retrieving"} Execution_File: {exec_file_db}'
             )
 
         # para a execução da função verificamos se existem estatísticas adicionais para armazenar

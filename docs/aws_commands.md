@@ -12,11 +12,11 @@ override_end_time_ms = int(end_time_date_utc.timestamp() * 1000)
 override_start_time_ms = override_start_time_ms - (10 * 1000)
 override_end_time_ms = override_end_time_ms + (10 * 1000)
 
-execution_id = 'EXEC_' + str(start_time_date_gmt).replace('-03:00', '').replace(':', '-').replace('T', '_').replace(' ', '_').replace('Z', '') + '_GMT-3'
+execution_tag = 'EXEC_' + str(start_time_date_gmt).replace('-03:00', '').replace(':', '-').replace('T', '_').replace(' ', '_').replace('Z', '') + '_GMT-3'
 
 # Store workflow configuration and runtime parameters
 workflow_params = {
-    'execution_id': execution_id,
+    'execution_tag': execution_tag,
     'workflow_start_time_str':None,
     'workflow_start_time_ms': 0,
     'input_files_name': None,
@@ -31,7 +31,7 @@ override_params = {
 step_params = {
     "functions": ["tree_constructor", "subtree_mining"],
     "log_path": "data/executions/logs",
-    "log_file": "log_[function_name]_[execution_id].json"
+    "log_file": "log_[function_name]_[execution_tag].json"
 }
 
 params = {

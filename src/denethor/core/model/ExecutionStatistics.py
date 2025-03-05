@@ -15,10 +15,10 @@ class ExecutionStatistics(BaseModel):
 
     def __str__(self):
         if self.value_float is not None:
-            return str(self.value_float)
+            return "value_float: " + str(self.value_float)
         elif self.value_integer is not None:
-            return str(self.value_integer)
+            return "value_integer: " + str(self.value_integer)
         elif self.value_string is not None:
-            return str(self.value_string)
+            return "value_string: " + self.value_string
         else:
             return ''

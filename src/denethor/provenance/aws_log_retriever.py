@@ -1,25 +1,24 @@
 import os, json, time, boto3, datetime
 from typing import Dict
+from denethor.core.model.Provider import Provider
+from denethor.core.model.WorkflowExecution import WorkflowExecution
 from denethor.utils import utils as du
+from denethor.environments import AWSLogRetrievalParameters as alrp
 
 
 def retrieve_logs_from_aws(
-    provider_tag: str,
-    execution_tag: str,
+    provider: Provider,
+    workflow_execution: WorkflowExecution,
     function_name: str,
-    start_time_ms: int,
-    end_time_ms: int,
     env_properties: Dict[str, str],
 ) -> str:
     """
     Retrieves logs from AWS Lambda and saves them to a file.
 
     Args:
-        provider_tag (str): The provider TAG for the execution environment.
-        execution_tag (str): The execution TAG of the workflow.
+        provider (Provider): The provider object.
+        workflow_execution (WorkflowExecution): The workflow execution object.
         function_name (str): The name of the Lambda function to retrieve logs from.
-        start_time_ms (int): The start time of the log retrieval interval in milliseconds.
-        end_time_ms (int): The end time of the log retrieval interval in milliseconds.
         env_properties (Dict[str, str]): The environment properties.
 
     Raises:
@@ -32,25 +31,30 @@ def retrieve_logs_from_aws(
     log_path = env_properties.get("provenance").get("log.path")
     log_file_name = env_properties.get("provenance").get("log.file")
 
-    log_path = log_path.replace("[provider_tag]", provider_tag)
-    log_file_name = log_file_name.replace("[execution_id]", execution_tag)
+    log_path = log_path.replace("[provider_tag]", provider.provider_tag)
+    log_file_name = log_file_name.replace(
+        "[execution_tag]", workflow_execution.execution_tag
+    )
     log_file_name = log_file_name.replace("[function_name]", function_name)
 
     log_file = os.path.join(log_path, log_file_name)
 
     log_group_name = f"/aws/lambda/{function_name}"
 
+    start_time_ms = workflow_execution.get_start_time_ms()
+    end_time_ms = workflow_execution.get_end_time_ms()
+
     logs = get_all_log_events(log_group_name, start_time_ms, end_time_ms)
 
     if logs == None or len(logs) == 0:
         raise ValueError(
-            "No log records were found! log_group_name={log_group_name}, start_time={log_filter_start}, end_time={log_filter_end}"
+            f"No log records were found! log_group_name={log_group_name}, start_time={start_time_ms}, end_time={end_time_ms}"
         )
 
     save_log_file(logs, log_file)
 
     print(
-        f"Logs for function {function_name}, execution {execution_tag} saved to {log_file} in JSON format"
+        f"Logs for function {function_name}, execution {workflow_execution} saved to {log_file} in JSON format"
     )
 
     return log_file
@@ -67,6 +71,17 @@ def get_all_log_events(
 
     if not end_time_ms:
         end_time_ms = int(time.time() * 1000)
+
+    # Ensure the minimal interval (after end_time) before retrieving logs from aws
+    current_time_ms = int(time.time() * 1000)
+    elapsed_time_ms = current_time_ms - end_time_ms
+    wait_time_before_log_fetch_ms = alrp.LOG_RETRIEVAL_DELAY_MS - elapsed_time_ms
+    if wait_time_before_log_fetch_ms > 0:
+        print(
+            f"Sleeping for {wait_time_before_log_fetch_ms} ms before importing provenance data..."
+        )
+
+        time.sleep(wait_time_before_log_fetch_ms / 1000)
 
     # If there are more log events than the limit, the response will contain a 'nextToken' field
     # This token can be used to retrieve the next batch of log events

@@ -20,4 +20,8 @@ class ProviderConfigurationRepository(BaseRepository):
         if type(obj) != ProviderConfiguration:
             raise ValueError("The argument must be a ProviderConfiguration object")
         obj_dict = obj.__dict__.copy()
+        if obj.provider:
+            obj.provider_id = obj.provider.provider_id
+        obj_dict = obj.__dict__.copy()
+        obj_dict.pop('provider', None)
         return super().get_or_create(obj_dict)

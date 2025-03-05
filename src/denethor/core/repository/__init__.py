@@ -9,7 +9,7 @@ from .StatisticsRepository import StatisticsRepository
 from .ExecutionStatisticsRepository import ExecutionStatisticsRepository
 from .ServiceExecutionRepository import ServiceExecutionRepository
 
-from .. import conn
+from ..database import conn
 
 # Instânciando a sessão do banco de dados
 db = conn.Connection().get_session()

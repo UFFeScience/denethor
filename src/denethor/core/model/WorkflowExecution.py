@@ -18,3 +18,9 @@ class WorkflowExecution(BaseModel):
 
     def __str__(self):
         return f"[{self.we_id}]={self.execution_tag}"
+    
+    def get_start_time_ms(self) -> int:
+        return int(self.start_time.timestamp() * 1000)
+    
+    def get_end_time_ms(self) -> int:
+        return int(self.end_time.timestamp() * 1000)

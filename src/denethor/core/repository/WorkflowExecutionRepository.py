@@ -1,3 +1,4 @@
+from typing import Tuple
 from sqlalchemy.orm import Session
 from denethor.core.repository.BaseRepository import BaseRepository
 from denethor.core.model.WorkflowExecution import WorkflowExecution
@@ -12,7 +13,7 @@ class WorkflowExecutionRepository(BaseRepository):
     def get_by_tag(self, tag: str):
         return self.db.query(self.model).filter_by(execution_tag=tag).first()
     
-    def get_or_create(self, obj: WorkflowExecution):
+    def get_or_create(self, obj: WorkflowExecution) -> Tuple[WorkflowExecution, bool]:
         if type(obj) != WorkflowExecution:
             raise ValueError("The argument must be a WorkflowExecution object")
         if obj.workflow:

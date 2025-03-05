@@ -1,5 +1,8 @@
 from enum import Enum
 
+class AWSLogRetrievalParameters(Enum):
+    LOG_RETRIEVAL_DELAY_MS = 10 * 1000
+
 # Environment in which the activity is executed
 class ExecutionProviderEnum(Enum):
     AWS_LAMBDA = 'aws_lambda'

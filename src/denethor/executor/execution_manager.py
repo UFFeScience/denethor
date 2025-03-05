@@ -38,17 +38,17 @@ def execute_activity(
             f"Invalid input data={input_data} for Execution Manager of activity={activity}"
         )
 
-    if provider_tag not in ExecutionProviderEnum.__members__:
+    if provider_tag not in [provider.value for provider in ExecutionProviderEnum]:
         raise ValueError(
             f"Invalid execution provider={provider_tag} for Execution Manager of activity={activity}"
         )
     
-    if strategy not in ExecutionStrategyEnum.__members__:
+    if strategy not in [strategy.value for strategy in ExecutionStrategyEnum]:
         raise ValueError(
             f"Invalid execution strategy={strategy} for Execution Manager of activity={activity}"
         )
     
-    if memory not in MemoryConfigurationEnum.__members__:
+    if memory not in [memory.value for memory in MemoryConfigurationEnum]:
         raise ValueError(
             f"Invalid memory configuration={memory} for Execution Manager of activity={activity}"
         )
@@ -59,7 +59,7 @@ def execute_activity(
 
     results = []
 
-    if strategy == ExecutionStrategyEnum.FOR_EACH_INPUT:
+    if strategy == ExecutionStrategyEnum.FOR_EACH_INPUT.value:
         for index_data in range(len(input_data)):
             result = execute_by_provider(
                 execution_tag,
@@ -73,7 +73,7 @@ def execute_activity(
             )
             results.append(result)
 
-    elif strategy == ExecutionStrategyEnum.FOR_ALL_INPUTS:
+    elif strategy == ExecutionStrategyEnum.FOR_ALL_INPUTS.value:
         result = execute_by_provider(
             execution_tag,
             provider_tag,
@@ -105,7 +105,7 @@ def execute_by_provider(
 ) -> Dict[str, str]:
 
     payload = {
-        "execution_id": execution_tag,
+        "execution_tag": execution_tag,
         "provider": provider,
         "activity": activity,
         "previous_activity": previous_activity,
@@ -114,11 +114,11 @@ def execute_by_provider(
         "env_properties": env_properties,
     }
 
-    if provider == ExecutionProviderEnum.LOCAL:
+    if provider == ExecutionProviderEnum.LOCAL.value:
         src_path = env_properties.get(provider).get("path.src")
         return invoker_local.invoke_local_python(activity, src_path, "handler", payload)
 
-    elif provider == ExecutionProviderEnum.AWS_LAMBDA:
+    elif provider == ExecutionProviderEnum.AWS_LAMBDA.value:
         return invoker_aws.invoke_aws_lambda(activity, memory, payload)
 
     else:

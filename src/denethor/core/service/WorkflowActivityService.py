@@ -1,8 +1,8 @@
 from denethor.core.model import Workflow, WorkflowActivity
-from denethor.core.repository import ActivityRepository
+from denethor.core.repository import WorkflowActivityRepository
 
 class WorkflowActivityService:
-    def __init__(self, activity_repo: ActivityRepository):
+    def __init__(self, activity_repo: WorkflowActivityRepository):
         self.activity_repo = activity_repo
 
     def get_by_name_and_workflow(self, activity_name: str, workflow_db: Workflow) -> WorkflowActivity:

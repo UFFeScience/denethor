@@ -66,7 +66,7 @@ def invoke_aws_lambda(
     else:
         raise Exception(f"Error invoking Lambda function: {response}")
 
-    print(f"\n>>> Lambda function {function_to_invoke} invoked successfully!")
+    print(f"\n>>> Lambda function {function_to_invoke} invoked successfully! Payload: {payload_response}")
 
     if async_invoke:
         return response["ResponseMetadata"]["RequestId"]

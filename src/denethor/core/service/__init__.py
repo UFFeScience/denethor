@@ -7,8 +7,6 @@ from .WorkflowService import WorkflowService
 from .ProviderConfigurationService import ProviderConfigurationService
 from .WorkflowActivityService import WorkflowActivityService
 
-from denethor.core.database import session
-
 # Initialize services
 workflow_execution_service = WorkflowExecutionService(workflow_execution_repo)
 statistics_service = StatisticsService(statistics_repo)

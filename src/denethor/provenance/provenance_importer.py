@@ -11,12 +11,11 @@ from . import aws_log_analyzer as ala
 
 def import_provenance_from_aws(
     execution_tag: str,
-    workflow_steps: List[Dict],
     start_time_ms: int,
     end_time_ms: int,
-    provider: Provider,
-    workflow: Workflow,
     runtime_data: dict,
+    workflow_info: dict,
+    workflow_steps: List[Dict],
     statistics_info: dict,
     env_properties: Dict[str, str],
 ) -> None:
@@ -28,6 +27,8 @@ def import_provenance_from_aws(
         f"\n>>> Provenance import start time is: {prov_start_time_ms} ms | {du.convert_ms_to_str(prov_start_time_ms)}"
     )
 
+    workflow = workflow_service.get_by_name(workflow_info.get("workflow_name"))
+    
     workflow_execution = workflow_execution_service.create(
         workflow,
         execution_tag,
@@ -47,32 +48,29 @@ def import_provenance_from_aws(
         activity_name = step.get("activity")
         memory = step.get("memory")
         provider_tag = step.get("provider")
+        provider = provider_service.get_by_tag(provider_tag)
 
         function_name = activity_name + "_" + str(memory)
 
         print(
-            f"Importing provenance from AWS:\n Execution ID: {execution_tag}\n Activity: {activity_name}\n Memory: {memory}\n Function: {function_name}\n Start Time: {start_time_ms}\n End Time: {end_time_ms}\n Log File: {log_file}"
+            f"Importing provenance from AWS:\n Execution ID: {execution_tag}\n Activity: {activity_name}\n Memory: {memory}\n Function: {function_name}\n Start Time: {start_time_ms}\n End Time: {end_time_ms}"
         )
 
         # Retrieve logs from AWS
         log_file = alr.retrieve_logs_from_aws(
-            provider_tag,
-            execution_tag,
+            provider,
+            workflow_execution,
             function_name,
-            start_time_ms,
-            end_time_ms,
             env_properties,
         )
 
         # Extract and persist log data into the database
         ala.extract_and_persist_log_data(
-            execution_tag,
+            provider,
+            workflow_execution,
             activity_name,
             memory,
             log_file,
-            provider,
-            workflow,
-            workflow_execution,
             statistics_info,
         )
 

@@ -20,10 +20,10 @@
 # start_time_ms -= 10000
 # end_time_ms += 10000
 
-# # execution_id = du.generate_workflow_execution_id(start_time_ms)
+# # execution_tag = du.generate_workflow_execution_tag(start_time_ms)
 # # execution_env = du.get_env_config_by_name("local", env_configs)
 # # import denethor.utils.log_handler as dlh
-# # logger = dlh.get_logger(execution_id, execution_env)
+# # logger = dlh.get_logger(execution_tag, execution_env)
 # # du.log_env_info(execution_env, logger)
 
 # # Setting the active steps for testing
