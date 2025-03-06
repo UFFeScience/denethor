@@ -1,15 +1,17 @@
 import boto3
 import time
-from denethor.environments import LOCAL, AWS_LAMBDA, VM_LINUX
+from denethor.constants import (
+    ExecutionProviderEnum,
+) 
 
 def monitor_execution(params):
 
     execution_env = params.get('step_params').get('execution_env')
 
-    if execution_env == LOCAL:
+    if execution_env == ExecutionProviderEnum.LOCAL:
         return monitor_local_execution(params)
 
-    elif execution_env == AWS_LAMBDA:
+    elif execution_env == ExecutionProviderEnum.AWS_LAMBDA:
         return monitor_lambda_execution(params)
 
     else:

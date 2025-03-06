@@ -1,6 +1,6 @@
 import os, boto3, timeit, logging
 from denethor.utils import utils as du
-from denethor.environments import LOCAL, AWS_LAMBDA, AWS_EC2
+from denethor.constants import ExecutionProviderEnum as ep
 
 s3 = boto3.client('s3')
 
@@ -17,7 +17,7 @@ def handle_consumed_files(request_id: str,
     download_duration_ms = 0
     file_list_flat = du.flatten_list(file_list)
     
-    if provider == AWS_LAMBDA:
+    if provider == ep.AWS_LAMBDA:
         # Download file from s3 bucket into lambda function
         for file_name in file_list_flat:
             duration_ms = download_single_file_from_s3(request_id, file_name, file_path, s3_bucket, s3_key)
@@ -70,7 +70,7 @@ def handle_produced_files(request_id: str,
     upload_duration_ms = 0
     file_list_flat = du.flatten_list(file_list)
 
-    if provider == AWS_LAMBDA:
+    if provider == ep.AWS_LAMBDA:
         # Upload files from lambda function into s3 bucket
         for file_name in file_list_flat:
             duration_ms = upload_single_file_to_s3(request_id, file_name, file_path, s3_bucket, s3_key)

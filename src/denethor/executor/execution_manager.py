@@ -1,6 +1,11 @@
 from typing import List, Dict, Optional
 from denethor.executor import invoker_aws, invoker_local
-from denethor.environments import *
+from denethor.constants import (
+    ExecutionProviderEnum,
+    ExecutionStrategyEnum,
+    MemoryConfigurationEnum,
+)
+
 
 def execute_activity(
     execution_tag: str,
@@ -42,12 +47,12 @@ def execute_activity(
         raise ValueError(
             f"Invalid execution provider={provider_tag} for Execution Manager of activity={activity}"
         )
-    
+
     if strategy not in [strategy.value for strategy in ExecutionStrategyEnum]:
         raise ValueError(
             f"Invalid execution strategy={strategy} for Execution Manager of activity={activity}"
         )
-    
+
     if memory not in [memory.value for memory in MemoryConfigurationEnum]:
         raise ValueError(
             f"Invalid memory configuration={memory} for Execution Manager of activity={activity}"
@@ -59,7 +64,7 @@ def execute_activity(
 
     results = []
 
-    if strategy == ExecutionStrategyEnum.FOR_EACH_INPUT.value:
+    if strategy == ExecutionStrategyEnum.FOR_EACH_INPUT:
         for index_data in range(len(input_data)):
             result = execute_by_provider(
                 execution_tag,
@@ -73,7 +78,7 @@ def execute_activity(
             )
             results.append(result)
 
-    elif strategy == ExecutionStrategyEnum.FOR_ALL_INPUTS.value:
+    elif strategy == ExecutionStrategyEnum.FOR_ALL_INPUTS:
         result = execute_by_provider(
             execution_tag,
             provider_tag,
@@ -114,11 +119,11 @@ def execute_by_provider(
         "env_properties": env_properties,
     }
 
-    if provider == ExecutionProviderEnum.LOCAL.value:
+    if provider == ExecutionProviderEnum.LOCAL:
         src_path = env_properties.get(provider).get("path.src")
         return invoker_local.invoke_local_python(activity, src_path, "handler", payload)
 
-    elif provider == ExecutionProviderEnum.AWS_LAMBDA.value:
+    elif provider == ExecutionProviderEnum.AWS_LAMBDA:
         return invoker_aws.invoke_aws_lambda(activity, memory, payload)
 
     else:

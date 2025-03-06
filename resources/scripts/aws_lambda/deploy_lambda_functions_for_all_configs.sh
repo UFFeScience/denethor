@@ -15,9 +15,13 @@ timeouts=( ["tree_constructor"]=30 ["subtree_constructor"]=30 ["maf_database_cre
 # Variable to indicate appending memory size to function name
 append_memory=true
 
-echo -e "\n-------------------------------------------------------------------------------\n"
-echo -e " Starting deployment of: ${function_names[@]} using memory sizes: ${memory_sizes[@]}"
-echo -e "\n-------------------------------------------------------------------------------\n"
+current_dir=$(dirname "$0")
+echo -e "Current directory: $current_dir"
+
+echo -e "\n------------------------------------------------------------------------------------------------------\n"
+echo -e " Starting deployment of: ${function_names[@]} using memory sizes: ${memory_sizes[@]} in region $region}"
+echo -e "\n------------------------------------------------------------------------------------------------------\n"
+
 
 # Iterate over each function name
 for function_name in "${function_names[@]}"; do

@@ -4,7 +4,7 @@ CREATE OR REPLACE VIEW vw_file_type AS
         ef.se_id,
         ef.file_id,
         'dynamic' AS file_type
-    FROM backup_19_02_2025.execution_file ef
+    FROM execution_file ef
     WHERE ef.transfer_type = 'produced'
     
     UNION
@@ -13,11 +13,11 @@ CREATE OR REPLACE VIEW vw_file_type AS
         ef.se_id,
         ef.file_id,
         'static' AS file_type
-    FROM backup_19_02_2025.execution_file ef
+    FROM execution_file ef
     WHERE ef.transfer_type = 'consumed'
     AND ef.file_id NOT IN (
         SELECT ef2.file_id
-        FROM backup_19_02_2025.execution_file ef2
+        FROM execution_file ef2
         WHERE ef2.transfer_type = 'produced'
 );
 

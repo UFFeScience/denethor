@@ -3,7 +3,7 @@ from typing import Dict
 from denethor.core.model.Provider import Provider
 from denethor.core.model.WorkflowExecution import WorkflowExecution
 from denethor.utils import utils as du
-from denethor.environments import AWSLogRetrievalParameters as alrp
+from denethor.constants import AWSLogRetrievalParameters as alrp
 
 
 def retrieve_logs_from_aws(
@@ -75,7 +75,7 @@ def get_all_log_events(
     # Ensure the minimal interval (after end_time) before retrieving logs from aws
     current_time_ms = int(time.time() * 1000)
     elapsed_time_ms = current_time_ms - end_time_ms
-    wait_time_before_log_fetch_ms = alrp.LOG_RETRIEVAL_DELAY_MS - elapsed_time_ms
+    wait_time_before_log_fetch_ms = alrp.LOG_RETRIEVAL_DELAY_MS.value - elapsed_time_ms
     if wait_time_before_log_fetch_ms > 0:
         print(
             f"Sleeping for {wait_time_before_log_fetch_ms} ms before importing provenance data..."
@@ -122,6 +122,9 @@ def save_log_file(json_logs: list, file_name_with_path: str) -> None:
 
     # Sanitize file name
     file_name_with_path = du.sanitize(file_name_with_path)
+
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(file_name_with_path), exist_ok=True)
 
     with open(file=file_name_with_path, mode="w", encoding="utf-8") as file:
         json.dump(json_logs, file, ensure_ascii=False, indent=4)

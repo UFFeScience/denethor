@@ -1,19 +1,19 @@
--- DROP VIEW IF EXISTS vw_file_type;
--- DROP VIEW IF EXISTS vw_service_execution_info_last;
--- DROP VIEW IF EXISTS vw_service_execution_info;
+DROP VIEW IF EXISTS vw_file_type;
+DROP VIEW IF EXISTS vw_service_execution_info_last;
+DROP VIEW IF EXISTS vw_service_execution_info;
+DROP VIEW IF EXISTS vw_task;
+
 
 DROP TABLE IF EXISTS public.execution_statistics;
+DROP TABLE IF EXISTS public."statistics";
 DROP TABLE IF EXISTS public.execution_file;
-DROP TABLE IF EXISTS public.task_execution;
+DROP TABLE IF EXISTS public."file";
 DROP TABLE IF EXISTS public.service_execution;
 DROP TABLE IF EXISTS public.workflow_execution;
-DROP TABLE IF EXISTS public.provider_configuration;
 DROP TABLE IF EXISTS public.workflow_activity;
-DROP TABLE IF EXISTS public.task;
-DROP TABLE IF EXISTS public.file;
-DROP TABLE IF EXISTS public.provider;
 DROP TABLE IF EXISTS public.workflow;
-DROP TABLE IF EXISTS public.statistics;
+DROP TABLE IF EXISTS public.provider_configuration;
+DROP TABLE IF EXISTS public."provider";
 
 
 

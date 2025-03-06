@@ -11,7 +11,7 @@
 # If append_memory is true, the memory size is appended to the function name,
 # indicating the memory size used by the function, i.e., "configuration"
 
-# The script uses the latest versrions of the 'base' and 'denethor' layers.
+# The script uses the latest versions of the 'base' and 'denethor' layers.
 
 ##################################################################################
 

@@ -1,9 +1,0 @@
-TRUNCATE TABLE execution_statistics CASCADE;
-TRUNCATE TABLE statistics CASCADE;
-TRUNCATE TABLE execution_file CASCADE;
-TRUNCATE TABLE file CASCADE;
-TRUNCATE TABLE service_execution CASCADE;
-TRUNCATE TABLE service_provider CASCADE;
-TRUNCATE TABLE workflow CASCADE;
-TRUNCATE TABLE workflow_activity CASCADE;
-

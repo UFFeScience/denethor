@@ -2,10 +2,10 @@
     {
         "activity": "tree_constructor",
         "provider": "aws_lambda",
-        "memory": 256,
+        "memory": 128,
         "strategy": "for_each_input",
         "data_params": {
-            "input_dir": "resources/data/test_02",
+            "input_dir": "resources/data/test_10",
             "input_param": "input_files",
             "output_param": "tree_files"
         },
@@ -20,7 +20,7 @@
             "input_param": "tree_files",
             "output_param": "subtree_files"
         },
-        "active": false
+        "active": true
     },
     {
         "activity": "maf_database_creator",
@@ -31,7 +31,7 @@
             "input_param": "subtree_files",
             "output_param": "intermediate_mafdb_files"
         },
-        "active": false
+        "active": true
     },
     {
         "activity": "maf_database_aggregator",
@@ -42,6 +42,6 @@
             "input_param": "intermediate_mafdb_files",
             "output_param": "final_mafdb_file"
         },
-        "active": false
+        "active": true
     }
 ]

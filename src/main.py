@@ -1,6 +1,6 @@
 import os, time, json
 from pathlib import Path
-from denethor import environments as denv
+from denethor import constants as denv
 from denethor.core.service import *
 from denethor.utils import utils as du, file_utils as dfu
 from denethor.executor import execution_manager as dem
@@ -8,6 +8,9 @@ from denethor.provenance import provenance_importer as dprov
 
 # Raiz do projeto
 project_root = Path(__file__).resolve().parent.parent
+
+# Mudar o diretório atual para a raiz do projeto
+os.chdir(project_root)
 
 conf_path = os.path.join(project_root, "conf")
 # Load JSON files
