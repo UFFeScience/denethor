@@ -3,7 +3,7 @@ import importlib.util, inspect
 from typing import Any, Dict
 
 
-def invoke_local_python(
+def invoke(
     module_identifier: str,
     module_path: str,
     target_method: str,

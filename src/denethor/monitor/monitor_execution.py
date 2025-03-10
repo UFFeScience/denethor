@@ -1,17 +1,16 @@
 import boto3
 import time
-from denethor.constants import (
-    ExecutionProviderEnum,
-) 
+from denethor import constants as const
+
 
 def monitor_execution(params):
 
     execution_env = params.get('step_params').get('execution_env')
 
-    if execution_env == ExecutionProviderEnum.LOCAL:
+    if execution_env == const.LOCAL:
         return monitor_local_execution(params)
 
-    elif execution_env == ExecutionProviderEnum.AWS_LAMBDA:
+    elif execution_env == const.AWS_LAMBDA:
         return monitor_lambda_execution(params)
 
     else:

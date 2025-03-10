@@ -1,4 +1,5 @@
 import os
+import re
 
 # Limpeza de arquivos #
 def remove_files(dir_path: str) -> None:
@@ -34,12 +35,25 @@ def is_valid_path(path: str) -> bool:
     
 # List all files in a directory
 def list_all_files(dir_path: str) -> list:
+    return list_files(dir_path, None)
+
+def list_files(dir_path: str, filter: list[str]) -> list:
+
+    # chek if dir_path is relative
+    if not os.path.isabs(dir_path):
+        dir_path = os.path.abspath(dir_path)
+
+    # check if dir_path exists
     if not os.path.exists(dir_path):
         raise ValueError(f"Directory {dir_path} does not exist.")
     
+    def natural_key(file):
+        return [int(text) if text.isdigit() else text.lower() for text in re.split(r'(\d+)', file)]
+
     file_list = []
     for root, dirs, files in os.walk(dir_path):
         for file in files:
-            file_list.append(file)
+            if not filter or file in filter:
+                file_list.append(file)
     
-    return file_list
+    return sorted(file_list, key=natural_key)

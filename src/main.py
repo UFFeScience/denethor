@@ -5,6 +5,7 @@ from denethor.core.service import *
 from denethor.utils import utils as du, file_utils as dfu
 from denethor.executor import execution_manager as dem
 from denethor.provenance import provenance_importer as dprov
+from denethor import constants as const
 
 # Raiz do projeto
 project_root = Path(__file__).resolve().parent.parent
@@ -43,7 +44,7 @@ def main():
     # !!!! Force execution parameters !!!!
     #
     #################################################################
-    FORCE_ENV = None
+    FORCE_ENV = const.AWS_EC2
     FORCE_MEMORY = None
 
     override_params(FORCE_ENV, FORCE_MEMORY)
@@ -77,35 +78,32 @@ def main():
         memory = step.get("memory")
         strategy = step.get("strategy")
         data_params = step.get("data_params")
+        param_in = data_params.get("param_in")
+        param_out = data_params.get("param_out")
 
         # Check if the step is active
         if step.get("active") is False:
             print(f"\n>>> Activity: {activity} is inactive. Skipping...")
             continue
 
-        input_param_name = None
-        output_param_name = None
-        if data_params:
-            input_dir = data_params.get("input_dir")
-            input_param_name = data_params.get("input_param")
-            output_param_name = data_params.get("output_param")
-
         # Validation of input parameter
-        if input_param_name is None:
+        if param_in is None:
             raise ValueError(
-                f"Invalid input parameter: {input_param_name} for activity: {activity}"
+                f"Invalid input parameter: {param_in} for activity: {activity}"
             )
 
-        # caso input_dir esteja presente, significa que os dados de entrada serão lidos de um diretório
-        if input_dir:
-            input_files = dfu.list_all_files(os.path.join(project_root, input_dir))
-            runtime_data[input_param_name] = [{"data": f} for f in input_files]
+        # caso input_files_path esteja presente, significa que os dados de entrada serão lidos de um diretório
+        input_files_path = data_params.get("input_files_path")
+        input_files_list = data_params.get("input_files_list")
+        if input_files_path:
+            input_files = dfu.list_files(input_files_path, input_files_list)
+            runtime_data[param_in] = [{"data": f} for f in input_files]
 
         # recuperar os dados  em runtime indicados por 'input_param_name'
         # input_data será uma lista dos dados necessários para a atividade corrente
         input_data = []
         for key, data in runtime_data.items():
-            if key == input_param_name:
+            if key == param_in:
                 input_data = [item["data"] for item in data]
                 break
 
@@ -123,7 +121,7 @@ def main():
         )
 
         # Save the produced data in the dictionary
-        runtime_data[output_param_name] = results
+        runtime_data[param_out] = results
         previous_activity = activity
 
         print(

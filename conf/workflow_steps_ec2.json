@@ -1,47 +1,46 @@
 [
     {
         "activity": "tree_constructor",
-        "provider": "aws_lambda",
+        "provider": "aws_ec2",
         "memory": 128,
         "strategy": "for_each_input",
         "data_params": {
-            "input_files_path": "resources/data/full_dataset",
-            "input_files_list": ["ORTHOMCL1", "ORTHOMCL256"],
-            "param_in": "input_files",
-            "param_out": "tree_files"
+            "input_dir": "resources/data/test_10",
+            "input_param": "input_files",
+            "output_param": "tree_files"
         },
         "active": true
     },
     {
         "activity": "subtree_constructor",
-        "provider": "aws_lambda",
+        "provider": "aws_ec2",
         "memory": 128,
         "strategy": "for_each_input",
         "data_params": {
-            "param_in": "tree_files",
-            "param_out": "subtree_files"
+            "input_param": "tree_files",
+            "output_param": "subtree_files"
         },
         "active": true
     },
     {
         "activity": "maf_database_creator",
-        "provider": "aws_lambda",
+        "provider": "aws_ec2",
         "memory": 128,
         "strategy": "for_each_input",
         "data_params": {
-            "param_in": "subtree_files",
-            "param_out": "intermediate_mafdb_files"
+            "input_param": "subtree_files",
+            "output_param": "intermediate_mafdb_files"
         },
         "active": true
     },
     {
         "activity": "maf_database_aggregator",
-        "provider": "aws_lambda",
+        "provider": "aws_ec2",
         "memory": 128,
         "strategy": "for_all_inputs",
         "data_params": {
-            "param_in": "intermediate_mafdb_files",
-            "param_out": "final_mafdb_file"
+            "input_param": "intermediate_mafdb_files",
+            "output_param": "final_mafdb_file"
         },
         "active": true
     }

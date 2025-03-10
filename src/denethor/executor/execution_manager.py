@@ -1,10 +1,8 @@
+import json
+import os
 from typing import List, Dict, Optional
-from denethor.executor import invoker_aws, invoker_local
-from denethor.constants import (
-    ExecutionProviderEnum,
-    ExecutionStrategyEnum,
-    MemoryConfigurationEnum,
-)
+from denethor.executor import invoker_lambda, invoker_local, invoker_ec2
+from denethor import constants as const
 
 
 def execute_activity(
@@ -43,28 +41,13 @@ def execute_activity(
             f"Invalid input data={input_data} for Execution Manager of activity={activity}"
         )
 
-    if provider_tag not in [provider.value for provider in ExecutionProviderEnum]:
-        raise ValueError(
-            f"Invalid execution provider={provider_tag} for Execution Manager of activity={activity}"
-        )
-
-    if strategy not in [strategy.value for strategy in ExecutionStrategyEnum]:
-        raise ValueError(
-            f"Invalid execution strategy={strategy} for Execution Manager of activity={activity}"
-        )
-
-    if memory not in [memory.value for memory in MemoryConfigurationEnum]:
-        raise ValueError(
-            f"Invalid memory configuration={memory} for Execution Manager of activity={activity}"
-        )
-
     print(
         f"\n>>>Execution Manager: {activity} | strategy:={strategy} | input_data:={input_data}"
     )
 
     results = []
 
-    if strategy == ExecutionStrategyEnum.FOR_EACH_INPUT:
+    if strategy == const.FOR_EACH_INPUT:
         for index_data in range(len(input_data)):
             result = execute_by_provider(
                 execution_tag,
@@ -78,7 +61,7 @@ def execute_activity(
             )
             results.append(result)
 
-    elif strategy == ExecutionStrategyEnum.FOR_ALL_INPUTS:
+    elif strategy == const.FOR_ALL_INPUTS:
         result = execute_by_provider(
             execution_tag,
             provider_tag,
@@ -119,12 +102,35 @@ def execute_by_provider(
         "env_properties": env_properties,
     }
 
-    if provider == ExecutionProviderEnum.LOCAL:
-        src_path = env_properties.get(provider).get("path.src")
-        return invoker_local.invoke_local_python(activity, src_path, "handler", payload)
+    print(f"\n>>> Payload: {json.dumps(payload)}")
 
-    elif provider == ExecutionProviderEnum.AWS_LAMBDA:
-        return invoker_aws.invoke_aws_lambda(activity, memory, payload)
+    if provider == const.LOCAL:
+        module_identifier = activity
+        module_path = env_properties.get(provider).get("path.src")
+        target_method = env_properties.get(provider).get("target_method")
+        return invoker_local.invoke(
+            module_identifier, module_path, target_method, payload
+        )
+
+    elif provider == const.AWS_EC2:
+        instance_id = os.getenv('instance-id')
+        key_path = os.getenv('key-pair-path')
+        module_identifier = activity
+        module_path = env_properties.get(provider).get("path.src")
+        ec2_base_path = os.getenv("ec2-base-path")
+        module_path = os.path.join(ec2_base_path, module_path)
+        target_method = env_properties.get(provider).get("target_method")
+        return invoker_ec2.invoke(
+            instance_id,
+            key_path,
+            module_identifier,
+            module_path,
+            target_method,
+            payload,
+        )
+
+    elif provider == const.AWS_LAMBDA:
+        return invoker_lambda.invoke(activity, memory, payload)
 
     else:
         raise ValueError(

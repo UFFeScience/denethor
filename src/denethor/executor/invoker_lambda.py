@@ -2,7 +2,7 @@ from typing import Dict
 import boto3, json
 
 
-def invoke_aws_lambda(
+def invoke(
     function_name: str,
     memory: int,
     payload: Dict[str, str],
