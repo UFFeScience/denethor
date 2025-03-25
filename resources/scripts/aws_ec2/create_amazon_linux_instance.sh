@@ -69,6 +69,18 @@ aws ec2 wait instance-running --instance-ids "$instance_id" --region "$aws_regio
 instance_dns=$(aws ec2 describe-instances --instance-ids "$instance_id" --region "$aws_region" --query "Reservations[0].Instances[0].PublicDnsName" --output text)
 echo "Instance Public DNS: $instance_dns"
 
+# Upgrade the instance
+echo "Upgrading the instance..."
+ssh -i "$key_path" $ec2_user@"$instance_dns" "sudo dnf upgrade -y"
+ssh -i "$key_path" $ec2_user@"$instance_dns" "sudo dnf update -y"
+ssh -i "$key_path" $ec2_user@"$instance_dns" "dnf upgrade --releasever=2023.6.20250303 -y"
+
+
+# Install Python 3.11
+echo "Installing Python 3.11..."
+ssh -i "$key_path" $ec2_user@"$instance_dns" "sudo dnf install python3.11 -y"
+ssh -i "$key_path" $ec2_user@"$ec2_instance_dns" "python3.11 -m --version || python3.11 -m ensurepip --upgrade || python3.11 -m pip install --upgrade pip"
+
 
 # Create an AMI from the instance
 ami_create=$(aws ec2 create-image --instance-id "$instance_id" --name "$ami_name" --no-reboot --region "$aws_region" --query "ImageId" --output text 2>&1)

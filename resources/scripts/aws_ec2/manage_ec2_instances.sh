@@ -11,26 +11,26 @@ function list_instances() {
 }
 
 function start_instance() {
-  instance_id=$1
-  aws ec2 start-instances --instance-ids "$instance_id" --region "$aws_region"
-  echo "Starting instance $instance_id"
+  id_param=$1
+  aws ec2 start-instances --instance-ids "$id_param" --region "$aws_region"
+  echo "Starting instance $id_param"
 }
 
 function stop_instance() {
-  instance_id=$1
-  aws ec2 stop-instances --instance-ids "$instance_id" --region "$aws_region"
-  echo "Stopping instance $instance_id"
+  id_param=$1
+  aws ec2 stop-instances --instance-ids "$id_param" --region "$aws_region"
+  echo "Stopping instance $id_param"
 }
 
 function terminate_instance() {
-  instance_id=$1
-  aws ec2 terminate-instances --instance-ids "$instance_id" --region "$aws_region"
-  echo "Terminating instance $instance_id"
+  id_param=$1
+  aws ec2 terminate-instances --instance-ids "$id_param" --region "$aws_region"
+  echo "Terminating instance $id_param"
 }
 
 function create_instance() {
-  instance_id=$(aws ec2 run-instances --image-id "$ami_id" --instance-type "$ec2_instance_type" --key-name "$key_name" --security-group-ids "$sg_id" --region "$aws_region" --query "Instances[0].InstanceId" --output text)
-  echo "Created instance with ID: $instance_id"
+  id_param=$(aws ec2 run-instances --image-id "$ami_id" --instance-type "$ec2_instance_type" --key-name "$key_name" --security-group-ids "$sg_id" --region "$aws_region" --query "Instances[0].InstanceId" --output text)
+  echo "Created instance with ID: $id_param"
 }
 
 case $1 in

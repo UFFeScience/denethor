@@ -49,7 +49,7 @@ for entry in "${selected_entries[@]}"; do
 
     # Ensure the remote directory exists
     echo "Creating directory $entry in the EC2 instance..."
-    dir=$(dirname "${entry}")
+    dir=$(dirname "${ec2_path}${entry}")
     ssh -i "$key_path" $ec2_user@"$ec2_instance_dns" "mkdir -p $dir"
 
     # Copy entry to the EC2 instance
@@ -60,3 +60,17 @@ for entry in "${selected_entries[@]}"; do
         scp -i "$key_path" "${local_path}${entry}" $ec2_user@"$ec2_instance_dns":"${ec2_path}${entry}"
     fi
 done
+
+# If requirements file was copied, install the dependencies
+if [[ " ${selected_entries[@]} " =~ " requirements_aws.txt " ]]; then
+    echo "Installing dependencies in the EC2 instance..."
+    ssh -i "$key_path" $ec2_user@"$ec2_instance_dns" "python3.11 -m pip install -r ${ec2_path}requirements_aws.txt"
+fi
+
+echo "Ensuring the logs directory exists in the EC2 instance..."
+ssh -i "$key_path" $ec2_user@"$ec2_instance_dns" "mkdir -p ${ec2_path}resources/logs/aws_ec2"
+ssh -i "$key_path" $ec2_user@"$ec2_instance_dns" "ls -R ${ec2_path}resources/logs/aws_ec2"
+
+echo "Ensuring the .tmp directory exists in the EC2 instance..."
+ssh -i "$key_path" $ec2_user@"$ec2_instance_dns" "mkdir -p ${ec2_path}.tmp"
+ssh -i "$key_path" $ec2_user@"$ec2_instance_dns" "ls -R ${ec2_path}.tmp"
