@@ -1,7 +1,7 @@
 import json
 import os
 from typing import List, Dict, Optional
-from denethor.executor import invoker_lambda, invoker_local, invoker_ec2
+from denethor.executor import invoker_lambda, invoker_local#, invoker_ec2
 from denethor import constants as const
 
 
@@ -89,7 +89,7 @@ def execute_by_provider(
     memory: int,
     input_data: List[Dict],
     index_data: Optional[int],
-    env_properties: Dict[str, str],
+    env_props: Dict[str, str],
 ) -> Dict[str, str]:
 
     payload = {
@@ -99,38 +99,48 @@ def execute_by_provider(
         "previous_activity": previous_activity,
         "input_data": input_data,
         "index_data": index_data,
-        "env_properties": env_properties,
+        "env_properties": env_props,
     }
 
     print(f"\n>>> Payload: {json.dumps(payload)}")
 
+    provider_props = env_props.get(provider)
+
     if provider == const.LOCAL:
-        module_identifier = activity
-        module_path = env_properties.get(provider).get("path.src")
-        target_method = env_properties.get(provider).get("target_method")
         return invoker_local.invoke(
-            module_identifier, module_path, target_method, payload
+            module_identifier=activity,
+            module_path=provider_props.get("path.src"),
+            target_method=provider_props.get("target_method"),
+            payload=payload,
         )
 
+    # TODO: Ajustar aqui quando for implementar o invoker_ec2 de forma definitiva
     elif provider == const.AWS_EC2:
-        instance_id = os.getenv('instance-id')
-        key_path = os.getenv('key-pair-path')
-        module_identifier = activity
-        module_path = env_properties.get(provider).get("path.src")
-        ec2_base_path = os.getenv("ec2-base-path")
-        module_path = os.path.join(ec2_base_path, module_path)
-        target_method = env_properties.get(provider).get("target_method")
-        return invoker_ec2.invoke(
-            instance_id,
-            key_path,
-            module_identifier,
-            module_path,
-            target_method,
-            payload,
+        # return invoker_ec2.invoke(
+        #     instance_dns=os.getenv("ec2_instance_dns"),
+        #     ec2_user=os.getenv("ec2_user"),
+        #     key_path=os.getenv("key_path"),
+        #     ec2_path=os.getenv("ec2_path"),
+        #     module_path=provider_props.get("path.src"),
+        #     module_identifier=activity,
+        #     target_method=provider_props.get("target_method"),
+        #     payload=payload,
+        # )
+        return invoker_local.invoke(
+            module_identifier=activity,
+            module_path=provider_props.get("path.src"),
+            target_method=provider_props.get("target_method"),
+            payload=payload,
         )
 
     elif provider == const.AWS_LAMBDA:
-        return invoker_lambda.invoke(activity, memory, payload)
+        return invoker_lambda.invoke(
+            function_name=activity,
+            memory=memory,
+            timeout=120,
+            async_invoke=False,
+            payload=payload,
+        )
 
     else:
         raise ValueError(

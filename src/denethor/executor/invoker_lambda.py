@@ -5,9 +5,9 @@ import boto3, json
 def invoke(
     function_name: str,
     memory: int,
+    timeout: int,
+    async_invoke: bool,
     payload: Dict[str, str],
-    timeout: int = 120,
-    async_invoke: bool = False,
 ):
     """
     Invokes a AWS Lambda function with the given function name and payload.
@@ -15,9 +15,9 @@ def invoke(
     Parameters:
     - function_name (str): The name of the Lambda function to invoke.
     - memory (int): The memory allocated for the Lambda function execution.
+    - timeout (int): The timeout for the request in seconds.
+    - async_invoke (bool): Whether to invoke the function asynchronously.
     - payload (dict): The payload to pass to the Lambda function.
-    - timeout (int): The timeout for the request in seconds. Default is 120 seconds.
-    - async_invoke (bool): Whether to invoke the function asynchronously. Default is False.
 
     Returns:
     - str: The request ID of the Lambda function invocation.
