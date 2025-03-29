@@ -16,17 +16,17 @@ select * from vw_service_execution_info;
 select * from vw_service_execution_info_last;
 
 
-SELECT 
-    se.se_id,
-    se.workflow_execution_id,
-    se.task_id,
-    pr.provider_name, 
+select 
+	se.se_id,
+	we.execution_tag,
+	pr.provider_name,
+	pc.memory_mb,
     wo.workflow_name, 
-    wa.activity_name, 
-    se.request_id, 
+    wa.activity_name,
+	se.request_id, 
     se.start_time, 
-    se.end_time, 
-    to_char(se.duration,'fm9999990D00') AS duration,
+    se.end_time,
+	to_char(se.duration,'fm9999990D00') AS duration,
     to_char(se.billed_duration,'fm9999990D00') AS billed_duration,
     to_char(se.init_duration,'fm9999990D00') AS init_duration,
     se.memory_size,
@@ -38,10 +38,13 @@ SELECT
     se.produced_files_size,
     to_char(se.produced_files_transfer_duration,'fm9999990D00') AS produced_files_transfer_duration
 FROM service_execution se
+JOIN workflow_execution we ON se.we_id = we.we_id
 JOIN workflow_activity wa ON wa.activity_id = se.activity_id
 JOIN workflow wo ON wo.workflow_id = wa.workflow_id
-JOIN provider pr ON pr.provider_id = se.provider_id
-ORDER BY se.se_id ASC;
+JOIN provider_configuration pc ON se.provider_conf_id = pc.conf_id
+JOIN provider pr ON pr.provider_id = pc.provider_id
+ORDER BY se.se_id ASC
+;
 
 
 

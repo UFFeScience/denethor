@@ -67,43 +67,33 @@ CREATE OR REPLACE VIEW vw_service_execution_info_last AS
 --NOVO MODELO: 23/02/2025
 CREATE OR REPLACE VIEW vw_task AS
     with 
-        service_execution_input as ( 
-            SELECT 
-                se.se_id,
-                se.activity_id,
-                COALESCE(MIN(ef.file_id),0) AS first_input_id,
-                COUNT(ef.file_id) AS input_count,
-                COALESCE(STRING_AGG(ef.file_id::CHAR(30), ',' ORDER BY ef.file_id), 'None') AS  input_list
-            FROM backup_19_02_2025.service_execution se
-            LEFT OUTER JOIN backup_19_02_2025.execution_file ef on ef.se_id = se.se_id and ef.transfer_type = 'consumed'
-            GROUP BY se.id, se.activity_id
-            ORDER BY first_input_id, se.activity_id
-        ),
-        service_execution_output as ( 
-            SELECT 
-                se.se_id,
-                se.activity_id,
-                COALESCE(MIN(ef.file_id),0) AS first_output_id,
-                COUNT(ef.file_id) AS output_count,
-                COALESCE(STRING_AGG(ef.file_id::CHAR(30), ',' ORDER BY ef.file_id), 'None') AS  output_list
-            FROM backup_19_02_2025.service_execution se
-            LEFT OUTER JOIN backup_19_02_2025.execution_file ef on ef.se_id = se.se_id and ef.transfer_type = 'produced'
-            GROUP BY se.id, se.activity_id
-            ORDER BY first_output_id, se.activity_id
-        )
+    service_execution_detail as ( 
+        SELECT 
+            se.se_id,
+            se.activity_id,
+            ef.transfer_type,
+            COALESCE(MIN(ef.file_id),0) AS first_id,
+            COUNT(ef.file_id) AS file_count,
+            COALESCE(STRING_AGG(ef.file_id::CHAR(30), ',' ORDER BY ef.file_id), 'None') AS  file_list
+        FROM service_execution se
+        LEFT OUTER JOIN execution_file ef on ef.se_id = se.se_id
+        GROUP BY se.se_id, se.activity_id, ef.transfer_type
+        ORDER BY first_id, se.activity_id
+    )
     select min(t1.se_id) as task_id,
-           count(*) as execution_count,
-           t1.activity_id,
-           t1.input_count,
-           t1.input_list,
-           t2.output_count,
-           t2.output_list
-    FROM service_execution_input t1
-    LEFT OUTER JOIN service_execution_output t2 ON t1.se_id = t2.se_id
+        count(*) as execution_count,
+        t1.activity_id,
+        t1.file_count as input_count,
+        t1.file_list as input_list,
+        t2.file_count as output_count,
+        t2.file_list as output_list
+    FROM service_execution_detail t1
+    LEFT OUTER JOIN service_execution_detail t2 ON t1.se_id = t2.se_id
+    WHERE t1.transfer_type = 'consumed' and t2.transfer_type = 'produced'
     GROUP BY t1.activity_id,
-             t1.input_count,
-             t1.input_list,
-             t2.output_count,
-             t2.output_list			
-    order by task_id, t1.activity_id, t1.input_count
+            input_count,
+            input_list,
+            output_count,
+            output_list			
+    order by task_id, t1.activity_id, input_count
 ;
