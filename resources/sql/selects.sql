@@ -19,6 +19,7 @@ select * from vw_service_execution_info_last;
 select 
 	se.se_id,
 	we.execution_tag,
+	we.input_count,
 	pr.provider_name,
 	pc.memory_mb,
     wo.workflow_name, 
@@ -32,11 +33,19 @@ select
     se.memory_size,
     se.max_memory_used, 
     se.consumed_files_count,
-    se.consumed_files_size, 
-    to_char(se.consumed_files_transfer_duration,'fm9999990D00') AS consumed_files_transfer_duration,
     se.produced_files_count, 
+    se.consumed_files_size, 
     se.produced_files_size,
-    to_char(se.produced_files_transfer_duration,'fm9999990D00') AS produced_files_transfer_duration
+    to_char(se.consumed_files_transfer_duration,'fm9999990D00') AS consumed_files_transfer_duration,
+    to_char(se.produced_files_transfer_duration,'fm9999990D00') AS produced_files_transfer_duration,
+	(SELECT COALESCE(STRING_AGG(ef.file_id::VARCHAR, ',' ORDER BY ef.file_id), 'None')
+		FROM execution_file ef
+		WHERE ef.se_id = se.se_id and ef.transfer_type = 'consumed'
+	) AS  consumed_files_list,
+	(SELECT COALESCE(STRING_AGG(ef.file_id::VARCHAR, ',' ORDER BY ef.file_id), 'None')  
+		FROM execution_file ef
+		WHERE ef.se_id = se.se_id and ef.transfer_type = 'produced'
+	) AS produced_files_list
 FROM service_execution se
 JOIN workflow_execution we ON se.we_id = we.we_id
 JOIN workflow_activity wa ON wa.activity_id = se.activity_id
@@ -44,7 +53,6 @@ JOIN workflow wo ON wo.workflow_id = wa.workflow_id
 JOIN provider_configuration pc ON se.provider_conf_id = pc.conf_id
 JOIN provider pr ON pr.provider_id = pc.provider_id
 ORDER BY se.se_id ASC
-;
 
 
 
