@@ -1,7 +1,8 @@
 DROP VIEW IF EXISTS vw_file_type;
-DROP VIEW IF EXISTS vw_service_execution_info_last;
+DROP VIEW IF EXISTS vw_service_execution_info_recent;
 DROP VIEW IF EXISTS vw_service_execution_info;
 DROP VIEW IF EXISTS vw_task;
+DROP VIEW IF EXISTS vw_service_execution_task;
 
 
 DROP TABLE IF EXISTS public.execution_statistics;

@@ -1,7 +1,7 @@
 import os, re
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
-from denethor.database.conn import Connection
+from denethor.core.database.conn import Connection
 from instance_generator import utils as igu
 from datetime import datetime
 
@@ -27,8 +27,10 @@ from datetime import datetime
 # WEID = ['weid_1735311414938']
 
 #       128mb               / 256mb               / 512                  / 1024               / 2048 execution
-WETAG = ['weid_1735311414938', 'weid_1735318446694', 'weid_1735319031426', 'weid_1735319100179', 'weid_1735319150437']
+#WEID = ['weid_1735311414938', 'weid_1735318446694', 'weid_1735319031426', 'weid_1735319100179', 'weid_1735319150437']
 
+
+WETAG = ['wetag_1741230695726']
 
 SQL_FILES_PATH = 'resources/sql/instance_generator/'  # Diretório onde os arquivos SQL estão localizados
 
@@ -82,8 +84,8 @@ def execute_sql_and_save_results(execution_tag, input_sql_file, output_results_f
     # separate comments and code
     comments, sql_to_execute = igu.separate_comments_and_code(sql_to_execute)
 
-    # replace weid
-    sql_to_execute = igu.replace_weid(execution_tag, sql_to_execute)
+    # replace wetag
+    sql_to_execute = igu.replace_wetag(execution_tag, sql_to_execute)
     
     try:
         result = db.execute(text(sql_to_execute))

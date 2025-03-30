@@ -26,16 +26,16 @@ def separate_comments_and_code(sql: str):
     return comments_str, code_str
 
 
-# Buscar todas as ocorrências de weid_\d+ ou '[weid]' no script SQL
-def find_weid_occurrences(sql):
+# Buscar todas as ocorrências de wetag_\d+ ou '[wetag]' no script SQL
+def find_wetag_occurrences(sql):
     pattern = r'wetag_\d+|\[wetag\]'
     return list(set(re.findall(pattern, sql)))
 
 
-def replace_weid(execution_tag, sql):
-    weid_occurrences = find_weid_occurrences(sql)
+def replace_wetag(execution_tag, sql):
+    wetag_occurrences = find_wetag_occurrences(sql)
     
-    for occurrence in weid_occurrences:
+    for occurrence in wetag_occurrences:
         sql = sql.replace(occurrence, execution_tag)
         sql = sql.replace("''", "'")
     return sql
@@ -43,9 +43,10 @@ def replace_weid(execution_tag, sql):
 
 def execute_sql_instance_count(execution_tag: list, session):
     SQL_COUNT = f"\
-        SELECT to_char(count(distinct se.task_id), 'fm000') AS inst_count \
+        SELECT to_char(count(distinct st.task_id), 'fm000') AS inst_count \
         FROM service_execution se \
         JOIN workflow_execution we on we.we_id = se.we_id\
+        JOIN vw_service_execution_task st on st.se_id = se.se_id \
         WHERE se.activity_id = 1 and \
               we.execution_tag in ({execution_tag})"
     

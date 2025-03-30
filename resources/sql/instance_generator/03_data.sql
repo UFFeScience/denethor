@@ -10,7 +10,8 @@ produced_file AS (
 	FROM execution_file ef
 	JOIN file f ON f.file_id = ef.file_id
 	JOIN service_execution se ON se.se_id = ef.se_id
-	WHERE ef.transfer_type = 'produced' AND se.workflow_execution_id in ('[weid]')
+	JOIN workflow_execution we ON se.we_id = we.we_id
+	WHERE ef.transfer_type = 'produced' AND we.execution_tag in ('[wetag]')
 	GROUP BY ef.file_id
 ),
 consumed_files AS (
@@ -21,7 +22,8 @@ consumed_files AS (
 	FROM execution_file ef
 	JOIN file f ON f.file_id = ef.file_id
 	JOIN service_execution se ON se.se_id = ef.se_id
-	WHERE ef.transfer_type = 'consumed' AND se.workflow_execution_id in ('[weid]')
+	JOIN workflow_execution we ON se.we_id = we.we_id
+	WHERE ef.transfer_type = 'consumed' AND we.execution_tag in ('[wetag]')
 	GROUP BY ef.file_id
 )
 SELECT 

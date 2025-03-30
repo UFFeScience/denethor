@@ -1,24 +1,28 @@
 --#<#tasks> <#config> <#data> <#vms> <#buckets> <#bucket_ranges> <max_running_time> <max_financial_cost>
 SELECT 
-	(SELECT count(distinct se.task_id) AS _tasks_count
+	(SELECT count(distinct st.task_id) AS _tasks_count
 		FROM service_execution se
-		WHERE se.workflow_execution_id in ('[weid]')
+		JOIN workflow_execution we ON se.we_id = we.we_id
+		JOIN vw_service_execution_task st ON se.se_id = st.se_id
+		WHERE we.execution_tag in ('[wetag]')
 	),
-	(SELECT count(configuration_id) AS _configs_count
+	(SELECT count(pc.conf_id) AS _configs_count
 		FROM provider_configuration pc
 	),
 	(SELECT count(distinct ef.file_id ) AS _files_count
-		FROM service_execution se 
+		FROM service_execution se
+		JOIN workflow_execution we ON se.we_id = we.we_id 
 		JOIN execution_file ef ON ef.se_id = se.se_id 
-		WHERE se.workflow_execution_id in ('[weid]')
+		WHERE we.execution_tag in ('[wetag]')
 	),
 	(SELECT 3 AS _vms_count
 	),
 	(SELECT count(distinct fi.file_bucket ) AS _buckets_count
-		FROM service_execution se 
+		FROM service_execution se
+		JOIN workflow_execution we ON se.we_id = we.we_id
 		JOIN execution_file ef ON ef.se_id = se.se_id
-		JOIN  file fi ON fi.file_id = ef.file_id
-		WHERE se.workflow_execution_id in ('[weid]')
+		JOIN file fi ON fi.file_id = ef.file_id
+		WHERE we.execution_tag in ('[wetag]')
 	),
 	(SELECT 3 AS _bucket_ranges_count
 	),

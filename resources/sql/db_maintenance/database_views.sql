@@ -54,11 +54,11 @@ CREATE OR REPLACE VIEW  vw_service_execution_info AS
         to_char(se.produced_files_transfer_duration,'fm9999990D00') AS produced_files_transfer_duration,
         (SELECT COALESCE(STRING_AGG(ef.file_id::VARCHAR, ',' ORDER BY ef.file_id), 'None')
             FROM execution_file ef
-            WHERE ef.se_id = se.se_id and ef.transfer_type = 'consumed'
+            WHERE ef.se_id = se.se_id AND ef.transfer_type = 'consumed'
         ) AS  consumed_files_list,
         (SELECT COALESCE(STRING_AGG(ef.file_id::VARCHAR, ',' ORDER BY ef.file_id), 'None')  
             FROM execution_file ef
-            WHERE ef.se_id = se.se_id and ef.transfer_type = 'produced'
+            WHERE ef.se_id = se.se_id AND ef.transfer_type = 'produced'
         ) AS produced_files_list
     FROM service_execution se
     JOIN workflow_execution we ON se.we_id = we.we_id
@@ -69,21 +69,21 @@ CREATE OR REPLACE VIEW  vw_service_execution_info AS
     ORDER BY se.se_id ASC;
 
 
--- view service_execution_info_last: last service execution
-CREATE OR REPLACE VIEW vw_service_execution_info_last AS
+-- view vw_service_execution_info_recent: most recent service execution
+DROP VIEW IF EXISTS vw_service_execution_info_recent;
+CREATE OR REPLACE VIEW vw_service_execution_info_recent AS
     SELECT * 
-    FROM vw_service_execution_info vwse
-    WHERE vwse.workflow_execution_id = (SELECT se.workflow_execution_id
-                                    FROM service_execution se
-                                    WHERE se.end_time = (SELECT max(se2.end_time)
-                                                            FROM service_execution se2))
+    FROM vw_service_execution_info
+    WHERE we_id = (
+        SELECT max(we_id) FROM service_execution
+    )
 ;
 
 
 
 --NOVO MODELO: 23/02/2025
 --view task: information about tasks
-DROP VIEW IF EXISTS vw_task;
+DROP VIEW IF EXISTS vw_task CASCADE;
 CREATE OR REPLACE VIEW vw_task AS
     WITH 
     service_execution_detail AS ( 
@@ -102,6 +102,7 @@ CREATE OR REPLACE VIEW vw_task AS
     SELECT min(t1.se_id) as task_id,
         t1.activity_id,
         count(*) as execution_count,
+        1 as task_type,
         t1.file_count as consumed_files_count,
         t2.file_count as produced_files_count,
         t1.file_list as consumed_files_list,
