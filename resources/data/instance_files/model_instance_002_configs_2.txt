@@ -1,5 +1,5 @@
 #<#tasks> <#config> <#data> <#vms> <#buckets> <#bucket_ranges> <max_running_time> <max_financial_cost>
-7	2	18	3	1	3	1000	999999
+7	2	18	2	1	3	1000	999999
 
 #<task_id> <activity_id> <task_type__0-VM__1-FX> <vm_cpu_time> <n_input> [<id_input>...] <n_output> [<id_output>...]
 1	1	1	0.007393880346789960	1	[2]	1	[3]
@@ -30,18 +30,17 @@
 376	396	0.06610001759999022	0.04923938660006116	0	0	[denethor_bucket]
 377	597	None	0.06046003359998622	0	0	[denethor_bucket]
 
-#<vm1_cpu_slowdown> <vm2_cpu_slowdown> <vm3_cpu_slowdown>
-1	1	0.5
+#<vm1_cpu_slowdown> <vm2_cpu_slowdown>
+1	0.5
 
-#<vm1_storage> <vm2 _storage> <vm3_storage>
-8192	8192	8192
+#<vm1_storage> <vm2 _storage>
+8192	8192
 
-#<vm1_cost> <vm2_cost> <vm3_cost>
-0.000005167	0.000010333	0.000018667
+#<vm1_cost> <vm3_cost>
+0.000005167	0.000018667
 
 #<vm_id> <bandwidth>
 1	1250
-2	1250
 3	5000
 
 #<task_id> <activity_id> <config_id> <task_cost> <task_time_total> <task_time_init> <task_time_cpu> <task_time_read> <task_time_write> <task_count>
