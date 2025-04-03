@@ -8,6 +8,8 @@ SELECT
 	),
 	(SELECT count(pc.conf_id) AS _configs_count
 		FROM provider_configuration pc
+		JOIN provider pr on pc.provider_id = pr.provider_id
+		WHERE pr.provider_tag = 'aws_lambda'
 	),
 	(SELECT count(distinct ef.file_id ) AS _files_count
 		FROM service_execution se

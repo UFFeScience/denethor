@@ -19,7 +19,10 @@ class WorkflowExecutionService:
         info: str = None,
     ) -> WorkflowExecution:
 
-        files_list = [item["data"] for item in runtime_data.get("input_files")]
+        if runtime_data is None or len(runtime_data) == 0:
+            files_list = []
+        else:
+            files_list = [item["data"] for item in runtime_data.get("input_files")]
 
         workflow_execution = WorkflowExecution(
             workflow=workflow,
@@ -36,10 +39,10 @@ class WorkflowExecutionService:
             workflow_execution
         )
 
-        if not created:
-            raise ValueError(
-                f"Workflow Execution with tag {execution_tag} already exists in the database."
-            )
+        # if not created:
+        #     raise ValueError(
+        #         f"Workflow Execution with tag {execution_tag} already exists in the database."
+        #     )
         
         print(f"Saving Workflow Execution: {workflow_exec_db}")
 

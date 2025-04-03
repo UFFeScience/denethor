@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 
-from denethor.provenance import aws_log_retriever as alr
+from denethor.provenance import log_retriever_manager as alr
 
 
 # Save logs to a single file ordered by logStreamName

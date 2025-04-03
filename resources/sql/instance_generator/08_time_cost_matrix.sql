@@ -17,7 +17,7 @@ task_time AS (
 	JOIN workflow_execution we ON se.we_id = we.we_id
 	JOIN vw_service_execution_task st ON se.se_id = st.se_id
 	JOIN vw_task ta ON st.task_id = ta.task_id
-	WHERE we.execution_tag in ('[wetag]')
+	WHERE we.execution_tag in ('[wetag]', 'wetag_1743638228939')
 	GROUP BY ta.task_id,
 			 ta.activity_id,
 			 se.provider_conf_id
@@ -47,8 +47,11 @@ SELECT  distinct t2.task_id,
 		99999 AS task_time_read,
 		99999 AS task_time_write,
 		00000 AS task_count
-FROM provider_configuration pc, task_time t2
-WHERE (t2.task_id, pc.conf_id) NOT IN (SELECT task_id, conf_id FROM task_time)
+FROM provider_configuration pc 
+JOIN provider pr on pc.provider_id = pr.provider_id
+CROSS JOIN task_time t2
+WHERE pr.provider_tag = 'aws_lambda' AND
+	  (t2.task_id, pc.conf_id) NOT IN (SELECT task_id, conf_id FROM task_time)
 ORDER BY task_id,
 		 activity_id,
 		 conf_id;

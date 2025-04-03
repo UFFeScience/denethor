@@ -6,20 +6,16 @@ from denethor.utils import utils as du
 from denethor import constants as const
 
 
-def retrieve_logs_from_aws(
+def retrieve_logs(
     provider: Provider,
     workflow_execution: WorkflowExecution,
-    function_name: str,
+    activity_name: str,
+    memory: int,
     env_properties: Dict[str, str],
+    log_file: str,
 ) -> str:
     """
-    Retrieves logs from AWS Lambda and saves them to a file.
-
-    Args:
-        provider (Provider): The provider object.
-        workflow_execution (WorkflowExecution): The workflow execution object.
-        function_name (str): The name of the Lambda function to retrieve logs from.
-        env_properties (Dict[str, str]): The environment properties.
+    Retrieves logs from AWS LAMBDA and saves them to a file.
 
     Raises:
         ValueError: If no log records were found.
@@ -28,16 +24,11 @@ def retrieve_logs_from_aws(
         str: The name of the log file with path.
     """
 
-    log_path = env_properties.get("provenance").get("log.path")
-    log_file_name = env_properties.get("provenance").get("log.file")
+    function_name = activity_name
 
-    log_path = log_path.replace("[provider_tag]", provider.provider_tag)
-    log_file_name = log_file_name.replace(
-        "[execution_tag]", workflow_execution.execution_tag
-    )
-    log_file_name = log_file_name.replace("[function_name]", function_name)
-
-    log_file = os.path.join(log_path, log_file_name)
+    if memory:
+        function_name = activity_name + f"_{memory}"
+        log_file = log_file + f"_{memory}"
 
     log_group_name = f"/aws/lambda/{function_name}"
 
@@ -130,17 +121,3 @@ def save_log_file(json_logs: list, file_name_with_path: str) -> None:
         json.dump(json_logs, file, ensure_ascii=False, indent=4)
 
 
-# Define a function to print logs in an organized manner
-def print_logs_to_console(logs: list) -> None:
-    print("-" * 80)
-    for log_item in logs:
-        # Convert Unix timestamp to human-readable date and time
-        log_datetime = datetime.fromtimestamp(log_item["timestamp"] / 1000.0).strftime(
-            "%Y-%m-%d %H:%M:%S"
-        )
-        print(f"Timestamp: {log_item['timestamp']}")
-        print(f"DateTime: {log_datetime}")
-        # print(f"IngestionTime: {item['ingestionTime']}")
-        # print(f"EventId: {item['eventId']}")
-        print(f"Message: {log_item['message']}")
-    print("-" * 80)

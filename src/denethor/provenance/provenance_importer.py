@@ -5,23 +5,27 @@ from denethor.utils import utils as du
 from denethor.core.model import *
 from denethor.core.repository import *
 from denethor.core.service import *
-from . import aws_log_retriever as alr
+from . import log_retriever_manager as alr
 from . import aws_log_analyzer as ala
 
 
 def import_provenance_from_aws(
-    execution_tag: str,
-    start_time_ms: int,
-    end_time_ms: int,
-    runtime_data: dict,
+    execution_info: dict,
     workflow_info: dict,
     workflow_steps: List[Dict],
     statistics_info: dict,
     env_properties: Dict[str, str],
 ) -> None:
 
+    execution_tag = execution_info.get("execution_tag")
+    start_time_ms = execution_info.get("workflow_start_time_ms")
+    end_time_ms = execution_info.get("workflow_end_time_ms")
+    runtime_data = execution_info.get("runtime_data")
+
     prov_start_time_ms = int(time.time() * 1000)
     prov_end_time_ms = None
+
+    print(f"Starting importing provenance from AWS | Execution Tag: {execution_tag}")
 
     print(
         f"\n>>> Provenance import start time is: {prov_start_time_ms} ms | {du.convert_ms_to_str(prov_start_time_ms)}"
@@ -50,17 +54,16 @@ def import_provenance_from_aws(
         provider_tag = step.get("provider")
         provider = provider_service.get_by_tag(provider_tag)
 
-        function_name = activity_name + "_" + str(memory)
-
         print(
-            f"Importing provenance from AWS:\n Execution ID: {execution_tag}\n Activity: {activity_name}\n Memory: {memory}\n Function: {function_name}\n Start Time: {start_time_ms}\n End Time: {end_time_ms}"
+            f"Importing provenance from AWS:\n Execution Tag: {execution_tag}\n Activity: {activity_name}\n Memory: {memory}\n Activity: {activity_name}\n Start Time: {start_time_ms}\n End Time: {end_time_ms}"
         )
 
         # Retrieve logs from AWS
-        log_file = alr.retrieve_logs_from_aws(
+        log_file = alr.retrieve_logs(
             provider,
             workflow_execution,
-            function_name,
+            activity_name,
+            memory,
             env_properties,
         )
 
@@ -74,7 +77,7 @@ def import_provenance_from_aws(
             statistics_info,
         )
 
-    print("Finished importing provenance from AWS")
+    print(f"Finished importing provenance from AWS | Execution Tag: {execution_tag}")
 
     prov_end_time_ms = int(time.time() * 1000)
 

@@ -30,7 +30,12 @@ from datetime import datetime
 #WEID = ['weid_1735311414938', 'weid_1735318446694', 'weid_1735319031426', 'weid_1735319100179', 'weid_1735319150437']
 
 
-WETAG = ['wetag_1741230695726']
+# execução em função lambda com 2 entradas e todas as configurações
+WETAG = ['wetag_1743638228939', 'wetag_1743638805975', 'wetag_1743638866699', 'wetag_1743638915763', 'wetag_1743639013205']
+
+
+
+
 
 SQL_FILES_PATH = 'resources/sql/instance_generator/'  # Diretório onde os arquivos SQL estão localizados
 

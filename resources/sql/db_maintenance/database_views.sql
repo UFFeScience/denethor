@@ -23,7 +23,7 @@ CREATE OR REPLACE VIEW vw_file_type AS
 
 
 -- view service_execution_info: complete information about service execution
-DROP VIEW IF EXISTS vw_service_execution_info;
+DROP VIEW IF EXISTS vw_service_execution_info CASCADE;
 
 CREATE OR REPLACE VIEW  vw_service_execution_info AS 
     SELECT 
@@ -31,11 +31,12 @@ CREATE OR REPLACE VIEW  vw_service_execution_info AS
         we.we_id,
         we.execution_tag,
         we.input_count,
+        we.start_time as workflow_start_time, 
         pr.provider_id,
         pr.provider_name,
         pc.memory_mb,
         wo.workflow_id,
-        wo.workflow_name, 
+        wo.workflow_name,
         wa.activity_id,
         wa.activity_name,
         se.request_id, 
