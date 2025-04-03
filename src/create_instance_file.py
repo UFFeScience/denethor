@@ -31,8 +31,11 @@ from datetime import datetime
 
 
 # execução em função lambda com 2 entradas e todas as configurações
-WETAG = ['wetag_1743638228939', 'wetag_1743638805975', 'wetag_1743638866699', 'wetag_1743638915763', 'wetag_1743639013205']
+#WETAG = ['wetag_1743638228939', 'wetag_1743638805975', 'wetag_1743638866699', 'wetag_1743638915763', 'wetag_1743639013205']
 
+
+# execução em função lambda com 5 entradas e todas as configurações
+WETAG = ['wetag_1743678423945', 'wetag_1743678525527', 'wetag_1743678605279', 'wetag_1743678680757', 'wetag_1743678753528']
 
 
 

@@ -46,9 +46,12 @@ def main():
     #################################################################
 
     for memory in FORCE_MEMORY:
+        
         override_params(FORCE_ENV, memory)
-        print(f"Warning: Overriding memory size to {memory}!")
 
+        ##
+        ## Execute the workflow
+        ##
         execution_info = dexec.execute_workflow(
             provider_info,
             workflow_info,
@@ -57,12 +60,9 @@ def main():
             env_properties,
         )
 
-        ############################################################
-        #
-        #  Import provenance data
-        #
-        ############################################################
-
+        ##
+        ## Import provenance data
+        ##
         dprov.import_provenance_from_aws(
             execution_info,
             workflow_info,
@@ -74,14 +74,14 @@ def main():
     print(">>> Main program finished at: ", du.now_str())
 
 
-def override_params(ENV=None, MEMORY=None):
+def override_params(env=None, memory=None):
     for step in workflow_steps:
-        if ENV:
-            step["provider"] = ENV
-            print(f"Warning: Overriding environment to {ENV}!")
-        if MEMORY:
-            step["memory"] = MEMORY
-            print(f"Warning: Overriding memory size to {MEMORY}!")
+        if env:
+            step['provider'] = env
+            print(f"Warning: Overriding environment to {env}!")
+        if memory:
+            step['memory'] = memory
+            print(f"Warning: Overriding memory size of step {step['activity']} to {memory}MB!")
 
 
 if __name__ == "__main__":

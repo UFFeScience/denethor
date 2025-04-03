@@ -9,8 +9,7 @@ from denethor import constants as const
 def retrieve_logs(
     provider: Provider,
     workflow_execution: WorkflowExecution,
-    activity_name: str,
-    memory: int,
+    function_name: str,
     env_properties: Dict[str, str],
     log_file: str,
 ) -> str:
@@ -23,12 +22,6 @@ def retrieve_logs(
     Returns:
         str: The name of the log file with path.
     """
-
-    function_name = activity_name
-
-    if memory:
-        function_name = activity_name + f"_{memory}"
-        log_file = log_file + f"_{memory}"
 
     log_group_name = f"/aws/lambda/{function_name}"
 
