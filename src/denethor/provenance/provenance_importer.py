@@ -5,30 +5,33 @@ from denethor.utils import utils as du
 from denethor.core.model import *
 from denethor.core.repository import *
 from denethor.core.service import *
-from . import log_retriever_manager as alr
-from . import aws_log_analyzer as ala
+from . import log_retriever_manager as lrm
+from . import log_analyzer as lam
 
 
 def import_provenance_from_aws(
-    execution_info: dict,
+    execution_tag: str,
+    start_time_ms: int,
+    end_time_ms: int,
+    runtime_data: dict,
+    provider_info: dict,
     workflow_info: dict,
     workflow_steps: List[Dict],
     statistics_info: dict,
     env_properties: Dict[str, str],
 ) -> None:
 
-    execution_tag = execution_info.get("execution_tag")
-    start_time_ms = execution_info.get("workflow_start_time_ms")
-    end_time_ms = execution_info.get("workflow_end_time_ms")
-    runtime_data = execution_info.get("runtime_data")
+    # Save or Retrieve Workflow Basic Information: Provider, Workflow, Activities, Statistics, Configurations
+    provider_service.get_or_create(provider_info)
+    workflow_service.get_or_create(workflow_info)
+    statistics_service.get_or_create(statistics_info)
+
 
     prov_start_time_ms = int(time.time() * 1000)
     prov_end_time_ms = None
 
-    print(f"Starting importing provenance from AWS | Execution Tag: {execution_tag}")
-
     print(
-        f"\n>>> Provenance import start time is: {prov_start_time_ms} ms | {du.convert_ms_to_str(prov_start_time_ms)}"
+        f"\n>>> Execution Tag: {execution_tag} | Provenance import start time is: {prov_start_time_ms} ms | {du.convert_ms_to_str(prov_start_time_ms)}"
     )
 
     workflow = workflow_service.get_by_name(workflow_info.get("workflow_name"))
@@ -58,8 +61,8 @@ def import_provenance_from_aws(
             f"Importing provenance from AWS:\n Execution Tag: {execution_tag}\n Activity: {activity_name}\n Memory: {memory}\n Activity: {activity_name}\n Start Time: {start_time_ms}\n End Time: {end_time_ms}"
         )
 
-        # Retrieve logs from AWS
-        log_file = alr.retrieve_logs(
+        # Retrieve logs from AWS or EC2 VMs
+        log_file = lrm.retrieve_logs(
             provider,
             workflow_execution,
             activity_name,
@@ -68,7 +71,7 @@ def import_provenance_from_aws(
         )
 
         # Extract and persist log data into the database
-        ala.extract_and_persist_log_data(
+        lam.extract_and_persist_log_data(
             provider,
             workflow_execution,
             activity_name,

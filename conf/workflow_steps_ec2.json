@@ -2,10 +2,11 @@
     {
         "activity": "tree_constructor",
         "provider": "aws_ec2",
+        "memory": 1024,
         "strategy": "for_each_input",
         "data_params": {
             "input_files_path": "resources/data/full_dataset",
-            "input_files_list": ["ORTHOMCL1", "ORTHOMCL256", "ORTHOMCL256_2", "ORTHOMCL320", "ORTHOMCL337"],
+            "input_files_list": ["ORTHOMCL1", "ORTHOMCL256"],
             "param_in": "input_files",
             "param_out": "tree_files"
         },
@@ -14,6 +15,7 @@
     {
         "activity": "subtree_constructor",
         "provider": "aws_ec2",
+        "memory": 1024,
         "strategy": "for_each_input",
         "data_params": {
             "input_param": "tree_files",
@@ -24,6 +26,7 @@
     {
         "activity": "maf_database_creator",
         "provider": "aws_ec2",
+        "memory": 1024,
         "strategy": "for_each_input",
         "data_params": {
             "input_param": "subtree_files",
@@ -34,6 +37,7 @@
     {
         "activity": "maf_database_aggregator",
         "provider": "aws_ec2",
+        "memory": 1024,
         "strategy": "for_all_inputs",
         "data_params": {
             "input_param": "intermediate_mafdb_files",

@@ -4,7 +4,8 @@ from denethor.core.model import *
 from denethor.core.service import *
 from denethor.core.repository import *
 from . import log_parser as parser
-import denethor.utils.log_utils as dlu
+from denethor.utils import utils as du, log_utils as dlu
+
 
 
 def extract_and_persist_log_data(
@@ -38,9 +39,7 @@ def extract_and_persist_log_data(
         activity_name, workflow_execution.workflow
     )
 
-    provider_conf = provider_conf_service.get_by_provider_and_memory(
-        provider, memory
-    )
+    provider_conf = provider_conf_service.get_by_provider_and_memory(provider, memory)
 
     with open(log_file) as f:
         log_data = json.load(f)
@@ -60,18 +59,35 @@ def extract_and_persist_log_data(
             f"------------------------------------------------------------------------------------"
         )
 
-        service_execution = parser.parse_execution_logs(
-            request_id, logs, statistics_dict
+        service_execution = ServiceExecution(
+            request_id=request_id,
+            log_stream_name=logs[0]["logStreamName"],
+            workflow_execution=workflow_execution,
+            activity=activity,
+            provider_conf=provider_conf,
         )
 
-        service_execution.workflow_execution = workflow_execution
-        service_execution.activity = activity
-        service_execution.provider_conf = provider_conf
+        parser.parse_execution_logs(service_execution, logs, statistics_dict)
 
-        if memory != service_execution.memory_size:
+        if service_execution.memory_size and memory != service_execution.memory_size:
             raise ValueError(
                 f"Memory size in log mismatch for {activity_name} | RequestId: {request_id} | Expected: {memory} | Found: {service_execution.memory_size}"
             )
+
+        # TODO: remover quando ajustar o startTime e EndTime
+        service_execution.start_time = du.convert_ms_to_datetime(logs[0]["timestamp"])
+        service_execution.end_time = du.convert_ms_to_datetime(logs[0]["timestamp"])
+        service_execution.duration = -1
+        service_execution.memory_size = -1
+        service_execution.max_memory_used = -1
+        service_execution.billed_duration = -1
+        service_execution.consumed_files_count = -1
+        service_execution.consumed_files_size = -1
+        service_execution.consumed_files_transfer_duration = -1
+        service_execution.produced_files_count = -1
+        service_execution.produced_files_size = -1
+        service_execution.produced_files_transfer_duration = -1
+
 
         print(
             f">>>> Saving Execution info of {activity_name} | RequestId: {request_id} to Database"

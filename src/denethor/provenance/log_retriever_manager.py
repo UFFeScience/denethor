@@ -30,35 +30,16 @@ def retrieve_logs(
         str: The name of the log file with path.
     """
 
-    log_path = env_properties.get("denethor").get("log.path")
-    log_file_name = env_properties.get("denethor").get("log.file")
-
-    log_path = log_path.replace("[provider_tag]", provider.provider_tag)
-    log_file_name = log_file_name.replace(
-        "[execution_tag]", workflow_execution.execution_tag
-    )
     
 
-    activity_name_log = activity_name
-
-    if memory:
-        activity_name_log = activity_name + f"_{memory}"
-
-    log_file_name = log_file_name.replace("[activity_name]", activity_name_log)
-
-    log_file = os.path.join(log_path, log_file_name)
-
-
     if provider.provider_tag == const.AWS_LAMBDA:
-        
         log_file = lrl.retrieve_logs(
-            provider, workflow_execution, activity_name_log, env_properties, log_file
+            provider, workflow_execution, activity_name, memory, env_properties
         )
     
     elif provider.provider_tag == const.AWS_EC2:
-        
         log_file = lre.retrieve_logs(
-            provider, workflow_execution, activity_name, env_properties, log_file
+            provider, workflow_execution, activity_name, memory, env_properties
         )
 
     return log_file

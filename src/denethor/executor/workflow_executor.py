@@ -1,27 +1,25 @@
-from typing import List, Dict, Optional
-import os, time, json
-from pathlib import Path
+from typing import List, Dict
+import os, time
 from denethor.utils import utils as du, file_utils as dfu
 from denethor.executor import execution_manager as dem
-from denethor.core.model import *
-from denethor.core.repository import *
-from denethor.core.service import *
 
-# Dictionary to store the produced data during the workflow execution
-runtime_data = {}
 
 def execute_workflow(
-    provider_info: dict,
-    workflow_info: dict,
     workflow_steps: List[Dict],
-    statistics_info: dict,
     env_properties: Dict[str, str],
-) -> None:
-
-    # Save Workflow Basic Information: Provider, Workflow, Activities, Statistics, Configurations
-    provider_service.get_or_create(provider_info)
-    workflow_service.get_or_create(workflow_info)
-    statistics_service.get_or_create(statistics_info)
+) -> tuple[str, int, int, dict]:
+    """
+    Execute the workflow based on the provided steps and environment properties.
+    Args:
+        workflow_steps (List[Dict]): The list of workflow steps to execute.
+        env_properties (Dict[str, str]): The environment properties.
+    Returns:
+        tuple: A tuple containing:
+            - str: The execution tag.
+            - int: The workflow start time in milliseconds.
+            - int: The workflow end time in milliseconds.
+            - dict: The runtime data produced during the workflow execution.
+    """
 
     # Set the workflow start time in milliseconds
     workflow_start_time_ms = int(time.time() * 1000)
@@ -34,6 +32,9 @@ def execute_workflow(
     )
     print(">>> Execution TAG: ", execution_tag)
     print(">>> Working directory: ", os.getcwd())
+
+    # Dictionary to store the produced data during the workflow execution
+    runtime_data = {}
 
     previous_activity = None
 
@@ -74,7 +75,6 @@ def execute_workflow(
                 input_data = [item["data"] for item in data]
                 break
 
-
         # Execute the activity
         results = dem.execute_activity(
             execution_tag,
@@ -107,9 +107,9 @@ def execute_workflow(
         f">>> Workflow {execution_tag} duration: {workflow_end_time_ms - workflow_start_time_ms} ms"
     )
 
-    return {
-        "execution_tag": execution_tag,
-        "workflow_start_time_ms": workflow_start_time_ms,
-        "workflow_end_time_ms": workflow_end_time_ms,
-        "runtime_data": runtime_data,
-    }
+    return (
+        execution_tag,
+        workflow_start_time_ms,
+        workflow_end_time_ms,
+        runtime_data
+    )

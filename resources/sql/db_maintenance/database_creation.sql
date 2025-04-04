@@ -52,7 +52,7 @@ CREATE TABLE workflow_activity (
 CREATE TABLE workflow_execution (
     we_id SERIAL PRIMARY KEY,
     workflow_id INTEGER NOT NULL,
-    execution_tag VARCHAR NOT NULL,
+    execution_tag VARCHAR NOT NULL UNIQUE,
     start_time TIMESTAMP WITH TIME ZONE NOT NULL,
     end_time TIMESTAMP WITH TIME ZONE NOT NULL,
     duration FLOAT NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE service_execution (
     provider_conf_id INTEGER NOT NULL,
     request_id VARCHAR NOT NULL,
     log_stream_name VARCHAR,
-    start_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    start_ti    me TIMESTAMP WITH TIME ZONE NOT NULL,
     end_time TIMESTAMP WITH TIME ZONE NOT NULL,
     duration FLOAT NOT NULL,
     billed_duration FLOAT,

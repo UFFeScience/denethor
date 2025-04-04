@@ -9,9 +9,9 @@ from denethor import constants as const
 def retrieve_logs(
     provider: Provider,
     workflow_execution: WorkflowExecution,
-    function_name: str,
+    activity_name: str,
+    memory: int,
     env_properties: Dict[str, str],
-    log_file: str,
 ) -> str:
     """
     Retrieves logs from AWS LAMBDA and saves them to a file.
@@ -22,6 +22,18 @@ def retrieve_logs(
     Returns:
         str: The name of the log file with path.
     """
+
+    log_path = env_properties.get("denethor").get("log.path")
+    log_file_name = env_properties.get("denethor").get("log.file")
+
+    log_path = log_path.replace("[provider_tag]", provider.provider_tag)
+    log_file_name = log_file_name.replace(
+        "[execution_tag]", workflow_execution.execution_tag
+    )
+    
+    function_name = activity_name + f"_{memory}"
+    log_file_name = log_file_name.replace("[activity_name]", function_name)
+    log_file = os.path.join(log_path, log_file_name)
 
     log_group_name = f"/aws/lambda/{function_name}"
 
