@@ -5,6 +5,7 @@ from denethor.core.service import *
 from denethor.core.repository import *
 from . import log_parser as parser
 from denethor.utils import utils as du, log_utils as dlu
+from denethor import constants as const
 
 
 
@@ -75,18 +76,19 @@ def extract_and_persist_log_data(
             )
 
         # TODO: remover quando ajustar o startTime e EndTime
-        service_execution.start_time = du.convert_ms_to_datetime(logs[0]["timestamp"])
-        service_execution.end_time = du.convert_ms_to_datetime(logs[0]["timestamp"])
-        service_execution.duration = -1
-        service_execution.memory_size = -1
-        service_execution.max_memory_used = -1
-        service_execution.billed_duration = -1
-        service_execution.consumed_files_count = -1
-        service_execution.consumed_files_size = -1
-        service_execution.consumed_files_transfer_duration = -1
-        service_execution.produced_files_count = -1
-        service_execution.produced_files_size = -1
-        service_execution.produced_files_transfer_duration = -1
+        if provider.provider_tag == const.AWS_EC2:
+            service_execution.start_time = du.convert_ms_to_datetime(logs[0]["timestamp"])
+            service_execution.end_time = du.convert_ms_to_datetime(logs[0]["timestamp"])
+            service_execution.duration = -1
+            service_execution.memory_size = -1
+            service_execution.max_memory_used = -1
+            service_execution.billed_duration = -1
+            service_execution.consumed_files_count = -1
+            service_execution.consumed_files_size = -1
+            service_execution.consumed_files_transfer_duration = -1
+            service_execution.produced_files_count = -1
+            service_execution.produced_files_size = -1
+            service_execution.produced_files_transfer_duration = -1
 
 
         print(

@@ -54,9 +54,11 @@ def main():
     ##
     ## Execute the workflow
     ##
-    execution_info = dexec.execute_workflow(
+    execution_tag, workflow_start_time_ms, workflow_end_time_ms, runtime_data = (
+        dexec.execute_workflow(
         workflow_steps,
         env_properties,
+        )
     )
 
 

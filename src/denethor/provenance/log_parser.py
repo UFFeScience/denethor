@@ -73,7 +73,7 @@ def parse_execution_logs(
         parsed_message = parse_message(log["message"], stats, default_sep)
 
         if not parsed_message:
-            print(f"Ignoring log message: {log['message']}")
+            print(f"Message not parsed. Ignoring log: {log}")
             continue
 
         if service_execution.request_id != parsed_message["request_id"]:
