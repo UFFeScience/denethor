@@ -11,7 +11,7 @@ class BaseModel(Base):
     __abstract__ = True
 
     @classmethod
-    def create_from_dict(cls, dict_values):
+    def from_dict(cls, dict_values):
         """
         Create an instance of the class from a dictionary of values.
         Args:
@@ -37,7 +37,7 @@ class BaseModel(Base):
 
     
     
-    def update_from_dict(self, dict_values):
+    def set_attributes_from_dict(self, dict_values):
         """
         Updates the attributes of the instance based on the provided dictionary.
 
@@ -52,7 +52,3 @@ class BaseModel(Base):
         filtered_dict = {k: v for k, v in dict_values.items() if hasattr(self, k)}
         for key, value in filtered_dict.items():
             setattr(self, key, value)
-
-            
-# Este método cria todas as tabelas armazenadas na metadata no banco de dados conectado ao engine. As tabelas são criadas no banco de dados usando o engine fornecido. Se uma tabela já existe no banco de dados, o método create_all() irá ignorá-la.
-# Base.metadata.create_all(engine)

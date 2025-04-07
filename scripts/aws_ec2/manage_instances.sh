@@ -3,6 +3,14 @@
 # Load environment variables
 source ./env_vars.sh
 
+function get_instance_id() {
+  local id_param=${1:-$ec2_instance_id}
+  if [ -z "$1" ]; then
+    echo "No instance ID provided. Using default instance ID from environment variable: $ec2_instance_id"
+  fi
+  echo "$id_param"
+}
+
 function list_instances() {
   #aws ec2 describe-instances --region "$aws_region" --query "Reservations[*].Instances[*].{ID:InstanceId,State:State.Name}" --output table
   echo "Listing instances in region $aws_region"
@@ -11,19 +19,19 @@ function list_instances() {
 }
 
 function start_instance() {
-  id_param=$1
+  id_param=$(get_instance_id $1)
   aws ec2 start-instances --instance-ids "$id_param" --region "$aws_region"
   echo "Starting instance $id_param"
 }
 
 function stop_instance() {
-  id_param=$1
+  id_param=$(get_instance_id $1)
   aws ec2 stop-instances --instance-ids "$id_param" --region "$aws_region"
   echo "Stopping instance $id_param"
 }
 
 function terminate_instance() {
-  id_param=$1
+  id_param=$(get_instance_id $1)
   aws ec2 terminate-instances --instance-ids "$id_param" --region "$aws_region"
   echo "Terminating instance $id_param"
 }
@@ -50,6 +58,6 @@ case $1 in
     create_instance
     ;;
   *)
-    echo "Usage: $0 {list|start|stop|terminate|create} [instance-id]"
+    echo "Usage: $0 {list | start | stop | terminate | create} [instance-id]"
     ;;
 esac

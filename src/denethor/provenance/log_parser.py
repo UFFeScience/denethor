@@ -48,6 +48,29 @@ def parse_message(message: str, stats_attributes: dict, default_separator: str):
     return parsed_message
 
 
+def validate_log(service_execution: ServiceExecution, parsed_message: dict, log: dict):
+    """
+    Validate the log against the service execution object.
+
+    Args:
+        service_execution (ServiceExecution): The service execution object.
+        parsed_message (dict): The parsed message as a dictionary.
+        log (dict): The log entry being validated.
+
+    Raises:
+        ValueError: If any validation fails.
+    """
+    if service_execution.request_id != parsed_message["request_id"]:
+        raise ValueError(
+            f"Request ID mismatch: {service_execution.request_id} != {parsed_message['request_id']}"
+        )
+
+    if service_execution.log_stream_name != log["logStreamName"]:
+        raise ValueError(
+            f"Log stream name mismatch: {service_execution.log_stream_name} != {log['logStreamName']}"
+        )
+
+
 def parse_execution_logs(
     service_execution: ServiceExecution, logs: list, statistics: dict
 ) -> None:
@@ -76,15 +99,7 @@ def parse_execution_logs(
             print(f"Message not parsed. Ignoring log: {log}")
             continue
 
-        if service_execution.request_id != parsed_message["request_id"]:
-            raise ValueError(
-                f"Request ID mismatch: {service_execution.request_id} != {parsed_message['request_id']}"
-            )
-
-        if service_execution.log_stream_name != log["logStreamName"]:
-            raise ValueError(
-                f"Log stream name mismatch: {service_execution.log_stream_name} != {log['logStreamName']}"
-            )
+        validate_log(service_execution, parsed_message, log)
 
         if parsed_message["logType"] in default_stats:
             process_default_stats(service_execution, parsed_message, log["timestamp"])
@@ -115,18 +130,24 @@ def process_default_stats(
         ValueError: If the log type is unknown.
     """
     match parsed_message["logType"]:
+        # "message": "START RequestId: 61844da7-1258-4c61-876b-fe1c873d806d Version: $LATEST\n",
         case "START":
             service_execution.start_time = du.convert_ms_to_datetime(timestamp)
 
+        # "message": "END RequestId: fe0a47f4-dc9b-4019-942b-67c418a91cfd\n",
         case "END":
             service_execution.end_time = du.convert_ms_to_datetime(timestamp)
 
+        # "message": "REPORT RequestId: fe0a47f4-dc9b-4019-942b-67c418a91cfd\tDuration: 697.91 ms\tBilled Duration: 698 ms\tMemory Size: 128 MB\tMax Memory Used: 110 MB\t\n",
+        # "message": "PRODUCED_FILES_INFO RequestId: fe0a47f4-dc9b-4019-942b-67c418a91cfd\t FilesCount: 1 files\t FilesSize: 640 bytes\t TransferDuration: 66.41030899999123 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL256.nexus']\n",
+        # "message": "CONSUMED_FILES_INFO RequestId: fe0a47f4-dc9b-4019-942b-67c418a91cfd\t FilesCount: 1 files\t FilesSize: 2666 bytes\t TransferDuration: 89.58651699998654 ms\t ConsumedFiles: ['ORTHOMCL256']\n",
         case "REPORT" | "PRODUCED_FILES_INFO" | "CONSUMED_FILES_INFO":
-            service_execution.update_from_dict(parsed_message)
+            service_execution.set_attributes_from_dict(parsed_message)
 
+        # "message": "FILE_TRANSFER RequestId: fe0a47f4-dc9b-4019-942b-67c418a91cfd\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL256.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL256.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL256.nexus\t FileSize: 640 bytes\t TransferDuration: 66.41030899999123 ms\n",
         case "FILE_TRANSFER":
-            file = File.create_from_dict(parsed_message)
-            execution_file = ExecutionFile.create_from_dict(parsed_message)
+            file = File.from_dict(parsed_message)
+            execution_file = ExecutionFile.from_dict(parsed_message)
             execution_file.file = file
             service_execution.execution_files.append(execution_file)
 

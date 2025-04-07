@@ -3,6 +3,12 @@
 # Load environment variables
 source ./env_vars.sh
 
+# Check if key pair file exists
+if [ ! -f "$key_path" ]; then
+    echo "Key pair file not found: $key_path"
+    exit 1
+fi
+
 # Check if the key pair exists
 aws ec2 describe-key-pairs --key-names "$key_name" --region "$aws_region" 2>&1
 if [ $? -ne 0 ]; then
@@ -52,7 +58,7 @@ echo "--------------------------------------------------------------------------
 # Run the instance
 instance_run=$(aws ec2 run-instances --image-id "$ami_id" --instance-type "$ec2_instance_type" --key-name "$key_name" --network-interfaces "AssociatePublicIpAddress=true,DeviceIndex=0,Groups=[$security_group_id]" --credit-specification "CpuCredits=standard" --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$ec2_instance_name}]" --metadata-options "HttpEndpoint=enabled,HttpPutResponseHopLimit=2,HttpTokens=required" --private-dns-name-options "HostnameType=ip-name,EnableResourceNameDnsARecord=true,EnableResourceNameDnsAAAARecord=false" --count 1 --region "$aws_region" --query "Instances[0].InstanceId" --output text 2>&1)
 if [ $? -ne 0 ]; then
-  echo "Failed to launch EC2 instance."
+  echo "Failed to launch EC2 instance with AMI ID: $ami_id and instance type: $ec2_instance_type"
   echo "$instance_run"
   exit 1
 fi
@@ -79,13 +85,13 @@ ssh -i "$key_path" $ec2_user@"$instance_dns" "dnf upgrade --releasever=2023.6.20
 # Install Python 3.11
 echo "Installing Python 3.11..."
 ssh -i "$key_path" $ec2_user@"$instance_dns" "sudo dnf install python3.11 -y"
-ssh -i "$key_path" $ec2_user@"$ec2_instance_dns" "python3.11 -m --version || python3.11 -m ensurepip --upgrade || python3.11 -m pip install --upgrade pip"
+ssh -i "$key_path" $ec2_user@"$instance_dns" "python3.11 -m --version || python3.11 -m ensurepip --upgrade || python3.11 -m pip install --upgrade pip"
 
 
 # Create an AMI from the instance
 ami_create=$(aws ec2 create-image --instance-id "$instance_id" --name "$ami_name" --no-reboot --region "$aws_region" --query "ImageId" --output text 2>&1)
 if [ $? -ne 0 ]; then
-  echo "Failed to create AMI."
+  echo "Failed to create AMI from instance ID: $instance_id"
   echo "$ami_create"
   exit 1
 fi

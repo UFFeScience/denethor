@@ -81,9 +81,6 @@ def convert_log_to_json(file_path: str) -> str:
 
             p1, p2, p3 = parts  # logLevel, timestamp, message
 
-            # Remove os colchetes do logLevel
-            log_level = p1.strip("[]")
-
             # Converte o timestamp para milissegundos
             try:
                 timestamp = int(
@@ -108,8 +105,7 @@ def convert_log_to_json(file_path: str) -> str:
                 {
                     "logStreamName": log_stream_name,
                     "timestamp": timestamp,
-                    "logLevel": log_level,
-                    "message": p3.strip(),
+                    "message": p1.strip() + " " + p3.strip(),
                 }
             )
 

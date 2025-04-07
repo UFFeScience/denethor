@@ -20,7 +20,7 @@ def get_logger(
 
         # Configuração do formatter personalizado para ISO 8601
         formatter = logging.Formatter(
-            "[%(levelname)s] %(asctime)s %(message)s", datefmt="%Y-%m-%dT%H:%M:%S%Z"
+            "[%(levelname)s] %(asctime)s.%(msecs)03d %(message)s", datefmt="%Y-%m-%dT%H:%M:%S%z"
         )
 
         log_output_type = env_properties.get(provider).get("log.output_type")

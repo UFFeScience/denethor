@@ -7,10 +7,11 @@ echo "Loading environment variables..." ${local_path}.env
 source ${local_path}.env
 
 # print the environment variables
+echo "------------------------------------"
 echo "Environment variables loaded:"
-echo "----------------------------"
+echo "------------------------------------"
 for var in $(compgen -A variable | grep -E '^(aws_|ec2_|sg_|vpc_|ami_|key_)'); do
     echo "$var=${!var}"
 done
-echo "----------------------------"
+echo "------------------------------------"
 echo ""
