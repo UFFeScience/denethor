@@ -37,6 +37,15 @@ def is_valid_path(path: str) -> bool:
 def list_all_files(dir_path: str) -> list:
     return list_files(dir_path, None)
 
+# List first n files in a directory
+def list_first_n_files(dir_path: str, n: int) -> list:
+    if n < 0:
+        raise ValueError("n must be a positive integer.")
+    all_files = list_files(dir_path, None)
+    if n > len(all_files):
+        raise ValueError(f"n={n} is greater than the number of files in the directory: {len(all_files)}")
+    return all_files[:n]
+
 def list_files(dir_path: str, filter: list[str]) -> list:
 
     # chek if dir_path is relative
