@@ -20,7 +20,8 @@ def get_logger(
 
         # Configuração do formatter personalizado para ISO 8601
         formatter = logging.Formatter(
-            "[%(levelname)s] %(asctime)s.%(msecs)03d %(message)s", datefmt="%Y-%m-%dT%H:%M:%S%z"
+            "[%(levelname)s] %(asctime)s.%(msecs)03dZ %(message)s",
+            datefmt="%Y-%m-%dT%H:%M:%S",
         )
 
         log_output_type = env_properties.get(provider).get("log.output_type")
@@ -32,8 +33,8 @@ def get_logger(
             log_file = env_properties.get("denethor").get("log.file")
             log_file_path = os.path.join(log_path, log_file)
 
-            log_file_path = (log_file_path
-                .replace("[provider_tag]", provider)
+            log_file_path = (
+                log_file_path.replace("[provider_tag]", provider)
                 .replace("[execution_tag]", execution_tag)
                 .replace("[activity_name]", activity)
             )
@@ -48,3 +49,30 @@ def get_logger(
             logger.addHandler(stream_handler)
 
     return logger
+
+
+def get_simple_logger(file_name: str, file_path: str) -> tuple[logging.Logger, str]:
+    """
+    Cria um logger simples que registra mensagens em um arquivo e na saída padrão.
+    """
+    logger = logging.getLogger(file_name)
+    logger.setLevel(logging.DEBUG)
+
+    # Define o formato do log
+    formatter = logging.Formatter(
+        "[%(levelname)s] %(asctime)s.%(msecs)03dZ %(message)s",
+        datefmt="%Y-%m-%dT%H:%M:%S",
+    )
+
+    # Configuração do arquivo de log
+    log_file_path = os.path.join(file_path, file_name)
+    file_handler = logging.FileHandler(log_file_path)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+
+    # Configuração da saída padrão
+    stream_handler = logging.StreamHandler(sys.stdout)
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+
+    return logger, log_file_path
