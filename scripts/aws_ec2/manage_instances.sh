@@ -6,7 +6,7 @@ source ./env_vars.sh
 function get_instance_id() {
   local id_param=${1:-$ec2_instance_id}
   if [ -z "$1" ]; then
-    echo "No instance ID provided. Using default instance ID from environment variable: $ec2_instance_id"
+    echo "No instance ID provided. Using default instance ID from environment variable: $ec2_instance_id" >&2
   fi
   echo "$id_param"
 }

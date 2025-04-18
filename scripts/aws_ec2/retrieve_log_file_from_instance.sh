@@ -32,16 +32,13 @@ if [ -z "$instance_dns" ]; then
     exit 1
 fi
 
-# Listar os arquivos que correspondem ao termo de busca no diretório remoto
-echo "Listing log files containing '$search_term' in the EC2 instance..."
+# Listar os arquivos de log que correspondem ao termo de busca no diretório remoto
 matching_logs=$(ssh -i "$key_path" $ec2_user@"$instance_dns" "ls ${ec2_path}resources/logs/aws_ec2 | grep '$search_term'")
 
 if [ -z "$matching_logs" ]; then
     echo "No log files found containing '$search_term' in ${ec2_path}resources/logs/aws_ec2."
     exit 1
 fi
-
-echo "$matching_logs"
 
 # Copiar os arquivos de log correspondentes para a máquina local
 echo "Copying log files containing '$search_term' from the EC2 instance to ${local_path}resources/logs/aws_ec2/"
