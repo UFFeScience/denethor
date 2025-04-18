@@ -106,18 +106,18 @@ CREATE OR REPLACE VIEW vw_task AS
         t1.activity_id,
         count(*) as execution_count,
         1 as task_type,
-        t1.file_count as consumed_files_count,
-        t2.file_count as produced_files_count,
-        t1.file_list as consumed_files_list,
-        t2.file_list as produced_files_list
+        t1.file_count as input_count,
+        t2.file_count as output_count,
+        t1.file_list as input_list,
+        t2.file_list as output_list
     FROM service_execution_detail t1
     LEFT OUTER JOIN service_execution_detail t2 ON t1.se_id = t2.se_id
     WHERE t1.transfer_type = 'consumed' AND t2.transfer_type = 'produced'
     GROUP BY t1.activity_id,
-            consumed_files_count,
-            produced_files_count,
-            consumed_files_list,
-            produced_files_list			
+            input_count,
+            output_count,
+            input_list,
+            output_list			
     ORDER BY task_id, t1.activity_id, consumed_files_count, produced_files_count
 ;
 
@@ -131,4 +131,4 @@ CREATE OR REPLACE VIEW vw_service_execution_task AS
     JOIN vw_task ta ON se.activity_id = ta.activity_id AND
                     se.consumed_files_list = ta.consumed_files_list AND
                     se.produced_files_list = ta.produced_files_list
-    ORDER BY se.se_id	
+    ORDER BY se.se_id;

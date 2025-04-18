@@ -17,7 +17,8 @@ SELECT
 		JOIN execution_file ef ON ef.se_id = se.se_id 
 		WHERE we.execution_tag in ('[wetag]')
 	),
-	(SELECT 3 AS _vms_count
+	(SELECT count(*) AS _vms_count
+		FROM vm_configurations
 	),
 	(SELECT count(distinct fi.file_bucket ) AS _buckets_count
 		FROM service_execution se
@@ -26,7 +27,8 @@ SELECT
 		JOIN file fi ON fi.file_id = ef.file_id
 		WHERE we.execution_tag in ('[wetag]')
 	),
-	(SELECT 3 AS _bucket_ranges_count
+	(SELECT count(*) AS _bucket_ranges_count
+		FROM bucket_ranges
 	),
 	(SELECT 1000 AS _max_running_time
 	),
