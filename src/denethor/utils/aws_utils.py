@@ -11,33 +11,53 @@ s3 = boto3.client('s3')
 def handle_consumed_files(request_id: str, 
                           provider: str,
                           file_list: list, 
-                          file_path: str, 
-                          s3_bucket: str ="",
-                          s3_key: str ="") -> None:
-    download_duration_ms = 0
+                          file_path_local: str, 
+                          s3_bucket: str,
+                          s3_key: str,
+                          logger: logging.Logger) -> None:
+    total_transfer_duration_ms = 0
     file_list_flat = du.flatten_list(file_list)
     
-    if provider == const.AWS_LAMBDA:
-        # Download file from s3 bucket into lambda function
-        for file_name in file_list_flat:
-            duration_ms = download_single_file_from_s3(request_id, file_name, file_path, s3_bucket, s3_key)
-            download_duration_ms += duration_ms
+    # Download file from s3 bucket into lambda function
+    for file_name in file_list_flat:
+        duration_ms = 0
+        file_path_local_full = os.path.join(file_path_local, file_name)
+        file_path_s3_full = os.path.join(s3_key, file_name)
+        
+        if provider == const.AWS_LAMBDA:
+
+            # TODO: avaliar se essa solução é definitiva
+            # Passar um parâmetro de local cache? Acho melhor a ideia do zip...
+            # se o arquivo estiver disponível localmente, não fazer o download,
+            # mas copiar para o file_path_local
+            file_subtree = os.path.join("subtree_files", file_name)  
+            if os.path.exists(file_subtree):
+                os.system(f"cp {file_subtree} {file_path_local_full}")
+                logger.info(f"File {file_name} already exists in local path. Skipping download.")
+                duration_ms = 0
+            else:
+                duration_ms = download_single_file_from_s3(file_name, file_path_local, s3_bucket, s3_key)
+                total_transfer_duration_ms += duration_ms
+        
+        file_size = get_file_size(file_path_local_full)
+        
+        logger.info(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: consumed\t Action: download_from_s3\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {file_path_s3_full}\t FilePathLocal: {file_path_local}\t FileSize: {file_size} bytes\t TransferDuration: {duration_ms} ms")
     
-    info = get_file_info(file_list_flat, file_path)      
-    print(f"CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {info.get('files_count')} files\t FilesSize: {info.get('files_size')} bytes\t TransferDuration: {download_duration_ms} ms\t ConsumedFiles: {file_list_flat}")
+    total_files_count, total_files_size = calculate_total_files_and_size(file_list_flat, file_path_local)      
+    logger.info(f"CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {total_files_count} files\t FilesSize: {total_files_size} bytes\t TransferDuration: {total_transfer_duration_ms} ms\t ConsumedFiles: {file_list_flat}")
     
 
 ##
 # Download single file from S3
 ##
-def download_single_file_from_s3(request_id: str, 
-                                 file_name: str, 
+def download_single_file_from_s3(file_name: str, 
                                  file_path: str, 
                                  s3_bucket: str, 
-                                 s3_key: str) -> int:
+                                 s3_key: str) -> float:
+
     start_time = timeit.default_timer()
     
-    validade_required_params(request_id, file_name, file_path, s3_bucket)
+    validade_required_params(file_name, file_path, s3_bucket)
     
     # dependendo da forma que a requisição é feita, o nome do arquivo pode já estar incluso na s3_key
     if not s3_key.endswith(file_name):
@@ -49,9 +69,6 @@ def download_single_file_from_s3(request_id: str,
     
     end_time = timeit.default_timer()
     download_duration_ms = (end_time - start_time) * 1000
-    file_size = os.stat(local_file).st_size
-
-    print(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: consumed\t Action: download_from_s3\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key}\t LocalFilePath: {local_file}\t FileSize: {file_size} bytes\t TransferDuration: {download_duration_ms} ms")
 
     return download_duration_ms
       
@@ -64,32 +81,40 @@ def download_single_file_from_s3(request_id: str,
 def handle_produced_files(request_id: str, 
                           provider: str,
                           file_list: list, 
-                          file_path: str, 
-                          s3_bucket: str ="",
-                          s3_key: str ="") -> None:
-    upload_duration_ms = 0
+                          file_path_local: str, 
+                          s3_bucket: str,
+                          s3_key: str,
+                          logger: logging.Logger) -> None:
+    total_transfer_duration_ms = 0
     file_list_flat = du.flatten_list(file_list)
 
-    if provider == const.AWS_LAMBDA:
-        # Upload files from lambda function into s3 bucket
-        for file_name in file_list_flat:
-            duration_ms = upload_single_file_to_s3(request_id, file_name, file_path, s3_bucket, s3_key)
-            upload_duration_ms += duration_ms
+    # Upload files from lambda function into s3 bucket
+    for file_name in file_list_flat:
+        duration_ms = 0
+        file_path_local_full = os.path.join(file_path_local, file_name)
+        file_path_s3_full = os.path.join(s3_key, file_name)
+        
+        if provider == const.AWS_LAMBDA:
+            duration_ms = upload_single_file_to_s3(file_name, file_path_local, s3_bucket, s3_key)
+            total_transfer_duration_ms += duration_ms
+        
+        file_size = get_file_size(file_path_local_full)
+        
+        logger.info(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: produced\t Action: upload_to_s3\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {file_path_s3_full}\t FilePathLocal: {file_path_local_full}\t FileSize: {file_size} bytes\t TransferDuration: {duration_ms} ms")
 
-    info = get_file_info(file_list_flat, file_path)      
-    print(f"PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {info.get('files_count')} files\t FilesSize: {info.get('files_size')} bytes\t TransferDuration: {upload_duration_ms} ms\t Provider: {provider}\t  ProducedFiles: {file_list_flat}")
+    total_files_count, total_files_size = calculate_total_files_and_size(file_list_flat, file_path_local)      
+    logger.info(f"PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {total_files_count} files\t FilesSize: {total_files_size} bytes\t TransferDuration: {total_transfer_duration_ms} ms\t Provider: {provider}\t  ProducedFiles: {file_list_flat}")
   
 ##
 # Upload single file to S3
 ##
-def upload_single_file_to_s3(request_id: str, 
-                             file_name: str, 
+def upload_single_file_to_s3(file_name: str, 
                              file_path: str, 
                              s3_bucket: str, 
-                             s3_key: str) -> int:
+                             s3_key: str) -> float:
     start_time = timeit.default_timer()
     
-    validade_required_params(request_id, file_name, file_path, s3_bucket)
+    validade_required_params(file_name, file_path, s3_bucket)
     
     try:
         s3_key_upload = os.path.join(s3_key, file_name)
@@ -99,12 +124,8 @@ def upload_single_file_to_s3(request_id: str,
 
         end_time = timeit.default_timer()
         upload_duration_ms = (end_time - start_time) * 1000
-        file_size = os.stat(local_file).st_size
-        
-        print(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: produced\t Action: upload_to_s3\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {s3_key_upload}\t LocalFilePath: {local_file}\t FileSize: {file_size} bytes\t TransferDuration: {upload_duration_ms} ms")
 
     except FileNotFoundError as e:
-        print(f"The local file {local_file} was not found!")
         logging.error(e)
         raise e
     
@@ -112,27 +133,82 @@ def upload_single_file_to_s3(request_id: str,
 
 
 
-
 ##
 # Auxiliar and Validation Functions
 ##
-def get_file_info(files: list, path: str) -> dict:
-    files_name = []
-    files_count = 0
-    files_size = 0
+def calculate_total_files_and_size(files: list, path: str) -> tuple[int, int]:
+    """
+    Get file metadata from a directory.
+    Args:
+        files (list): List of file names to check.
+        path (str): Path to the directory.
+    Returns:
+        tuple: Total file count and total file size.
+    """
+    if not os.path.exists(path):
+        raise ValueError(f"Path {path} does not exist!")
+    if not os.path.isdir(path):
+        raise ValueError(f"Path {path} is not a directory!")
+    if not files:
+        raise ValueError(f"Files list is empty!")
+    
+    file_names = []
+    total_file_count = 0
+    total_file_size = 0
     for file in os.listdir(path):
         fp = os.path.join(path, file)
         if os.path.isfile(fp) and (files is None or file in files):
-            files_count += 1
-            files_size += os.path.getsize(fp)
-            files_name.append(file)
-    return {'files_name': files_name, 'files_count': files_count, 'files_size': files_size}
-
-
-def validade_required_params(request_id: str, file_name: str, file_path: str, s3_bucket: str) -> None:
-    if request_id is None or request_id == '':
-        raise ValueError('request_id cannot be None when downloading/uploading from S3!')
+            total_file_count += 1
+            total_file_size += os.path.getsize(fp)
+            file_names.append(file)
     
+    return total_file_count, total_file_size
+
+def get_file_size(file_path: str) -> int:
+    """
+    Retrieve the size of a file in bytes.
+    Args:
+        file_path (str): Path to the file.
+    Returns:
+        int: Size of the file in bytes.
+    """
+    if not os.path.exists(file_path):
+        raise ValueError(f"File {file_path} does not exist!")
+    if not os.path.isfile(file_path):
+        raise ValueError(f"Path {file_path} is not a file!")
+    
+    return os.path.getsize(file_path)
+
+
+# List files in S3 bucket
+def list_files_in_s3(s3_bucket: str, s3_key: str) -> list:
+    """
+    List files in an S3 bucket.
+    Args:
+        s3_bucket (str): Name of the S3 bucket.
+        s3_key (str): Key prefix to filter files.
+    Returns:
+        list: List of file names in the S3 bucket.
+    """
+    if s3_bucket is None or s3_bucket == '':
+        raise ValueError('s3_bucket cannot be None when listing files from S3!')
+    
+    if s3_key is None or s3_key == '':
+        raise ValueError('s3_key cannot be None when listing files from S3!')
+
+    paginator = s3.get_paginator('list_objects_v2')
+    response_iterator = paginator.paginate(Bucket=s3_bucket, Prefix=s3_key)
+    
+    file_list = []
+    for response in response_iterator:
+        if 'Contents' in response:
+            for obj in response['Contents']:
+                file_list.append(obj['Key'])
+    
+    return file_list
+
+
+def validade_required_params(file_name: str, file_path: str, s3_bucket: str) -> None:
     if file_name is None or file_name == '':
         raise ValueError('file_name cannot be None when downloading/uploading from S3!')
     
@@ -144,4 +220,4 @@ def validade_required_params(request_id: str, file_name: str, file_path: str, s3
 
     if s3_bucket is None or s3_bucket == '':
         raise ValueError('s3_bucket cannot be None when downloading/uploading from S3!')
-    
+
