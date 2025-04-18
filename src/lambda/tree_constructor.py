@@ -1,4 +1,4 @@
-import time
+import math, time, timeit
 from denethor.core import denethor_logger as dlh
 from denethor.utils import aws_utils as dau
 import tree_constructor_core  as tcc
@@ -6,7 +6,7 @@ from denethor.utils import file_utils as dfu, utils as du
 
 def handler(event, context):
 
-    start_time = time.time()
+    function_start_time = timeit.default_timer()
     
     request_id = du.resolve_request_id(context)
     execution_tag = event.get('execution_tag')
@@ -47,7 +47,7 @@ def handler(event, context):
     dfu.create_directory_if_not_exists(INPUT_PATH, OUTPUT_PATH, TMP_PATH)
 
     # Download input files ##
-    dau.handle_consumed_files(request_id, provider, input_files, INPUT_PATH, s3_bucket, s3_key_input)
+    dau.handle_consumed_files(request_id, provider, input_files, INPUT_PATH, s3_bucket, s3_key_input, logger)
 
     # Building the tree file ##
     produced_files, duration_ms = tcc.tree_constructor(input_files, INPUT_PATH, TMP_PATH, OUTPUT_PATH, CLUSTALW_PATH, DATA_FORMAT)
@@ -57,16 +57,16 @@ def handler(event, context):
     time.sleep(0.100)
     
     # Upload output files ##
-    dau.handle_produced_files(request_id, provider, produced_files, OUTPUT_PATH, s3_bucket, s3_key_output)
+    dau.handle_produced_files(request_id, provider, produced_files, OUTPUT_PATH, s3_bucket, s3_key_output, logger)
     
-    end_time = time.time()
-    func_duration_ms = (end_time - start_time) * 1000
+    function_end_time = timeit.default_timer()
+    function_duration_ms = (function_end_time - function_start_time) * 1000
     
     # "message": "END RequestId: 1c07a9af-e804-4d70-a287-54cde8ee7192\n",
     logger.info(f'END RequestId: {request_id}\t Activity: {activity}\t Provider: {provider}')
 
     # "message": "REPORT RequestId: 1c07a9af-e804-4d70-a287-54cde8ee7192\tDuration: 272.49 ms\tBilled Duration: 273 ms\tMemory Size: 2048 MB\tMax Memory Used: 111 MB\tInit Duration: 757.10 ms\t\n",
-    logger.info(f'REPORT RequestId: {request_id}\t Duration: {func_duration_ms} ms\t Billed Duration: {int(func_duration_ms)} ms\t Memory Size: MB\t Max Memory Used: MB\t Init Duration: ms\t\n')
+    logger.info(f'REPORT RequestId: {request_id}\t Duration: {function_duration_ms} ms\t Billed Duration: {math.ceil(function_duration_ms)} ms\t Memory Size: MB\t Max Memory Used: MB\t Init Duration: ms\t\n')
 
     
     return {
