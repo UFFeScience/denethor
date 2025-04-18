@@ -75,22 +75,6 @@ def extract_and_persist_log_data(
                 f"Memory size in log mismatch for {activity_name} | RequestId: {request_id} | Expected: {memory} | Found: {service_execution.memory_size}"
             )
 
-        # TODO: remover quando ajustar o startTime e EndTime
-        if provider.provider_tag == const.AWS_EC2:
-            service_execution.start_time = du.convert_ms_to_datetime(logs[0]["timestamp"])
-            service_execution.end_time = du.convert_ms_to_datetime(logs[0]["timestamp"])
-            service_execution.duration = -1
-            service_execution.memory_size = -1
-            service_execution.max_memory_used = -1
-            service_execution.billed_duration = -1
-            service_execution.consumed_files_count = -1
-            service_execution.consumed_files_size = -1
-            service_execution.consumed_files_transfer_duration = -1
-            service_execution.produced_files_count = -1
-            service_execution.produced_files_size = -1
-            service_execution.produced_files_transfer_duration = -1
-
-
         print(
             f">>>> Saving Execution info of {activity_name} | RequestId: {request_id} to Database"
         )
@@ -108,7 +92,7 @@ def extract_and_persist_log_data(
         # para cada arquivo de entrada e registro de execução do arquivo,
         # verificamos se ambos já estão cadastrados na base
         for exec_file in service_execution.execution_files:
-            file_db, file_created = file_repo.get_or_create(exec_file.file)
+            file_db, file_created = file_service.get_or_create(exec_file.file)
 
             exec_file.service_execution = service_execution_db
             exec_file.file = file_db

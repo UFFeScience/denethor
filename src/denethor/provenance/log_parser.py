@@ -27,9 +27,9 @@ def parse_message(message: str, stats_attributes: dict, default_separator: str):
     # Iterate over each attribute
     for attribute in stats_attributes[log_type]:
 
-        sep = attribute.get("separator", f"[{default_separator}\n]")
+        sep = attribute.get("separator", f"{default_separator}")
         # Use regex to extract the attribute value from the message
-        pattern = f"{attribute['searchKey']}:\\s*(.*?){sep}"
+        pattern = f"{attribute['searchKey']}:\\s*(.*?)(?:{sep}|$)"
         match = re.search(pattern, message)
 
         if match:
@@ -178,21 +178,18 @@ def process_custom_stats(service_execution: ServiceExecution, parsed_message: di
                 execution_stat.value_float = value
             elif type(value) == str:
                 execution_stat.value_string = value
-
+            else:
+                raise ValueError(
+                    f"Could not parse message. LogType unknown: {field_name}. Value: {value}"
+                )
             service_execution.execution_statistics.append(execution_stat)
 
 
 def find_log_type(message: str, stats_attributes: dict) -> str:
-    # verificar o primeiro elemento da mensagem
-    first_element = message.split()[0]
-    if first_element in stats_attributes:
-        return first_element
-
-    # Caso não econtre, procurar no resto da mensagem
-    for log_type in stats_attributes.keys():
-        if log_type in message:
-            return log_type
-
+    tokens = message.split()
+    for stat in stats_attributes.keys():
+        if stat in tokens:
+            return stat
     return None
 
 

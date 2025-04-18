@@ -1,5 +1,5 @@
 import os, json, time, boto3, hashlib
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict
 from denethor.core.model.Provider import Provider
 from denethor.core.model.WorkflowExecution import WorkflowExecution
@@ -66,7 +66,7 @@ def convert_log_to_json(file_path: str) -> str:
     file_name = file_path.split("/")[-1]
     hash_value = hashlib.sha256(
         file_name.encode()
-    ).hexdigest()  # Usa os primeiros 16 caracteres do hash
+    ).hexdigest()
 
     with open(file_path, "r") as log_file:
         for line in log_file:
@@ -81,10 +81,15 @@ def convert_log_to_json(file_path: str) -> str:
 
             p1, p2, p3 = parts  # logLevel, timestamp, message
 
+            # Remove os colchetes do logLevel
+            log_level = p1.strip("[]")
+
             # Converte o timestamp para milissegundos
             try:
                 timestamp = int(
-                    datetime.strptime(p2, "%Y-%m-%dT%H:%M:%SUTC").timestamp() * 1000
+                    datetime.strptime(p2, "%Y-%m-%dT%H:%M:%S.%fZ")
+                    .replace(tzinfo=timezone.utc)
+                    .timestamp() * 1000
                 )
             except ValueError:
                 raise ValueError(
@@ -105,7 +110,8 @@ def convert_log_to_json(file_path: str) -> str:
                 {
                     "logStreamName": log_stream_name,
                     "timestamp": timestamp,
-                    "message": p1.strip() + " " + p3.strip(),
+                    "logLevel": log_level,
+                    "message": p3.strip(),
                 }
             )
 
