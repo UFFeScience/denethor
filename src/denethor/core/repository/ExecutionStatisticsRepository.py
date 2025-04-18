@@ -7,7 +7,7 @@ class ExecutionStatisticsRepository(BaseRepository):
         super().__init__(session=session, model=ExecutionStatistics)
 
     def get_by_id(self, id: int):
-        return self.db.query(self.model).filter_by(es_id=id).first()
+        return self.session.query(self.model).filter_by(es_id=id).first()
     
     def get_or_create(self, obj: ExecutionStatistics):
         if type(obj) != ExecutionStatistics:

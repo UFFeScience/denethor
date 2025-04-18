@@ -7,13 +7,13 @@ class ProviderRepository(BaseRepository):
         super().__init__(session=session, model=Provider)
     
     def get_by_id(self, id: int):
-        return self.db.query(self.model).filter_by(provider_id=id).first()
+        return self.session.query(self.model).filter_by(provider_id=id).first()
 
     def get_by_name(self, name: str):
-        return self.db.query(self.model).filter_by(provider_name=name).first()
+        return self.session.query(self.model).filter_by(provider_name=name).first()
     
     def get_by_tag(self, tag: str):
-        return self.db.query(self.model).filter_by(provider_tag=tag).first()
+        return self.session.query(self.model).filter_by(provider_tag=tag).first()
     
     def get_or_create(self, obj: Provider):
         if type(obj) != Provider:

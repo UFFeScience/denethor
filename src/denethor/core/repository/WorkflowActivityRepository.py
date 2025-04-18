@@ -8,10 +8,10 @@ class WorkflowActivityRepository(BaseRepository):
         super().__init__(session=session, model=WorkflowActivity)
 
     def get_by_id(self, id: int):
-        return self.db.query(self.model).filter_by(activity_id=id).first()
+        return self.session.query(self.model).filter_by(activity_id=id).first()
     
     def get_by_name_and_workflow(self, name: str, workflow: Workflow):
-        return self.db.query(self.model).filter_by(activity_name=name, workflow=workflow).first()
+        return self.session.query(self.model).filter_by(activity_name=name, workflow=workflow).first()
     
     def get_or_create(self, obj: WorkflowActivity):
         if type(obj) != WorkflowActivity:

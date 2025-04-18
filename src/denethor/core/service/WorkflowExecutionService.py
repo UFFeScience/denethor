@@ -39,10 +39,11 @@ class WorkflowExecutionService:
             workflow_execution
         )
 
-        if not created:
-            raise ValueError(
-                f"Workflow Execution with tag {execution_tag} already exists in the database."
-            )
+        # TODO: rever isso
+        # if not created:
+        #     raise ValueError(
+        #         f"Workflow Execution with tag {execution_tag} already exists in the database."
+        #     )
         
         print(f"Saving Workflow Execution: {workflow_exec_db}")
 

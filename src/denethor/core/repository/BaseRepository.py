@@ -3,20 +3,20 @@ from sqlalchemy.orm import Session
 
 class BaseRepository:
     def __init__(self, session: Session, model: type):
-        self.db = session
+        self.session = session
         self.model = model
 
     def get_all(self):
-        return self.db.query(self.model).all()
+        return self.session.query(self.model).all()
 
     def get_by_attributes(self, obj: dict):
-        return self.db.query(self.model).filter_by(**obj).first()
+        return self.session.query(self.model).filter_by(**obj).first()
     
     def create(self, obj: dict):
         instance = self.model(**obj)
-        self.db.add(instance)
-        self.db.commit()
-        self.db.refresh(instance)
+        self.session.add(instance)
+        self.session.commit()
+        self.session.refresh(instance)
         return instance
 
     def get_or_create(self, obj: dict) -> Tuple[Any, bool]:
@@ -33,11 +33,11 @@ class BaseRepository:
         instance = self.get_by_id(id)
         for key, value in obj.items():
             setattr(instance, key, value)
-        self.db.commit()
-        self.db.refresh(instance)
+        self.session.commit()
+        self.session.refresh(instance)
         return instance
 
     def delete(self, id: int):
         instance = self.get_by_id(id)
-        self.db.delete(instance)
-        self.db.commit()
+        self.session.delete(instance)
+        self.session.commit()

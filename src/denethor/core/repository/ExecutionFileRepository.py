@@ -7,7 +7,7 @@ class ExecutionFileRepository(BaseRepository):
         super().__init__(session=session, model=ExecutionFile)
 
     def get_by_id(self, id: int):
-        return self.db.query(self.model).filter_by(ef_id=id).first()
+        return self.session.query(self.model).filter_by(ef_id=id).first()
     
     def get_or_create(self, obj: ExecutionFile):
         if type(obj) != ExecutionFile:

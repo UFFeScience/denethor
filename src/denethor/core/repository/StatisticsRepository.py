@@ -7,10 +7,10 @@ class StatisticsRepository(BaseRepository):
         super().__init__(session=session, model=Statistics)
     
     def get_by_id(self, id: int):
-        return self.db.query(self.model).filter_by(statistics_id=id).first()
+        return self.session.query(self.model).filter_by(statistics_id=id).first()
     
     def get_by_name(self, name: str):
-        return self.db.query(self.model).filter_by(statistics_name=name).first()
+        return self.session.query(self.model).filter_by(statistics_name=name).first()
     
     def get_or_create(self, obj: Statistics):
         if type(obj) != Statistics:

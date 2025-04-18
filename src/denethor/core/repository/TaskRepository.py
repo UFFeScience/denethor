@@ -7,10 +7,10 @@ class TaskRepository(BaseRepository):
         super().__init__(session=session, model=Task)
     
     def get_by_id(self, id: int):
-        return self.db.query(self.model).filter_by(task_id=id).first()
+        return self.session.query(self.model).filter_by(task_id=id).first()
     
     def get_by_name(self, name: str):
-        return self.db.query(self.model).filter_by(task_type=name).first()
+        return self.session.query(self.model).filter_by(task_type=name).first()
     
     def get_or_create(self, obj: Task):
         if type(obj) != Task:

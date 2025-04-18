@@ -12,17 +12,17 @@ from .ServiceExecutionRepository import ServiceExecutionRepository
 from ..database import conn
 
 # Instânciando a sessão do banco de dados
-db = conn.Connection().get_session()
+session = conn.Connection().get_session()
 
 
 # Instânciando as classes de repositórios
-provider_repo = ProviderRepository(db)
-provider_conf_repo = ProviderConfigurationRepository(db)
-workflow_repo = WorkflowRepository(db)
-workflow_activity_repo = WorkflowActivityRepository(db)
-workflow_execution_repo = WorkflowExecutionRepository(db)
-file_repo = FileRepository(db)
-execution_file_repo = ExecutionFileRepository(db)
-statistics_repo = StatisticsRepository(db)
-execution_statistics_repo = ExecutionStatisticsRepository(db)
-service_execution_repo = ServiceExecutionRepository(db)
+provider_repo = ProviderRepository(session)
+provider_conf_repo = ProviderConfigurationRepository(session)
+workflow_repo = WorkflowRepository(session)
+workflow_activity_repo = WorkflowActivityRepository(session)
+workflow_execution_repo = WorkflowExecutionRepository(session)
+file_repo = FileRepository(session)
+execution_file_repo = ExecutionFileRepository(session)
+statistics_repo = StatisticsRepository(session)
+execution_statistics_repo = ExecutionStatisticsRepository(session)
+service_execution_repo = ServiceExecutionRepository(session)

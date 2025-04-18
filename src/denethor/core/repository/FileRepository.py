@@ -7,7 +7,7 @@ class FileRepository(BaseRepository):
         super().__init__(session=session, model=File)
     
     def get_by_id(self, id: int):
-        return self.db.query(self.model).filter_by(file_id=id).first()
+        return self.session.query(self.model).filter_by(file_id=id).first()
     
     def get_or_create(self, obj: File):
         if type(obj) != File:

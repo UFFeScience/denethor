@@ -8,10 +8,10 @@ class WorkflowExecutionRepository(BaseRepository):
         super().__init__(session=session, model=WorkflowExecution)
 
     def get_by_id(self, id: int):
-        return self.db.query(self.model).filter_by(we_id=id).first()
+        return self.session.query(self.model).filter_by(we_id=id).first()
     
     def get_by_tag(self, tag: str):
-        return self.db.query(self.model).filter_by(execution_tag=tag).first()
+        return self.session.query(self.model).filter_by(execution_tag=tag).first()
     
     def get_or_create(self, obj: WorkflowExecution) -> Tuple[WorkflowExecution, bool]:
         if type(obj) != WorkflowExecution:

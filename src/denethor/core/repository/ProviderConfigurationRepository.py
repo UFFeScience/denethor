@@ -8,13 +8,13 @@ class ProviderConfigurationRepository(BaseRepository):
         super().__init__(session=session, model=ProviderConfiguration)
     
     def get_by_id(self, id: int):
-        return self.db.query(self.model).filter_by(configuration_id=id).first()
+        return self.session.query(self.model).filter_by(configuration_id=id).first()
 
     def get_by_provider_id(self, provider_id: int):
-        return self.db.query(self.model).filter_by(provider_id=provider_id).all()
+        return self.session.query(self.model).filter_by(provider_id=provider_id).all()
     
     def get_by_provider_and_memory(self, provider: Provider, memory: int):
-        return self.db.query(self.model).filter_by(provider=provider, memory_mb=memory).first()
+        return self.session.query(self.model).filter_by(provider=provider, memory_mb=memory).first()
 
     def get_or_create(self, obj: ProviderConfiguration):
         if type(obj) != ProviderConfiguration:

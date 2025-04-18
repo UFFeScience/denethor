@@ -7,7 +7,7 @@ class ServiceExecutionRepository(BaseRepository):
         super().__init__(session=session, model=ServiceExecution)
     
     def get_by_id(self, id: int):
-        return self.db.query(self.model).filter_by(se_id=id).first()
+        return self.session.query(self.model).filter_by(se_id=id).first()
     
     def get_or_create(self, obj: ServiceExecution):
         if type(obj) != ServiceExecution:
