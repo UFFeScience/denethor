@@ -118,7 +118,7 @@ def separate_comments_and_code(sql: str):
     return comments_str, code_str
 
 
-# Find all occurrences of wetag_\d+ or '[wetag]' in the SQL script
+# Find all occurrences of wetag_\d+ or [wetag] in the SQL script
 def replace_wetag(execution_tag, sql):
     pattern = r'wetag_\d+|\[wetag\]'
     wetag_occurrences = list(set(re.findall(pattern, sql)))

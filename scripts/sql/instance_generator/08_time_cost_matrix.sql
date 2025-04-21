@@ -17,7 +17,7 @@ task_time AS (
 	JOIN workflow_execution we ON se.we_id = we.we_id
 	JOIN vw_service_execution_task st ON se.se_id = st.se_id
 	JOIN vw_task ta ON st.task_id = ta.task_id
-	WHERE we.execution_tag in ('[wetag]', 'wetag_1743638228939')
+	WHERE we.execution_tag in ([wetag])
 	GROUP BY ta.task_id,
 			 ta.activity_id,
 			 se.provider_conf_id
