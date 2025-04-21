@@ -14,10 +14,14 @@ def handle_consumed_files(request_id: str,
                           file_path_local: str, 
                           s3_bucket: str,
                           s3_key: str,
-                          logger: logging.Logger) -> None:
-    total_transfer_duration_ms = 0
-    file_list_flat = du.flatten_list(file_list)
+                          logger: logging.Logger) -> dict:
+    total_download_duration_ms = 0
+    total_files_size = 0
+    total_files_count = 0
+    download_details = []
     
+    file_list_flat = du.flatten_list(file_list)
+
     # Download file from s3 bucket into lambda function
     for file_name in file_list_flat:
         duration_ms = 0
@@ -25,26 +29,38 @@ def handle_consumed_files(request_id: str,
         file_path_s3_full = os.path.join(s3_key, file_name)
         
         if provider == const.AWS_LAMBDA:
-
             # TODO: avaliar se essa solução é definitiva
             # Passar um parâmetro de local cache? Acho melhor a ideia do zip...
             # se o arquivo estiver disponível localmente, não fazer o download,
             # mas copiar para o file_path_local
-            file_subtree = os.path.join("subtree_files", file_name)  
-            if os.path.exists(file_subtree):
-                os.system(f"cp {file_subtree} {file_path_local_full}")
-                logger.info(f"File {file_name} already exists in local path. Skipping download.")
-                duration_ms = 0
-            else:
-                duration_ms = download_single_file_from_s3(file_name, file_path_local, s3_bucket, s3_key)
-                total_transfer_duration_ms += duration_ms
+            # file_subtree = os.path.join("subtree_files", file_name)  
+            # if os.path.exists(file_subtree):
+            #     os.system(f"cp {file_subtree} {file_path_local_full}")
+            #     logger.info(f"File {file_name} already exists in local path. Skipping download.")
+            #     duration_ms = 0
+            # else:
+            duration_ms = download_single_file_from_s3(file_name, file_path_local, s3_bucket, s3_key)
+            total_download_duration_ms += duration_ms
         
         file_size = get_file_size(file_path_local_full)
+        total_files_size += file_size
+        total_files_count += 1
+        download_details.append({
+            "file_name": file_name,
+            "file_size": file_size,
+            "download_duration_ms": duration_ms
+        })
         
         logger.info(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: consumed\t Action: download_from_s3\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {file_path_s3_full}\t FilePathLocal: {file_path_local}\t FileSize: {file_size} bytes\t TransferDuration: {duration_ms} ms")
     
-    total_files_count, total_files_size = calculate_total_files_and_size(file_list_flat, file_path_local)      
-    logger.info(f"CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {total_files_count} files\t FilesSize: {total_files_size} bytes\t TransferDuration: {total_transfer_duration_ms} ms\t ConsumedFiles: {file_list_flat}")
+    logger.info(f"CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {total_files_count} files\t FilesSize: {total_files_size} bytes\t TransferDuration: {total_download_duration_ms} ms\t ConsumedFiles: {file_list_flat}")
+    
+    return {
+        "total_download_duration_ms": total_download_duration_ms,
+        "total_files_count": total_files_count,
+        "total_files_size": total_files_size,
+        "files": download_details
+    }
     
 
 ##
@@ -84,8 +100,11 @@ def handle_produced_files(request_id: str,
                           file_path_local: str, 
                           s3_bucket: str,
                           s3_key: str,
-                          logger: logging.Logger) -> None:
-    total_transfer_duration_ms = 0
+                          logger: logging.Logger) -> dict:
+    total_upload_duration_ms = 0
+    total_files_size = 0
+    total_files_count = 0
+    upload_details = []
     file_list_flat = du.flatten_list(file_list)
 
     # Upload files from lambda function into s3 bucket
@@ -96,14 +115,27 @@ def handle_produced_files(request_id: str,
         
         if provider == const.AWS_LAMBDA:
             duration_ms = upload_single_file_to_s3(file_name, file_path_local, s3_bucket, s3_key)
-            total_transfer_duration_ms += duration_ms
+            total_upload_duration_ms += duration_ms
         
         file_size = get_file_size(file_path_local_full)
+        total_files_size += file_size
+        total_files_count += 1
+        upload_details.append({
+            "file_name": file_name,
+            "file_size": file_size,
+            "upload_duration_ms": duration_ms
+        })
         
         logger.info(f"FILE_TRANSFER RequestId: {request_id}\t TransferType: produced\t Action: upload_to_s3\t FileName: {file_name}\t Bucket: {s3_bucket}\t FilePath: {file_path_s3_full}\t FilePathLocal: {file_path_local_full}\t FileSize: {file_size} bytes\t TransferDuration: {duration_ms} ms")
 
-    total_files_count, total_files_size = calculate_total_files_and_size(file_list_flat, file_path_local)      
-    logger.info(f"PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {total_files_count} files\t FilesSize: {total_files_size} bytes\t TransferDuration: {total_transfer_duration_ms} ms\t Provider: {provider}\t  ProducedFiles: {file_list_flat}")
+    logger.info(f"PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {total_files_count} files\t FilesSize: {total_files_size} bytes\t TransferDuration: {total_upload_duration_ms} ms\t Provider: {provider}\t ProducedFiles: {file_list_flat}")
+    
+    return {
+        "total_upload_duration_ms": total_upload_duration_ms,
+        "total_files_count": total_files_count,
+        "total_files_size": total_files_size,
+        "files": upload_details
+    }
   
 ##
 # Upload single file to S3

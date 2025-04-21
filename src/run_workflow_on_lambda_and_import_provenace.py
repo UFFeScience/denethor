@@ -45,13 +45,10 @@ def main():
     #
     #################################################################
     PROVIDER = const.AWS_LAMBDA
-    FORCE_MEMORY = [128, 256, 512, 1024, 2048]
-    # FORCE_MEMORY = [128]
-    # SET_ACTIVE_STEPS = ["tree_constructor", "subtree_constructor"]
+    MEMORY_LIST = [128, 256, 512, 1024, 2048]
     SET_ACTIVE_STEPS = None #dont override active steps
     INPUT_FILE_LIST = None
-    # FILE_COUNT_LIST = [2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
-    FILE_COUNT_LIST = [15, 20, 25, 30, 35, 40, 45, 50]
+    FILE_COUNT_LIST = [2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
 
     # file_count = int(sys.argv[1]) if len(sys.argv) > 1 else 2
     # file_count = 2
@@ -64,7 +61,7 @@ def main():
 
         INPUT_FILE_LIST = dfu.list_first_n_files(input_dir, N_FILES)
         
-        for MEMORY in FORCE_MEMORY:
+        for MEMORY in MEMORY_LIST:
 
             du.override_params(
                 workflow_steps, PROVIDER, MEMORY, INPUT_FILE_LIST, SET_ACTIVE_STEPS
