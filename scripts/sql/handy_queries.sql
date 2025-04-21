@@ -1,10 +1,3 @@
-SELECT * FROM vw_service_execution_info_last ORDER BY se_id;
-
-SELECT *
-FROM service_execution
-WHERE
-    workflow_execution_id = 'weid_1729872039000';
-
 -- Exibir os dados de execução do workflow
 SELECT DISTINCT
     we_id,
@@ -15,7 +8,7 @@ SELECT DISTINCT
     provider_id,
     provider_name,
     provider_memory_mb
-FROM vw_service_execution_info
+FROM vw_service_execution_detail
 ORDER BY we_id;
 
 
@@ -26,37 +19,37 @@ ORDER BY we_id;
 --tentando obter vm_cpu_time
 WITH vm_base_time AS (
 	SELECT DISTINCT 
-		se1.se_id, 
-		se1.we_id,
-		we1.execution_tag,
-		pc1.provider_id,
-		pr1.provider_tag,
-		ta1.task_id,
-		se1.activity_id,
-		stat1.statistics_id,
-		stat1.statistics_name, 
-		es1.value_float as vm_cpu_time
-	FROM service_execution se1
-	JOIN provider_configuration pc1 on pc1.conf_id = se1.provider_conf_id
-	JOIN provider pr1 on pr1.provider_id = pc1.provider_id
-	JOIN workflow_execution we1 ON se1.we_id = we1.we_id
-	JOIN vw_service_execution_task st1 ON se1.se_id = st1.se_id
-	JOIN vw_task ta1 ON st1.task_id = ta1.task_id
-	JOIN execution_statistics es1 ON es1.se_id = se1.se_id
-	JOIN "statistics" stat1 ON stat1.statistics_id = es1.statistics_id
-	WHERE we1.execution_tag in ('wetag_1744507705125') 
-		 AND pr1.provider_tag = 'aws_ec2'
-		 AND stat1.statistics_name like '%duration%'
+		se.se_id, 
+		se.we_id,
+		we.execution_tag,
+		pc.provider_id,
+		pr.provider_tag,
+		ta.task_id,
+		se.activity_id,
+		st.statistics_id,
+		st.statistics_name, 
+		es.value_float as vm_cpu_time
+	FROM service_execution se
+	JOIN provider_configuration pc on pc.conf_id = se.provider_conf_id
+	JOIN provider pr on pr.provider_id = pc.provider_id
+	JOIN workflow_execution we ON we.we_id = se.we_id
+	JOIN vw_service_execution_task sxt ON sxt.se_id = se.se_id
+	JOIN vw_task ta ON ta.task_id = sxt.task_id
+	JOIN execution_statistics es ON es.se_id = se.se_id
+	JOIN statistics st ON st.statistics_id = es.statistics_id
+	WHERE we.execution_tag IN ('wetag_1744507705125') 
+		 AND pr.provider_tag = 'aws_ec2'
+		 AND st.statistics_name IN ('tree_duration', 'subtree_duration', 'maf_db_creator_duration', 'maf_db_aggregator_duration')
  )
 SELECT DISTINCT 
 	ta.task_id,
 	ta.activity_id,
 	ta.task_type,
 	vm.vm_cpu_time,
-	ta.consumed_files_count AS n_input,
-	'[' || ta.consumed_files_list || ']' AS input_list,
-	ta.produced_files_count AS n_output,
-	'[' || ta.produced_files_list || ']' AS output_list
+	ta.input_count AS n_input,
+	'[' || ta.input_list || ']' AS input_list,
+	ta.output_count AS n_output,
+	'[' || ta.output_list || ']' AS output_list
 FROM service_execution se
 JOIN workflow_execution we ON se.we_id = we.we_id
 JOIN vw_service_execution_task st ON se.se_id = st.se_id
@@ -64,51 +57,6 @@ JOIN vw_task ta ON st.task_id = ta.task_id
 JOIN vm_base_time vm ON ta.task_id = vm.task_id
 WHERE we.execution_tag in ('wetag_1743638228939')
 ORDER BY ta.activity_id, ta.task_id;
-
-
-
-
-
---tentando obter vm_cpu_time a partir de task e service_execution2
-WITH vm_base_time AS (
-	SELECT DISTINCT 
-		se1.se_id, 
-		se1.we_id,
-		we1.execution_tag,
-		pc1.provider_id,
-		pr1.provider_tag,
-		ta1.task_id,
-		se1.activity_id,
-		stat1.statistics_id,
-		stat1.statistics_name, 
-		es1.value_float as vm_cpu_time
-	FROM service_execution2 se1
-	JOIN provider_configuration pc1 on pc1.conf_id = se1.provider_conf_id
-	JOIN provider pr1 on pr1.provider_id = pc1.provider_id
-	JOIN workflow_execution we1 ON se1.we_id = we1.we_id
-	JOIN task ta1 ON se1.task_id = ta1.task_id
-	JOIN execution_statistics es1 ON es1.se_id = se1.se_id
-	JOIN "statistics" stat1 ON stat1.statistics_id = es1.statistics_id
-	WHERE we1.execution_tag in ('wetag_1744507705125') 
-		 AND pr1.provider_tag = 'aws_ec2'
-		 AND stat1.statistics_name like '%duration%'
- )
-SELECT DISTINCT 
-	ta.task_id,
-	ta.activity_id,
-	ta.task_type,
-	vm.vm_cpu_time*0.001 AS vm_cpu_time,
-	ta.input_count AS n_input,
-	'[' || ta.input_list || ']' AS input_list,
-	ta.output_count AS n_output,
-	'[' || ta.output_list || ']' AS output_list
-FROM service_execution2 se
-JOIN workflow_execution we ON se.we_id = we.we_id
-JOIN task ta ON se.task_id = ta.task_id
-JOIN vm_base_time vm ON ta.task_id = vm.task_id
-WHERE we.execution_tag in ('wetag_1743638228939')
-ORDER BY ta.activity_id, ta.task_id;
-
 
 
 --statistics
@@ -123,7 +71,7 @@ LEFT OUTER JOIN vw_service_execution_task st ON sei.se_id = st.se_id
 LEFT OUTER JOIN vw_task ta ON st.task_id = ta.task_id
 LEFT OUTER JOIN execution_statistics es ON es.se_id = sei.se_id
 LEFT OUTER JOIN "statistics" stat ON stat.statistics_id = es.statistics_id
-WHERE execution_tag in ('wetag_1743638228939', 'wetag_1744507705125')
+WHERE execution_tag in ('wetag_1744914790201')
 ORDER BY ta.task_id, sei.provider_id;
 
 
@@ -135,15 +83,6 @@ JOIN vw_service_execution_info sei on sei.se_id = ef.se_id
 WHERE execution_tag in ('wetag_1744754708329', 'wetag_1744757716148')
 GROUP BY sei.execution_tag;
 
-
--- tree and subtree files with transfer_time
-SELECT f.file_id, f.file_name, f.file_size, ef.file_id, ef.se_id, ef.transfer_duration, ef.transfer_type, we.we_id, we.execution_tag, se.*
-FROM file f
-JOIN execution_file ef ON f.file_id = ef.file_id
-JOIN service_execution se ON se.se_id = ef.se_id
-JOIN workflow_execution we ON we.we_id = se.we_id
---WHERE execution_tag ='wetag_1744861181586'
-WHERE execution_tag ='wetag_1744912694622' and se.activity_id = 3;
 
 --tasks
 SELECT DISTINCT 
@@ -159,21 +98,106 @@ WHERE we.we_id >= 68
 GROUP BY we.execution_tag, we.input_count, we.we_id 
 ;
 
-select * from vw_task ta;
+
+select
+se.se_id, se.we_id, we.execution_tag, p.provider_name, pc.memory_mb, se.activity_id, f.file_id, f.file_name, f.file_size, ef.transfer_type, ef.transfer_duration
+from service_execution se
+join workflow_execution we on se.we_id = we.we_id
+join provider_configuration pc on pc.conf_id = se.provider_conf_id
+join provider p on p.provider_id = pc.provider_id
+join execution_file ef on ef.se_id = se.se_id
+join file f on f.file_id = ef.file_id
+where we.we_id = 66
+order by f.file_id
+;
+
+-- registros com transfer_duration de subtree_files na atividade maf_db_creator = 0
+-- executados em fx com cache local desses arquivos para agilizar o processo
+-- ajustar pegando o tempo de file_metrics
+select
+se.se_id, se.we_id, we.execution_tag, p.provider_name, se.activity_id, 
+f.file_id, f.file_name, f.file_size, ef.transfer_type, ef.transfer_duration, 
+fm.file_name, fm.metric_type, avg(fm.duration_ms) duration_ms, avg(fm.normalized_duration_ms) normalized_duration_ms
+from service_execution se
+join workflow_execution we on se.we_id = we.we_id
+join provider_configuration pc on pc.conf_id = se.provider_conf_id
+join provider p on p.provider_id = pc.provider_id
+join execution_file ef on ef.se_id = se.se_id
+join file f on f.file_id = ef.file_id
+left outer join file_metrics fm 
+    on f.file_name = fm.file_name 
+    and fm.metric_type = CASE 
+        WHEN ef.transfer_type = 'consumed' THEN 'download'
+        WHEN ef.transfer_type = 'produced' THEN 'upload'
+    END
+where 
+	ef.transfer_duration = 0
+	and p.provider_id = 1
+group by se.se_id, se.we_id, we.execution_tag, p.provider_name, se.activity_id, 
+f.file_id, f.file_name, f.file_size, ef.transfer_type, ef.transfer_duration, 
+fm.file_name, fm.metric_type
+order by se.we_id;
+--263285
 
 
-select * from workflow_execution we
---where we.we_id >= 68
-where we.execution_tag = 'wetag_1744925395446';
+-- Atualizar ef.transfer_duration quando for zero
+UPDATE execution_file ef
+SET transfer_duration = COALESCE(t1.avg_duration_ms, 0)
+FROM (
+    SELECT 
+        f.file_id,
+        f.file_name,
+        CASE 
+            WHEN fm.metric_type = 'download' THEN 'consumed'
+            WHEN fm.metric_type = 'upload' THEN 'produced'
+        END AS metric_type,
+        AVG(fm.normalized_duration_ms) AS avg_duration_ms
+    FROM file_metrics fm
+    JOIN file f ON f.file_name = fm.file_name
+    GROUP BY f.file_id, f.file_name, fm.metric_type
+) t1
+WHERE
+    ef.file_id = t1.file_id AND
+    ef.transfer_type = t1.metric_type AND
+    ef.transfer_duration = 0 AND
+    EXISTS (
+        SELECT 1
+        FROM service_execution se
+        JOIN provider_configuration pc ON se.provider_conf_id = pc.conf_id
+        WHERE se.se_id = ef.se_id AND pc.provider_id = 1
+    );
 
-select * from vw_service_execution_info
-order by se_id desc
+select se.we_id, count(*) from execution_file ef
+join service_execution se on ef.se_id = se.se_id
+where ef.transfer_duration = 0
+group by se.we_id;
 
+--CALL delete_execution_data('wetag_1744925395446');
 
-select * from workflow_execution;
+-- Adding indices based on query patterns
+	
+-- Optimize joins on service_execution
+CREATE INDEX idx_service_execution_se_id ON service_execution (se_id);
+CREATE INDEX idx_service_execution_we_id ON service_execution (we_id);
 
+-- Optimize joins on workflow_execution
+CREATE INDEX idx_workflow_execution_we_id ON workflow_execution (we_id);
 
-select * from file where file_name = 'mafdb_6f7a2b1116e6a791f68a03367473294792b679a6357b6789f3f993b1f83e2e80.json'
+-- Optimize joins on provider_configuration
+CREATE INDEX idx_provider_configuration_conf_id ON provider_configuration (conf_id);
 
-CALL delete_execution_data('wetag_1744925395446');
+-- Optimize joins on provider
+CREATE INDEX idx_provider_provider_id ON provider (provider_id);
+
+-- Optimize joins on execution_file
+CREATE INDEX idx_execution_file_file_id_transfer_type ON execution_file (file_id, transfer_type);
+
+-- Optimize joins on file
+CREATE INDEX idx_file_file_name ON file (file_name);
+
+-- Optimize joins on file_metrics
+CREATE INDEX idx_file_metrics_file_name_metric_type ON file_metrics (file_name, metric_type);
+
+-- Optimize filtering on execution_file.transfer_duration
+CREATE INDEX idx_execution_file_transfer_duration_zero ON execution_file (transfer_duration) WHERE transfer_duration = 0;
 
