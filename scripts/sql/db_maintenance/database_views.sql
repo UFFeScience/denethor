@@ -53,6 +53,7 @@ CREATE OR REPLACE VIEW vw_service_execution_detail AS (
         we.input_count as workflow_input_count,
         pr.provider_id,
         pr.provider_name,
+        pr.provider_tag,
         pc.memory_mb as provider_memory_mb,
         wo.workflow_id,
         wo.workflow_name,

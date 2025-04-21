@@ -1,3 +1,4 @@
+
 -- Exibir os dados de execução do workflow
 SELECT DISTINCT
     we_id,
@@ -37,7 +38,7 @@ WITH vm_base_time AS (
 	JOIN vw_task ta ON ta.task_id = sxt.task_id
 	JOIN execution_statistics es ON es.se_id = se.se_id
 	JOIN statistics st ON st.statistics_id = es.statistics_id
-	WHERE we.execution_tag IN ('wetag_1744507705125') 
+	WHERE we.execution_tag IN ('wetag_1745013809114') 
 		 AND pr.provider_tag = 'aws_ec2'
 		 AND st.statistics_name IN ('tree_duration', 'subtree_duration', 'maf_db_creator_duration', 'maf_db_aggregator_duration')
  )
@@ -55,8 +56,38 @@ JOIN workflow_execution we ON se.we_id = we.we_id
 JOIN vw_service_execution_task st ON se.se_id = st.se_id
 JOIN vw_task ta ON st.task_id = ta.task_id
 JOIN vm_base_time vm ON ta.task_id = vm.task_id
-WHERE we.execution_tag in ('wetag_1743638228939')
+WHERE we.execution_tag in ('wetag_1744914790201')
 ORDER BY ta.activity_id, ta.task_id;
+
+
+-- seleção de dados para geração de instâncias
+WITH basic_data AS (
+    SELECT DISTINCT 
+        provider_id, 
+        provider_tag, 
+        we_id, 
+        workflow_input_count AS input_count
+    FROM vw_service_execution_detail
+    WHERE we_id >= 68
+),
+aggregated_data AS (
+    SELECT
+        input_count,
+        provider_tag,
+        ARRAY_AGG(DISTINCT we_id ORDER BY we_id) AS we_ids
+    FROM basic_data
+    GROUP BY input_count, provider_tag
+),
+final_data AS (
+    SELECT
+        input_count,
+        jsonb_object_agg(provider_tag, we_ids) AS provider_data
+    FROM aggregated_data
+    GROUP BY input_count
+    ORDER BY input_count
+)
+SELECT jsonb_object_agg(input_count, provider_data) AS result_json
+FROM final_data;
 
 
 --statistics
@@ -167,37 +198,12 @@ WHERE
         WHERE se.se_id = ef.se_id AND pc.provider_id = 1
     );
 
-select se.we_id, count(*) from execution_file ef
+select we.we_id, we.input_count, se.* from execution_file ef
 join service_execution se on ef.se_id = se.se_id
+join workflow_execution we on we.we_id = se.we_id
 where ef.transfer_duration = 0
-group by se.we_id;
+--group by se.we_id
+;
 
 --CALL delete_execution_data('wetag_1744925395446');
-
--- Adding indices based on query patterns
-	
--- Optimize joins on service_execution
-CREATE INDEX idx_service_execution_se_id ON service_execution (se_id);
-CREATE INDEX idx_service_execution_we_id ON service_execution (we_id);
-
--- Optimize joins on workflow_execution
-CREATE INDEX idx_workflow_execution_we_id ON workflow_execution (we_id);
-
--- Optimize joins on provider_configuration
-CREATE INDEX idx_provider_configuration_conf_id ON provider_configuration (conf_id);
-
--- Optimize joins on provider
-CREATE INDEX idx_provider_provider_id ON provider (provider_id);
-
--- Optimize joins on execution_file
-CREATE INDEX idx_execution_file_file_id_transfer_type ON execution_file (file_id, transfer_type);
-
--- Optimize joins on file
-CREATE INDEX idx_file_file_name ON file (file_name);
-
--- Optimize joins on file_metrics
-CREATE INDEX idx_file_metrics_file_name_metric_type ON file_metrics (file_name, metric_type);
-
--- Optimize filtering on execution_file.transfer_duration
-CREATE INDEX idx_execution_file_transfer_duration_zero ON execution_file (transfer_duration) WHERE transfer_duration = 0;
 

@@ -4,7 +4,7 @@ SELECT
 		FROM service_execution se
 		JOIN workflow_execution we ON se.we_id = we.we_id
 		JOIN vw_service_execution_task st ON se.se_id = st.se_id
-		WHERE we.execution_tag in ([wetag])
+		WHERE we.[we_column] in ([we_values])
 	),
 	(SELECT count(pc.conf_id) AS _configs_count
 		FROM provider_configuration pc
@@ -15,7 +15,7 @@ SELECT
 		FROM service_execution se
 		JOIN workflow_execution we ON se.we_id = we.we_id 
 		JOIN execution_file ef ON ef.se_id = se.se_id 
-		WHERE we.execution_tag in ([wetag])
+		WHERE we.[we_column] in ([we_values])
 	),
 	(SELECT count(*) AS _vms_count
 		FROM vm_configurations
@@ -25,7 +25,7 @@ SELECT
 		JOIN workflow_execution we ON se.we_id = we.we_id
 		JOIN execution_file ef ON ef.se_id = se.se_id
 		JOIN file fi ON fi.file_id = ef.file_id
-		WHERE we.execution_tag in ([wetag])
+		WHERE we.[we_column] in ([we_values])
 	),
 	(SELECT count(*) AS _bucket_ranges_count
 		FROM bucket_ranges

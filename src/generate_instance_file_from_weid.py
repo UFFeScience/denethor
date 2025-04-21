@@ -11,24 +11,24 @@ WRITE_COMMENTS_TO_FILE = True
 # Connect to the PostgreSQL database
 session = Connection().get_session()
 
-DATA = {
-    2: {"aws_lambda": [68, 69, 70, 71, 72], "aws_ec2": [124]},
-    5: {"aws_lambda": [73, 74, 75, 76, 77], "aws_ec2": [125]},
-    10: {"aws_lambda": [78, 79, 80, 81, 82], "aws_ec2": [126]},
-    15: {"aws_lambda": [84, 85, 86, 87, 88], "aws_ec2": [127]},
-    20: {"aws_lambda": [89, 90, 91, 92, 93], "aws_ec2": [128]},
-    25: {"aws_lambda": [94, 95, 96, 97, 98], "aws_ec2": [129]},
-    30: {"aws_lambda": [99, 100, 101, 102, 103], "aws_ec2": [130]},
-    35: {"aws_lambda": [104, 105, 106, 107, 108], "aws_ec2": [131]},
-    40: {"aws_lambda": [109, 110, 111, 112, 113], "aws_ec2": [132]},
-    45: {"aws_lambda": [114, 115, 116, 117, 118], "aws_ec2": [133]},
-    50: {"aws_lambda": [119, 120, 121, 122, 123], "aws_ec2": [134]},
+EXECUTION_MAPPING = {
+    "2": {"aws_ec2": [124], "aws_lambda": [68, 69, 70, 71, 72]},
+    "5": {"aws_ec2": [125], "aws_lambda": [73, 74, 75, 76, 77]},
+    "10": {"aws_ec2": [126], "aws_lambda": [78, 79, 80, 81, 82]},
+    "15": {"aws_ec2": [127], "aws_lambda": [84, 85, 86, 87, 88]},
+    "20": {"aws_ec2": [128], "aws_lambda": [89, 90, 91, 92, 93]},
+    "25": {"aws_ec2": [129], "aws_lambda": [94, 95, 96, 97, 98]},
+    "30": {"aws_ec2": [130], "aws_lambda": [99, 100, 101, 102, 103]},
+    "35": {"aws_ec2": [131], "aws_lambda": [104, 105, 106, 107, 108]},
+    "40": {"aws_ec2": [132], "aws_lambda": [109, 110, 111, 112, 113]},
+    "45": {"aws_ec2": [133], "aws_lambda": [114, 115, 116, 117, 118]},
+    "50": {"aws_ec2": [134], "aws_lambda": [119, 120, 121, 122, 123]},
 }
 
 
 def main():
 
-    for input_count, entry in DATA.items():
+    for input_count, entry in EXECUTION_MAPPING.items():
 
         weids_fx = entry["aws_lambda"]
         weids_vm = entry["aws_ec2"]
@@ -37,20 +37,24 @@ def main():
 
         # execute sql instance count
         count = execute_sql_input_count(weids_fx, weids_vm)
-        out_file_name = (
-            f"model_instance_{count:03d}_weids_fx{weids_fx}__weids_vm{weids_vm}.txt".replace(
-                ",", "-"
+
+        if count is None or count == 0:
+            raise ValueError(
+                f"Error: No input count found for weid_fx: {weids_fx} and weid_vm: {weids_vm}"
             )
-            .replace(" ", "")
-            .replace("'", "")
-        )
+        if count != int(input_count):
+            raise ValueError(
+                f"Error: Input count {count} does not match expected count {input_count} for weid_fx: {weids_fx} and weid_vm: {weids_vm}"
+            )
+
+        out_file_name = f"model_instance[{count:03d}]_weids_fx[{'-'.join(map(str, weids_fx))}]__weids_vm[{'-'.join(map(str, weids_vm))}].txt"
 
         out_file_data = os.path.join(INSTANCE_FILE_PATH, out_file_name)
 
         if os.path.exists(out_file_data):
             os.remove(out_file_data)
 
-        out_file_sqls = out_file_data.replace(".txt", "_executed.sql")
+        out_file_sqls = out_file_data.replace("model", "sql").replace(".txt", ".sql")
         if os.path.exists(out_file_sqls):
             os.remove(out_file_sqls)
 
@@ -96,10 +100,10 @@ def execute_sql_and_save_results(
 
     # replace wetag
     sql_to_execute = (
-        sql_to_execute.replace("we.execution_tag", "we.we_id")
-        .replace("[wetag_fx]", ",".join(map(str, weids_fx)))
-        .replace("[wetag]", ",".join(map(str, weids_fx)))
-        .replace("[wetag_vm]", ",".join(map(str, weids_vm)))
+        sql_to_execute.replace("[we_column]", "we_id")
+        .replace("[we_values]", ",".join(map(str, weids_fx)))
+        .replace("[we_values_vm]", ",".join(map(str, weids_vm)))
+        .replace("[we_values_fx]", ",".join(map(str, weids_fx)))
     )
 
     try:
@@ -117,13 +121,13 @@ def execute_sql_and_save_results(
         # write the executed sql to a file
         with open(output_sqls_file, "a") as file:
             file.write(f"--->{input_sql_file}\n")
-            file.write(f"--->{weids_fx}\n")
-            file.write(f"--->{weids_vm}\n")
+            file.write(f"--->weids_fx:{weids_fx}\n")
+            file.write(f"--->weids_vm:{weids_vm}\n")
             file.write(
                 f"--->Generated at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
             )
             file.write(comments + "\n")
-            file.write(sql_to_execute + "\n\n")
+            file.write(sql_to_execute + "\n\n\n\n")
 
     except SQLAlchemyError as e:
         print(f"Error executing {input_sql_file}: {e}")
