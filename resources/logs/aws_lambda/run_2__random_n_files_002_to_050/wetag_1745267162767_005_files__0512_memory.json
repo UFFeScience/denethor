@@ -1,0 +1,242 @@
+{
+    "date_time_utc": "2025-04-21T20:26:13.185762+00:00",
+    "workflow_name": "AWS Lambda Evaluation",
+    "execution_tag": "wetag_1745267162767",
+    "workflow_start_time_ms": 1745267162767,
+    "workflow_end_time_ms": 1745267173185,
+    "runtime_data": {
+        "input_files": [
+            {
+                "data": "ORTHOMCL441"
+            },
+            {
+                "data": "ORTHOMCL625"
+            },
+            {
+                "data": "ORTHOMCL888"
+            },
+            {
+                "data": "ORTHOMCL916"
+            },
+            {
+                "data": "ORTHOMCL1305"
+            }
+        ],
+        "tree_files": [
+            {
+                "request_id": "6823105e-0418-4ccf-9fc3-9052214b22ad",
+                "data": [
+                    "tree_ORTHOMCL441.nexus"
+                ]
+            },
+            {
+                "request_id": "d53b2be6-3b0c-413a-8a9c-5e8b86f7fcd3",
+                "data": [
+                    "tree_ORTHOMCL625.nexus"
+                ]
+            },
+            {
+                "request_id": "8177aaef-01e8-4495-9631-e57cfd2aa365",
+                "data": [
+                    "tree_ORTHOMCL888.nexus"
+                ]
+            },
+            {
+                "request_id": "006d5ab0-eeb1-47d7-a6ad-9d92cfe01886",
+                "data": [
+                    "tree_ORTHOMCL916.nexus"
+                ]
+            },
+            {
+                "request_id": "c652627e-14ad-4768-864d-ee58ee574ba9",
+                "data": [
+                    "tree_ORTHOMCL1305.nexus"
+                ]
+            }
+        ],
+        "subtree_files": [
+            {
+                "request_id": "7ed5a244-fde6-4273-b7bb-912893059b7a",
+                "data": [
+                    "tree_ORTHOMCL441_Inner1.nexus",
+                    "tree_ORTHOMCL441_Inner2.nexus",
+                    "tree_ORTHOMCL441_Inner3.nexus",
+                    "tree_ORTHOMCL441_Inner4.nexus",
+                    "tree_ORTHOMCL441_Inner5.nexus",
+                    "tree_ORTHOMCL441_Inner6.nexus"
+                ]
+            },
+            {
+                "request_id": "007138ef-fa6d-46b4-89d3-d4546162c3d8",
+                "data": [
+                    "tree_ORTHOMCL625_Inner1.nexus",
+                    "tree_ORTHOMCL625_Inner2.nexus",
+                    "tree_ORTHOMCL625_Inner3.nexus",
+                    "tree_ORTHOMCL625_Inner4.nexus",
+                    "tree_ORTHOMCL625_Inner5.nexus"
+                ]
+            },
+            {
+                "request_id": "420b6d0d-ff3f-40d5-81a6-8aca7e233bf4",
+                "data": [
+                    "tree_ORTHOMCL888_Inner1.nexus",
+                    "tree_ORTHOMCL888_Inner2.nexus",
+                    "tree_ORTHOMCL888_Inner3.nexus",
+                    "tree_ORTHOMCL888_Inner4.nexus"
+                ]
+            },
+            {
+                "request_id": "b5c9cc5d-8118-4521-a313-fc75553b144d",
+                "data": [
+                    "tree_ORTHOMCL916_Inner1.nexus",
+                    "tree_ORTHOMCL916_Inner2.nexus",
+                    "tree_ORTHOMCL916_Inner3.nexus",
+                    "tree_ORTHOMCL916_Inner4.nexus"
+                ]
+            },
+            {
+                "request_id": "f0b52f12-16aa-419c-aadd-3282de78d4b2",
+                "data": [
+                    "tree_ORTHOMCL1305_Inner1.nexus",
+                    "tree_ORTHOMCL1305_Inner2.nexus",
+                    "tree_ORTHOMCL1305_Inner3.nexus"
+                ]
+            }
+        ],
+        "intermediate_mafdb_files": [
+            {
+                "request_id": "f2dd71d6-1c18-4709-8f83-094fee4a8173",
+                "data": "mafdb_c3c2025f352d34b4b79a48619176577388b06f30619772ddea31df49ee988aff.json"
+            },
+            {
+                "request_id": "f43063ba-64cb-4acf-9b4c-c06d01975e4a",
+                "data": "mafdb_87129d44586b87142d9940a8b1bdbebcfa7b0454f32076964711670e9940a5bc.json"
+            },
+            {
+                "request_id": "7ff31f34-1d77-4574-9e60-70466e823fd4",
+                "data": "mafdb_96f411db25a5507e2f8c83f07de2e32793bb5c2b863cd4f9c33afc286860da9b.json"
+            },
+            {
+                "request_id": "43fb39af-d241-40cb-87a8-05531942f25c",
+                "data": "mafdb_0e058d65c1045889dfe83e83e2b201ec345ba3363065e06d8a12c525f818d8a7.json"
+            },
+            {
+                "request_id": "9101c67f-3f48-4e53-8534-45f68dfa542a",
+                "data": "mafdb_1bc211752a94b2c578560693e27c96c128aefdf6439e0fc20a27028f333f2ca9.json"
+            }
+        ],
+        "final_mafdb_file": [
+            {
+                "request_id": "4d5235dc-2e02-4955-932f-c89f989eca6b",
+                "data": "mafdb_424ab3ff27c5f113ebd4121454aa0fceba47f4de595d590adb0b57d6e79cef40.json"
+            }
+        ]
+    },
+    "workflow_steps": [
+        {
+            "activity": "tree_constructor",
+            "provider": "aws_lambda",
+            "memory": 512,
+            "strategy": "for_each_input",
+            "data_params": {
+                "input_files_path": "resources/data/full_dataset",
+                "input_files_list": [
+                    "ORTHOMCL1305",
+                    "ORTHOMCL888",
+                    "ORTHOMCL441",
+                    "ORTHOMCL625",
+                    "ORTHOMCL916"
+                ],
+                "param_in": "input_files",
+                "param_out": "tree_files"
+            },
+            "active": true
+        },
+        {
+            "activity": "subtree_constructor",
+            "provider": "aws_lambda",
+            "memory": 512,
+            "strategy": "for_each_input",
+            "data_params": {
+                "param_in": "tree_files",
+                "param_out": "subtree_files"
+            },
+            "active": true
+        },
+        {
+            "activity": "maf_database_creator",
+            "provider": "aws_lambda",
+            "memory": 512,
+            "strategy": "for_each_input",
+            "data_params": {
+                "param_in": "subtree_files",
+                "param_out": "intermediate_mafdb_files"
+            },
+            "active": true
+        },
+        {
+            "activity": "maf_database_aggregator",
+            "provider": "aws_lambda",
+            "memory": 512,
+            "strategy": "for_all_inputs",
+            "data_params": {
+                "param_in": "intermediate_mafdb_files",
+                "param_out": "final_mafdb_file"
+            },
+            "active": true
+        }
+    ],
+    "env_properties": {
+        "denethor": {
+            "log.path": "resources/logs/[provider_tag]",
+            "log.file": "log_[execution_tag]_[activity_name].log",
+            "log.metadata_file": "[execution_tag]_[n_files]_files__[memory]_memory.json"
+        },
+        "bucket": {
+            "name": "denethor",
+            "key.input_files": "data/full_dataset",
+            "key.tree_constructor": "tree",
+            "key.subtree_constructor": "subtree",
+            "key.maf_database_creator": "mafdb",
+            "key.maf_database_aggregator": "mafdb"
+        },
+        "aws_lambda": {
+            "data_format": "nexus",
+            "path.input_files": "/tmp/input",
+            "path.tmp": "/tmp",
+            "path.tree_constructor": "/tmp/tree",
+            "path.subtree_constructor": "/tmp/subtree",
+            "path.maf_database_creator": "/tmp/mafdb",
+            "path.maf_database_aggregator": "/tmp/mafdb",
+            "path.clustalw": "/opt/python/clustalw-2.1-linux",
+            "log.output_type": "stdout"
+        },
+        "aws_ec2": {
+            "instance_id": "i-0f2f2ec6dd1e6a455",
+            "data_format": "nexus",
+            "path.src": "src/lambda",
+            "target_method": "handler",
+            "path.input_files": "resources/data/full_dataset",
+            "path.tmp": ".tmp",
+            "path.tree_constructor": ".tmp/tree",
+            "path.subtree_constructor": ".tmp/subtree",
+            "path.maf_database_creator": ".tmp/mafdb",
+            "path.maf_database_aggregator": ".tmp/mafdb",
+            "path.clustalw": "resources/libs/clustalw-2.1-linux",
+            "log.output_type": "file"
+        },
+        "local": {
+            "data_format": "nexus",
+            "path.src": "src/lambda",
+            "target_method": "handler",
+            "path.input_files": "resources/data/full_dataset",
+            "path.tmp": ".tmp",
+            "path.tree_constructor": ".tmp/tree",
+            "path.subtree_constructor": ".tmp/subtree",
+            "path.maf_database_creator": ".tmp/mafdb",
+            "path.maf_database_aggregator": ".tmp/mafdb",
+            "path.clustalw": "resources/libs/clustalw-2.1-linux",
+            "log.output_type": "stdout_and_file"
+        }
+    }
+}

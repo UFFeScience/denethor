@@ -1,0 +1,1598 @@
+[
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273209990,
+        "message": "INIT_START Runtime Version: python:3.10.v64\tRuntime Version ARN: arn:aws:lambda:sa-east-1::runtime:d56bdc8857b2109a058de2ab50bfb80ac2aa600be6f7855a436859944e5fe54b\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893157808620483652926977097843862830598865047781376"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273210908,
+        "message": "START RequestId: 0a3f7399-284a-40f0-b21d-52fa823178f8 Version: $LATEST\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893178280704575904039021027633237121794727537803265"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273210909,
+        "message": "Directory /tmp/input was created!\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893178303005321102569644169168955394443089043783682"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273210909,
+        "message": "Directory /tmp/tree was created!\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893178303005321102569644169168955394443089043783683"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211025,
+        "message": "FILE_TRANSFER RequestId: 0a3f7399-284a-40f0-b21d-52fa823178f8\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL515\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL515\t LocalFilePath: /tmp/input/ORTHOMCL515\t FileSize: 4496 bytes\t TransferDuration: 115.78575000004321 ms\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893180889891764132121928587312275021653023737511940"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211025,
+        "message": "CONSUMED_FILES_INFO RequestId: 0a3f7399-284a-40f0-b21d-52fa823178f8\t FilesCount: 1 files\t FilesSize: 4496 bytes\t TransferDuration: 115.78575000004321 ms\t ConsumedFiles: ['ORTHOMCL515']\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893180889891764132121928587312275021653023737511941"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211154,
+        "message": "[INFO]\t2025-04-21T22:06:51.153Z\t0a3f7399-284a-40f0-b21d-52fa823178f8\tTREE_CONSTRUCTOR RequestId: 0a3f7399-284a-40f0-b21d-52fa823178f8\t Duration: 128.67803000000322 ms\t InputFile:ORTHOMCL515\t OutputFile:['tree_ORTHOMCL515.nexus']\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893183766687894742572313845419932193291658008985606"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211154,
+        "message": "[INFO] 2025-04-21T22:06:51GMT TREE_CONSTRUCTOR RequestId: 0a3f7399-284a-40f0-b21d-52fa823178f8\t Duration: 128.67803000000322 ms\t InputFile:ORTHOMCL515\t OutputFile:['tree_ORTHOMCL515.nexus']\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893183766687894742572313845419932193291658008985607"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211302,
+        "message": "FILE_TRANSFER RequestId: 0a3f7399-284a-40f0-b21d-52fa823178f8\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL515.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL515.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL515.nexus\t FileSize: 463 bytes\t TransferDuration: 47.94878100000233 ms\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893187067198184125104538792706236545249160894087176"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211302,
+        "message": "PRODUCED_FILES_INFO RequestId: 0a3f7399-284a-40f0-b21d-52fa823178f8\t FilesCount: 1 files\t FilesSize: 463 bytes\t TransferDuration: 47.94878100000233 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL515.nexus']\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893187067198184125104538792706236545249160894087177"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211304,
+        "message": "END RequestId: 0a3f7399-284a-40f0-b21d-52fa823178f8\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893187111799674522165785075777673090545883906048010"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211304,
+        "message": "REPORT RequestId: 0a3f7399-284a-40f0-b21d-52fa823178f8\tDuration: 396.44 ms\tBilled Duration: 397 ms\tMemory Size: 512 MB\tMax Memory Used: 111 MB\tInit Duration: 916.01 ms\t\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893187111799674522165785075777673090545883906048011"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211491,
+        "message": "START RequestId: 52525d11-a3f6-41cb-b60f-766ab2802cfd Version: $LATEST\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893191282039026647392312542956990075789485524385804"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211546,
+        "message": "FILE_TRANSFER RequestId: 52525d11-a3f6-41cb-b60f-766ab2802cfd\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL534\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL534\t LocalFilePath: /tmp/input/ORTHOMCL534\t FileSize: 3952 bytes\t TransferDuration: 54.19815100003689 ms\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893192508580012566576585327421495071449368353308685"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211546,
+        "message": "CONSUMED_FILES_INFO RequestId: 52525d11-a3f6-41cb-b60f-766ab2802cfd\t FilesCount: 1 files\t FilesSize: 3952 bytes\t TransferDuration: 54.19815100003689 ms\t ConsumedFiles: ['ORTHOMCL534']\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893192508580012566576585327421495071449368353308686"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211635,
+        "message": "[INFO]\t2025-04-21T22:06:51.635Z\t52525d11-a3f6-41cb-b60f-766ab2802cfd\tTREE_CONSTRUCTOR RequestId: 52525d11-a3f6-41cb-b60f-766ab2802cfd\t Duration: 88.75311999997848 ms\t InputFile:ORTHOMCL534\t OutputFile:['tree_ORTHOMCL534.nexus']\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893194493346335235802044924100421337153542385565711"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211635,
+        "message": "[INFO] 2025-04-21T22:06:51GMT TREE_CONSTRUCTOR RequestId: 52525d11-a3f6-41cb-b60f-766ab2802cfd\t Duration: 88.75311999997848 ms\t InputFile:ORTHOMCL534\t OutputFile:['tree_ORTHOMCL534.nexus']\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893194493346335235802044924100421337153542385565712"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211778,
+        "message": "FILE_TRANSFER RequestId: 52525d11-a3f6-41cb-b60f-766ab2802cfd\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL534.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL534.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL534.nexus\t FileSize: 461 bytes\t TransferDuration: 42.74261099999421 ms\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893197682352898625681154163708134325869237740765201"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211778,
+        "message": "PRODUCED_FILES_INFO RequestId: 52525d11-a3f6-41cb-b60f-766ab2802cfd\t FilesCount: 1 files\t FilesSize: 461 bytes\t TransferDuration: 42.74261099999421 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL534.nexus']\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893197682352898625681154163708134325869237740765202"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211779,
+        "message": "END RequestId: 52525d11-a3f6-41cb-b60f-766ab2802cfd\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893197704653643824211777305243852598517599246745619"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211779,
+        "message": "REPORT RequestId: 52525d11-a3f6-41cb-b60f-766ab2802cfd\tDuration: 288.12 ms\tBilled Duration: 289 ms\tMemory Size: 512 MB\tMax Memory Used: 112 MB\t\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893197704653643824211777305243852598517599246745620"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273211982,
+        "message": "START RequestId: 12c8c436-6c7a-45af-8fd8-f0d070a7ffe8 Version: $LATEST\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893202231704919125928275036994661946134984960770069"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273212049,
+        "message": "FILE_TRANSFER RequestId: 12c8c436-6c7a-45af-8fd8-f0d070a7ffe8\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL581\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL581\t LocalFilePath: /tmp/input/ORTHOMCL581\t FileSize: 4561 bytes\t TransferDuration: 66.15361000001485 ms\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893203725854847427480025519887786213575205861457942"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273212049,
+        "message": "CONSUMED_FILES_INFO RequestId: 12c8c436-6c7a-45af-8fd8-f0d070a7ffe8\t FilesCount: 1 files\t FilesSize: 4561 bytes\t TransferDuration: 66.15361000001485 ms\t ConsumedFiles: ['ORTHOMCL581']\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893203725854847427480025519887786213575205861457943"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273212260,
+        "message": "[INFO]\t2025-04-21T22:06:52.260Z\t12c8c436-6c7a-45af-8fd8-f0d070a7ffe8\tTREE_CONSTRUCTOR RequestId: 12c8c436-6c7a-45af-8fd8-f0d070a7ffe8\t Duration: 210.83652900000516 ms\t InputFile:ORTHOMCL581\t OutputFile:['tree_ORTHOMCL581.nexus']\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893208431312084317441508383924341742379483623325720"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273212260,
+        "message": "[INFO] 2025-04-21T22:06:52GMT TREE_CONSTRUCTOR RequestId: 12c8c436-6c7a-45af-8fd8-f0d070a7ffe8\t Duration: 210.83652900000516 ms\t InputFile:ORTHOMCL581\t OutputFile:['tree_ORTHOMCL581.nexus']\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893208431312084317441508383924341742379483623325721"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273212400,
+        "message": "FILE_TRANSFER RequestId: 12c8c436-6c7a-45af-8fd8-f0d070a7ffe8\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL581.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL581.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL581.nexus\t FileSize: 455 bytes\t TransferDuration: 40.10705999996844 ms\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893211553416412111728748198924899913150094460583962"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273212400,
+        "message": "PRODUCED_FILES_INFO RequestId: 12c8c436-6c7a-45af-8fd8-f0d070a7ffe8\t FilesCount: 1 files\t FilesSize: 455 bytes\t TransferDuration: 40.10705999996844 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL581.nexus']\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893211553416412111728748198924899913150094460583963"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273212401,
+        "message": "END RequestId: 12c8c436-6c7a-45af-8fd8-f0d070a7ffe8\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893211575717157310259371340460618185798455966564380"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273212402,
+        "message": "REPORT RequestId: 12c8c436-6c7a-45af-8fd8-f0d070a7ffe8\tDuration: 419.66 ms\tBilled Duration: 420 ms\tMemory Size: 512 MB\tMax Memory Used: 112 MB\t\n",
+        "ingestionTime": 1745273212731,
+        "eventId": "38920893211598017902508789994481996336458446817472544797"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273212765,
+        "message": "START RequestId: 6a9fcd65-2cb1-41fd-9268-1e7249dc27b2 Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893219693188409575406205815710031359934557602775040"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273212816,
+        "message": "FILE_TRANSFER RequestId: 6a9fcd65-2cb1-41fd-9268-1e7249dc27b2\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL744\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL744\t LocalFilePath: /tmp/input/ORTHOMCL744\t FileSize: 5130 bytes\t TransferDuration: 49.888979999991534 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893220830526414700467986034031663265000994407776257"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273212816,
+        "message": "CONSUMED_FILES_INFO RequestId: 6a9fcd65-2cb1-41fd-9268-1e7249dc27b2\t FilesCount: 1 files\t FilesSize: 5130 bytes\t TransferDuration: 49.888979999991534 ms\t ConsumedFiles: ['ORTHOMCL744']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893220830526414700467986034031663265000994407776258"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213152,
+        "message": "[INFO]\t2025-04-21T22:06:53.136Z\t6a9fcd65-2cb1-41fd-9268-1e7249dc27b2\tTREE_CONSTRUCTOR RequestId: 6a9fcd65-2cb1-41fd-9268-1e7249dc27b2\t Duration: 320.07368000000724 ms\t InputFile:ORTHOMCL744\t OutputFile:['tree_ORTHOMCL744.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893228323576801406757361590033002874850460417196035"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213152,
+        "message": "[INFO] 2025-04-21T22:06:53GMT TREE_CONSTRUCTOR RequestId: 6a9fcd65-2cb1-41fd-9268-1e7249dc27b2\t Duration: 320.07368000000724 ms\t InputFile:ORTHOMCL744\t OutputFile:['tree_ORTHOMCL744.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893228323576801406757361590033002874850460417196036"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213296,
+        "message": "FILE_TRANSFER RequestId: 6a9fcd65-2cb1-41fd-9268-1e7249dc27b2\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL744.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL744.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL744.nexus\t FileSize: 407 bytes\t TransferDuration: 43.082410000010896 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893231534884109995167093971176434136214517278375941"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213296,
+        "message": "PRODUCED_FILES_INFO RequestId: 6a9fcd65-2cb1-41fd-9268-1e7249dc27b2\t FilesCount: 1 files\t FilesSize: 407 bytes\t TransferDuration: 43.082410000010896 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL744.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893231534884109995167093971176434136214517278375942"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213297,
+        "message": "END RequestId: 6a9fcd65-2cb1-41fd-9268-1e7249dc27b2\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893231557184855193697717112712152408862878784356359"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213297,
+        "message": "REPORT RequestId: 6a9fcd65-2cb1-41fd-9268-1e7249dc27b2\tDuration: 531.60 ms\tBilled Duration: 532 ms\tMemory Size: 512 MB\tMax Memory Used: 113 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893231557184855193697717112712152408862878784356360"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213445,
+        "message": "START RequestId: 1f68f47f-0370-4efb-b653-844526c0c533 Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893234857695144576229942059998456760820381669457929"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213491,
+        "message": "FILE_TRANSFER RequestId: 1f68f47f-0370-4efb-b653-844526c0c533\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL877\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL877\t LocalFilePath: /tmp/input/ORTHOMCL877\t FileSize: 4087 bytes\t TransferDuration: 45.84545000000162 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893235883529423708638606570641497302645010944557066"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213491,
+        "message": "CONSUMED_FILES_INFO RequestId: 1f68f47f-0370-4efb-b653-844526c0c533\t FilesCount: 1 files\t FilesSize: 4087 bytes\t TransferDuration: 45.84545000000162 ms\t ConsumedFiles: ['ORTHOMCL877']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893235883529423708638606570641497302645010944557067"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213634,
+        "message": "[INFO]\t2025-04-21T22:06:53.634Z\t1f68f47f-0370-4efb-b653-844526c0c533\tTREE_CONSTRUCTOR RequestId: 1f68f47f-0370-4efb-b653-844526c0c533\t Duration: 143.13434000001735 ms\t InputFile:ORTHOMCL877\t OutputFile:['tree_ORTHOMCL877.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893239072535987098517715810249210291360706299756556"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213635,
+        "message": "[INFO] 2025-04-21T22:06:53GMT TREE_CONSTRUCTOR RequestId: 1f68f47f-0370-4efb-b653-844526c0c533\t Duration: 143.13434000001735 ms\t InputFile:ORTHOMCL877\t OutputFile:['tree_ORTHOMCL877.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893239094836732297048338951784928564009067805736973"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213774,
+        "message": "FILE_TRANSFER RequestId: 1f68f47f-0370-4efb-b653-844526c0c533\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL877.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL877.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL877.nexus\t FileSize: 405 bytes\t TransferDuration: 39.509519999967324 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893242194640314892804955625249768462131317137014798"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213775,
+        "message": "PRODUCED_FILES_INFO RequestId: 1f68f47f-0370-4efb-b653-844526c0c533\t FilesCount: 1 files\t FilesSize: 405 bytes\t TransferDuration: 39.509519999967324 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL877.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893242216941060091335578766785486734779678642995215"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213776,
+        "message": "END RequestId: 1f68f47f-0370-4efb-b653-844526c0c533\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893242239241805289866201908321205007428040148975632"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213776,
+        "message": "REPORT RequestId: 1f68f47f-0370-4efb-b653-844526c0c533\tDuration: 330.89 ms\tBilled Duration: 331 ms\tMemory Size: 512 MB\tMax Memory Used: 113 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893242239241805289866201908321205007428040148975633"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213915,
+        "message": "START RequestId: 1efce632-8902-4fa6-8c3a-742393ff7bd8 Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893245339045387885622818581786044905550289480253458"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213952,
+        "message": "FILE_TRANSFER RequestId: 1efce632-8902-4fa6-8c3a-742393ff7bd8\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL884\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL884\t LocalFilePath: /tmp/input/ORTHOMCL884\t FileSize: 4103 bytes\t TransferDuration: 36.71987999996418 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893246164172960231255874818607620993539665201528851"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273213952,
+        "message": "CONSUMED_FILES_INFO RequestId: 1efce632-8902-4fa6-8c3a-742393ff7bd8\t FilesCount: 1 files\t FilesSize: 4103 bytes\t TransferDuration: 36.71987999996418 ms\t ConsumedFiles: ['ORTHOMCL884']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893246164172960231255874818607620993539665201528852"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214014,
+        "message": "[INFO]\t2025-04-21T22:06:54.014Z\t1efce632-8902-4fa6-8c3a-742393ff7bd8\tTREE_CONSTRUCTOR RequestId: 1efce632-8902-4fa6-8c3a-742393ff7bd8\t Duration: 61.799929999949654 ms\t InputFile:ORTHOMCL884\t OutputFile:['tree_ORTHOMCL884.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893247546819162540154509593822153897738078572314645"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214014,
+        "message": "[INFO] 2025-04-21T22:06:54GMT TREE_CONSTRUCTOR RequestId: 1efce632-8902-4fa6-8c3a-742393ff7bd8\t Duration: 61.799929999949654 ms\t InputFile:ORTHOMCL884\t OutputFile:['tree_ORTHOMCL884.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893247546819162540154509593822153897738078572314646"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214154,
+        "message": "FILE_TRANSFER RequestId: 1efce632-8902-4fa6-8c3a-742393ff7bd8\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL884.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL884.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL884.nexus\t FileSize: 403 bytes\t TransferDuration: 39.152419999993526 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893250668923490334441749408822712068508689409572887"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214154,
+        "message": "PRODUCED_FILES_INFO RequestId: 1efce632-8902-4fa6-8c3a-742393ff7bd8\t FilesCount: 1 files\t FilesSize: 403 bytes\t TransferDuration: 39.152419999993526 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL884.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893250668923490334441749408822712068508689409572888"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214155,
+        "message": "END RequestId: 1efce632-8902-4fa6-8c3a-742393ff7bd8\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893250691224235532972372550358430341157050915553305"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214155,
+        "message": "REPORT RequestId: 1efce632-8902-4fa6-8c3a-742393ff7bd8\tDuration: 240.05 ms\tBilled Duration: 241 ms\tMemory Size: 512 MB\tMax Memory Used: 113 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893250691224235532972372550358430341157050915553306"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214327,
+        "message": "START RequestId: 7f0aa534-5ad0-4fc5-9416-933b6a6a45a3 Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893254526952409680239552894501973236675229944184859"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214369,
+        "message": "FILE_TRANSFER RequestId: 7f0aa534-5ad0-4fc5-9416-933b6a6a45a3\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL964\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL964\t LocalFilePath: /tmp/input/ORTHOMCL964\t FileSize: 2932 bytes\t TransferDuration: 41.105490999996164 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893255463583708018525724839002140687906413195362332"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214369,
+        "message": "CONSUMED_FILES_INFO RequestId: 7f0aa534-5ad0-4fc5-9416-933b6a6a45a3\t FilesCount: 1 files\t FilesSize: 2932 bytes\t TransferDuration: 41.105490999996164 ms\t ConsumedFiles: ['ORTHOMCL964']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893255463583708018525724839002140687906413195362333"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214413,
+        "message": "[INFO]\t2025-04-21T22:06:54.412Z\t7f0aa534-5ad0-4fc5-9416-933b6a6a45a3\tTREE_CONSTRUCTOR RequestId: 7f0aa534-5ad0-4fc5-9416-933b6a6a45a3\t Duration: 43.26479999997446 ms\t InputFile:ORTHOMCL964\t OutputFile:['tree_ORTHOMCL964.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893256444816496753873143066573744684434319458500638"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214413,
+        "message": "[INFO] 2025-04-21T22:06:54GMT TREE_CONSTRUCTOR RequestId: 7f0aa534-5ad0-4fc5-9416-933b6a6a45a3\t Duration: 43.26479999997446 ms\t InputFile:ORTHOMCL964\t OutputFile:['tree_ORTHOMCL964.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893256444816496753873143066573744684434319458500639"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214558,
+        "message": "FILE_TRANSFER RequestId: 7f0aa534-5ad0-4fc5-9416-933b6a6a45a3\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL964.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL964.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL964.nexus\t FileSize: 405 bytes\t TransferDuration: 44.894639999995434 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893259678424550540813498589252894218446737825660960"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214558,
+        "message": "PRODUCED_FILES_INFO RequestId: 7f0aa534-5ad0-4fc5-9416-933b6a6a45a3\t FilesCount: 1 files\t FilesSize: 405 bytes\t TransferDuration: 44.894639999995434 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL964.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893259678424550540813498589252894218446737825660961"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214560,
+        "message": "END RequestId: 7f0aa534-5ad0-4fc5-9416-933b6a6a45a3\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893259723026040937874744872324330763743460837621794"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214560,
+        "message": "REPORT RequestId: 7f0aa534-5ad0-4fc5-9416-933b6a6a45a3\tDuration: 232.63 ms\tBilled Duration: 233 ms\tMemory Size: 512 MB\tMax Memory Used: 113 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893259723026040937874744872324330763743460837621795"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214919,
+        "message": "START RequestId: 03035456-3e9c-4b70-adde-66ced70398a9 Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893267728993567210368452683647190644505241484591140"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214958,
+        "message": "FILE_TRANSFER RequestId: 03035456-3e9c-4b70-adde-66ced70398a9\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1000\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1000\t LocalFilePath: /tmp/input/ORTHOMCL1000\t FileSize: 4395 bytes\t TransferDuration: 38.76249900002904 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893268598722629953062755203540203277791340217827365"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273214958,
+        "message": "CONSUMED_FILES_INFO RequestId: 03035456-3e9c-4b70-adde-66ced70398a9\t FilesCount: 1 files\t FilesSize: 4395 bytes\t TransferDuration: 38.76249900002904 ms\t ConsumedFiles: ['ORTHOMCL1000']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893268598722629953062755203540203277791340217827366"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273215114,
+        "message": "[INFO]\t2025-04-21T22:06:55.113Z\t03035456-3e9c-4b70-adde-66ced70398a9\tTREE_CONSTRUCTOR RequestId: 03035456-3e9c-4b70-adde-66ced70398a9\t Duration: 155.13628899998366 ms\t InputFile:ORTHOMCL1000\t OutputFile:['tree_ORTHOMCL1000.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893272077638880923839965283112253810935735150772263"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273215114,
+        "message": "[INFO] 2025-04-21T22:06:55GMT TREE_CONSTRUCTOR RequestId: 03035456-3e9c-4b70-adde-66ced70398a9\t Duration: 155.13628899998366 ms\t InputFile:ORTHOMCL1000\t OutputFile:['tree_ORTHOMCL1000.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893272077638880923839965283112253810935735150772264"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273215256,
+        "message": "FILE_TRANSFER RequestId: 03035456-3e9c-4b70-adde-66ced70398a9\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1000.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1000.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1000.nexus\t FileSize: 405 bytes\t TransferDuration: 42.46017899998833 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893275244344699115188451381184248527003068999991337"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273215256,
+        "message": "PRODUCED_FILES_INFO RequestId: 03035456-3e9c-4b70-adde-66ced70398a9\t FilesCount: 1 files\t FilesSize: 405 bytes\t TransferDuration: 42.46017899998833 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1000.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893275244344699115188451381184248527003068999991338"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273215257,
+        "message": "END RequestId: 03035456-3e9c-4b70-adde-66ced70398a9\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893275266645444313719074522719966799651430505971755"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273215257,
+        "message": "REPORT RequestId: 03035456-3e9c-4b70-adde-66ced70398a9\tDuration: 338.70 ms\tBilled Duration: 339 ms\tMemory Size: 512 MB\tMax Memory Used: 113 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893275266645444313719074522719966799651430505971756"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273215463,
+        "message": "START RequestId: 59677028-0c20-4fe9-b220-c77f7f3f2d7a Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893279860598955211027441679077930965213900737937453"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273215500,
+        "message": "FILE_TRANSFER RequestId: 59677028-0c20-4fe9-b220-c77f7f3f2d7a\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1005\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1005\t LocalFilePath: /tmp/input/ORTHOMCL1005\t FileSize: 4803 bytes\t TransferDuration: 36.03320000001986 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893280685726527556660497915899507053203276459212846"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273215500,
+        "message": "CONSUMED_FILES_INFO RequestId: 59677028-0c20-4fe9-b220-c77f7f3f2d7a\t FilesCount: 1 files\t FilesSize: 4803 bytes\t TransferDuration: 36.03320000001986 ms\t ConsumedFiles: ['ORTHOMCL1005']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893280685726527556660497915899507053203276459212847"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273215732,
+        "message": "[INFO] 2025-04-21T22:06:55GMT TREE_CONSTRUCTOR RequestId: 59677028-0c20-4fe9-b220-c77f7f3f2d7a\t Duration: 219.81740000001082 ms\t InputFile:ORTHOMCL1005\t OutputFile:['tree_ORTHOMCL1005.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893285859499413615765066752186146307623145846669360"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273215732,
+        "message": "[INFO]\t2025-04-21T22:06:55.720Z\t59677028-0c20-4fe9-b220-c77f7f3f2d7a\tTREE_CONSTRUCTOR RequestId: 59677028-0c20-4fe9-b220-c77f7f3f2d7a\t Duration: 219.81740000001082 ms\t InputFile:ORTHOMCL1005\t OutputFile:['tree_ORTHOMCL1005.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893285859499413615765066752186146307623145846669361"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273215868,
+        "message": "FILE_TRANSFER RequestId: 59677028-0c20-4fe9-b220-c77f7f3f2d7a\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1005.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1005.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1005.nexus\t FileSize: 405 bytes\t TransferDuration: 35.22339099998817 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893288892400760615929814001043831387800310660005938"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273215868,
+        "message": "PRODUCED_FILES_INFO RequestId: 59677028-0c20-4fe9-b220-c77f7f3f2d7a\t FilesCount: 1 files\t FilesSize: 405 bytes\t TransferDuration: 35.22339099998817 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1005.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893288892400760615929814001043831387800310660005939"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273215869,
+        "message": "END RequestId: 59677028-0c20-4fe9-b220-c77f7f3f2d7a\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893288914701505814460437142579549660448672165986356"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273215869,
+        "message": "REPORT RequestId: 59677028-0c20-4fe9-b220-c77f7f3f2d7a\tDuration: 405.70 ms\tBilled Duration: 406 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893288914701505814460437142579549660448672165986357"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216063,
+        "message": "START RequestId: 4d248e41-862a-4eef-957e-d6406b09e4bd Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893293241046074329401326600508894554230804326187062"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216132,
+        "message": "FILE_TRANSFER RequestId: 4d248e41-862a-4eef-957e-d6406b09e4bd\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1008\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1008\t LocalFilePath: /tmp/input/ORTHOMCL1008\t FileSize: 3431 bytes\t TransferDuration: 69.07472900002176 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893294779797493028014323366473455366967748238835767"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216132,
+        "message": "CONSUMED_FILES_INFO RequestId: 4d248e41-862a-4eef-957e-d6406b09e4bd\t FilesCount: 1 files\t FilesSize: 3431 bytes\t TransferDuration: 69.07472900002176 ms\t ConsumedFiles: ['ORTHOMCL1008']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893294779797493028014323366473455366967748238835768"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216275,
+        "message": "[INFO]\t2025-04-21T22:06:56.274Z\t4d248e41-862a-4eef-957e-d6406b09e4bd\tTREE_CONSTRUCTOR RequestId: 4d248e41-862a-4eef-957e-d6406b09e4bd\t Duration: 141.8518689999928 ms\t InputFile:ORTHOMCL1008\t OutputFile:['tree_ORTHOMCL1008.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893297968804056417893432606081168355683443594035257"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216275,
+        "message": "[INFO] 2025-04-21T22:06:56GMT TREE_CONSTRUCTOR RequestId: 4d248e41-862a-4eef-957e-d6406b09e4bd\t Duration: 141.8518689999928 ms\t InputFile:ORTHOMCL1008\t OutputFile:['tree_ORTHOMCL1008.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893297968804056417893432606081168355683443594035258"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216416,
+        "message": "FILE_TRANSFER RequestId: 4d248e41-862a-4eef-957e-d6406b09e4bd\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1008.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1008.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1008.nexus\t FileSize: 399 bytes\t TransferDuration: 41.142980000017815 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893301113209129410711295562617444799102415937273915"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216416,
+        "message": "PRODUCED_FILES_INFO RequestId: 4d248e41-862a-4eef-957e-d6406b09e4bd\t FilesCount: 1 files\t FilesSize: 399 bytes\t TransferDuration: 41.142980000017815 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1008.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893301113209129410711295562617444799102415937273916"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216417,
+        "message": "END RequestId: 4d248e41-862a-4eef-957e-d6406b09e4bd\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893301135509874609241918704153163071750777443254333"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216417,
+        "message": "REPORT RequestId: 4d248e41-862a-4eef-957e-d6406b09e4bd\tDuration: 354.48 ms\tBilled Duration: 355 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893301135509874609241918704153163071750777443254334"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216584,
+        "message": "START RequestId: 02754f20-4575-4109-802d-8cd16e6debbc Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893304859734322763855983340618114604027148941983807"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216624,
+        "message": "FILE_TRANSFER RequestId: 02754f20-4575-4109-802d-8cd16e6debbc\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1009\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1009\t LocalFilePath: /tmp/input/ORTHOMCL1009\t FileSize: 2738 bytes\t TransferDuration: 38.72409999996762 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893305751764130705080909002046845509961609181200448"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216624,
+        "message": "CONSUMED_FILES_INFO RequestId: 02754f20-4575-4109-802d-8cd16e6debbc\t FilesCount: 1 files\t FilesSize: 2738 bytes\t TransferDuration: 38.72409999996762 ms\t ConsumedFiles: ['ORTHOMCL1009']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893305751764130705080909002046845509961609181200449"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216678,
+        "message": "[INFO]\t2025-04-21T22:06:56.678Z\t02754f20-4575-4109-802d-8cd16e6debbc\tTREE_CONSTRUCTOR RequestId: 02754f20-4575-4109-802d-8cd16e6debbc\t Duration: 54.47098000001915 ms\t InputFile:ORTHOMCL1009\t OutputFile:['tree_ORTHOMCL1009.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893306956004371425734558644975632232973130504142914"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216678,
+        "message": "[INFO] 2025-04-21T22:06:56GMT TREE_CONSTRUCTOR RequestId: 02754f20-4575-4109-802d-8cd16e6debbc\t Duration: 54.47098000001915 ms\t InputFile:ORTHOMCL1009\t OutputFile:['tree_ORTHOMCL1009.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893306956004371425734558644975632232973130504142915"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216818,
+        "message": "FILE_TRANSFER RequestId: 02754f20-4575-4109-802d-8cd16e6debbc\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1009.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1009.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1009.nexus\t FileSize: 406 bytes\t TransferDuration: 39.07238900001175 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893310078108699220021798459976190403743741341401156"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216818,
+        "message": "PRODUCED_FILES_INFO RequestId: 02754f20-4575-4109-802d-8cd16e6debbc\t FilesCount: 1 files\t FilesSize: 406 bytes\t TransferDuration: 39.07238900001175 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1009.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893310078108699220021798459976190403743741341401157"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216819,
+        "message": "END RequestId: 02754f20-4575-4109-802d-8cd16e6debbc\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893310100409444418552421601511908676392102847381574"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216819,
+        "message": "REPORT RequestId: 02754f20-4575-4109-802d-8cd16e6debbc\tDuration: 234.71 ms\tBilled Duration: 235 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893310100409444418552421601511908676392102847381575"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273216995,
+        "message": "START RequestId: f5bbfd06-4ad8-494a-9aa8-4f73983d2085 Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893314025340599359942094511798324662503727899934792"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217038,
+        "message": "FILE_TRANSFER RequestId: f5bbfd06-4ad8-494a-9aa8-4f73983d2085\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1039\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1039\t LocalFilePath: /tmp/input/ORTHOMCL1039\t FileSize: 4621 bytes\t TransferDuration: 42.676209999967796 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893314984272642896758889597834210386383272657092681"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217038,
+        "message": "CONSUMED_FILES_INFO RequestId: f5bbfd06-4ad8-494a-9aa8-4f73983d2085\t FilesCount: 1 files\t FilesSize: 4621 bytes\t TransferDuration: 42.676209999967796 ms\t ConsumedFiles: ['ORTHOMCL1039']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893314984272642896758889597834210386383272657092682"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217215,
+        "message": "[INFO]\t2025-04-21T22:06:57.215Z\tf5bbfd06-4ad8-494a-9aa8-4f73983d2085\tTREE_CONSTRUCTOR RequestId: f5bbfd06-4ad8-494a-9aa8-4f73983d2085\t Duration: 177.2177600000191 ms\t InputFile:ORTHOMCL1039\t OutputFile:['tree_ORTHOMCL1039.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893318931504543036679185649656344645143259215626315"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217215,
+        "message": "[INFO] 2025-04-21T22:06:57GMT TREE_CONSTRUCTOR RequestId: f5bbfd06-4ad8-494a-9aa8-4f73983d2085\t Duration: 177.2177600000191 ms\t InputFile:ORTHOMCL1039\t OutputFile:['tree_ORTHOMCL1039.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893318931504543036679185649656344645143259215626316"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217358,
+        "message": "FILE_TRANSFER RequestId: f5bbfd06-4ad8-494a-9aa8-4f73983d2085\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1039.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1039.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1039.nexus\t FileSize: 405 bytes\t TransferDuration: 42.100749999974596 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893322120511106426558294889264057633858954570825805"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217358,
+        "message": "PRODUCED_FILES_INFO RequestId: f5bbfd06-4ad8-494a-9aa8-4f73983d2085\t FilesCount: 1 files\t FilesSize: 405 bytes\t TransferDuration: 42.100749999974596 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1039.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893322120511106426558294889264057633858954570825806"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217359,
+        "message": "END RequestId: f5bbfd06-4ad8-494a-9aa8-4f73983d2085\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893322142811851625088918030799775906507316076806223"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217359,
+        "message": "REPORT RequestId: f5bbfd06-4ad8-494a-9aa8-4f73983d2085\tDuration: 364.44 ms\tBilled Duration: 365 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893322142811851625088918030799775906507316076806224"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217510,
+        "message": "START RequestId: 5df2f73b-d647-4ed9-af89-2501b9552f04 Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893325510224376603213012402693235076409903479849041"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217555,
+        "message": "FILE_TRANSFER RequestId: 5df2f73b-d647-4ed9-af89-2501b9552f04\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1074\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1074\t LocalFilePath: /tmp/input/ORTHOMCL1074\t FileSize: 4964 bytes\t TransferDuration: 44.26773000000139 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893326513757910537091053771800557345586171248967762"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217555,
+        "message": "CONSUMED_FILES_INFO RequestId: 5df2f73b-d647-4ed9-af89-2501b9552f04\t FilesCount: 1 files\t FilesSize: 4964 bytes\t TransferDuration: 44.26773000000139 ms\t ConsumedFiles: ['ORTHOMCL1074']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893326513757910537091053771800557345586171248967763"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217796,
+        "message": "[INFO]\t2025-04-21T22:06:57.795Z\t5df2f73b-d647-4ed9-af89-2501b9552f04\tTREE_CONSTRUCTOR RequestId: 5df2f73b-d647-4ed9-af89-2501b9552f04\t Duration: 240.43971999998348 ms\t InputFile:ORTHOMCL1074\t OutputFile:['tree_ORTHOMCL1074.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893331888237503382971230881908661053841294190248020"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217796,
+        "message": "[INFO] 2025-04-21T22:06:57GMT TREE_CONSTRUCTOR RequestId: 5df2f73b-d647-4ed9-af89-2501b9552f04\t Duration: 240.43971999998348 ms\t InputFile:ORTHOMCL1074\t OutputFile:['tree_ORTHOMCL1074.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893331888237503382971230881908661053841294190248021"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217936,
+        "message": "FILE_TRANSFER RequestId: 5df2f73b-d647-4ed9-af89-2501b9552f04\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1074.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1074.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1074.nexus\t FileSize: 397 bytes\t TransferDuration: 39.65325999996594 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893335010341831177258470696909219224611905027506262"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217936,
+        "message": "PRODUCED_FILES_INFO RequestId: 5df2f73b-d647-4ed9-af89-2501b9552f04\t FilesCount: 1 files\t FilesSize: 397 bytes\t TransferDuration: 39.65325999996594 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1074.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893335010341831177258470696909219224611905027506263"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217937,
+        "message": "END RequestId: 5df2f73b-d647-4ed9-af89-2501b9552f04\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893335032642576375789093838444937497260266533486680"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273217937,
+        "message": "REPORT RequestId: 5df2f73b-d647-4ed9-af89-2501b9552f04\tDuration: 427.16 ms\tBilled Duration: 428 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893335032642576375789093838444937497260266533486681"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218126,
+        "message": "START RequestId: b5aeb2b9-18bc-46eb-81a1-7459260e1206 Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893339247483418898076867588695691027800591163785306"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218176,
+        "message": "FILE_TRANSFER RequestId: b5aeb2b9-18bc-46eb-81a1-7459260e1206\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1125\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1125\t LocalFilePath: /tmp/input/ORTHOMCL1125\t FileSize: 2207 bytes\t TransferDuration: 49.39412999999604 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893340362520678824608024665481604660218666462806107"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218176,
+        "message": "CONSUMED_FILES_INFO RequestId: b5aeb2b9-18bc-46eb-81a1-7459260e1206\t FilesCount: 1 files\t FilesSize: 2207 bytes\t TransferDuration: 49.39412999999604 ms\t ConsumedFiles: ['ORTHOMCL1125']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893340362520678824608024665481604660218666462806108"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218199,
+        "message": "[INFO]\t2025-04-21T22:06:58.199Z\tb5aeb2b9-18bc-46eb-81a1-7459260e1206\tTREE_CONSTRUCTOR RequestId: b5aeb2b9-18bc-46eb-81a1-7459260e1206\t Duration: 22.547819999999774 ms\t InputFile:ORTHOMCL1125\t OutputFile:['tree_ORTHOMCL1125.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893340875437818390812356920803124931130981100355677"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218199,
+        "message": "[INFO] 2025-04-21T22:06:58GMT TREE_CONSTRUCTOR RequestId: b5aeb2b9-18bc-46eb-81a1-7459260e1206\t Duration: 22.547819999999774 ms\t InputFile:ORTHOMCL1125\t OutputFile:['tree_ORTHOMCL1125.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893340875437818390812356920803124931130981100355678"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218342,
+        "message": "FILE_TRANSFER RequestId: b5aeb2b9-18bc-46eb-81a1-7459260e1206\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1125.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1125.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1125.nexus\t FileSize: 407 bytes\t TransferDuration: 43.148009999981696 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893344064444381780691466160410837919846676455555167"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218343,
+        "message": "PRODUCED_FILES_INFO RequestId: b5aeb2b9-18bc-46eb-81a1-7459260e1206\t FilesCount: 1 files\t FilesSize: 407 bytes\t TransferDuration: 43.148009999981696 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1125.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893344086745126979222089301946556192495037961535584"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218344,
+        "message": "END RequestId: b5aeb2b9-18bc-46eb-81a1-7459260e1206\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893344109045872177752712443482274465143399467516001"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218344,
+        "message": "REPORT RequestId: b5aeb2b9-18bc-46eb-81a1-7459260e1206\tDuration: 217.50 ms\tBilled Duration: 218 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893344109045872177752712443482274465143399467516002"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218525,
+        "message": "START RequestId: c61540bf-7ecd-4c13-ad41-e3336a6bb9c2 Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893348145480753111795501061447281814496832049971299"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218572,
+        "message": "FILE_TRANSFER RequestId: c61540bf-7ecd-4c13-ad41-e3336a6bb9c2\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1129\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1129\t LocalFilePath: /tmp/input/ORTHOMCL1129\t FileSize: 3292 bytes\t TransferDuration: 46.20195999996213 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893349193615777442734788713626040628969822831050852"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218572,
+        "message": "CONSUMED_FILES_INFO RequestId: c61540bf-7ecd-4c13-ad41-e3336a6bb9c2\t FilesCount: 1 files\t FilesSize: 3292 bytes\t TransferDuration: 46.20195999996213 ms\t ConsumedFiles: ['ORTHOMCL1129']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893349193615777442734788713626040628969822831050853"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218617,
+        "message": "[INFO]\t2025-04-21T22:06:58.617Z\tc61540bf-7ecd-4c13-ad41-e3336a6bb9c2\tTREE_CONSTRUCTOR RequestId: c61540bf-7ecd-4c13-ad41-e3336a6bb9c2\t Duration: 45.35792999996602 ms\t InputFile:ORTHOMCL1129\t OutputFile:['tree_ORTHOMCL1129.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893350197149311376612830082733362898146090600169574"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218617,
+        "message": "[INFO] 2025-04-21T22:06:58GMT TREE_CONSTRUCTOR RequestId: c61540bf-7ecd-4c13-ad41-e3336a6bb9c2\t Duration: 45.35792999996602 ms\t InputFile:ORTHOMCL1129\t OutputFile:['tree_ORTHOMCL1129.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893350197149311376612830082733362898146090600169575"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218753,
+        "message": "FILE_TRANSFER RequestId: c61540bf-7ecd-4c13-ad41-e3336a6bb9c2\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1129.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1129.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1129.nexus\t FileSize: 407 bytes\t TransferDuration: 35.88051000002679 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893353230050658376777577331591047978323255413506152"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218754,
+        "message": "PRODUCED_FILES_INFO RequestId: c61540bf-7ecd-4c13-ad41-e3336a6bb9c2\t FilesCount: 1 files\t FilesSize: 407 bytes\t TransferDuration: 35.88051000002679 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1129.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893353252351403575308200473126766250971616919486569"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218755,
+        "message": "END RequestId: c61540bf-7ecd-4c13-ad41-e3336a6bb9c2\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893353274652148773838823614662484523619978425466986"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218755,
+        "message": "REPORT RequestId: c61540bf-7ecd-4c13-ad41-e3336a6bb9c2\tDuration: 229.86 ms\tBilled Duration: 230 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893353274652148773838823614662484523619978425466987"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273218965,
+        "message": "START RequestId: e2163c85-8094-45ae-b90b-dd4b8bc60851 Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893357957808640465269683337163321779775894681354348"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219005,
+        "message": "FILE_TRANSFER RequestId: e2163c85-8094-45ae-b90b-dd4b8bc60851\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1136\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1136\t LocalFilePath: /tmp/input/ORTHOMCL1136\t FileSize: 4825 bytes\t TransferDuration: 40.179799999975785 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893358849838448406494608998592052685710354920570989"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219006,
+        "message": "CONSUMED_FILES_INFO RequestId: e2163c85-8094-45ae-b90b-dd4b8bc60851\t FilesCount: 1 files\t FilesSize: 4825 bytes\t TransferDuration: 40.179799999975785 ms\t ConsumedFiles: ['ORTHOMCL1136']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893358872139193605025232140127770958358716426551406"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219194,
+        "message": "[INFO]\t2025-04-21T22:06:59.194Z\te2163c85-8094-45ae-b90b-dd4b8bc60851\tTREE_CONSTRUCTOR RequestId: e2163c85-8094-45ae-b90b-dd4b8bc60851\t Duration: 188.51314999994884 ms\t InputFile:ORTHOMCL1136\t OutputFile:['tree_ORTHOMCL1136.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893363064679290928782382748842806216250679550869615"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219194,
+        "message": "[INFO] 2025-04-21T22:06:59GMT TREE_CONSTRUCTOR RequestId: e2163c85-8094-45ae-b90b-dd4b8bc60851\t Duration: 188.51314999994884 ms\t InputFile:ORTHOMCL1136\t OutputFile:['tree_ORTHOMCL1136.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893363064679290928782382748842806216250679550869616"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219330,
+        "message": "FILE_TRANSFER RequestId: e2163c85-8094-45ae-b90b-dd4b8bc60851\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1136.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1136.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1136.nexus\t FileSize: 403 bytes\t TransferDuration: 35.52431999997907 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893366097580637928947129997700491296427844364206193"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219331,
+        "message": "PRODUCED_FILES_INFO RequestId: e2163c85-8094-45ae-b90b-dd4b8bc60851\t FilesCount: 1 files\t FilesSize: 403 bytes\t TransferDuration: 35.52431999997907 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1136.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893366119881383127477753139236209569076205870186610"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219332,
+        "message": "END RequestId: e2163c85-8094-45ae-b90b-dd4b8bc60851\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893366142182128326008376280771927841724567376167027"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219332,
+        "message": "REPORT RequestId: e2163c85-8094-45ae-b90b-dd4b8bc60851\tDuration: 367.42 ms\tBilled Duration: 368 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893366142182128326008376280771927841724567376167028"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219547,
+        "message": "START RequestId: f06c1ad7-1b5f-484b-8c27-3fd60947aac9 Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893370936842346010092351710951356461122291161956469"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219602,
+        "message": "FILE_TRANSFER RequestId: f06c1ad7-1b5f-484b-8c27-3fd60947aac9\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1147\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1147\t LocalFilePath: /tmp/input/ORTHOMCL1147\t FileSize: 3972 bytes\t TransferDuration: 51.136229000007916 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893372163383331929276624495415861456782173990879350"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219602,
+        "message": "CONSUMED_FILES_INFO RequestId: f06c1ad7-1b5f-484b-8c27-3fd60947aac9\t FilesCount: 1 files\t FilesSize: 3972 bytes\t TransferDuration: 51.136229000007916 ms\t ConsumedFiles: ['ORTHOMCL1147']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893372163383331929276624495415861456782173990879351"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219722,
+        "message": "[INFO]\t2025-04-21T22:06:59.722Z\tf06c1ad7-1b5f-484b-8c27-3fd60947aac9\tTREE_CONSTRUCTOR RequestId: f06c1ad7-1b5f-484b-8c27-3fd60947aac9\t Duration: 123.5154000000307 ms\t InputFile:ORTHOMCL1147\t OutputFile:['tree_ORTHOMCL1147.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893374839472755752951401479702054174585554708529272"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219722,
+        "message": "[INFO] 2025-04-21T22:06:59GMT TREE_CONSTRUCTOR RequestId: f06c1ad7-1b5f-484b-8c27-3fd60947aac9\t Duration: 123.5154000000307 ms\t InputFile:ORTHOMCL1147\t OutputFile:['tree_ORTHOMCL1147.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893374839472755752951401479702054174585554708529273"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219862,
+        "message": "FILE_TRANSFER RequestId: f06c1ad7-1b5f-484b-8c27-3fd60947aac9\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1147.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1147.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1147.nexus\t FileSize: 409 bytes\t TransferDuration: 39.090659000009964 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893377961577083547238641294702612345356165545787514"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219862,
+        "message": "PRODUCED_FILES_INFO RequestId: f06c1ad7-1b5f-484b-8c27-3fd60947aac9\t FilesCount: 1 files\t FilesSize: 409 bytes\t TransferDuration: 39.090659000009964 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1147.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893377961577083547238641294702612345356165545787515"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219863,
+        "message": "END RequestId: f06c1ad7-1b5f-484b-8c27-3fd60947aac9\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893377983877828745769264436238330618004527051767932"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273219863,
+        "message": "REPORT RequestId: f06c1ad7-1b5f-484b-8c27-3fd60947aac9\tDuration: 316.46 ms\tBilled Duration: 317 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893377983877828745769264436238330618004527051767933"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220068,
+        "message": "START RequestId: da249aec-4c82-4352-980d-7ff8a36b0c08 Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893382555530594444547008451060576510918635777753214"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220107,
+        "message": "FILE_TRANSFER RequestId: da249aec-4c82-4352-980d-7ff8a36b0c08\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1311\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1311\t LocalFilePath: /tmp/input/ORTHOMCL1311\t FileSize: 5874 bytes\t TransferDuration: 38.985150000030444 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893383425259657187241310970953589144204734510989439"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220108,
+        "message": "CONSUMED_FILES_INFO RequestId: da249aec-4c82-4352-980d-7ff8a36b0c08\t FilesCount: 1 files\t FilesSize: 5874 bytes\t TransferDuration: 38.985150000030444 ms\t ConsumedFiles: ['ORTHOMCL1311']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893383447560402385771934112489307416853096016969856"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220353,
+        "message": "[INFO]\t2025-04-21T22:07:00.353Z\tda249aec-4c82-4352-980d-7ff8a36b0c08\tTREE_CONSTRUCTOR RequestId: da249aec-4c82-4352-980d-7ff8a36b0c08\t Duration: 245.39241899998387 ms\t InputFile:ORTHOMCL1311\t OutputFile:['tree_ORTHOMCL1311.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893388911242976025774603788740284215701664982171777"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220353,
+        "message": "[INFO] 2025-04-21T22:07:00GMT TREE_CONSTRUCTOR RequestId: da249aec-4c82-4352-980d-7ff8a36b0c08\t Duration: 245.39241899998387 ms\t InputFile:ORTHOMCL1311\t OutputFile:['tree_ORTHOMCL1311.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893388911242976025774603788740284215701664982171778"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220496,
+        "message": "FILE_TRANSFER RequestId: da249aec-4c82-4352-980d-7ff8a36b0c08\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1311.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1311.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1311.nexus\t FileSize: 357 bytes\t TransferDuration: 42.19248999999081 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893392100249539415653713028347997204417360337371267"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220496,
+        "message": "PRODUCED_FILES_INFO RequestId: da249aec-4c82-4352-980d-7ff8a36b0c08\t FilesCount: 1 files\t FilesSize: 357 bytes\t TransferDuration: 42.19248999999081 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1311.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893392100249539415653713028347997204417360337371268"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220497,
+        "message": "END RequestId: da249aec-4c82-4352-980d-7ff8a36b0c08\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893392122550284614184336169883715477065721843351685"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220497,
+        "message": "REPORT RequestId: da249aec-4c82-4352-980d-7ff8a36b0c08\tDuration: 429.03 ms\tBilled Duration: 430 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893392122550284614184336169883715477065721843351686"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220674,
+        "message": "START RequestId: 62326f43-d027-43d6-b59a-b2436d0a75df Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893396069782184754104632221705849735825708401885319"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220743,
+        "message": "FILE_TRANSFER RequestId: 62326f43-d027-43d6-b59a-b2436d0a75df\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1491\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1491\t LocalFilePath: /tmp/input/ORTHOMCL1491\t FileSize: 3740 bytes\t TransferDuration: 68.3937690000107 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893397608533603452717628987670410548562652314534024"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220743,
+        "message": "CONSUMED_FILES_INFO RequestId: 62326f43-d027-43d6-b59a-b2436d0a75df\t FilesCount: 1 files\t FilesSize: 3740 bytes\t TransferDuration: 68.3937690000107 ms\t ConsumedFiles: ['ORTHOMCL1491']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893397608533603452717628987670410548562652314534025"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220774,
+        "message": "[INFO]\t2025-04-21T22:07:00.774Z\t62326f43-d027-43d6-b59a-b2436d0a75df\tTREE_CONSTRUCTOR RequestId: 62326f43-d027-43d6-b59a-b2436d0a75df\t Duration: 30.419120000033217 ms\t InputFile:ORTHOMCL1491\t OutputFile:['tree_ORTHOMCL1491.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893398299856704607166946375277677000661858999926922"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220774,
+        "message": "[INFO] 2025-04-21T22:07:00GMT TREE_CONSTRUCTOR RequestId: 62326f43-d027-43d6-b59a-b2436d0a75df\t Duration: 30.419120000033217 ms\t InputFile:ORTHOMCL1491\t OutputFile:['tree_ORTHOMCL1491.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893398299856704607166946375277677000661858999926923"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220916,
+        "message": "FILE_TRANSFER RequestId: 62326f43-d027-43d6-b59a-b2436d0a75df\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1491.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1491.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1491.nexus\t FileSize: 347 bytes\t TransferDuration: 39.741229000014755 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893401466562522798515432473349671716729192849145996"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220916,
+        "message": "PRODUCED_FILES_INFO RequestId: 62326f43-d027-43d6-b59a-b2436d0a75df\t FilesCount: 1 files\t FilesSize: 347 bytes\t TransferDuration: 39.741229000014755 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1491.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893401466562522798515432473349671716729192849145997"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220917,
+        "message": "END RequestId: 62326f43-d027-43d6-b59a-b2436d0a75df\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893401488863267997046055614885389989377554355126414"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273220917,
+        "message": "REPORT RequestId: 62326f43-d027-43d6-b59a-b2436d0a75df\tDuration: 243.30 ms\tBilled Duration: 244 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893401488863267997046055614885389989377554355126415"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221107,
+        "message": "START RequestId: 543de592-e02c-43a0-a993-52566593c435 Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893405726004855717864452506671861792566240491405456"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221192,
+        "message": "FILE_TRANSFER RequestId: 543de592-e02c-43a0-a993-52566593c435\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1677\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1677\t LocalFilePath: /tmp/input/ORTHOMCL1677\t FileSize: 2984 bytes\t TransferDuration: 84.97805999996899 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893407621568197592967419537207914967676968499740817"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221192,
+        "message": "CONSUMED_FILES_INFO RequestId: 543de592-e02c-43a0-a993-52566593c435\t FilesCount: 1 files\t FilesSize: 2984 bytes\t TransferDuration: 84.97805999996899 ms\t ConsumedFiles: ['ORTHOMCL1677']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893407621568197592967419537207914967676968499740818"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221236,
+        "message": "[INFO]\t2025-04-21T22:07:01.236Z\t543de592-e02c-43a0-a993-52566593c435\tTREE_CONSTRUCTOR RequestId: 543de592-e02c-43a0-a993-52566593c435\t Duration: 43.735751000042455 ms\t InputFile:ORTHOMCL1677\t OutputFile:['tree_ORTHOMCL1677.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893408602800986328314837764779518964204874762879123"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221236,
+        "message": "[INFO] 2025-04-21T22:07:01GMT TREE_CONSTRUCTOR RequestId: 543de592-e02c-43a0-a993-52566593c435\t Duration: 43.735751000042455 ms\t InputFile:ORTHOMCL1677\t OutputFile:['tree_ORTHOMCL1677.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893408602800986328314837764779518964204874762879124"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221379,
+        "message": "FILE_TRANSFER RequestId: 543de592-e02c-43a0-a993-52566593c435\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1677.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1677.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1677.nexus\t FileSize: 355 bytes\t TransferDuration: 42.32892999999649 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893411791807549718193947004387231952920570118078613"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221379,
+        "message": "PRODUCED_FILES_INFO RequestId: 543de592-e02c-43a0-a993-52566593c435\t FilesCount: 1 files\t FilesSize: 355 bytes\t TransferDuration: 42.32892999999649 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1677.nexus']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893411791807549718193947004387231952920570118078614"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221381,
+        "message": "END RequestId: 543de592-e02c-43a0-a993-52566593c435\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893411836409040115255193287458668498217293130039447"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221381,
+        "message": "REPORT RequestId: 543de592-e02c-43a0-a993-52566593c435\tDuration: 274.14 ms\tBilled Duration: 275 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893411836409040115255193287458668498217293130039448"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221607,
+        "message": "START RequestId: 442a95e1-48a4-4a28-9cc5-a66718427c4c Version: $LATEST\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893416876377454983176023274530998116746993481613465"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221647,
+        "message": "FILE_TRANSFER RequestId: 442a95e1-48a4-4a28-9cc5-a66718427c4c\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1678\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1678\t LocalFilePath: /tmp/input/ORTHOMCL1678\t FileSize: 3992 bytes\t TransferDuration: 39.078539999991335 ms\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893417768407262924400948935959729022681453720830106"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221647,
+        "message": "CONSUMED_FILES_INFO RequestId: 442a95e1-48a4-4a28-9cc5-a66718427c4c\t FilesCount: 1 files\t FilesSize: 3992 bytes\t TransferDuration: 39.078539999991335 ms\t ConsumedFiles: ['ORTHOMCL1678']\n",
+        "ingestionTime": 1745273221794,
+        "eventId": "38920893417768407262924400948935959729022681453720830107"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221795,
+        "message": "[INFO]\t2025-04-21T22:07:01.794Z\t442a95e1-48a4-4a28-9cc5-a66718427c4c\tTREE_CONSTRUCTOR RequestId: 442a95e1-48a4-4a28-9cc5-a66718427c4c\t Duration: 147.4826400000211 ms\t InputFile:ORTHOMCL1678\t OutputFile:['tree_ORTHOMCL1678.nexus']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893421068917552306933184791472783289272032669728768"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221795,
+        "message": "[INFO] 2025-04-21T22:07:01GMT TREE_CONSTRUCTOR RequestId: 442a95e1-48a4-4a28-9cc5-a66718427c4c\t Duration: 147.4826400000211 ms\t InputFile:ORTHOMCL1678\t OutputFile:['tree_ORTHOMCL1678.nexus']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893421068917552306933184791472783289272032669728769"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221932,
+        "message": "FILE_TRANSFER RequestId: 442a95e1-48a4-4a28-9cc5-a66718427c4c\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1678.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1678.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1678.nexus\t FileSize: 355 bytes\t TransferDuration: 37.15405000002647 ms\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893424124119644505628555181866186642097558989045762"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221932,
+        "message": "PRODUCED_FILES_INFO RequestId: 442a95e1-48a4-4a28-9cc5-a66718427c4c\t FilesCount: 1 files\t FilesSize: 355 bytes\t TransferDuration: 37.15405000002647 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1678.nexus']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893424124119644505628555181866186642097558989045763"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221933,
+        "message": "END RequestId: 442a95e1-48a4-4a28-9cc5-a66718427c4c\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893424146420389704159178323401904914745920495026180"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273221933,
+        "message": "REPORT RequestId: 442a95e1-48a4-4a28-9cc5-a66718427c4c\tDuration: 326.28 ms\tBilled Duration: 327 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893424146420389704159178323401904914745920495026181"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222106,
+        "message": "START RequestId: fb879968-bb53-4f57-b5c8-dca20d688068 Version: $LATEST\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893428004449309049956981809081166082912461029638150"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222183,
+        "message": "FILE_TRANSFER RequestId: fb879968-bb53-4f57-b5c8-dca20d688068\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1762\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1762\t LocalFilePath: /tmp/input/ORTHOMCL1762\t FileSize: 5202 bytes\t TransferDuration: 76.2528399999951 ms\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893429721606689336814963707331473076836296990130183"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222183,
+        "message": "CONSUMED_FILES_INFO RequestId: fb879968-bb53-4f57-b5c8-dca20d688068\t FilesCount: 1 files\t FilesSize: 5202 bytes\t TransferDuration: 76.2528399999951 ms\t ConsumedFiles: ['ORTHOMCL1762']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893429721606689336814963707331473076836296990130184"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222336,
+        "message": "[INFO]\t2025-04-21T22:07:02.336Z\tfb879968-bb53-4f57-b5c8-dca20d688068\tTREE_CONSTRUCTOR RequestId: fb879968-bb53-4f57-b5c8-dca20d688068\t Duration: 152.64789999997674 ms\t InputFile:ORTHOMCL1762\t OutputFile:['tree_ORTHOMCL1762.nexus']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893433133620704712000304362296368792035607405133833"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222336,
+        "message": "[INFO] 2025-04-21T22:07:02GMT TREE_CONSTRUCTOR RequestId: fb879968-bb53-4f57-b5c8-dca20d688068\t Duration: 152.64789999997674 ms\t InputFile:ORTHOMCL1762\t OutputFile:['tree_ORTHOMCL1762.nexus']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893433133620704712000304362296368792035607405133834"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222475,
+        "message": "FILE_TRANSFER RequestId: fb879968-bb53-4f57-b5c8-dca20d688068\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1762.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1762.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1762.nexus\t FileSize: 347 bytes\t TransferDuration: 38.69678000000931 ms\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893436233424287307756921035761208690157856736411659"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222475,
+        "message": "PRODUCED_FILES_INFO RequestId: fb879968-bb53-4f57-b5c8-dca20d688068\t FilesCount: 1 files\t FilesSize: 347 bytes\t TransferDuration: 38.69678000000931 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1762.nexus']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893436233424287307756921035761208690157856736411660"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222476,
+        "message": "END RequestId: fb879968-bb53-4f57-b5c8-dca20d688068\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893436255725032506287544177296926962806218242392077"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222476,
+        "message": "REPORT RequestId: fb879968-bb53-4f57-b5c8-dca20d688068\tDuration: 370.08 ms\tBilled Duration: 371 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893436255725032506287544177296926962806218242392078"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222625,
+        "message": "START RequestId: bd948a43-c8b4-459d-86f8-02638c5962a3 Version: $LATEST\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893439578536067087350392266118949587412082633474063"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222670,
+        "message": "FILE_TRANSFER RequestId: bd948a43-c8b4-459d-86f8-02638c5962a3\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1772\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1772\t LocalFilePath: /tmp/input/ORTHOMCL1772\t FileSize: 2928 bytes\t TransferDuration: 44.27068999996209 ms\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893440582069601021228433635226271856588350402592784"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222670,
+        "message": "CONSUMED_FILES_INFO RequestId: bd948a43-c8b4-459d-86f8-02638c5962a3\t FilesCount: 1 files\t FilesSize: 2928 bytes\t TransferDuration: 44.27068999996209 ms\t ConsumedFiles: ['ORTHOMCL1772']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893440582069601021228433635226271856588350402592785"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222735,
+        "message": "[INFO]\t2025-04-21T22:07:02.734Z\tbd948a43-c8b4-459d-86f8-02638c5962a3\tTREE_CONSTRUCTOR RequestId: bd948a43-c8b4-459d-86f8-02638c5962a3\t Duration: 64.54142000001184 ms\t InputFile:ORTHOMCL1772\t OutputFile:['tree_ORTHOMCL1772.nexus']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893442031618038925718937835047959578731848291319826"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222735,
+        "message": "[INFO] 2025-04-21T22:07:02GMT TREE_CONSTRUCTOR RequestId: bd948a43-c8b4-459d-86f8-02638c5962a3\t Duration: 64.54142000001184 ms\t InputFile:ORTHOMCL1772\t OutputFile:['tree_ORTHOMCL1772.nexus']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893442031618038925718937835047959578731848291319827"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222898,
+        "message": "FILE_TRANSFER RequestId: bd948a43-c8b4-459d-86f8-02638c5962a3\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1772.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1772.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1772.nexus\t FileSize: 341 bytes\t TransferDuration: 45.30194999995274 ms\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893445666639506286210509905370038020414773766127636"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222898,
+        "message": "PRODUCED_FILES_INFO RequestId: bd948a43-c8b4-459d-86f8-02638c5962a3\t FilesCount: 1 files\t FilesSize: 341 bytes\t TransferDuration: 45.30194999995274 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1772.nexus']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893445666639506286210509905370038020414773766127637"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222899,
+        "message": "END RequestId: bd948a43-c8b4-459d-86f8-02638c5962a3\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893445688940251484741133046905756293063135272108054"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273222899,
+        "message": "REPORT RequestId: bd948a43-c8b4-459d-86f8-02638c5962a3\tDuration: 274.09 ms\tBilled Duration: 275 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893445688940251484741133046905756293063135272108055"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223139,
+        "message": "START RequestId: e02ded91-c94a-45f5-ab8e-5ec02ff553b6 Version: $LATEST\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893451041119099132090687015478141728669896707407896"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223211,
+        "message": "FILE_TRANSFER RequestId: e02ded91-c94a-45f5-ab8e-5ec02ff553b6\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL1977\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL1977\t LocalFilePath: /tmp/input/ORTHOMCL1977\t FileSize: 1662 bytes\t TransferDuration: 71.56293999997843 ms\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893452646772753426295553206049857359351925137997849"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223211,
+        "message": "CONSUMED_FILES_INFO RequestId: e02ded91-c94a-45f5-ab8e-5ec02ff553b6\t FilesCount: 1 files\t FilesSize: 1662 bytes\t TransferDuration: 71.56293999997843 ms\t ConsumedFiles: ['ORTHOMCL1977']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893452646772753426295553206049857359351925137997850"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223219,
+        "message": "[INFO] 2025-04-21T22:07:03GMT TREE_CONSTRUCTOR RequestId: e02ded91-c94a-45f5-ab8e-5ec02ff553b6\t Duration: 7.6627299999927345 ms\t InputFile:ORTHOMCL1977\t OutputFile:['tree_ORTHOMCL1977.nexus']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893452825178715014540538338335603540538817185841179"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223219,
+        "message": "[INFO]\t2025-04-21T22:07:03.219Z\te02ded91-c94a-45f5-ab8e-5ec02ff553b6\tTREE_CONSTRUCTOR RequestId: e02ded91-c94a-45f5-ab8e-5ec02ff553b6\t Duration: 7.6627299999927345 ms\t InputFile:ORTHOMCL1977\t OutputFile:['tree_ORTHOMCL1977.nexus']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893452825178715014540538338335603540538817185841180"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223364,
+        "message": "FILE_TRANSFER RequestId: e02ded91-c94a-45f5-ab8e-5ec02ff553b6\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL1977.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL1977.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL1977.nexus\t FileSize: 339 bytes\t TransferDuration: 44.14113999996516 ms\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893456058786768801480893861014753074551235553001501"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223364,
+        "message": "PRODUCED_FILES_INFO RequestId: e02ded91-c94a-45f5-ab8e-5ec02ff553b6\t FilesCount: 1 files\t FilesSize: 339 bytes\t TransferDuration: 44.14113999996516 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL1977.nexus']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893456058786768801480893861014753074551235553001502"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223365,
+        "message": "END RequestId: e02ded91-c94a-45f5-ab8e-5ec02ff553b6\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893456081087514000011517002550471347199597058981919"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223365,
+        "message": "REPORT RequestId: e02ded91-c94a-45f5-ab8e-5ec02ff553b6\tDuration: 226.28 ms\tBilled Duration: 227 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893456081087514000011517002550471347199597058981920"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223510,
+        "message": "START RequestId: 43a9dbf5-6758-4613-a142-12147e83968e Version: $LATEST\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893459314695567786951872525229620881212015426142241"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223583,
+        "message": "FILE_TRANSFER RequestId: 43a9dbf5-6758-4613-a142-12147e83968e\t TransferType: consumed\t Action: download_from_s3\t FileName: ORTHOMCL2001\t Bucket: denethor\t FilePath: data/full_dataset/ORTHOMCL2001\t LocalFilePath: /tmp/input/ORTHOMCL2001\t FileSize: 3692 bytes\t TransferDuration: 73.17531000001054 ms\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893460942649967279687361857337054784542405362712610"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223584,
+        "message": "CONSUMED_FILES_INFO RequestId: 43a9dbf5-6758-4613-a142-12147e83968e\t FilesCount: 1 files\t FilesSize: 3692 bytes\t TransferDuration: 73.17531000001054 ms\t ConsumedFiles: ['ORTHOMCL2001']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893460964950712478217984998872773057190766868693027"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223674,
+        "message": "[INFO]\t2025-04-21T22:07:03.674Z\t43a9dbf5-6758-4613-a142-12147e83968e\tTREE_CONSTRUCTOR RequestId: 43a9dbf5-6758-4613-a142-12147e83968e\t Duration: 90.32919099996661 ms\t InputFile:ORTHOMCL2001\t OutputFile:['tree_ORTHOMCL2001.nexus']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893462972017780345974067737087417595543302406930468"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223674,
+        "message": "[INFO] 2025-04-21T22:07:03GMT TREE_CONSTRUCTOR RequestId: 43a9dbf5-6758-4613-a142-12147e83968e\t Duration: 90.32919099996661 ms\t InputFile:ORTHOMCL2001\t OutputFile:['tree_ORTHOMCL2001.nexus']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893462972017780345974067737087417595543302406930469"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223811,
+        "message": "FILE_TRANSFER RequestId: 43a9dbf5-6758-4613-a142-12147e83968e\t TransferType: produced\t Action: upload_to_s3\t FileName: tree_ORTHOMCL2001.nexus\t Bucket: denethor\t FilePath: tree/tree_ORTHOMCL2001.nexus\t LocalFilePath: /tmp/tree/tree_ORTHOMCL2001.nexus\t FileSize: 347 bytes\t TransferDuration: 36.354099999982736 ms\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893466027219872544669438127480820948368828726247462"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223811,
+        "message": "PRODUCED_FILES_INFO RequestId: 43a9dbf5-6758-4613-a142-12147e83968e\t FilesCount: 1 files\t FilesSize: 347 bytes\t TransferDuration: 36.354099999982736 ms\t Provider: aws_lambda\t  ProducedFiles: ['tree_ORTHOMCL2001.nexus']\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893466027219872544669438127480820948368828726247463"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223812,
+        "message": "END RequestId: 43a9dbf5-6758-4613-a142-12147e83968e\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893466049520617743200061269016539221017190232227880"
+    },
+    {
+        "logStreamName": "2025/04/21/[$LATEST]3f51c96aa2aa4e6984952742d5fc162f",
+        "timestamp": 1745273223812,
+        "message": "REPORT RequestId: 43a9dbf5-6758-4613-a142-12147e83968e\tDuration: 302.46 ms\tBilled Duration: 303 ms\tMemory Size: 512 MB\tMax Memory Used: 114 MB\t\n",
+        "ingestionTime": 1745273230817,
+        "eventId": "38920893466049520617743200061269016539221017190232227881"
+    }
+]

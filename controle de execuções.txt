@@ -26,8 +26,53 @@ wetag_201_executions_tree_and_subtree = 'wetag_1744861181586'
 
 
 #####################################################################################
+
 Execuções pra gerar instâncias para o artigo da SBPO
+
 #####################################################################################
+
+PASSO A PASSO:
+
+Execução do Workflow em
+1) executar o workflow em fx
+  --> "run_workflow_on_lambda_and_import_provenace.py"
+  --> esse programa chama a execução em fx, recupera os logs e faz a importação no Banco de Dados
+  --> na atividade 3 - maf_db_creator, os tempos de ef.transfer podem ficar zerados devido ao cache na fx. Isso deve ser resolvido por um update no BD usando file_metrics.
+
+2) recuperar a lista (em formato json) de arquivos de entrada utilizados na execução em FX
+  --> handy_queries.sql: query: "arquivos de entrada para execução em VM baseados na execução em FX"
+
+3) definir a lista de arquivos no dict "FILE_COUNT_LIST"
+  --> "run_workflow__local__on_ec2_vm"
+
+4) copiar todo o código fonte do denethor para VM
+  --> denethor/scripts/aws_ec2$ ./copy_denethor_to_instance.sh src
+
+5) conectar na VM
+  --> denethor/scripts/aws_ec2$ ./connect_to_instance.sh
+
+6) executar o denethor localmente na VM 
+  --> python3.11 src/run_workflow__local__on_ec2_vm.py
+
+7) listar os arquivos gerados
+  --> ls -la resources/logs/aws_ec2/
+
+8) copiar os arquivos de log gerados da VM para a máquina localmente, dado parte do nome do arquivo
+  --> ./retrieve_log_file_from_instance.sh wetag_174
+
+9) executar o import dos logs copiados da VM no banco de dados
+  --> definir a lista de arquivos de metadata que serão importados (os que foram copiados da VM)
+  --> rodar a importação através do programa: "import_provenace_from_ec2_vm"
+  
+10) fazer o update de ef.transfer_duration no Banco de Dados, pegando de file_metrics
+  --> update_ef_transfer_duration.sql
+
+11) gerar arquivoss de instâncias
+  --> obter json com os respectivos weids
+  --> definir a lista no programa
+  --> "generate_instance_file_from_weid.py"
+
+
 17/04:
 -- execução em FX com [2, 5, 10] entradas para as 5 configs
 >> Início: +- 15:33h
@@ -124,27 +169,55 @@ METADATA_FILE_LIST = [
 
 
 20/04/2025
-Exportação de arquivos de modelo
-'provider_id'	'provider_name'	'we_id'	'workflow_input_count'
-1	'AWS Lambda'	'68,69,70,71,72'	2
-1	'AWS Lambda'	'73,74,75,76,77'	5
-1	'AWS Lambda'	'78,79,80,81,82'	10
-1	'AWS Lambda'	'84,85,86,87,88'	15
-1	'AWS Lambda'	'89,90,91,92,93'	20
-1	'AWS Lambda'	'94,95,96,97,98'	25
-1	'AWS Lambda'	'100,101,102,103,99'	30
-1	'AWS Lambda'	'104,105,106,107,108'	35
-1	'AWS Lambda'	'109,110,111,112,113'	40
-1	'AWS Lambda'	'114,115,116,117,118'	45
-1	'AWS Lambda'	'119,120,121,122,123'	50
-2	'AWS EC2'	'124'	2
-2	'AWS EC2'	'125'	5
-2	'AWS EC2'	'126'	10
-2	'AWS EC2'	'127'	15
-2	'AWS EC2'	'128'	20
-2	'AWS EC2'	'129'	25
-2	'AWS EC2'	'130'	30
-2	'AWS EC2'	'131'	35
-2	'AWS EC2'	'132'	40
-2	'AWS EC2'	'133'	45
-2	'AWS EC2'	'134'	50
+Geração de arquivos de instâncias
+#run1
+WEID_PROVIDER_DICT = {
+    "2": {"aws_ec2": [124], "aws_lambda": [68, 69, 70, 71, 72]},
+    "5": {"aws_ec2": [125], "aws_lambda": [73, 74, 75, 76, 77]},
+    "10": {"aws_ec2": [126], "aws_lambda": [78, 79, 80, 81, 82]},
+    "15": {"aws_ec2": [127], "aws_lambda": [84, 85, 86, 87, 88]},
+    "20": {"aws_ec2": [128], "aws_lambda": [89, 90, 91, 92, 93]},
+    "25": {"aws_ec2": [129], "aws_lambda": [94, 95, 96, 97, 98]},
+    "30": {"aws_ec2": [130], "aws_lambda": [99, 100, 101, 102, 103]},
+    "35": {"aws_ec2": [131], "aws_lambda": [104, 105, 106, 107, 108]},
+    "40": {"aws_ec2": [132], "aws_lambda": [109, 110, 111, 112, 113]},
+    "45": {"aws_ec2": [133], "aws_lambda": [114, 115, 116, 117, 118]},
+    "50": {"aws_ec2": [134], "aws_lambda": [119, 120, 121, 122, 123]},
+}
+
+
+
+
+####################################
+Run2
+####################################
+
+21/04/2025
+Execução com arquivos aleatórios -> [2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+17:22h a 07:21h D+1 = +- 14h execução
+
+
+22/04/2025
+Execução em vm com as mesmas entradas da função
+de 13:14h a 13:17h
+
+METADATA_FILE_LIST = [
+    "wetag_1745338482662_002_files__1024_memory.json", 
+    "wetag_1745338483556_005_files__1024_memory.json", 
+    "wetag_1745338485406_010_files__1024_memory.json", 
+    "wetag_1745338489322_015_files__1024_memory.json", 
+    "wetag_1745338495958_020_files__1024_memory.json", 
+    "wetag_1745338504859_025_files__1024_memory.json", 
+    "wetag_1745338516583_030_files__1024_memory.json", 
+    "wetag_1745338531891_035_files__1024_memory.json", 
+    "wetag_1745338550578_040_files__1024_memory.json", 
+    "wetag_1745338573132_045_files__1024_memory.json", 
+    "wetag_1745338599911_050_files__1024_memory.json", 
+]
+
+Importação dos arquivos: final em 18:05h
+
+- Gerar instâncias
+#run1
+INPUT_WEIDS_FX = [135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189]
+INPUT_WEIDS_VM = [190,191,192,193,194,195,196,197,198,199,200]
