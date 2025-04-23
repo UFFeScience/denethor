@@ -47,23 +47,40 @@ def main():
     MEMORY_LIST = [1024]
     SET_ACTIVE_STEPS = None  # dont override active steps
     INPUT_FILE_LIST = None
-    FILE_COUNT_LIST = [2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+    # FILE_COUNT_LIST = [2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+    FILE_COUNT_LIST = [30, 35, 40, 45, 50]
 
     # file_count = int(sys.argv[1]) if len(sys.argv) > 1 else 2
     # file_count = 50
 
+    #run1
+    # METADATA_FILE_LIST = [
+    #     "wetag_1745013809114_002_files__1024_memory.json",
+    #     "wetag_1745014054593_005_files__1024_memory.json",
+    #     "wetag_1745014057207_010_files__1024_memory.json",
+    #     "wetag_1745014063276_015_files__1024_memory.json",
+    #     "wetag_1745014073730_020_files__1024_memory.json",
+    #     "wetag_1745014088923_025_files__1024_memory.json",
+    #     "wetag_1745014109475_030_files__1024_memory.json",
+    #     "wetag_1745014136382_035_files__1024_memory.json",
+    #     "wetag_1745014169990_040_files__1024_memory.json",
+    #     "wetag_1745014211149_045_files__1024_memory.json",
+    #     "wetag_1745014259016_050_files__1024_memory.json",
+    # ]
+
+    #run2
     METADATA_FILE_LIST = [
-        "wetag_1745013809114_002_files__1024_memory.json",
-        "wetag_1745014054593_005_files__1024_memory.json",
-        "wetag_1745014057207_010_files__1024_memory.json",
-        "wetag_1745014063276_015_files__1024_memory.json",
-        "wetag_1745014073730_020_files__1024_memory.json",
-        "wetag_1745014088923_025_files__1024_memory.json",
-        "wetag_1745014109475_030_files__1024_memory.json",
-        "wetag_1745014136382_035_files__1024_memory.json",
-        "wetag_1745014169990_040_files__1024_memory.json",
-        "wetag_1745014211149_045_files__1024_memory.json",
-        "wetag_1745014259016_050_files__1024_memory.json",
+        "wetag_1745338482662_002_files__1024_memory.json", 
+        "wetag_1745338483556_005_files__1024_memory.json", 
+        "wetag_1745338485406_010_files__1024_memory.json", 
+        "wetag_1745338489322_015_files__1024_memory.json", 
+        "wetag_1745338495958_020_files__1024_memory.json", 
+        "wetag_1745338504859_025_files__1024_memory.json", 
+        "wetag_1745338516583_030_files__1024_memory.json", 
+        "wetag_1745338531891_035_files__1024_memory.json", 
+        "wetag_1745338550578_040_files__1024_memory.json", 
+        "wetag_1745338573132_045_files__1024_memory.json", 
+        "wetag_1745338599911_050_files__1024_memory.json", 
     ]
     #################################################################
 

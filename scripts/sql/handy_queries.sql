@@ -1,3 +1,35 @@
+-- workflow executions with provider
+select distinct we_id, workflow_start_time, workflow_end_time, workflow_duration, workflow_input_count, provider_tag, provider_memory_mb
+from vw_service_execution_detail
+where we_id >= 135
+order by we_id;
+
+
+-- workflow executions
+SELECT * FROM workflow_execution we
+where we_id >= 135
+order by we_id;
+
+
+-- arquivos de entrada
+SELECT distinct input_count, input_list FROM workflow_execution we
+where we_id between 135 and 189
+order by input_count;
+
+
+-- arquivos de entrada para execução em VM baseados na execução em FX
+WITH basic_data AS (
+    SELECT DISTINCT input_count, input_list
+    FROM workflow_execution we
+    WHERE we_id between 135 and 189
+    ORDER BY input_count
+)
+SELECT json_object_agg(
+    input_count,
+    input_list::json
+) AS result
+FROM basic_data;
+
 
 -- Exibir os dados de execução do workflow
 SELECT DISTINCT
@@ -60,34 +92,7 @@ WHERE we.execution_tag in ('wetag_1744914790201')
 ORDER BY ta.activity_id, ta.task_id;
 
 
--- seleção de dados para geração de instâncias
-WITH basic_data AS (
-    SELECT DISTINCT 
-        provider_id, 
-        provider_tag, 
-        we_id, 
-        workflow_input_count AS input_count
-    FROM vw_service_execution_detail
-    WHERE we_id >= 68
-),
-aggregated_data AS (
-    SELECT
-        input_count,
-        provider_tag,
-        ARRAY_AGG(DISTINCT we_id ORDER BY we_id) AS we_ids
-    FROM basic_data
-    GROUP BY input_count, provider_tag
-),
-final_data AS (
-    SELECT
-        input_count,
-        jsonb_object_agg(provider_tag, we_ids) AS provider_data
-    FROM aggregated_data
-    GROUP BY input_count
-    ORDER BY input_count
-)
-SELECT jsonb_object_agg(input_count, provider_data) AS result_json
-FROM final_data;
+
 
 
 --statistics
@@ -138,72 +143,11 @@ join provider_configuration pc on pc.conf_id = se.provider_conf_id
 join provider p on p.provider_id = pc.provider_id
 join execution_file ef on ef.se_id = se.se_id
 join file f on f.file_id = ef.file_id
-where we.we_id = 66
+where we.we_id = 135
 order by f.file_id
 ;
 
--- registros com transfer_duration de subtree_files na atividade maf_db_creator = 0
--- executados em fx com cache local desses arquivos para agilizar o processo
--- ajustar pegando o tempo de file_metrics
-select
-se.se_id, se.we_id, we.execution_tag, p.provider_name, se.activity_id, 
-f.file_id, f.file_name, f.file_size, ef.transfer_type, ef.transfer_duration, 
-fm.file_name, fm.metric_type, avg(fm.duration_ms) duration_ms, avg(fm.normalized_duration_ms) normalized_duration_ms
-from service_execution se
-join workflow_execution we on se.we_id = we.we_id
-join provider_configuration pc on pc.conf_id = se.provider_conf_id
-join provider p on p.provider_id = pc.provider_id
-join execution_file ef on ef.se_id = se.se_id
-join file f on f.file_id = ef.file_id
-left outer join file_metrics fm 
-    on f.file_name = fm.file_name 
-    and fm.metric_type = CASE 
-        WHEN ef.transfer_type = 'consumed' THEN 'download'
-        WHEN ef.transfer_type = 'produced' THEN 'upload'
-    END
-where 
-	ef.transfer_duration = 0
-	and p.provider_id = 1
-group by se.se_id, se.we_id, we.execution_tag, p.provider_name, se.activity_id, 
-f.file_id, f.file_name, f.file_size, ef.transfer_type, ef.transfer_duration, 
-fm.file_name, fm.metric_type
-order by se.we_id;
---263285
 
-
--- Atualizar ef.transfer_duration quando for zero
-UPDATE execution_file ef
-SET transfer_duration = COALESCE(t1.avg_duration_ms, 0)
-FROM (
-    SELECT 
-        f.file_id,
-        f.file_name,
-        CASE 
-            WHEN fm.metric_type = 'download' THEN 'consumed'
-            WHEN fm.metric_type = 'upload' THEN 'produced'
-        END AS metric_type,
-        AVG(fm.normalized_duration_ms) AS avg_duration_ms
-    FROM file_metrics fm
-    JOIN file f ON f.file_name = fm.file_name
-    GROUP BY f.file_id, f.file_name, fm.metric_type
-) t1
-WHERE
-    ef.file_id = t1.file_id AND
-    ef.transfer_type = t1.metric_type AND
-    ef.transfer_duration = 0 AND
-    EXISTS (
-        SELECT 1
-        FROM service_execution se
-        JOIN provider_configuration pc ON se.provider_conf_id = pc.conf_id
-        WHERE se.se_id = ef.se_id AND pc.provider_id = 1
-    );
-
-select we.we_id, we.input_count, se.* from execution_file ef
-join service_execution se on ef.se_id = se.se_id
-join workflow_execution we on we.we_id = se.we_id
-where ef.transfer_duration = 0
---group by se.we_id
-;
 
 --CALL delete_execution_data('wetag_1744925395446');
 

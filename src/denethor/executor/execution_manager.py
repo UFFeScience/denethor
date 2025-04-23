@@ -102,7 +102,7 @@ def execute_by_provider(
         "env_properties": env_props,
     }
 
-    print(f"\n>>> Payload: {json.dumps(payload)}")
+    # print(f"\n>>> Payload: {json.dumps(payload)}")
 
     provider_props = env_props.get(provider)
 
@@ -137,7 +137,7 @@ def execute_by_provider(
         return invoker_lambda.invoke(
             function_name=activity,
             memory=memory,
-            timeout=120,
+            timeout=240,
             async_invoke=False,
             payload=payload,
         )

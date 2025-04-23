@@ -67,8 +67,8 @@ fi
 
 echo "Ensuring the logs directory exists in the EC2 instance..."
 ssh -i "$key_path" $ec2_user@"$instance_dns" "mkdir -p ${ec2_path}resources/logs/aws_ec2"
-ssh -i "$key_path" $ec2_user@"$instance_dns" "ls -R ${ec2_path}resources/logs/aws_ec2"
+ssh -i "$key_path" $ec2_user@"$instance_dns" "test -d ${ec2_path}resources/logs/aws_ec2 && echo 'Logs directory exists.'"
 
 echo "Ensuring the .tmp directory exists in the EC2 instance..."
 ssh -i "$key_path" $ec2_user@"$instance_dns" "mkdir -p ${ec2_path}.tmp"
-ssh -i "$key_path" $ec2_user@"$instance_dns" "ls -R ${ec2_path}.tmp"
+ssh -i "$key_path" $ec2_user@"$instance_dns" "test -d ${ec2_path}.tmp && echo '.tmp directory exists.'"

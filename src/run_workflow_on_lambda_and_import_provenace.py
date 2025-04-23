@@ -51,15 +51,16 @@ def main():
     FILE_COUNT_LIST = [2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
 
     # file_count = int(sys.argv[1]) if len(sys.argv) > 1 else 2
-    # file_count = 2
-
-
     #################################################################
 
     for N_FILES in FILE_COUNT_LIST:
         print(f"Using {N_FILES} files: {INPUT_FILE_LIST}")
 
-        INPUT_FILE_LIST = dfu.list_first_n_files(input_dir, N_FILES)
+        # randomly select N_FILES from input_dir
+        INPUT_FILE_LIST = dfu.list_random_n_files(input_dir, N_FILES)
+        
+        # select first N_FILES from input_dir
+        # INPUT_FILE_LIST = dfu.list_first_n_files(input_dir, N_FILES)
         
         for MEMORY in MEMORY_LIST:
 

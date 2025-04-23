@@ -1,5 +1,4 @@
-import os
-import re
+import os, re, random
 
 # Limpeza de arquivos #
 def remove_files(dir_path: str) -> None:
@@ -45,6 +44,15 @@ def list_first_n_files(dir_path: str, n: int) -> list:
     if n > len(all_files):
         raise ValueError(f"n={n} is greater than the number of files in the directory: {len(all_files)}")
     return all_files[:n]
+
+# List n random files in a directory
+def list_random_n_files(dir_path: str, n: int) -> list:
+    if n < 0:
+        raise ValueError("n must be a positive integer.")
+    all_files = list_files(dir_path, None)
+    if n > len(all_files):
+        raise ValueError(f"n={n} is greater than the number of files in the directory: {len(all_files)}")
+    return random.sample(all_files, n)
 
 def list_files(dir_path: str, filter: list[str]) -> list:
 

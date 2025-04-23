@@ -8,30 +8,26 @@ SQL_FILES_PATH = "scripts/sql/instance_generator/"  # Diretório onde os arquivo
 INSTANCE_FILE_PATH = "resources/data/instance_files/"  # Diretório onde os arquivos de instância serão salvos
 WRITE_COMMENTS_TO_FILE = True
 
+
+#run2
+INPUT_WEIDS_FX = [135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189]
+INPUT_WEIDS_VM = [190,191,192,193,194,195,196,197,198,199,200]
+
+
 # Connect to the PostgreSQL database
 session = Connection().get_session()
 
-EXECUTION_MAPPING = {
-    "2": {"aws_ec2": [124], "aws_lambda": [68, 69, 70, 71, 72]},
-    "5": {"aws_ec2": [125], "aws_lambda": [73, 74, 75, 76, 77]},
-    "10": {"aws_ec2": [126], "aws_lambda": [78, 79, 80, 81, 82]},
-    "15": {"aws_ec2": [127], "aws_lambda": [84, 85, 86, 87, 88]},
-    "20": {"aws_ec2": [128], "aws_lambda": [89, 90, 91, 92, 93]},
-    "25": {"aws_ec2": [129], "aws_lambda": [94, 95, 96, 97, 98]},
-    "30": {"aws_ec2": [130], "aws_lambda": [99, 100, 101, 102, 103]},
-    "35": {"aws_ec2": [131], "aws_lambda": [104, 105, 106, 107, 108]},
-    "40": {"aws_ec2": [132], "aws_lambda": [109, 110, 111, 112, 113]},
-    "45": {"aws_ec2": [133], "aws_lambda": [114, 115, 116, 117, 118]},
-    "50": {"aws_ec2": [134], "aws_lambda": [119, 120, 121, 122, 123]},
-}
-
-
 def main():
 
-    for input_count, entry in EXECUTION_MAPPING.items():
+    # Fetch dynamic WEID_PROVIDER_DICT
+    weid_provider_dict = fetch_weid_provider_dict(INPUT_WEIDS_FX, INPUT_WEIDS_VM)
 
-        weids_fx = entry["aws_lambda"]
-        weids_vm = entry["aws_ec2"]
+    if not weid_provider_dict:
+        raise ValueError("Error: Failed to fetch WEID_PROVIDER_DICT dynamically.")
+
+    for input_count, entry in weid_provider_dict.items():
+        weids_fx = entry.get("aws_lambda", [])
+        weids_vm = entry.get("aws_ec2", [])
 
         print(f"Generating model file for weid_fx: {weids_fx} and weid_vm: {weids_vm}")
 
@@ -178,6 +174,48 @@ def execute_sql_input_count(weids_fx: list, weids_vm: list):
     except SQLAlchemyError as e:
         print(f"Error executing instance count SQL: {e}")
         return None
+    finally:
+        session.close()
+
+
+def fetch_weid_provider_dict(weids_fx: list, weids_vm: list):
+    """
+    Executes the SQL query to fetch input_count and provider data dynamically.
+    Accepts weids_fx and weids_vm as parameters to filter the query.
+    """
+    SQL_DYNAMIC_QUERY = """
+    WITH provider_weids_data AS (
+        SELECT DISTINCT 
+            provider_id, 
+            provider_tag, 
+            workflow_input_count AS input_count,
+            ARRAY_AGG(DISTINCT we_id ORDER BY we_id) AS we_ids
+        FROM vw_service_execution_detail
+        WHERE we_id = ANY(:weids_fx) OR
+              we_id = ANY(:weids_vm)
+        GROUP BY provider_id, provider_tag, input_count
+    )
+    SELECT
+        input_count,
+        jsonb_object_agg(provider_tag, we_ids) AS provider_data
+    FROM provider_weids_data
+    GROUP BY input_count
+    ORDER BY input_count;
+    """
+
+    try:
+        result = session.execute(
+            text(SQL_DYNAMIC_QUERY),
+            {"weids_fx": weids_fx, "weids_vm": weids_vm}
+        )
+        rows = result.fetchall()
+        weid_provider_dict = {
+            row.input_count: row.provider_data for row in rows
+        }
+        return weid_provider_dict
+    except SQLAlchemyError as e:
+        print(f"Error executing dynamic query: {e}")
+        return {}
     finally:
         session.close()
 

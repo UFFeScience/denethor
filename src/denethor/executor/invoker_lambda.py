@@ -39,7 +39,7 @@ def invoke(
     )
     invocation_type = "Event" if async_invoke else "RequestResponse"
     
-    print(f"\n {json.dumps(payload)}")
+    # print(f"\n {json.dumps(payload)}")
     
     response = lambda_client.invoke(
         FunctionName=function_to_invoke,
@@ -66,7 +66,8 @@ def invoke(
     else:
         raise Exception(f"Error invoking Lambda function: {response}")
 
-    print(f"\n>>> Lambda function {function_to_invoke} invoked successfully! Payload: {payload_response}")
+    print(f"\n>>> Lambda function {function_to_invoke} invoked successfully!")
+    # print(f"\n>>> Payload: {payload_response}")
 
     if async_invoke:
         return response["ResponseMetadata"]["RequestId"]
