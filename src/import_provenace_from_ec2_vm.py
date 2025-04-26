@@ -12,26 +12,7 @@ project_root = Path(__file__).resolve().parent.parent
 # Mudar o diretório atual para a raiz do projeto
 os.chdir(project_root)
 
-conf_path = os.path.join(project_root, "conf")
-# Load JSON files
-with open(os.path.join(conf_path, "provider.json"), "r") as f:
-    provider_info = json.load(f)
-
-with open(os.path.join(conf_path, "workflow.json"), "r") as f:
-    workflow_info = json.load(f)
-
-# with open(os.path.join(conf_path, "workflow_steps.json"), "r") as f:
-#     workflow_steps = json.load(f)
-
-with open(os.path.join(conf_path, "statistics.json"), "r") as f:
-    statistics_info = json.load(f)
-
-# Load the environment configuration
-# env_properties = du.load_properties(os.path.join(conf_path, "env.properties"))
-
-# List of files to be processed
 input_dir = os.path.join(project_root, "resources/data/full_dataset")
-
 metadata_dir = os.path.join(project_root, "resources/logs/aws_ec2")
 
 
@@ -50,39 +31,15 @@ def main():
     # FILE_COUNT_LIST = [2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
     FILE_COUNT_LIST = [30, 35, 40, 45, 50]
 
-    # file_count = int(sys.argv[1]) if len(sys.argv) > 1 else 2
-    # file_count = 50
-
-    #run1
-    # METADATA_FILE_LIST = [
-    #     "wetag_1745013809114_002_files__1024_memory.json",
-    #     "wetag_1745014054593_005_files__1024_memory.json",
-    #     "wetag_1745014057207_010_files__1024_memory.json",
-    #     "wetag_1745014063276_015_files__1024_memory.json",
-    #     "wetag_1745014073730_020_files__1024_memory.json",
-    #     "wetag_1745014088923_025_files__1024_memory.json",
-    #     "wetag_1745014109475_030_files__1024_memory.json",
-    #     "wetag_1745014136382_035_files__1024_memory.json",
-    #     "wetag_1745014169990_040_files__1024_memory.json",
-    #     "wetag_1745014211149_045_files__1024_memory.json",
-    #     "wetag_1745014259016_050_files__1024_memory.json",
-    # ]
-
-    #run2
-    METADATA_FILE_LIST = [
-        "wetag_1745338482662_002_files__1024_memory.json", 
-        "wetag_1745338483556_005_files__1024_memory.json", 
-        "wetag_1745338485406_010_files__1024_memory.json", 
-        "wetag_1745338489322_015_files__1024_memory.json", 
-        "wetag_1745338495958_020_files__1024_memory.json", 
-        "wetag_1745338504859_025_files__1024_memory.json", 
-        "wetag_1745338516583_030_files__1024_memory.json", 
-        "wetag_1745338531891_035_files__1024_memory.json", 
-        "wetag_1745338550578_040_files__1024_memory.json", 
-        "wetag_1745338573132_045_files__1024_memory.json", 
-        "wetag_1745338599911_050_files__1024_memory.json", 
-    ]
     #################################################################
+
+    run_metadata_file = "run_metadata_2025-04-24T19_15_17_824163UTC.json"
+    
+
+
+    with open(os.path.join(metadata_dir, run_metadata_file), "r") as f:
+        run_metadata = json.load(f)
+        METADATA_FILE_LIST = run_metadata["metadata_file_list"]
 
     for FILE in METADATA_FILE_LIST:
         print(f"Importing {FILE}")
@@ -90,18 +47,18 @@ def main():
         #read metadata file
         metadata_file = os.path.join(metadata_dir, FILE)
         with open(metadata_file, "r") as f:
-            metadata = json.load(f)
+            exec_metadata = json.load(f)
         
-        INPUT_FILE_LIST = [file["data"] for file in metadata["runtime_data"]["input_files"]]
+        workflow_start_time_ms = exec_metadata["workflow_start_time_ms"]
+        workflow_end_time_ms = exec_metadata["workflow_end_time_ms"]
+        execution_tag = exec_metadata["execution_tag"]
+        workflow_runtime_data = exec_metadata["workflow_runtime_data"]
 
-        
-        workflow_start_time_ms = metadata["workflow_start_time_ms"]
-        workflow_end_time_ms = metadata["workflow_end_time_ms"]
-        execution_tag = metadata["execution_tag"]
-        runtime_data = metadata["runtime_data"]
-
-        workflow_steps = metadata["workflow_steps"]
-        env_properties = metadata["env_properties"]
+        workflow_steps = exec_metadata["workflow_steps"]
+        provider_info = exec_metadata["provider_info"]
+        workflow_info = exec_metadata["workflow_info"]
+        statistics_info = exec_metadata["statistics_info"]
+        env_properties = exec_metadata["env_properties"]
 
         print(
             f"\n>>> Workflow {execution_tag} start time is: {workflow_start_time_ms} ms | {du.convert_ms_to_str(workflow_start_time_ms)}"
@@ -123,7 +80,7 @@ def main():
             execution_tag,
             workflow_start_time_ms,
             workflow_end_time_ms,
-            runtime_data,
+            workflow_runtime_data,
             provider_info,
             workflow_info,
             workflow_steps,

@@ -89,6 +89,15 @@ CREATE OR REPLACE VIEW vw_service_execution_detail AS (
 );
 
 
+    -- FROM workflow_execution we
+    -- JOIN service_execution se ON se.we_id = we.we_id
+    -- JOIN workflow_activity wa ON wa.activity_id = se.activity_id
+    -- JOIN workflow wo ON wo.workflow_id = wa.workflow_id
+    -- JOIN provider_configuration pc ON pc.conf_id = se.provider_conf_id
+    -- JOIN provider pr ON pr.provider_id = pc.provider_id
+    -- JOIN vw_service_execution_files_agg t1 ON t1.se_id = se.se_id AND t1.transfer_type = 'consumed'
+    -- JOIN vw_service_execution_files_agg t2 ON t2.se_id = se.se_id AND t2.transfer_type = 'produced'
+
 
 
 --view task: information about tasks

@@ -44,6 +44,9 @@ def import_provenance_from_aws(
         runtime_data,
     )
 
+    print(f"\n>>>Saving Workflow Execution: {workflow_execution}")
+
+
     # For each step in the workflow
     for step in workflow_steps:
 

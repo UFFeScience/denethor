@@ -167,6 +167,9 @@ CREATE TABLE file (
 -- Adding indices for file table
 CREATE INDEX idx_file_file_name ON file (file_name);
 
+-- Adding composite index for file table
+CREATE INDEX idx_file_name_bucket_path ON file (file_name, file_bucket, file_path);
+
 -- Provisoriamente retirando a restrição de NOT NULL para file_hash_code
 ALTER TABLE "file" ALTER COLUMN file_hash_code DROP NOT NULL;
 

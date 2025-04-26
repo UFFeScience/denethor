@@ -95,6 +95,9 @@ def execute_workflow(
             f"\n>>> Activity execution of {activity} | Memory: {memory} | Strategy: {strategy} completed."
         )
 
+    # sleep for 100ms to ensure the minimal interval (after end_time) before retrieving logs from AWS
+    time.sleep(0.1)
+
     workflow_end_time_ms = int(time.time() * 1000)
 
     print(

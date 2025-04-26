@@ -33,15 +33,16 @@ if [ -z "$instance_dns" ]; then
 fi
 
 # Listar os arquivos de log que correspondem ao termo de busca no diretório remoto
-matching_logs=$(ssh -i "$key_path" $ec2_user@"$instance_dns" "ls ${ec2_path}resources/logs/aws_ec2 | grep '$search_term'")
+matching_files=$(ssh -i "$key_path" $ec2_user@"$instance_dns" "ls ${ec2_path}resources/logs/aws_ec2 | grep '$search_term'")
 
-if [ -z "$matching_logs" ]; then
-    echo "No log files found containing '$search_term' in ${ec2_path}resources/logs/aws_ec2."
+if [ -z "$matching_files" ]; then
+    echo "No files found containing '$search_term' in ${ec2_path}resources/logs/aws_ec2."
     exit 1
 fi
 
 # Copiar os arquivos de log correspondentes para a máquina local
-echo "Copying log files containing '$search_term' from the EC2 instance to ${local_path}resources/logs/aws_ec2/"
-for log_file in $matching_logs; do
-    scp -i "$key_path" $ec2_user@"$instance_dns":"${ec2_path}resources/logs/aws_ec2/$log_file" "${local_path}resources/logs/aws_ec2/"
+echo "Copying files containing '$search_term' from the EC2 instance to ${local_path}resources/logs/aws_ec2/"
+for file in $matching_files; do
+    scp -i "$key_path" $ec2_user@"$instance_dns":"${ec2_path}resources/logs/aws_ec2/$file" "${local_path}resources/logs/aws_ec2/"
 done
+echo "Files copied successfully."

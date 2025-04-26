@@ -1,11 +1,11 @@
 import os, sys, timeit, json
 from pathlib import Path
-from denethor import constants as denv
-from denethor.core.service import *
-from denethor.utils import utils as du, file_utils as dfu
-from denethor.provenance import provenance_importer as dprov
-from denethor.executor import workflow_executor as dexec
 from denethor import constants as const
+from denethor.executor import workflow_executor as dexec
+from denethor.utils import utils as du, file_utils as dfu
+from run_workflow_utils import *
+from denethor.core.service import *
+from denethor.provenance import provenance_importer as dprov
 
 # Raiz do projeto
 project_root = Path(__file__).resolve().parent.parent
@@ -37,7 +37,10 @@ input_dir = os.path.join(project_root, "resources/data/full_dataset")
 
 def main():
 
-    print(">>> Main program started at: ", du.now_str())
+    run_start_time = timeit.default_timer()
+    run_start_datetime = du.now_str()
+
+    print(">>> Main program started at: ", run_start_datetime)
 
     #################################################################
     #
@@ -46,66 +49,63 @@ def main():
     #################################################################
     PROVIDER = const.AWS_LAMBDA
     MEMORY_LIST = [128, 256, 512, 1024, 2048]
-    SET_ACTIVE_STEPS = None #dont override active steps
-    INPUT_FILE_LIST = None
-    FILE_COUNT_LIST = [2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
-
-    # file_count = int(sys.argv[1]) if len(sys.argv) > 1 else 2
+    SET_ACTIVE_STEPS = None  # dont override active steps
+    FILE_COUNT_LIST = [80, 90, 100]
+    # FILE_COUNT_LIST = [70]
+    FILE_SELECTION_MODE = "first"  # or "first"
     #################################################################
 
-    for N_FILES in FILE_COUNT_LIST:
-        print(f"Using {N_FILES} files: {INPUT_FILE_LIST}")
+    log_path = env_properties.get("denethor").get("log.path").replace("[provider_tag]", PROVIDER)
 
-        # randomly select N_FILES from input_dir
-        INPUT_FILE_LIST = dfu.list_random_n_files(input_dir, N_FILES)
-        
-        # select first N_FILES from input_dir
-        # INPUT_FILE_LIST = dfu.list_first_n_files(input_dir, N_FILES)
-        
-        for MEMORY in MEMORY_LIST:
+    # Generate a unique suffix for the metadata file
+    sufix = du.sanitize(run_start_datetime.replace("+00:00", "UTC"))
+    
+    run_metadata_file = os.path.join(log_path, f"run_metadata_{sufix}.json")
 
-            du.override_params(
-                workflow_steps, PROVIDER, MEMORY, INPUT_FILE_LIST, SET_ACTIVE_STEPS
+    # Initialize the JSON file with an empty dictionary if it doesn't exist
+    if not os.path.exists(run_metadata_file):
+        with open(run_metadata_file, "w") as f:
+            json.dump({}, f, indent=4)
+
+
+    workflow_input_files_by_count = select_input_files_for_workflow(
+        FILE_COUNT_LIST, FILE_SELECTION_MODE, input_dir
+    )
+
+    for n_files, file_list in workflow_input_files_by_count.items():
+
+        print(f"Executing with {n_files} files: {file_list}")
+
+        for memory in MEMORY_LIST:
+
+            override_params(
+                workflow_steps, PROVIDER, memory, file_list, SET_ACTIVE_STEPS
             )
 
             ##
             ## Execute the workflow
             ##
-            execution_tag, workflow_start_time_ms, workflow_end_time_ms, runtime_data = (
-                dexec.execute_workflow(
-                    workflow_steps,
-                    env_properties,
-                )
+            (
+                execution_tag,
+                workflow_start_time_ms,
+                workflow_end_time_ms,
+                workflow_runtime_data,
+            ) = dexec.execute_workflow(
+                workflow_steps,
+                env_properties,
             )
 
-            metadata_file = (
-                env_properties.get("denethor")
-                .get("log.metadata_file")
-                .replace("[execution_tag]", execution_tag)
-                .replace("[n_files]", f"{N_FILES:03}")
-                .replace("[memory]", f"{MEMORY:04}")
+            # Append execution metadata to the aggregated JSON file
+            append_execution_metadata(
+                run_metadata_file,
+                execution_tag,
+                n_files,
+                memory,
+                workflow_start_time_ms,
+                workflow_end_time_ms,
+                workflow_runtime_data,
+                workflow_steps,
             )
-
-            log_path = (
-                env_properties.get("denethor")
-                .get("log.path")
-                .replace("[provider_tag]", PROVIDER)
-            )
-
-            # Write execution details to log_metadata in JSON format
-            metadata_content = {
-                "date_time_utc": du.now_str(),
-                "workflow_name": workflow_info.get("workflow_name"),
-                "execution_tag": execution_tag,
-                "workflow_start_time_ms": workflow_start_time_ms,
-                "workflow_end_time_ms": workflow_end_time_ms,
-                "runtime_data": runtime_data,
-                "workflow_steps": workflow_steps,
-                "env_properties": env_properties,
-            }
-
-            with open(os.path.join(log_path, metadata_file), "w") as mf:
-                json.dump(metadata_content, mf, indent=4)
 
             #
             # Import provenance data
@@ -114,7 +114,7 @@ def main():
                 execution_tag,
                 workflow_start_time_ms,
                 workflow_end_time_ms,
-                runtime_data,
+                workflow_runtime_data,
                 provider_info,
                 workflow_info,
                 workflow_steps,
@@ -122,7 +122,33 @@ def main():
                 env_properties,
             )
 
-        print(">>> Main program finished at: ", du.now_str())
+    run_end_time = timeit.default_timer()
+    run_duration = run_end_time - run_start_time
+    run_end_datetime = du.now_str()
+
+    print("\n\n>>> Main program finished at: ", run_end_datetime)
+    print(
+        f">>> Total execution time: {int(run_duration // 60)} minutes and {int(run_duration % 60)} seconds"
+    )
+
+    # Append overall run metadata to the aggregated JSON file
+    append_run_metadata(
+        run_metadata_file,
+        run_start_datetime,
+        run_end_datetime,
+        run_duration,
+        workflow_info.get("workflow_name"),
+        PROVIDER,
+        MEMORY_LIST,
+        SET_ACTIVE_STEPS,
+        FILE_SELECTION_MODE,
+        FILE_COUNT_LIST,
+        workflow_input_files_by_count,
+        provider_info,
+        workflow_info,
+        statistics_info,
+        env_properties,
+    )
 
 
 if __name__ == "__main__":

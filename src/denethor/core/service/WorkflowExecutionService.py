@@ -45,6 +45,4 @@ class WorkflowExecutionService:
         #         f"Workflow Execution with tag {execution_tag} already exists in the database."
         #     )
         
-        print(f"Saving Workflow Execution: {workflow_exec_db}")
-
         return workflow_exec_db

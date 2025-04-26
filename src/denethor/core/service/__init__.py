@@ -8,6 +8,7 @@ from .WorkflowService import WorkflowService
 from .ProviderConfigurationService import ProviderConfigurationService
 from .WorkflowActivityService import WorkflowActivityService
 from .FileService import FileService
+from .ExecutionFileService import ExecutionFileService
 
 # Initialize services
 workflow_execution_service = WorkflowExecutionService(workflow_execution_repo)
@@ -17,3 +18,4 @@ workflow_service = WorkflowService(workflow_repo, workflow_activity_repo)
 provider_conf_service = ProviderConfigurationService(provider_conf_repo)
 workflow_activity_service = WorkflowActivityService(workflow_activity_repo)
 file_service = FileService(session)
+execution_file_service = ExecutionFileService(session)

@@ -8,7 +8,6 @@ from denethor.utils import utils as du, log_utils as dlu
 from denethor import constants as const
 
 
-
 def extract_and_persist_log_data(
     provider: Provider,
     workflow_execution: WorkflowExecution,
@@ -89,17 +88,10 @@ def extract_and_persist_log_data(
             f'{">>>>>> Saving" if se_created else "Retrieving"} Service Execution info: [{service_execution_db.se_id}]={activity.activity_name} ({service_execution_db.duration} ms)'
         )
 
-        # para cada arquivo de entrada e registro de execução do arquivo,
-        # verificamos se ambos já estão cadastrados na base
-        for exec_file in service_execution.execution_files:
-            file_db, file_created = file_service.get_or_create(exec_file.file)
-
-            exec_file.service_execution = service_execution_db
-            exec_file.file = file_db
-            exec_file_db, ef_created = execution_file_repo.get_or_create(exec_file)
-            print(
-                f'{">>>>>> Saving" if file_created else "Retrieving"} File: {file_db} | {"Saving" if ef_created else "Retrieving"} Execution_File: {exec_file_db}'
-            )
+        # Process execution files in batch
+        execution_file_service.process_execution_files_in_batch(
+            service_execution.execution_files, service_execution_db
+        )
 
         # para a execução da função verificamos se existem estatísticas adicionais para armazenar
         for exec_stat in service_execution.execution_statistics:

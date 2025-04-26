@@ -51,9 +51,9 @@ def convert_str_to_ms(time: str) -> float:
 
 def now_str() -> str:
     """
-    Returns the current time in the format: 'YYYY-MM-DDTHH:MM:SS±HH:MM'
+    Returns the current time in the format: 'YYYY-MM-DDTHH:MM:SS±HH:MM' without milliseconds
     """
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 
 
 ##
@@ -112,37 +112,3 @@ def load_properties(file_path: str) -> ConfigParser:
         section: config_section_to_dict(config, section)
         for section in config.sections()
     }
-
-
-# Function to override parameters in the workflow steps dictionary
-def override_params(
-    workflow_steps: dict,
-    provider: str = None,
-    memory: str = None,
-    input_file_list: list = None,
-    active_steps: list = None,
-):
-    for step in workflow_steps:
-        if provider:
-            step["provider"] = provider
-            print(f"Warning: Overriding environment to {provider}!")
-        if memory:
-            step["memory"] = memory
-            print(
-                f"Warning: Overriding memory size of step {step['activity']} to {memory}MB!"
-            )
-        if input_file_list:
-            if step.get("data_params") and step.get("data_params").get(
-                "input_files_list"
-            ):
-                step["data_params"]["input_files_list"] = input_file_list
-                print(
-                    f"Warning: Overriding input files list of step {step['activity']} to {input_file_list}!"
-                )
-        if active_steps:
-            if step["activity"] in active_steps:
-                step["active"] = True
-                print(f"Warning: Overriding step {step['activity']} to active!)")
-            else:
-                step["active"] = False
-                print(f"Warning: Overriding step {step['activity']} to inactive!)")
