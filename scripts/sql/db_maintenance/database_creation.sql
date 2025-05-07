@@ -151,6 +151,19 @@ CREATE INDEX idx_service_execution_provider_conf_id ON service_execution (provid
 --CREATE INDEX idx_service_execution_task_id ON service_execution (task_id);
 CREATE INDEX idx_service_execution_start_time ON service_execution (start_time);
 
+-- Adding column for storing original values
+ALTER TABLE service_execution ADD COLUMN original_values TEXT;
+
+
+-- Adding column to indicate that the consumed_files_transfer_duration is updated with transfer_duration
+ALTER TABLE service_execution ADD COLUMN updated_consumed_duration BOOLEAN DEFAULT FALSE;
+
+-- Adding column to indicate that the duration is updated with consumed_files_transfer_duration
+ALTER TABLE service_execution ADD COLUMN updated_duration BOOLEAN DEFAULT FALSE;
+
+-- Adding column to indicate that the billed duration is updated with consumed_files_transfer_duration
+ALTER TABLE service_execution ADD COLUMN updated_billed_duration BOOLEAN DEFAULT FALSE;
+
 
 
 
