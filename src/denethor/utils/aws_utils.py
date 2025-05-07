@@ -55,10 +55,13 @@ def handle_consumed_files(request_id: str,
     
     logger.info(f"CONSUMED_FILES_INFO RequestId: {request_id}\t FilesCount: {total_files_count} files\t FilesSize: {total_files_size} bytes\t TransferDuration: {total_download_duration_ms} ms\t ConsumedFiles: {file_list_flat}")
     
+    download_rate_mbps = calculate_transfer_rate_mbps(total_download_duration_ms, total_files_size)
+
     return {
         "total_download_duration_ms": total_download_duration_ms,
         "total_files_count": total_files_count,
         "total_files_size": total_files_size,
+        "download_rate_mbps": download_rate_mbps,
         "files": download_details
     }
     
@@ -130,10 +133,13 @@ def handle_produced_files(request_id: str,
 
     logger.info(f"PRODUCED_FILES_INFO RequestId: {request_id}\t FilesCount: {total_files_count} files\t FilesSize: {total_files_size} bytes\t TransferDuration: {total_upload_duration_ms} ms\t Provider: {provider}\t ProducedFiles: {file_list_flat}")
     
+    upload_rate_mbps = calculate_transfer_rate_mbps(total_upload_duration_ms, total_files_size)
+
     return {
         "total_upload_duration_ms": total_upload_duration_ms,
         "total_files_count": total_files_count,
         "total_files_size": total_files_size,
+        "upload_rate_mbps": upload_rate_mbps,
         "files": upload_details
     }
   
@@ -252,4 +258,20 @@ def validade_required_params(file_name: str, file_path: str, s3_bucket: str) -> 
 
     if s3_bucket is None or s3_bucket == '':
         raise ValueError('s3_bucket cannot be None when downloading/uploading from S3!')
+
+def calculate_transfer_rate_mbps(total_duration_ms: int, total_files_size_bytes: int) -> float:
+    """
+    Calculate the transfer rate (upload or download) in Mbps.
+    Args:
+        total_duration_ms (int): Total transfer duration in milliseconds.
+        total_files_size_bytes (int): Total size of files in bytes.
+    Returns:
+        float: Transfer rate in Mbps.
+    """
+    if total_duration_ms <= 0:
+        raise ValueError("Total transfer duration must be greater than 0.")
+    if total_files_size_bytes <= 0:
+        raise ValueError("Total file size must be greater than 0.")
+    
+    return (total_files_size_bytes * 8) / (total_duration_ms / 1000 * 1_000_000)
 
