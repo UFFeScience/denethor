@@ -19,6 +19,15 @@ ALTER TABLE file_metrics ADD CONSTRAINT unique_tag_file_name_metric_type UNIQUE 
 -- Add the normalized_duration_ms column to the file_metrics table
 ALTER TABLE file_metrics ADD COLUMN normalized_duration_ms FLOAT;
 
+-- Add indices for all columns
+CREATE INDEX idx_file_metrics_tag ON file_metrics(tag);
+CREATE INDEX idx_file_metrics_file_name ON file_metrics(file_name);
+CREATE INDEX idx_file_metrics_file_size ON file_metrics(file_size);
+CREATE INDEX idx_file_metrics_duration_ms ON file_metrics(duration_ms);
+CREATE INDEX idx_file_metrics_metric_type ON file_metrics(metric_type);
+CREATE INDEX idx_file_metrics_normalized_duration_ms ON file_metrics(normalized_duration_ms);
+CREATE INDEX idx_file_metrics_created_at ON file_metrics(created_at);
+
 
 select file_name, metric_type,
 		max(duration_ms),
