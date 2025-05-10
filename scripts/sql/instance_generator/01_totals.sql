@@ -32,6 +32,6 @@ SELECT
 	),
 	(SELECT 1000 AS _max_running_time
 	),
-	(SELECT 999999 AS _max_financial_cost
+	(SELECT 10 AS _max_financial_cost
 	);
 ;

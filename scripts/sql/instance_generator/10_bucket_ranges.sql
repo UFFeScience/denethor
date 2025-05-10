@@ -4,4 +4,5 @@ SELECT
     size1_gb,
     size2_gb,
     cost_per_gb
-FROM bucket_ranges;
+FROM bucket_ranges
+ORDER BY bucket_range_id;
