@@ -9,62 +9,65 @@ INSTANCE_FILE_PATH = "resources/data/instance_files/"  # Diretório onde os arqu
 WRITE_COMMENTS_TO_FILE = True
 
 
-#run1
-INPUT_WEIDS_FX = [68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123]
-INPUT_WEIDS_VM = [124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134]
+# run1
+# INPUT_WEIDS_FX = [68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123]
+# INPUT_WEIDS_VM = [124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134]
 
-#run2
+# run2
 # INPUT_WEIDS_FX = [135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189]
 # INPUT_WEIDS_VM = [190,191,192,193,194,195,196,197,198,199,200]
 
-#run3
-# INPUT_WEIDS_FX = [201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256]
-# INPUT_WEIDS_VM = [257,258,259,260,261,262,263,264,265,266,267]
+# run3
+INPUT_WEIDS_FX = [201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256]
+INPUT_WEIDS_VM = [257,258,259,260,261,262,263,264,265,266,267]
 
 # Connect to the PostgreSQL database
 session = Connection().get_session()
 
+
 def main():
 
     # Fetch dynamic WEID_PROVIDER_DICT
-    weid_provider_dict = retrieve_weids_by_provider_in_json(INPUT_WEIDS_FX, INPUT_WEIDS_VM)
+    weid_provider_dict = retrieve_weids_by_provider_in_json(
+        INPUT_WEIDS_FX, INPUT_WEIDS_VM
+    )
 
     if not weid_provider_dict:
         raise ValueError("Error: Failed to fetch WEID_PROVIDER_DICT dynamically.")
 
-    for input_count, entry in weid_provider_dict.items():
+    for provided_input_count, entry in weid_provider_dict.items():
         weids_fx = entry.get("aws_lambda", [])
         weids_vm = entry.get("aws_ec2", [])
 
         print(f"Generating model file for weid_fx: {weids_fx} and weid_vm: {weids_vm}")
 
         # execute sql instance count
-        count = execute_sql_input_count(weids_fx, weids_vm)
+        input_count = retrieve_input_count(weids_fx, weids_vm)
 
-        if count is None or count == 0:
+        if input_count != int(provided_input_count):
             raise ValueError(
-                f"Error: No input count found for weid_fx: {weids_fx} and weid_vm: {weids_vm}"
+                f"Error: Input count {input_count} does not match expected count {provided_input_count} for weid_fx: {weids_fx} and weid_vm: {weids_vm}"
             )
-        if count != int(input_count):
-            raise ValueError(
-                f"Error: Input count {count} does not match expected count {input_count} for weid_fx: {weids_fx} and weid_vm: {weids_vm}"
-            )
-
-        out_file_name = f"model_instance[{count:03d}]_weids_fx[{'-'.join(map(str, weids_fx))}]__weids_vm[{'-'.join(map(str, weids_vm))}].txt"
-
-        out_file_data = os.path.join(INSTANCE_FILE_PATH, out_file_name)
-
-        if os.path.exists(out_file_data):
-            os.remove(out_file_data)
-
-        out_file_sqls = out_file_data.replace("model", "sql").replace(".txt", ".sql")
-        if os.path.exists(out_file_sqls):
-            os.remove(out_file_sqls)
 
         # List all .sql files in the specified directory and sort them by name
         sql_files = sorted(
             [f for f in os.listdir(SQL_FILES_PATH) if f.endswith(".sql")]
         )
+
+        # generate model file name
+        out_file_name = generate_file_name(
+            input_count, weids_fx, weids_vm, SQL_FILES_PATH, sql_files
+        )
+
+        out_file_data = os.path.join(INSTANCE_FILE_PATH, out_file_name)
+        if os.path.exists(out_file_data):
+            os.remove(out_file_data)
+
+        out_file_sqls = os.path.join(
+            INSTANCE_FILE_PATH, "sql_" + out_file_name.replace(".txt", ".sql")
+        )
+        if os.path.exists(out_file_sqls):
+            os.remove(out_file_sqls)
 
         for sql_file_name in sql_files:
 
@@ -165,8 +168,64 @@ def separate_comments_and_code(sql: str):
     return comments_str, code_str
 
 
+def generate_file_name(
+    input_count: int,
+    weids_fx: list[int],
+    weids_vm: list[int],
+    file_path: str,
+    sql_files: list[str],
+):
+    results = None
+
+    for sql_file_name in sql_files:
+        if "totals" in sql_file_name:
+            sql_file = os.path.join(file_path, sql_file_name)
+            results = execute_sql(sql_file, weids_fx, weids_vm)
+            break
+
+    for row in results:
+        print(f"Extracting data from row: {row}")
+        task_count = row[0]  # <#tasks>
+        config_count = row[1]  # <#config>
+        data_count = row[2]  # <#data>
+        vm_count = row[3]  # <#vms>
+        bucket_count = row[4]  # <#buckets>
+        bucket_ranges = row[5]  # <#bucket_ranges>
+        max_running_time = row[6]  # <max_running_time>
+        max_financial_cost = row[7]  # <max_financial_cost>
+
+    # 002_T7_C5_D14_VM3
+    out_file_name = f"I{input_count:03d}_T{task_count}_C{config_count}_D{data_count}_VM{vm_count}__fx_weids[{'-'.join(map(str, weids_fx))}]__vm_weids[{'-'.join(map(str, weids_vm))}].txt"
+    return out_file_name
+
+def execute_sql(
+    sql_file: str,
+    weids_fx: list,
+    weids_vm: list,
+):
+    with open(sql_file, "r") as file:
+        sql = file.read()
+
+    # replace weids
+    sql = (
+        sql.replace("[we_column]", "we_id")
+        .replace("[we_values]", ",".join(map(str, weids_fx)))
+        .replace("[we_values_vm]", ",".join(map(str, weids_vm)))
+        .replace("[we_values_fx]", ",".join(map(str, weids_fx)))
+    )
+
+    try:
+        result = session.execute(text(sql))
+        results = result.fetchall()
+        return results    
+    except SQLAlchemyError as e:
+        print(f"Error executing {sql_file}: {e}")
+    finally:
+        session.close()
+
+
 # Execute SQL to get the input count for the given execution tag
-def execute_sql_input_count(weids_fx: list, weids_vm: list):
+def retrieve_input_count(weids_fx: list, weids_vm: list):
     SQL_INPUT_COUNT = f"\
         SELECT max(input_count) \
         FROM workflow_execution we \
@@ -175,14 +234,20 @@ def execute_sql_input_count(weids_fx: list, weids_vm: list):
 
     print(f"Executing SQL: {SQL_INPUT_COUNT}")
 
+    input_count = None
     try:
         result = session.execute(text(SQL_INPUT_COUNT))
-        return result.scalar()
+        input_count = result.scalar()
     except SQLAlchemyError as e:
         print(f"Error executing instance count SQL: {e}")
-        return None
     finally:
         session.close()
+
+    if input_count is None or input_count == 0:
+        raise ValueError(
+            f"Error: No input count found for weid_fx: {weids_fx} and weid_vm: {weids_vm}"
+        )
+    return input_count
 
 
 def retrieve_weids_by_provider_in_json(weids_fx: list, weids_vm: list):
@@ -212,13 +277,10 @@ def retrieve_weids_by_provider_in_json(weids_fx: list, weids_vm: list):
 
     try:
         result = session.execute(
-            text(SQL_DYNAMIC_QUERY),
-            {"weids_fx": weids_fx, "weids_vm": weids_vm}
+            text(SQL_DYNAMIC_QUERY), {"weids_fx": weids_fx, "weids_vm": weids_vm}
         )
         rows = result.fetchall()
-        weid_provider_dict = {
-            row.input_count: row.provider_data for row in rows
-        }
+        weid_provider_dict = {row.input_count: row.provider_data for row in rows}
         return weid_provider_dict
     except SQLAlchemyError as e:
         print(f"Error executing dynamic query: {e}")
