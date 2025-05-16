@@ -30,8 +30,33 @@ SELECT
 	(SELECT count(*) AS _bucket_ranges_count
 		FROM bucket_ranges
 	),
-	(SELECT 1000 AS _max_running_time
+	(SELECT max(t.max_workflow_duration) AS _max_running_time
+		FROM (
+			SELECT 
+				we.we_id,
+				se.provider_conf_id,
+				sum(se.duration*0.001) AS max_workflow_duration,
+				count(*) AS task_count
+			FROM service_execution se
+			JOIN workflow_execution we ON se.we_id = we.we_id
+			WHERE we.[we_column] in ([we_values])
+			GROUP BY we.we_id, se.provider_conf_id
+			ORDER BY we.we_id
+		) t
 	),
-	(SELECT 10 AS _max_financial_cost
+	(SELECT max(t.max_workflow_cost) AS _max_financial_cost
+		FROM (
+			SELECT 
+				we.we_id,
+				se.provider_conf_id,
+				--cost = duration (s) x memory (gb) x computation cost x fixed cost
+				to_char(sum(se.duration*0.001*se.memory_size*0.0009765625*0.0000166667 + 0.0000002),'fm999990D9999999999999999') AS max_workflow_cost,		
+				count(*) AS task_count
+			FROM service_execution se
+			JOIN workflow_execution we ON se.we_id = we.we_id
+			WHERE we.[we_column] in ([we_values])
+			GROUP BY we.we_id, se.provider_conf_id
+			ORDER BY we.we_id
+		) t
 	);
 ;
