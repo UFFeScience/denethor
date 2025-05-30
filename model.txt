@@ -11,12 +11,11 @@ Devemos ter o tempo de leitura e escrita para fx e vm_base separados?
 e mais: para fx, teria que separar por config??
 ...
 
-<vm1_cpu_slowdown> <vm2_cpu_slowdown> ... <vm*_cpu_slowdown>                 
-<vm1_storage> <vm2 _storage> ... <vm* _storage> 
-<vm1_cost> <vm2_cost> ... <vm*_cost>
-
-BANDWIDTH MATRIX (estático) -- caracteristica da maquina
-<vm_id> <bandwidth>
+VM INFO
+<vm_id> <cpu_slowdown> <cost_per_second> <storage_mb> <bandwidth_mbps>
+1	1.00000	0.0000051670	8192	1250
+2	0.50000	0.0000206670	8192	1250
+...
 
 TIME AND COST FUNCTION MATRIX (task/config) (obter a partir das execuções na aws)
 <task_id> <activity_id> <config_id> <task_cost> <task_time_total> <task_time_cpu> <task_time_read> <task_time_write> <task_count>

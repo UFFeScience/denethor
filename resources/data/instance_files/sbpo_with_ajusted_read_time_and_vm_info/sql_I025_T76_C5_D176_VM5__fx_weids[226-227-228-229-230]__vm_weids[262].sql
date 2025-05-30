@@ -1,7 +1,7 @@
 --->scripts/sql/instance_generator/01_totals.sql
---->weids_fx:[68, 69, 70, 71, 72]
---->weids_vm:[124]
---->Generated at 2025-05-09 21:10:56
+--->weids_fx:[226, 227, 228, 229, 230]
+--->weids_vm:[262]
+--->Generated at 2025-05-30 13:44:42
 
 #<#tasks> <#config> <#data> <#vms> <#buckets> <#bucket_ranges> <max_running_time> <max_financial_cost>
 SELECT 
@@ -9,7 +9,7 @@ SELECT
 		FROM service_execution se
 		JOIN workflow_execution we ON se.we_id = we.we_id
 		JOIN vw_service_execution_task st ON se.se_id = st.se_id
-		WHERE we.we_id in (68,69,70,71,72)
+		WHERE we.we_id in (226,227,228,229,230)
 	),
 	(SELECT count(pc.conf_id) AS _configs_count
 		FROM provider_configuration pc
@@ -20,7 +20,7 @@ SELECT
 		FROM service_execution se
 		JOIN workflow_execution we ON se.we_id = we.we_id 
 		JOIN execution_file ef ON ef.se_id = se.se_id 
-		WHERE we.we_id in (68,69,70,71,72)
+		WHERE we.we_id in (226,227,228,229,230)
 	),
 	(SELECT count(*) AS _vms_count
 		FROM vm_configurations
@@ -30,23 +30,48 @@ SELECT
 		JOIN workflow_execution we ON se.we_id = we.we_id
 		JOIN execution_file ef ON ef.se_id = se.se_id
 		JOIN file fi ON fi.file_id = ef.file_id
-		WHERE we.we_id in (68,69,70,71,72)
+		WHERE we.we_id in (226,227,228,229,230)
 	),
 	(SELECT count(*) AS _bucket_ranges_count
 		FROM bucket_ranges
 	),
-	(SELECT 1000 AS _max_running_time
+	(SELECT max(t.max_workflow_duration) AS _max_running_time
+		FROM (
+			SELECT 
+				we.we_id,
+				se.provider_conf_id,
+				sum(se.duration*0.001) AS max_workflow_duration,
+				count(*) AS task_count
+			FROM service_execution se
+			JOIN workflow_execution we ON se.we_id = we.we_id
+			WHERE we.we_id in (226,227,228,229,230)
+			GROUP BY we.we_id, se.provider_conf_id
+			ORDER BY we.we_id
+		) t
 	),
-	(SELECT 10 AS _max_financial_cost
+	(SELECT max(t.max_workflow_cost) AS _max_financial_cost
+		FROM (
+			SELECT 
+				we.we_id,
+				se.provider_conf_id,
+				--cost = duration (s) x memory (gb) x computation cost x fixed cost
+				to_char(sum(se.duration*0.001*se.memory_size*0.0009765625*0.0000166667 + 0.0000002),'fm999990D9999999999999999') AS max_workflow_cost,		
+				count(*) AS task_count
+			FROM service_execution se
+			JOIN workflow_execution we ON se.we_id = we.we_id
+			WHERE we.we_id in (226,227,228,229,230)
+			GROUP BY we.we_id, se.provider_conf_id
+			ORDER BY we.we_id
+		) t
 	);
 ;
 
 
 
 --->scripts/sql/instance_generator/02_task.sql
---->weids_fx:[68, 69, 70, 71, 72]
---->weids_vm:[124]
---->Generated at 2025-05-09 21:11:28
+--->weids_fx:[226, 227, 228, 229, 230]
+--->weids_vm:[262]
+--->Generated at 2025-05-30 13:45:11
 
 #<task_id> <activity_id> <task_type__0-VM__1-VM_FX> <vm_cpu_time> <n_input> [<id_input>...] <n_output> [<id_output>...]
 WITH vm_base_time AS (
@@ -69,7 +94,7 @@ WITH vm_base_time AS (
 	JOIN vw_task ta ON ta.task_id = sxt.task_id
 	JOIN execution_statistics es ON es.se_id = se.se_id
 	JOIN statistics st ON st.statistics_id = es.statistics_id
-	WHERE we.we_id in (124)
+	WHERE we.we_id in (262)
 		 AND pr.provider_tag = 'aws_ec2'
 		 AND st.statistics_name IN ('tree_duration', 'subtree_duration', 'maf_db_creator_duration', 'maf_db_aggregator_duration')
  )
@@ -87,15 +112,15 @@ JOIN workflow_execution we ON se.we_id = we.we_id
 JOIN vw_service_execution_task st ON se.se_id = st.se_id
 JOIN vw_task ta ON st.task_id = ta.task_id
 JOIN vm_base_time vm ON ta.task_id = vm.task_id
-WHERE we.we_id in (68,69,70,71,72)
+WHERE we.we_id in (226,227,228,229,230)
 ORDER BY ta.activity_id, ta.task_id;
 
 
 
 --->scripts/sql/instance_generator/03_data.sql
---->weids_fx:[68, 69, 70, 71, 72]
---->weids_vm:[124]
---->Generated at 2025-05-09 21:11:29
+--->weids_fx:[226, 227, 228, 229, 230]
+--->weids_vm:[262]
+--->Generated at 2025-05-30 13:45:11
 
 #<data_id> <data_size> <read_time_avg> <write_time_avg> <is_static> <n_source_devices> [<device_id>...]
 --is_static: 0-dynamic / 1-static
@@ -110,7 +135,7 @@ produced_file AS (
 	JOIN file f ON f.file_id = ef.file_id
 	JOIN service_execution se ON se.se_id = ef.se_id
 	JOIN workflow_execution we ON se.we_id = we.we_id
-	WHERE ef.transfer_type = 'produced' AND we.we_id in (68,69,70,71,72)
+	WHERE ef.transfer_type = 'produced' AND we.we_id in (226,227,228,229,230)
 	GROUP BY ef.file_id
 ),
 consumed_files AS (
@@ -122,7 +147,7 @@ consumed_files AS (
 	JOIN file f ON f.file_id = ef.file_id
 	JOIN service_execution se ON se.se_id = ef.se_id
 	JOIN workflow_execution we ON se.we_id = we.we_id
-	WHERE ef.transfer_type = 'consumed' AND we.we_id in (68,69,70,71,72)
+	WHERE ef.transfer_type = 'consumed' AND we.we_id in (226,227,228,229,230)
 	GROUP BY ef.file_id
 )
 SELECT 
@@ -147,76 +172,28 @@ ORDER BY consumed_file_id;
 
 
 
---->scripts/sql/instance_generator/04_vm_cpu.sql
---->weids_fx:[68, 69, 70, 71, 72]
---->weids_vm:[124]
---->Generated at 2025-05-09 21:11:29
+--->scripts/sql/instance_generator/04_vm_info.sql
+--->weids_fx:[226, 227, 228, 229, 230]
+--->weids_vm:[262]
+--->Generated at 2025-05-30 13:45:11
 
-#<vm1_cpu_slowdown> <vm2_cpu_slowdown> ... <vm10_cpu_slowdown>
-SELECT 
-    MAX(CASE WHEN vm_id = 1 THEN cpu_slowdown END) AS vm1_cpu_slowdown,
-    MAX(CASE WHEN vm_id = 2 THEN cpu_slowdown END) AS vm2_cpu_slowdown,
-    MAX(CASE WHEN vm_id = 3 THEN cpu_slowdown END) AS vm3_cpu_slowdown,
-    MAX(CASE WHEN vm_id = 4 THEN cpu_slowdown END) AS vm4_cpu_slowdown,
-    MAX(CASE WHEN vm_id = 5 THEN cpu_slowdown END) AS vm5_cpu_slowdown
-FROM (SELECT * FROM vm_configurations ORDER BY vm_id)
-;
-
-
-
---->scripts/sql/instance_generator/05_vm_storage.sql
---->weids_fx:[68, 69, 70, 71, 72]
---->weids_vm:[124]
---->Generated at 2025-05-09 21:11:29
-
-#<vm1_storage> <vm2 _storage> <vm3_storage>
-SELECT 
-    MAX(CASE WHEN vm_id = 1 THEN storage END) AS vm1_storage,
-    MAX(CASE WHEN vm_id = 2 THEN storage END) AS vm2_storage,
-    MAX(CASE WHEN vm_id = 3 THEN storage END) AS vm3_storage,
-    MAX(CASE WHEN vm_id = 3 THEN storage END) AS vm4_storage,
-    MAX(CASE WHEN vm_id = 3 THEN storage END) AS vm5_storage
-FROM (SELECT * FROM vm_configurations ORDER BY vm_id)
-;
-
-
-
-
---->scripts/sql/instance_generator/06_vm_cost.sql
---->weids_fx:[68, 69, 70, 71, 72]
---->weids_vm:[124]
---->Generated at 2025-05-09 21:11:29
-
-#<vm1_cost> <vm2_cost> <vm3_cost>
-SELECT 
-    MAX(CASE WHEN vm_id = 1 THEN cost END) AS vm1_cost,
-    MAX(CASE WHEN vm_id = 2 THEN cost END) AS vm2_cost,
-    MAX(CASE WHEN vm_id = 3 THEN cost END) AS vm3_cost,
-    MAX(CASE WHEN vm_id = 4 THEN cost END) AS vm4_cost,
-    MAX(CASE WHEN vm_id = 5 THEN cost END) AS vm5_cost
-FROM (SELECT * FROM vm_configurations ORDER BY vm_id)
-;
-
-
-
---->scripts/sql/instance_generator/07_bandwidth_matrix.sql
---->weids_fx:[68, 69, 70, 71, 72]
---->weids_vm:[124]
---->Generated at 2025-05-09 21:11:29
-
-#<vm_id> <bandwidth>
+#<vm_id> <cpu_slowdown> <cost_per_second> <storage_mb> <bandwidth_mbps>
 SELECT 
     vm_id,
-    bandwidth
-FROM (SELECT * FROM vm_configurations ORDER BY vm_id)
+    cpu_slowdown,
+    cost AS cost_per_second,
+    storage AS storage_mb,
+    bandwidth AS bandwidth_mbps
+FROM vm_configurations
+ORDER BY vm_id
 ;
 
 
 
---->scripts/sql/instance_generator/08_time_cost_matrix.sql
---->weids_fx:[68, 69, 70, 71, 72]
---->weids_vm:[124]
---->Generated at 2025-05-09 21:11:47
+--->scripts/sql/instance_generator/05_time_cost_matrix.sql
+--->weids_fx:[226, 227, 228, 229, 230]
+--->weids_vm:[262]
+--->Generated at 2025-05-30 13:45:24
 
 #<task_id> <activity_id> <conf_id> <task_cost> <task_time_duration> <task_time_init> <task_time_cpu> <task_time_read> <task_time_write> <task_count>
 WITH 
@@ -237,7 +214,7 @@ task_time AS (
 	JOIN workflow_execution we ON se.we_id = we.we_id
 	JOIN vw_service_execution_task st ON se.se_id = st.se_id
 	JOIN vw_task ta ON st.task_id = ta.task_id
-	WHERE we.we_id in (68,69,70,71,72)
+	WHERE we.we_id in (226,227,228,229,230)
 	GROUP BY ta.task_id,
 			 ta.activity_id,
 			 se.provider_conf_id
@@ -278,10 +255,10 @@ ORDER BY task_id,
 
 
 
---->scripts/sql/instance_generator/10_bucket_ranges.sql
---->weids_fx:[68, 69, 70, 71, 72]
---->weids_vm:[124]
---->Generated at 2025-05-09 21:11:47
+--->scripts/sql/instance_generator/06_bucket_ranges.sql
+--->weids_fx:[226, 227, 228, 229, 230]
+--->weids_vm:[262]
+--->Generated at 2025-05-30 13:45:24
 
 #<bucket_range_id> <size1_gb> <size2_gb> <cost_per_gb>
 SELECT 
