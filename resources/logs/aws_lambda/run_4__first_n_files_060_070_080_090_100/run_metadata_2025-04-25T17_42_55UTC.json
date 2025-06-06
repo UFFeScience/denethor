@@ -33313,346 +33313,346 @@
                 "ORTHOMCL1002",
                 "ORTHOMCL1003"
             ]
-        },
-        "provider_info": [
-            {
-                "provider_name": "AWS Lambda",
-                "provider_tag": "aws_lambda",
-                "configurations": [
-                    {
-                        "timeout": 30,
-                        "memory_mb": 128,
-                        "cpu": 1,
-                        "storage_mb": 512
-                    },
-                    {
-                        "timeout": 45,
-                        "memory_mb": 256,
-                        "cpu": 1,
-                        "storage_mb": 512
-                    },
-                    {
-                        "timeout": 300,
-                        "memory_mb": 512,
-                        "cpu": 1,
-                        "storage_mb": 512
-                    },
-                    {
-                        "timeout": 300,
-                        "memory_mb": 1024,
-                        "cpu": 1,
-                        "storage_mb": 512
-                    },
-                    {
-                        "timeout": 300,
-                        "memory_mb": 2048,
-                        "cpu": 1,
-                        "storage_mb": 512
-                    }
-                ]
-            },
-            {
-                "provider_name": "AWS EC2",
-                "provider_tag": "aws_ec2",
-                "configurations": [
-                    {
-                        "timeout": 0,
-                        "memory_mb": 1024,
-                        "cpu": 1,
-                        "storage_mb": 8192
-                    }
-                ]
-            },
-            {
-                "provider_name": "Local",
-                "provider_tag": "local",
-                "configurations": []
-            }
-        ],
-        "workflow_info": {
-            "workflow_name": "AWS Lambda Evaluation",
-            "workflow_description": "Performance Evaluation of Lambda Functions in AWS",
-            "activities": [
+        }
+    },
+    "provider_info": [
+        {
+            "provider_name": "AWS Lambda",
+            "provider_tag": "aws_lambda",
+            "configurations": [
                 {
-                    "activity_name": "tree_constructor",
-                    "activity_description": "Constructing Phylogenetic Trees from Protein Sequences"
+                    "timeout": 30,
+                    "memory_mb": 128,
+                    "cpu": 1,
+                    "storage_mb": 512
                 },
                 {
-                    "activity_name": "subtree_constructor",
-                    "activity_description": "Generating Subtrees from Main Trees"
+                    "timeout": 45,
+                    "memory_mb": 256,
+                    "cpu": 1,
+                    "storage_mb": 512
                 },
                 {
-                    "activity_name": "maf_database_creator",
-                    "activity_description": "Creating MAF Databases from Subtrees (Subtree Pair Frequency Matrix)"
+                    "timeout": 300,
+                    "memory_mb": 512,
+                    "cpu": 1,
+                    "storage_mb": 512
                 },
                 {
-                    "activity_name": "maf_database_aggregator",
-                    "activity_description": "Aggregating MAF Databases"
+                    "timeout": 300,
+                    "memory_mb": 1024,
+                    "cpu": 1,
+                    "storage_mb": 512
+                },
+                {
+                    "timeout": 300,
+                    "memory_mb": 2048,
+                    "cpu": 1,
+                    "storage_mb": 512
                 }
             ]
         },
-        "statistics_info": {
-            "default_separator": "\t",
-            "default_statistics": {
-                "START": [
-                    {
-                        "searchKey": "RequestId",
-                        "fieldName": "request_id",
-                        "dataType": "string",
-                        "separator": " "
-                    },
-                    {
-                        "searchKey": "Version",
-                        "fieldName": "version",
-                        "dataType": "string"
-                    }
-                ],
-                "END": [
-                    {
-                        "searchKey": "RequestId",
-                        "fieldName": "request_id",
-                        "dataType": "string"
-                    }
-                ],
-                "REPORT": [
-                    {
-                        "searchKey": "RequestId",
-                        "fieldName": "request_id",
-                        "dataType": "string"
-                    },
-                    {
-                        "searchKey": "Duration",
-                        "fieldName": "duration",
-                        "dataType": "float"
-                    },
-                    {
-                        "searchKey": "Billed Duration",
-                        "fieldName": "billed_duration",
-                        "dataType": "float"
-                    },
-                    {
-                        "searchKey": "Memory Size",
-                        "fieldName": "memory_size",
-                        "dataType": "integer"
-                    },
-                    {
-                        "searchKey": "Max Memory Used",
-                        "fieldName": "max_memory_used",
-                        "dataType": "integer"
-                    },
-                    {
-                        "searchKey": "Init Duration",
-                        "fieldName": "init_duration",
-                        "dataType": "float"
-                    }
-                ],
-                "FILE_TRANSFER": [
-                    {
-                        "searchKey": "RequestId",
-                        "fieldName": "request_id",
-                        "dataType": "string"
-                    },
-                    {
-                        "searchKey": "FileName",
-                        "fieldName": "file_name",
-                        "dataType": "string"
-                    },
-                    {
-                        "searchKey": "Bucket",
-                        "fieldName": "file_bucket",
-                        "dataType": "string"
-                    },
-                    {
-                        "searchKey": "FilePath",
-                        "fieldName": "file_path",
-                        "dataType": "string"
-                    },
-                    {
-                        "searchKey": "FileSize",
-                        "fieldName": "file_size",
-                        "dataType": "integer"
-                    },
-                    {
-                        "searchKey": "TransferType",
-                        "fieldName": "transfer_type",
-                        "dataType": "string"
-                    },
-                    {
-                        "searchKey": "TransferDuration",
-                        "fieldName": "transfer_duration",
-                        "dataType": "float"
-                    }
-                ],
-                "CONSUMED_FILES_INFO": [
-                    {
-                        "searchKey": "RequestId",
-                        "fieldName": "request_id",
-                        "dataType": "string"
-                    },
-                    {
-                        "searchKey": "FilesCount",
-                        "fieldName": "consumed_files_count",
-                        "dataType": "integer"
-                    },
-                    {
-                        "searchKey": "FilesSize",
-                        "fieldName": "consumed_files_size",
-                        "dataType": "integer"
-                    },
-                    {
-                        "searchKey": "TransferDuration",
-                        "fieldName": "consumed_files_transfer_duration",
-                        "dataType": "float"
-                    }
-                ],
-                "PRODUCED_FILES_INFO": [
-                    {
-                        "searchKey": "RequestId",
-                        "fieldName": "request_id",
-                        "dataType": "string"
-                    },
-                    {
-                        "searchKey": "FilesCount",
-                        "fieldName": "produced_files_count",
-                        "dataType": "integer"
-                    },
-                    {
-                        "searchKey": "FilesSize",
-                        "fieldName": "produced_files_size",
-                        "dataType": "integer"
-                    },
-                    {
-                        "searchKey": "TransferDuration",
-                        "fieldName": "produced_files_transfer_duration",
-                        "dataType": "float"
-                    }
-                ]
-            },
-            "custom_statistics": {
-                "TREE_CONSTRUCTOR": [
-                    {
-                        "searchKey": "RequestId",
-                        "fieldName": "request_id",
-                        "dataType": "string"
-                    },
-                    {
-                        "searchKey": "Duration",
-                        "fieldName": "tree_duration",
-                        "dataType": "float",
-                        "description": "Execution time of the tree construction activity"
-                    }
-                ],
-                "SUBTREE_CONSTRUCTOR": [
-                    {
-                        "searchKey": "RequestId",
-                        "fieldName": "request_id",
-                        "dataType": "string"
-                    },
-                    {
-                        "searchKey": "Duration",
-                        "fieldName": "subtree_duration",
-                        "dataType": "float",
-                        "description": "Execution time of the subtree creation activity"
-                    }
-                ],
-                "MAF_DATABASE_CREATOR": [
-                    {
-                        "searchKey": "RequestId",
-                        "fieldName": "request_id",
-                        "dataType": "string"
-                    },
-                    {
-                        "searchKey": "InputSubtrees",
-                        "fieldName": "input_subtrees",
-                        "dataType": "string",
-                        "description": "Subtrees used as input for the MAF database creation activity"
-                    },
-                    {
-                        "searchKey": "Duration",
-                        "fieldName": "maf_db_creator_duration",
-                        "dataType": "float",
-                        "description": "Execution time of the MAF database creation activity"
-                    }
-                ],
-                "MAF_DATABASE_AGGREGATOR": [
-                    {
-                        "searchKey": "RequestId",
-                        "fieldName": "request_id",
-                        "dataType": "string"
-                    },
-                    {
-                        "searchKey": "MaxMaf",
-                        "fieldName": "max_maf",
-                        "dataType": "integer",
-                        "description": "Max MAF value found during input file processing"
-                    },
-                    {
-                        "searchKey": "MafDatabase",
-                        "fieldName": "maf_database",
-                        "dataType": "string",
-                        "description": "Value of the \"maf_database\" dictionary obtained at the end of the activity"
-                    },
-                    {
-                        "searchKey": "Duration",
-                        "fieldName": "maf_db_aggregator_duration",
-                        "dataType": "float",
-                        "description": "Execution time of the MAF database aggregation activity"
-                    }
-                ]
-            }
+        {
+            "provider_name": "AWS EC2",
+            "provider_tag": "aws_ec2",
+            "configurations": [
+                {
+                    "timeout": 0,
+                    "memory_mb": 1024,
+                    "cpu": 1,
+                    "storage_mb": 8192
+                }
+            ]
         },
-        "env_properties": {
-            "denethor": {
-                "log.path": "resources/logs/[provider_tag]",
-                "log.file": "log_[execution_tag]_[activity_name].log",
-                "log.metadata_file": "[execution_tag]_[n_files]_files__[memory]_memory.json"
+        {
+            "provider_name": "Local",
+            "provider_tag": "local",
+            "configurations": []
+        }
+    ],
+    "workflow_info": {
+        "workflow_name": "AWS Lambda Evaluation",
+        "workflow_description": "Performance Evaluation of Lambda Functions in AWS",
+        "activities": [
+            {
+                "activity_name": "tree_constructor",
+                "activity_description": "Constructing Phylogenetic Trees from Protein Sequences"
             },
-            "bucket": {
-                "name": "denethor",
-                "key.input_files": "data/full_dataset",
-                "key.tree_constructor": "tree",
-                "key.subtree_constructor": "subtree",
-                "key.maf_database_creator": "mafdb",
-                "key.maf_database_aggregator": "mafdb"
+            {
+                "activity_name": "subtree_constructor",
+                "activity_description": "Generating Subtrees from Main Trees"
             },
-            "aws_lambda": {
-                "data_format": "nexus",
-                "path.input_files": "/tmp/input",
-                "path.tmp": "/tmp",
-                "path.tree_constructor": "/tmp/tree",
-                "path.subtree_constructor": "/tmp/subtree",
-                "path.maf_database_creator": "/tmp/mafdb",
-                "path.maf_database_aggregator": "/tmp/mafdb",
-                "path.clustalw": "/opt/python/clustalw-2.1-linux",
-                "log.output_type": "stdout"
+            {
+                "activity_name": "maf_database_creator",
+                "activity_description": "Creating MAF Databases from Subtrees (Subtree Pair Frequency Matrix)"
             },
-            "aws_ec2": {
-                "instance_id": "i-0f2f2ec6dd1e6a455",
-                "data_format": "nexus",
-                "path.src": "src/lambda",
-                "target_method": "handler",
-                "path.input_files": "resources/data/full_dataset",
-                "path.tmp": ".tmp",
-                "path.tree_constructor": ".tmp/tree",
-                "path.subtree_constructor": ".tmp/subtree",
-                "path.maf_database_creator": ".tmp/mafdb",
-                "path.maf_database_aggregator": ".tmp/mafdb",
-                "path.clustalw": "resources/libs/clustalw-2.1-linux",
-                "log.output_type": "file"
-            },
-            "local": {
-                "data_format": "nexus",
-                "path.src": "src/lambda",
-                "target_method": "handler",
-                "path.input_files": "resources/data/full_dataset",
-                "path.tmp": ".tmp",
-                "path.tree_constructor": ".tmp/tree",
-                "path.subtree_constructor": ".tmp/subtree",
-                "path.maf_database_creator": ".tmp/mafdb",
-                "path.maf_database_aggregator": ".tmp/mafdb",
-                "path.clustalw": "resources/libs/clustalw-2.1-linux",
-                "log.output_type": "stdout_and_file"
+            {
+                "activity_name": "maf_database_aggregator",
+                "activity_description": "Aggregating MAF Databases"
             }
+        ]
+    },
+    "statistics_info": {
+        "default_separator": "\t",
+        "default_statistics": {
+            "START": [
+                {
+                    "searchKey": "RequestId",
+                    "fieldName": "request_id",
+                    "dataType": "string",
+                    "separator": " "
+                },
+                {
+                    "searchKey": "Version",
+                    "fieldName": "version",
+                    "dataType": "string"
+                }
+            ],
+            "END": [
+                {
+                    "searchKey": "RequestId",
+                    "fieldName": "request_id",
+                    "dataType": "string"
+                }
+            ],
+            "REPORT": [
+                {
+                    "searchKey": "RequestId",
+                    "fieldName": "request_id",
+                    "dataType": "string"
+                },
+                {
+                    "searchKey": "Duration",
+                    "fieldName": "duration",
+                    "dataType": "float"
+                },
+                {
+                    "searchKey": "Billed Duration",
+                    "fieldName": "billed_duration",
+                    "dataType": "float"
+                },
+                {
+                    "searchKey": "Memory Size",
+                    "fieldName": "memory_size",
+                    "dataType": "integer"
+                },
+                {
+                    "searchKey": "Max Memory Used",
+                    "fieldName": "max_memory_used",
+                    "dataType": "integer"
+                },
+                {
+                    "searchKey": "Init Duration",
+                    "fieldName": "init_duration",
+                    "dataType": "float"
+                }
+            ],
+            "FILE_TRANSFER": [
+                {
+                    "searchKey": "RequestId",
+                    "fieldName": "request_id",
+                    "dataType": "string"
+                },
+                {
+                    "searchKey": "FileName",
+                    "fieldName": "file_name",
+                    "dataType": "string"
+                },
+                {
+                    "searchKey": "Bucket",
+                    "fieldName": "file_bucket",
+                    "dataType": "string"
+                },
+                {
+                    "searchKey": "FilePath",
+                    "fieldName": "file_path",
+                    "dataType": "string"
+                },
+                {
+                    "searchKey": "FileSize",
+                    "fieldName": "file_size",
+                    "dataType": "integer"
+                },
+                {
+                    "searchKey": "TransferType",
+                    "fieldName": "transfer_type",
+                    "dataType": "string"
+                },
+                {
+                    "searchKey": "TransferDuration",
+                    "fieldName": "transfer_duration",
+                    "dataType": "float"
+                }
+            ],
+            "CONSUMED_FILES_INFO": [
+                {
+                    "searchKey": "RequestId",
+                    "fieldName": "request_id",
+                    "dataType": "string"
+                },
+                {
+                    "searchKey": "FilesCount",
+                    "fieldName": "consumed_files_count",
+                    "dataType": "integer"
+                },
+                {
+                    "searchKey": "FilesSize",
+                    "fieldName": "consumed_files_size",
+                    "dataType": "integer"
+                },
+                {
+                    "searchKey": "TransferDuration",
+                    "fieldName": "consumed_files_transfer_duration",
+                    "dataType": "float"
+                }
+            ],
+            "PRODUCED_FILES_INFO": [
+                {
+                    "searchKey": "RequestId",
+                    "fieldName": "request_id",
+                    "dataType": "string"
+                },
+                {
+                    "searchKey": "FilesCount",
+                    "fieldName": "produced_files_count",
+                    "dataType": "integer"
+                },
+                {
+                    "searchKey": "FilesSize",
+                    "fieldName": "produced_files_size",
+                    "dataType": "integer"
+                },
+                {
+                    "searchKey": "TransferDuration",
+                    "fieldName": "produced_files_transfer_duration",
+                    "dataType": "float"
+                }
+            ]
+        },
+        "custom_statistics": {
+            "TREE_CONSTRUCTOR": [
+                {
+                    "searchKey": "RequestId",
+                    "fieldName": "request_id",
+                    "dataType": "string"
+                },
+                {
+                    "searchKey": "Duration",
+                    "fieldName": "tree_duration",
+                    "dataType": "float",
+                    "description": "Execution time of the tree construction activity"
+                }
+            ],
+            "SUBTREE_CONSTRUCTOR": [
+                {
+                    "searchKey": "RequestId",
+                    "fieldName": "request_id",
+                    "dataType": "string"
+                },
+                {
+                    "searchKey": "Duration",
+                    "fieldName": "subtree_duration",
+                    "dataType": "float",
+                    "description": "Execution time of the subtree creation activity"
+                }
+            ],
+            "MAF_DATABASE_CREATOR": [
+                {
+                    "searchKey": "RequestId",
+                    "fieldName": "request_id",
+                    "dataType": "string"
+                },
+                {
+                    "searchKey": "InputSubtrees",
+                    "fieldName": "input_subtrees",
+                    "dataType": "string",
+                    "description": "Subtrees used as input for the MAF database creation activity"
+                },
+                {
+                    "searchKey": "Duration",
+                    "fieldName": "maf_db_creator_duration",
+                    "dataType": "float",
+                    "description": "Execution time of the MAF database creation activity"
+                }
+            ],
+            "MAF_DATABASE_AGGREGATOR": [
+                {
+                    "searchKey": "RequestId",
+                    "fieldName": "request_id",
+                    "dataType": "string"
+                },
+                {
+                    "searchKey": "MaxMaf",
+                    "fieldName": "max_maf",
+                    "dataType": "integer",
+                    "description": "Max MAF value found during input file processing"
+                },
+                {
+                    "searchKey": "MafDatabase",
+                    "fieldName": "maf_database",
+                    "dataType": "string",
+                    "description": "Value of the \"maf_database\" dictionary obtained at the end of the activity"
+                },
+                {
+                    "searchKey": "Duration",
+                    "fieldName": "maf_db_aggregator_duration",
+                    "dataType": "float",
+                    "description": "Execution time of the MAF database aggregation activity"
+                }
+            ]
+        }
+    },
+    "env_properties": {
+        "denethor": {
+            "log.path": "resources/logs/[provider_tag]",
+            "log.file": "log_[execution_tag]_[activity_name].log",
+            "log.metadata_file": "[execution_tag]_[n_files]_files__[memory]_memory.json"
+        },
+        "bucket": {
+            "name": "denethor",
+            "key.input_files": "data/full_dataset",
+            "key.tree_constructor": "tree",
+            "key.subtree_constructor": "subtree",
+            "key.maf_database_creator": "mafdb",
+            "key.maf_database_aggregator": "mafdb"
+        },
+        "aws_lambda": {
+            "data_format": "nexus",
+            "path.input_files": "/tmp/input",
+            "path.tmp": "/tmp",
+            "path.tree_constructor": "/tmp/tree",
+            "path.subtree_constructor": "/tmp/subtree",
+            "path.maf_database_creator": "/tmp/mafdb",
+            "path.maf_database_aggregator": "/tmp/mafdb",
+            "path.clustalw": "/opt/python/clustalw-2.1-linux",
+            "log.output_type": "stdout"
+        },
+        "aws_ec2": {
+            "instance_id": "i-0f2f2ec6dd1e6a455",
+            "data_format": "nexus",
+            "path.src": "src/lambda",
+            "target_method": "handler",
+            "path.input_files": "resources/data/full_dataset",
+            "path.tmp": ".tmp",
+            "path.tree_constructor": ".tmp/tree",
+            "path.subtree_constructor": ".tmp/subtree",
+            "path.maf_database_creator": ".tmp/mafdb",
+            "path.maf_database_aggregator": ".tmp/mafdb",
+            "path.clustalw": "resources/libs/clustalw-2.1-linux",
+            "log.output_type": "file"
+        },
+        "local": {
+            "data_format": "nexus",
+            "path.src": "src/lambda",
+            "target_method": "handler",
+            "path.input_files": "resources/data/full_dataset",
+            "path.tmp": ".tmp",
+            "path.tree_constructor": ".tmp/tree",
+            "path.subtree_constructor": ".tmp/subtree",
+            "path.maf_database_creator": ".tmp/mafdb",
+            "path.maf_database_aggregator": ".tmp/mafdb",
+            "path.clustalw": "resources/libs/clustalw-2.1-linux",
+            "log.output_type": "stdout_and_file"
         }
     }
 }
