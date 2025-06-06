@@ -148,6 +148,6 @@ order by f.file_id
 ;
 
 
+--CALL delete_execution_data('wetag_xxxxxxxxxxxx');
 
---CALL delete_execution_data('wetag_1744925395446');
 
