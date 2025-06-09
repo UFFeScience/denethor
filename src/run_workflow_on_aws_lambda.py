@@ -42,35 +42,30 @@ def main():
 
     print(">>> Main program started at: ", run_start_datetime)
 
+
     #################################################################
     #
-    # !!!! Force execution parameters !!!!
+    # Configure execution parameters
     #
     #################################################################
+
     PROVIDER = const.AWS_LAMBDA
-    MEMORY_LIST = [128, 256, 512, 1024, 2048]
-    SET_ACTIVE_STEPS = None  # dont override active steps
-    FILE_COUNT_LIST = [80, 90, 100]
-    # FILE_COUNT_LIST = [70]
-    FILE_SELECTION_MODE = "first"  # or "first"
-    #################################################################
-
-    log_path = env_properties.get("denethor").get("log.path").replace("[provider_tag]", PROVIDER)
-
-    # Generate a unique suffix for the metadata file
-    sufix = du.sanitize(run_start_datetime.replace("+00:00", "UTC"))
-    
-    run_metadata_file = os.path.join(log_path, f"run_metadata_{sufix}.json")
-
-    # Initialize the JSON file with an empty dictionary if it doesn't exist
-    if not os.path.exists(run_metadata_file):
-        with open(run_metadata_file, "w") as f:
-            json.dump({}, f, indent=4)
-
+    # MEMORY_LIST = [128, 256, 512, 1024, 2048]
+    MEMORY_LIST = [128]
+    ACTIVE_STEPS = None  # dont update active steps
+    # FILE_COUNT_LIST = [60, 70, 80, 90, 100]
+    FILE_COUNT_LIST = [4]
+    FILE_SELECTION_MODE = "first"  #  "first" or "random"
 
     workflow_input_files_by_count = select_input_files_for_workflow(
         FILE_COUNT_LIST, FILE_SELECTION_MODE, input_dir
     )
+
+    run_metadata_file = setup_metadata_json_file(
+        run_start_datetime, env_properties, PROVIDER
+    )
+    #################################################################
+
 
     for n_files, file_list in workflow_input_files_by_count.items():
 
@@ -78,22 +73,26 @@ def main():
 
         for memory in MEMORY_LIST:
 
-            override_params(
-                workflow_steps, PROVIDER, memory, file_list, SET_ACTIVE_STEPS
+            update_workflow_step_parameters(
+                workflow_steps, PROVIDER, memory, file_list, ACTIVE_STEPS
             )
 
-            ##
-            ## Execute the workflow
-            ##
-            (
-                execution_tag,
-                workflow_start_time_ms,
-                workflow_end_time_ms,
-                workflow_runtime_data,
-            ) = dexec.execute_workflow(
-                workflow_steps,
-                env_properties,
-            )
+            error = None
+            
+            ##  Execute the workflow ##
+            try:
+                (
+                    execution_tag,
+                    workflow_start_time_ms,
+                    workflow_end_time_ms,
+                    workflow_runtime_data,
+                ) = dexec.execute_workflow(
+                    workflow_steps,
+                    env_properties,
+                )
+            except Exception as e:
+                print(f"Error during workflow execution: {e}")
+                error = e
 
             # Append execution metadata to the aggregated JSON file
             append_execution_metadata(
@@ -105,21 +104,7 @@ def main():
                 workflow_end_time_ms,
                 workflow_runtime_data,
                 workflow_steps,
-            )
-
-            #
-            # Import provenance data
-            #
-            dprov.import_provenance_from_aws(
-                execution_tag,
-                workflow_start_time_ms,
-                workflow_end_time_ms,
-                workflow_runtime_data,
-                provider_info,
-                workflow_info,
-                workflow_steps,
-                statistics_info,
-                env_properties,
+                errors=[error] if error else [],
             )
 
     run_end_time = timeit.default_timer()
@@ -140,7 +125,7 @@ def main():
         workflow_info.get("workflow_name"),
         PROVIDER,
         MEMORY_LIST,
-        SET_ACTIVE_STEPS,
+        ACTIVE_STEPS,
         FILE_SELECTION_MODE,
         FILE_COUNT_LIST,
         workflow_input_files_by_count,
@@ -149,6 +134,8 @@ def main():
         statistics_info,
         env_properties,
     )
+
+    print(f"\n\n>>>Run metadata saved to {run_metadata_file}\n\n")
 
 
 if __name__ == "__main__":

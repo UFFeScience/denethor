@@ -39,7 +39,9 @@ def retrieve_logs(
 
 
 
-
+    # !!!!!!!! ATENÇÃO !!!!!!!!!
+    # Esse método deve ser implementado para recuperar os logs do EC2
+    # Por enquanto, vams assumir que o log já foi recuperado e está no caminho especificado
 
     # retrieve logs from EC2 instance
     # call retrieve_logs_from_ec2_instance.sh with wetag parameter

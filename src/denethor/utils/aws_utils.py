@@ -268,10 +268,13 @@ def calculate_transfer_rate_mbps(total_duration_ms: int, total_files_size_bytes:
     Returns:
         float: Transfer rate in Mbps.
     """
-    if total_duration_ms <= 0:
-        raise ValueError("Total transfer duration must be greater than 0.")
+    if total_duration_ms < 0:
+        raise ValueError("Total transfer duration must be greater than or equal to 0.")
     if total_files_size_bytes <= 0:
         raise ValueError("Total file size must be greater than 0.")
+    
+    if total_duration_ms == 0:
+        return float('inf')
     
     return (total_files_size_bytes * 8) / (total_duration_ms / 1000 * 1_000_000)
 
