@@ -1,0 +1,236 @@
+-- =====================================================================
+-- 1. CONTAGEM DE REGISTROS POR TABELA
+-- =====================================================================
+'bucket_ranges'	3
+'execution_file'	2475634
+'execution_statistics'	32054
+'file'	1437
+'provider'	3
+'provider_configuration'	6
+'service_execution'	23672
+'statistics'	9
+'vm_configurations'	5
+'workflow'	1
+'workflow_activity'	4
+'workflow_execution'	267
+
+-- =====================================================================
+-- 2. CHECKSUMS DAS TABELAS (usando MD5 dos dados ordenados)
+-- =====================================================================
+'bucket_ranges'	'f90b1fe0e8527d7729b48610f27485b2'
+'execution_file'	'672043b9ab596f0f45b849179f71d6ff'
+'execution_statistics'	'8a5b27f516d1224b60352722cde99f54'
+'file'	'53f328e561c1822abb69dfe11a76a06f'
+'provider'	'752f0a5a1103bea8678738733c88d520'
+'provider_configuration'	'35e842aafdd7428ecc9255e64e724090'
+'service_execution'	'6ea89f71b7f05038a753d194189ffa32'
+'statistics'	'd72a3849c9f28c7f62b19d84ff00cb5b'
+'vm_configurations'	'215c6c1465993ff0e6b4711415c6897b'
+'workflow'	'3f2e436f0a6abfd48cded8e071d15379'
+'workflow_activity'	'f0cdb46b83cf1dca4614a9e21d5b0512'
+'workflow_execution'	'c78decae5fdc3f1cce605864cc8e4c00'
+
+-- =====================================================================
+-- 3. VALIDAÇÃO DE INTEGRIDADE REFERENCIAL
+-- =====================================================================
+'execution_file_file_fk'	0
+'execution_file_se_fk'	0
+'execution_statistics_se_fk'	0
+'execution_statistics_stats_fk'	0
+'provider_configuration_fk'	0
+'service_execution_activity_fk'	0
+'service_execution_provider_fk'	0
+'service_execution_workflow_fk'	0
+'workflow_activity_fk'	0
+'workflow_execution_fk'	0
+
+-- =====================================================================
+-- 4. VALIDAÇÃO DE CONSTRAINTS E REGRAS DE NEGÓCIO
+-- =====================================================================
+'execution_file_transfer_type_check'	0
+'file_size_check'	0
+'service_execution_duration_check'	0
+'service_execution_time_order_check'	2
+'workflow_execution_duration_check'	0
+'workflow_execution_time_order_check'	0
+
+-- =====================================================================
+-- 5. ESTATÍSTICAS AGREGADAS PARA COMPARAÇÃO
+-- =====================================================================
+'estatisticas_arquivos'	'total_arquivos=1437;arquivos_unicos_por_nome=1437;tamanho_medio=1102.0842032011135;menor_arquivo=152;maior_arquivo=32117;tamanho_total=1583695'
+'estatisticas_transfer_duration'	'transfer_type=consumed;total_transfers=2423491;duracao_media=34.85826176154898;menor_duracao=0;maior_duracao=819.8618099999067;duracao_total=84478683.6547581'
+'estatisticas_transfer_duration'	'transfer_type=produced;total_transfers=52143;duracao_media=50.34629870891689;menor_duracao=0;maior_duracao=896.8762109999489;duracao_total=2625207.0535790534'
+'execucoes_por_workflow'	'workflow_name=AWS Lambda Evaluation;total_execucoes=267;primeira_execucao=2025-03-06 02:42:37.577+00;ultima_execucao=2025-06-09 04:12:04.807+00;duracao_media=339430.06741573033;total_inputs=7900'
+'service_executions_por_activity'	'activity_name=maf_database_aggregator;total_service_executions=253;duracao_media=1966.0090473010684;media_files_consumidos=30.2924901185770751;media_files_produzidos=1.00000000000000000000;total_erros=0'
+'service_executions_por_activity'	'activity_name=maf_database_creator;total_service_executions=7669;duracao_media=20617.310389621274;media_files_consumidos=229.1924631633850567;media_files_produzidos=1.00000000000000000000;total_erros=0'
+'service_executions_por_activity'	'activity_name=subtree_constructor;total_service_executions=7872;duracao_media=368.30021011128366;media_files_consumidos=1.00000000000000000000;media_files_produzidos=4.6167428861788618;total_erros=0'
+'service_executions_por_activity'	'activity_name=tree_constructor;total_service_executions=7878;duracao_media=416.17206818195467;media_files_consumidos=1.00000000000000000000;media_files_produzidos=1.00000000000000000000;total_erros=0'
+
+-- =====================================================================
+-- 6. VERIFICAÇÕES DE SEQUÊNCIAS (SERIAL)
+-- =====================================================================
+'sequence_check'	'public'	'execution_file_ef_id_seq'	2500865	1	2147483647	1
+'sequence_check'	'public'	'execution_statistics_es_id_seq'	32944	1	2147483647	1
+'sequence_check'	'public'	'file_file_id_seq'	1457	1	2147483647	1
+'sequence_check'	'public'	'file_metrics_id_seq'	12176	1	2147483647	1
+'sequence_check'	'public'	'provider_configuration_conf_id_seq'	7	1	2147483647	1
+'sequence_check'	'public'	'provider_provider_id_seq'	3	1	2147483647	1
+'sequence_check'	'public'	'service_execution_se_id_seq'	24321	1	2147483647	1
+'sequence_check'	'public'	'statistics_statistics_id_seq'	11	1	2147483647	1
+'sequence_check'	'public'	'workflow_activity_activity_id_seq'	4	1	2147483647	1
+'sequence_check'	'public'	'workflow_execution_we_id_seq'	302	1	2147483647	1
+'sequence_check'	'public'	'workflow_workflow_id_seq'	1	1	2147483647	1
+
+-- =====================================================================
+-- 7. SAMPLE DE DADOS PARA VERIFICAÇÃO MANUAL
+-- =====================================================================
+'sample_workflow_executions'	'we_id=1;execution_tag=wetag_1741228957577;start_time=2025-03-06 02:42:37.577+00;duration=2902'
+'sample_workflow_executions'	'we_id=2;execution_tag=wetag_1741229277947;start_time=2025-03-06 02:47:57.947+00;duration=1202'
+'sample_workflow_executions'	'we_id=3;execution_tag=wetag_1741229401610;start_time=2025-03-06 02:50:01.61+00;duration=1128'
+'sample_workflow_executions'	'we_id=4;execution_tag=wetag_1741229655966;start_time=2025-03-06 02:54:15.966+00;duration=1235'
+'sample_workflow_executions'	'we_id=5;execution_tag=wetag_1741229944179;start_time=2025-03-06 02:59:04.179+00;duration=1462'
+'sample_workflow_executions'	'we_id=6;execution_tag=wetag_1741230085652;start_time=2025-03-06 03:01:25.652+00;duration=1084'
+'sample_workflow_executions'	'we_id=7;execution_tag=wetag_1741230346268;start_time=2025-03-06 03:05:46.268+00;duration=1232'
+'sample_workflow_executions'	'we_id=8;execution_tag=wetag_1741230607670;start_time=2025-03-06 03:10:07.67+00;duration=14113'
+'sample_workflow_executions'	'we_id=9;execution_tag=wetag_1741230695726;start_time=2025-03-06 03:11:35.726+00;duration=8357'
+'sample_workflow_executions'	'we_id=10;execution_tag=wetag_1741230764818;start_time=2025-03-06 03:12:44.818+00;duration=179753'
+'sample_workflow_executions'	'we_id=12;execution_tag=wetag_1743638228939;start_time=2025-04-02 23:57:08.939+00;duration=15252'
+'sample_workflow_executions'	'we_id=13;execution_tag=wetag_1743638805975;start_time=2025-04-03 00:06:45.975+00;duration=11398'
+'sample_workflow_executions'	'we_id=14;execution_tag=wetag_1743638866699;start_time=2025-04-03 00:07:46.699+00;duration=10040'
+'sample_workflow_executions'	'we_id=15;execution_tag=wetag_1743638915763;start_time=2025-04-03 00:08:35.763+00;duration=9377'
+'sample_workflow_executions'	'we_id=16;execution_tag=wetag_1743639013205;start_time=2025-04-03 00:10:13.205+00;duration=9686'
+'sample_workflow_executions'	'we_id=17;execution_tag=wetag_1743648244152;start_time=2025-04-03 02:44:04.152+00;duration=57842'
+'sample_workflow_executions'	'we_id=18;execution_tag=wetag_1743649093292;start_time=2025-04-03 02:58:13.292+00;duration=55465'
+'sample_workflow_executions'	'we_id=19;execution_tag=wetag_1743650649505;start_time=2025-04-03 03:24:09.505+00;duration=138674'
+'sample_workflow_executions'	'we_id=20;execution_tag=wetag_1743678205634;start_time=2025-04-03 11:03:25.634+00;duration=54993'
+'sample_workflow_executions'	'we_id=21;execution_tag=wetag_1743678423945;start_time=2025-04-03 11:07:03.945+00;duration=49601'
+'sample_workflow_executions'	'we_id=22;execution_tag=wetag_1743678525527;start_time=2025-04-03 11:08:45.527+00;duration=27787'
+'sample_workflow_executions'	'we_id=23;execution_tag=wetag_1743678605279;start_time=2025-04-03 11:10:05.279+00;duration=23296'
+'sample_workflow_executions'	'we_id=24;execution_tag=wetag_1743678680757;start_time=2025-04-03 11:11:20.757+00;duration=21185'
+'sample_workflow_executions'	'we_id=25;execution_tag=wetag_1743678753528;start_time=2025-04-03 11:12:33.528+00;duration=20099'
+'sample_workflow_executions'	'we_id=41;execution_tag=wetag_1743783985655;start_time=2025-04-04 16:26:25.655+00;duration=188027'
+'sample_workflow_executions'	'we_id=42;execution_tag=wetag_1743784315852;start_time=2025-04-04 16:31:55.852+00;duration=86289'
+'sample_workflow_executions'	'we_id=43;execution_tag=wetag_1743784544684;start_time=2025-04-04 16:35:44.684+00;duration=65052'
+'sample_workflow_executions'	'we_id=44;execution_tag=wetag_1743784751635;start_time=2025-04-04 16:39:11.635+00;duration=54676'
+'sample_workflow_executions'	'we_id=45;execution_tag=wetag_1743784949015;start_time=2025-04-04 16:42:29.015+00;duration=50633'
+'sample_workflow_executions'	'we_id=47;execution_tag=wetag_1744388241569;start_time=2025-04-11 16:17:21.569+00;duration=1115'
+'sample_workflow_executions'	'we_id=57;execution_tag=wetag_1744748186112;start_time=2025-04-15 20:16:26.112+00;duration=16592'
+'sample_workflow_executions'	'we_id=59;execution_tag=wetag_1744753211442;start_time=2025-04-15 21:40:11.442+00;duration=15090'
+'sample_workflow_executions'	'we_id=60;execution_tag=wetag_1744754136686;start_time=2025-04-15 21:55:36.686+00;duration=15069'
+'sample_workflow_executions'	'we_id=61;execution_tag=wetag_1744754708329;start_time=2025-04-15 22:05:08.329+00;duration=530821'
+'sample_workflow_executions'	'we_id=62;execution_tag=wetag_1744757716148;start_time=2025-04-15 22:55:16.148+00;duration=2469217'
+'sample_workflow_executions'	'we_id=63;execution_tag=wetag_1744767700184;start_time=2025-04-16 01:41:40.184+00;duration=1565146'
+'sample_workflow_executions'	'we_id=64;execution_tag=wetag_1744771889401;start_time=2025-04-16 02:51:29.401+00;duration=842851'
+'sample_workflow_executions'	'we_id=65;execution_tag=wetag_1744855671009;start_time=2025-04-17 02:07:51.009+00;duration=4388'
+'sample_workflow_executions'	'we_id=66;execution_tag=wetag_1744861181586;start_time=2025-04-17 03:39:41.586+00;duration=216001'
+'sample_workflow_executions'	'we_id=68;execution_tag=wetag_1744914790201;start_time=2025-04-17 18:33:10.201+00;duration=7627'
+'sample_workflow_executions'	'we_id=69;execution_tag=wetag_1744914828574;start_time=2025-04-17 18:33:48.574+00;duration=10594'
+'sample_workflow_executions'	'we_id=70;execution_tag=wetag_1744914870934;start_time=2025-04-17 18:34:30.934+00;duration=9024'
+'sample_workflow_executions'	'we_id=71;execution_tag=wetag_1744914911217;start_time=2025-04-17 18:35:11.217+00;duration=8585'
+'sample_workflow_executions'	'we_id=72;execution_tag=wetag_1744914952928;start_time=2025-04-17 18:35:52.928+00;duration=9481'
+'sample_workflow_executions'	'we_id=73;execution_tag=wetag_1744914995147;start_time=2025-04-17 18:36:35.147+00;duration=38614'
+'sample_workflow_executions'	'we_id=74;execution_tag=wetag_1744915137433;start_time=2025-04-17 18:38:57.433+00;duration=21735'
+'sample_workflow_executions'	'we_id=75;execution_tag=wetag_1744915260665;start_time=2025-04-17 18:41:00.665+00;duration=19807'
+'sample_workflow_executions'	'we_id=76;execution_tag=wetag_1744915387542;start_time=2025-04-17 18:43:07.542+00;duration=17290'
+'sample_workflow_executions'	'we_id=77;execution_tag=wetag_1744915508787;start_time=2025-04-17 18:45:08.787+00;duration=15137'
+'sample_workflow_executions'	'we_id=78;execution_tag=wetag_1744915626329;start_time=2025-04-17 18:47:06.329+00;duration=136593'
+'sample_service_executions'	'se_id=1;request_id=bdff9ce5-bcfd-4e02-8897-e01500e52ecb;start_time=2025-03-06 02:54:16.162+00;duration=328.93;error_message='
+'sample_service_executions'	'se_id=2;request_id=649f4f62-fa2b-486b-b5ab-e1d4d3dba9fb;start_time=2025-03-06 02:54:16.719+00;duration=471.76;error_message='
+'sample_service_executions'	'se_id=3;request_id=05d706eb-b4ed-48e3-bd71-ef471f99f44e;start_time=2025-03-06 03:01:25.82+00;duration=309.36;error_message='
+'sample_service_executions'	'se_id=4;request_id=9ac28e6f-7444-4bba-bd9b-247e76a438d1;start_time=2025-03-06 03:01:26.251+00;duration=475.39;error_message='
+'sample_service_executions'	'se_id=5;request_id=a6206609-67b5-45c0-8b36-f0c06edc7cd6;start_time=2025-03-06 03:05:46.421+00;duration=324.01;error_message='
+'sample_service_executions'	'se_id=6;request_id=03ace5e0-8f2c-4d87-a8e7-5a848336f9d2;start_time=2025-03-06 03:05:46.903+00;duration=464.93;error_message='
+'sample_service_executions'	'se_id=7;request_id=61844da7-1258-4c61-876b-fe1c873d806d;start_time=2025-03-06 03:10:09.048+00;duration=788.99;error_message='
+'sample_service_executions'	'se_id=8;request_id=fe0a47f4-dc9b-4019-942b-67c418a91cfd;start_time=2025-03-06 03:10:09.965+00;duration=697.91;error_message='
+'sample_service_executions'	'se_id=9;request_id=bda42a23-76f0-4cca-bb2f-95c0f12ba936;start_time=2025-03-06 03:10:12.176+00;duration=796.3;error_message='
+'sample_service_executions'	'se_id=10;request_id=19618e79-fc44-47fa-aa80-8b41c8f71407;start_time=2025-03-06 03:10:13.101+00;duration=930.99;error_message='
+'sample_service_executions'	'se_id=11;request_id=1381bdec-1b2b-4789-8d8a-c738449e2a4c;start_time=2025-03-06 03:10:15.318+00;duration=2363.59;error_message='
+'sample_service_executions'	'se_id=12;request_id=6e673ecb-c4dc-4db6-b26f-7c129306021f;start_time=2025-03-06 03:10:17.868+00;duration=1893.44;error_message='
+'sample_service_executions'	'se_id=13;request_id=f429f337-05ab-47bd-8eb1-51dff7e03684;start_time=2025-03-06 03:10:21.077+00;duration=694.7;error_message='
+'sample_service_executions'	'se_id=14;request_id=c389ff4a-fd25-4478-94ed-d1acb274a5f7;start_time=2025-03-06 03:11:35.897+00;duration=488.08;error_message='
+'sample_service_executions'	'se_id=15;request_id=e670addb-5daf-4771-8bda-8859ab1e4bdc;start_time=2025-03-06 03:11:36.523+00;duration=694.87;error_message='
+'sample_service_executions'	'se_id=16;request_id=a3598eca-d9a3-474c-a690-4fa8fca1609f;start_time=2025-03-06 03:11:37.35+00;duration=622.2;error_message='
+'sample_service_executions'	'se_id=17;request_id=7d20d79d-5b51-4821-81c6-f8c929da7887;start_time=2025-03-06 03:11:38.097+00;duration=913.55;error_message='
+'sample_service_executions'	'se_id=18;request_id=983a5bde-cc16-4dc5-b6c1-004ba9d94c6b;start_time=2025-03-06 03:11:39.128+00;duration=2082.59;error_message='
+'sample_service_executions'	'se_id=19;request_id=451fc4e1-84af-459f-92f2-3cfa5ba7d919;start_time=2025-03-06 03:11:41.419+00;duration=1942.76;error_message='
+'sample_service_executions'	'se_id=20;request_id=18d757cb-6dde-499d-ba37-dc60b9a1c8ea;start_time=2025-03-06 03:11:43.568+00;duration=492.58;error_message='
+'sample_service_executions'	'se_id=21;request_id=cb243ead-f22d-4833-8ac9-082108349cbe;start_time=2025-03-06 03:12:44.963+00;duration=439.76;error_message='
+'sample_service_executions'	'se_id=22;request_id=eb024a04-5cd0-4397-b20a-5895705e7122;start_time=2025-03-06 03:12:45.617+00;duration=652.02;error_message='
+'sample_service_executions'	'se_id=23;request_id=5f100683-8e61-4917-bac8-f5c8fb7e7d88;start_time=2025-03-06 03:12:46.443+00;duration=829.19;error_message='
+'sample_service_executions'	'se_id=24;request_id=b637871a-bb8a-412f-89cd-d996684b1983;start_time=2025-03-06 03:12:47.463+00;duration=427.18;error_message='
+'sample_service_executions'	'se_id=25;request_id=49346677-5584-4ede-9051-17ff0041963a;start_time=2025-03-06 03:12:48.161+00;duration=900.74;error_message='
+'sample_service_executions'	'se_id=26;request_id=4401ac1c-c708-4720-a497-9d1d67d9454a;start_time=2025-03-06 03:12:49.194+00;duration=1054;error_message='
+'sample_service_executions'	'se_id=27;request_id=f51af65e-5553-40a3-8a30-050b79d369eb;start_time=2025-03-06 03:12:50.367+00;duration=674.24;error_message='
+'sample_service_executions'	'se_id=28;request_id=e51c7c06-7ae4-46a5-b45e-7989c233735b;start_time=2025-03-06 03:12:51.244+00;duration=861.3;error_message='
+'sample_service_executions'	'se_id=29;request_id=c5289bb2-41d7-4dcb-a8cb-acf51e265cef;start_time=2025-03-06 03:12:52.278+00;duration=687.71;error_message='
+'sample_service_executions'	'se_id=30;request_id=306b05a0-2eca-4d3e-b1a5-74c8c8df377c;start_time=2025-03-06 03:12:53.077+00;duration=963.52;error_message='
+'sample_service_executions'	'se_id=31;request_id=0d99ffb2-ed89-4b54-bd9f-1403db9fdba2;start_time=2025-03-06 03:12:54.211+00;duration=620.72;error_message='
+'sample_service_executions'	'se_id=32;request_id=80dc5a77-ea14-4a84-831a-5e44e75ae552;start_time=2025-03-06 03:12:55.022+00;duration=852.17;error_message='
+'sample_service_executions'	'se_id=33;request_id=94d47ffe-3b39-467e-bf59-2f1662e8dbf6;start_time=2025-03-06 03:12:56.039+00;duration=812.67;error_message='
+'sample_service_executions'	'se_id=34;request_id=e98ef500-8de0-42c1-a258-c7aeb1035be4;start_time=2025-03-06 03:12:56.984+00;duration=747.53;error_message='
+'sample_service_executions'	'se_id=35;request_id=d34e1c45-8df5-4940-ae47-3d6a8898a556;start_time=2025-03-06 03:12:57.857+00;duration=874.51;error_message='
+'sample_service_executions'	'se_id=36;request_id=556f5561-2972-4ef9-a93f-a9503cc49124;start_time=2025-03-06 03:12:58.923+00;duration=847.88;error_message='
+'sample_service_executions'	'se_id=37;request_id=f87ae95a-eb8b-457e-ab89-0033f2091680;start_time=2025-03-06 03:12:59.915+00;duration=975.96;error_message='
+'sample_service_executions'	'se_id=38;request_id=e482e273-50de-46b5-9af0-4a8545b1024c;start_time=2025-03-06 03:13:01.073+00;duration=818.85;error_message='
+'sample_service_executions'	'se_id=39;request_id=a5dd0d54-5251-4f6a-ac8c-326b455fa500;start_time=2025-03-06 03:13:02.016+00;duration=755.31;error_message='
+'sample_service_executions'	'se_id=40;request_id=94cd81e5-016a-40ae-a437-ba38da2e3ffb;start_time=2025-03-06 03:13:02.918+00;duration=873.11;error_message='
+'sample_service_executions'	'se_id=41;request_id=cca608ed-eb5a-4af4-afdf-1d752ed13d9a;start_time=2025-03-06 03:13:03.893+00;duration=12468.21;error_message='
+'sample_service_executions'	'se_id=42;request_id=3964b076-462a-4baf-adaf-ba3f420b86a0;start_time=2025-03-06 03:13:16.561+00;duration=18061.67;error_message='
+'sample_service_executions'	'se_id=43;request_id=3dfa9a68-e174-4ec7-ba96-aced3088d489;start_time=2025-03-06 03:13:34.782+00;duration=16040.41;error_message='
+'sample_service_executions'	'se_id=44;request_id=4bd27ab0-2792-4397-89ef-33ad5dd33db6;start_time=2025-03-06 03:13:51.344+00;duration=14459.05;error_message='
+'sample_service_executions'	'se_id=45;request_id=6279c6e0-ecfe-447e-bc02-21d02fdf8eb1;start_time=2025-03-06 03:14:05.999+00;duration=15982.74;error_message='
+'sample_service_executions'	'se_id=46;request_id=6d873c5d-85e1-4202-a245-12b21d6f5226;start_time=2025-03-06 03:14:22.101+00;duration=15517.36;error_message='
+'sample_service_executions'	'se_id=47;request_id=7b95bbda-e321-4690-b141-36cfaa95e31c;start_time=2025-03-06 03:14:37.839+00;duration=17762.92;error_message='
+'sample_service_executions'	'se_id=48;request_id=a8a6ab4e-0cbd-4723-8800-f3202947743b;start_time=2025-03-06 03:14:55.775+00;duration=15706.7;error_message='
+'sample_service_executions'	'se_id=49;request_id=896a48bf-986a-40ad-9c4a-72102ac838de;start_time=2025-03-06 03:15:11.644+00;duration=14838.46;error_message='
+'sample_service_executions'	'se_id=50;request_id=3f887291-fede-46f3-964e-6782f096a073;start_time=2025-03-06 03:15:26.681+00;duration=16141.35;error_message='
+'sample_files'	'file_id=1;file_name=ORTHOMCL1;file_size=1662;file_hash_code='
+'sample_files'	'file_id=2;file_name=tree_ORTHOMCL1.nexus;file_size=339;file_hash_code='
+'sample_files'	'file_id=3;file_name=ORTHOMCL256;file_size=2666;file_hash_code='
+'sample_files'	'file_id=4;file_name=tree_ORTHOMCL256.nexus;file_size=640;file_hash_code='
+'sample_files'	'file_id=5;file_name=tree_ORTHOMCL1_Inner1.nexus;file_size=185;file_hash_code='
+'sample_files'	'file_id=6;file_name=tree_ORTHOMCL1_Inner2.nexus;file_size=185;file_hash_code='
+'sample_files'	'file_id=7;file_name=tree_ORTHOMCL1_Inner3.nexus;file_size=339;file_hash_code='
+'sample_files'	'file_id=8;file_name=tree_ORTHOMCL256_Inner1.nexus;file_size=187;file_hash_code='
+'sample_files'	'file_id=9;file_name=tree_ORTHOMCL256_Inner2.nexus;file_size=245;file_hash_code='
+'sample_files'	'file_id=10;file_name=tree_ORTHOMCL256_Inner3.nexus;file_size=301;file_hash_code='
+'sample_files'	'file_id=11;file_name=tree_ORTHOMCL256_Inner4.nexus;file_size=191;file_hash_code='
+'sample_files'	'file_id=12;file_name=tree_ORTHOMCL256_Inner5.nexus;file_size=421;file_hash_code='
+'sample_files'	'file_id=13;file_name=tree_ORTHOMCL256_Inner6.nexus;file_size=481;file_hash_code='
+'sample_files'	'file_id=14;file_name=tree_ORTHOMCL256_Inner7.nexus;file_size=539;file_hash_code='
+'sample_files'	'file_id=15;file_name=tree_ORTHOMCL256_Inner8.nexus;file_size=640;file_hash_code='
+'sample_files'	'file_id=16;file_name=mafdb_6f7a2b1116e6a791f68a03367473294792b679a6357b6789f3f993b1f83e2e80.json;file_size=185;file_hash_code='
+'sample_files'	'file_id=17;file_name=mafdb_98e1a0698cbb3ad22654b18daf794e4cacd094e1e043d17e253b37083af465ed.json;file_size=396;file_hash_code='
+'sample_files'	'file_id=18;file_name=mafdb_45cbc9bc03b36072876f03fb879a229fd9bd3bfaea1682dcf885c349b07fdac6.json;file_size=597;file_hash_code='
+'sample_files'	'file_id=19;file_name=ORTHOMCL320;file_size=3358;file_hash_code='
+'sample_files'	'file_id=20;file_name=tree_ORTHOMCL320.nexus;file_size=595;file_hash_code='
+'sample_files'	'file_id=21;file_name=ORTHOMCL421;file_size=2439;file_hash_code='
+'sample_files'	'file_id=22;file_name=tree_ORTHOMCL421.nexus;file_size=521;file_hash_code='
+'sample_files'	'file_id=23;file_name=ORTHOMCL337;file_size=3213;file_hash_code='
+'sample_files'	'file_id=24;file_name=tree_ORTHOMCL337.nexus;file_size=581;file_hash_code='
+'sample_files'	'file_id=25;file_name=ORTHOMCL358;file_size=3265;file_hash_code='
+'sample_files'	'file_id=26;file_name=tree_ORTHOMCL358.nexus;file_size=567;file_hash_code='
+'sample_files'	'file_id=27;file_name=ORTHOMCL256_2;file_size=2666;file_hash_code='
+'sample_files'	'file_id=28;file_name=tree_ORTHOMCL256_2.nexus;file_size=640;file_hash_code='
+'sample_files'	'file_id=29;file_name=ORTHOMCL364;file_size=3224;file_hash_code='
+'sample_files'	'file_id=30;file_name=tree_ORTHOMCL364.nexus;file_size=575;file_hash_code='
+'sample_files'	'file_id=31;file_name=ORTHOMCL371;file_size=2771;file_hash_code='
+'sample_files'	'file_id=32;file_name=tree_ORTHOMCL371.nexus;file_size=511;file_hash_code='
+'sample_files'	'file_id=33;file_name=ORTHOMCL374;file_size=2627;file_hash_code='
+'sample_files'	'file_id=34;file_name=tree_ORTHOMCL374.nexus;file_size=563;file_hash_code='
+'sample_files'	'file_id=35;file_name=tree_ORTHOMCL320_Inner1.nexus;file_size=187;file_hash_code='
+'sample_files'	'file_id=36;file_name=tree_ORTHOMCL320_Inner2.nexus;file_size=245;file_hash_code='
+'sample_files'	'file_id=37;file_name=tree_ORTHOMCL320_Inner3.nexus;file_size=309;file_hash_code='
+'sample_files'	'file_id=38;file_name=tree_ORTHOMCL320_Inner4.nexus;file_size=199;file_hash_code='
+'sample_files'	'file_id=39;file_name=tree_ORTHOMCL320_Inner5.nexus;file_size=367;file_hash_code='
+'sample_files'	'file_id=40;file_name=tree_ORTHOMCL320_Inner6.nexus;file_size=187;file_hash_code='
+'sample_files'	'file_id=41;file_name=tree_ORTHOMCL320_Inner7.nexus;file_size=595;file_hash_code='
+'sample_files'	'file_id=42;file_name=tree_ORTHOMCL421_Inner1.nexus;file_size=185;file_hash_code='
+'sample_files'	'file_id=43;file_name=tree_ORTHOMCL421_Inner2.nexus;file_size=249;file_hash_code='
+'sample_files'	'file_id=44;file_name=tree_ORTHOMCL421_Inner3.nexus;file_size=187;file_hash_code='
+'sample_files'	'file_id=45;file_name=tree_ORTHOMCL421_Inner4.nexus;file_size=305;file_hash_code='
+'sample_files'	'file_id=46;file_name=tree_ORTHOMCL421_Inner5.nexus;file_size=187;file_hash_code='
+'sample_files'	'file_id=47;file_name=tree_ORTHOMCL421_Inner6.nexus;file_size=521;file_hash_code='
+'sample_files'	'file_id=48;file_name=tree_ORTHOMCL337_Inner1.nexus;file_size=187;file_hash_code='
+'sample_files'	'file_id=49;file_name=tree_ORTHOMCL337_Inner2.nexus;file_size=191;file_hash_code='
+'sample_files'	'file_id=50;file_name=tree_ORTHOMCL337_Inner3.nexus;file_size=243;file_hash_code='
