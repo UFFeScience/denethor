@@ -71,8 +71,8 @@ def get_simple_logger(file_name: str, file_path: str) -> tuple[logging.Logger, s
     logger.addHandler(file_handler)
 
     # Configuração da saída padrão
-    stream_handler = logging.StreamHandler(sys.stdout)
-    stream_handler.setFormatter(formatter)
-    logger.addHandler(stream_handler)
+    # stream_handler = logging.StreamHandler(sys.stdout)
+    # stream_handler.setFormatter(formatter)
+    # logger.addHandler(stream_handler)
 
     return logger, log_file_path
