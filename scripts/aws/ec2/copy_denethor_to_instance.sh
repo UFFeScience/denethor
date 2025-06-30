@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Load environment variables
-source ./env_vars.sh
+source ../load_env_vars.sh
 
 # Define mappings for parameters
 declare -A param_map=(

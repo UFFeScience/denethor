@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Load environment variables
-source ./env_vars.sh
+source ../load_env_vars.sh
 
 # Get instance ID from argument or use the environment variable
 instance_id=${1:-$ec2_instance_id}

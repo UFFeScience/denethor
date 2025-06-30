@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Load environment variables
-source ./env_vars.sh
+source ../load_env_vars.sh
 
 function get_instance_id() {
   local id_param=${1:-$ec2_instance_id}

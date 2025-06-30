@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Load environment variables
-source ./env_vars.sh
+source ../load_env_vars.sh
 
 # Check if key pair file exists
 if [ ! -f "$key_path" ]; then
