@@ -9,7 +9,6 @@ class WorkflowActivity(BaseModel):
     workflow_id = Column(Integer, ForeignKey('workflow.workflow_id'), nullable=False)
 
     workflow = relationship('Workflow')
-    # tasks = relationship("Task", back_populates="activity")
 
     def __str__(self):
         return (f"[{self.activity_id}]={self.activity_name}")
