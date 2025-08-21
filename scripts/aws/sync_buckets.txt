@@ -1,0 +1,26 @@
+aws s3 sync s3://denethor s3://denethor-bucket --source-region sa-east-1 --region sa-east-1
+
+# Policy info to sync buckets
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Statement1",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::247523262990:root"
+            },
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::denethor/*"
+        },
+        {
+            "Sid": "AllowListBucket",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::247523262990:root"
+            },
+            "Action": "s3:ListBucket",
+            "Resource": "arn:aws:s3:::denethor"
+        }
+    ]
+}
