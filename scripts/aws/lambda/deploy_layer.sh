@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Load environment variables
+source ../load_env_vars.sh
+
 # Define global variables
 DENETHOR_DIR="/home/marcello/Documents/denethor"
 
@@ -9,7 +12,6 @@ ORIGINAL_DIR=$(pwd)
 BASE_PATH=".tmp/lambda"
 PYTHON_VERSION="3.10"
 PYTHON_RUNTIME="python$PYTHON_VERSION"
-AWS_REGION="sa-east-1"
 
 # Define a map for additional resources
 declare -A ADDITIONAL_RESOURCES_MAP
@@ -46,7 +48,7 @@ deploy_layer() {
     zip -r ${LAYER_NAME}.zip python
 
     # Publish the lambda layer to AWS
-    aws lambda publish-layer-version --layer-name $LAYER_NAME --zip-file fileb://${LAYER_NAME}.zip --compatible-runtimes $PYTHON_RUNTIME --region $AWS_REGION
+    aws lambda publish-layer-version --layer-name $LAYER_NAME --zip-file fileb://${LAYER_NAME}.zip --compatible-runtimes $PYTHON_RUNTIME --region $aws_region
 
     # Return to the original directory
     cd $ORIGINAL_DIR

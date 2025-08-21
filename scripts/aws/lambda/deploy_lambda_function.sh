@@ -16,7 +16,8 @@
 ##################################################################################
 
 
-
+# Load environment variables
+source ../load_env_vars.sh
 
 ##################################################################################
 
@@ -27,17 +28,17 @@
 # Function to display script usage
 usage() {
     echo "Usage: $0 -f function_name -t timeout -m memory_size [-a append_memory]"
-    echo "  -f function_name: tree_constructor, subtree_constructor, maf_database_creator, maf_database_aggregator"
+    echo "  -f function_name: ${lambda_function_names[@]}"
     echo "  -t timeout: integer between 30 and 300"
-    echo "  -m memory_size: integer between 128 and 2048"
+    echo "  -m memory_size: ${lambda_memory_sizes[@]}"
     echo "  -a append_memory: boolean to append memory size to function name"
     exit 1
 }
 
 # Function to validate function_name
 validate_function_name() {
-    if [[ ! "$1" =~ ^(tree_constructor|subtree_constructor|maf_database_creator|maf_database_aggregator)$ ]]; then
-        echo "Invalid function_name: $1"
+    if [[ ! " ${lambda_function_names[*]} " =~ " $1 " ]]; then
+        echo "Invalid function_name: $1" >&2
         usage
     fi
 }
@@ -45,41 +46,29 @@ validate_function_name() {
 # Function to validate timeout
 validate_timeout() {
     if [[ ! "$1" =~ ^[0-9]+$ ]] || [ "$1" -lt 30 ] || [ "$1" -gt 300 ]; then
-        echo "Invalid timeout: $1"
+        echo "Invalid timeout: $1" >&2
         usage
     fi
 }
 
 # Function to validate memory_size
 validate_memory_size() {
-    if [[ ! "$1" =~ ^[0-9]+$ ]] || [ "$1" -lt 128 ] || [ "$1" -gt 2048 ]; then
-        echo "Invalid memory_size: $1"
+    if [[ ! " ${lambda_memory_sizes[*]} " =~ " $1 " ]]; then
+        echo "Invalid memory_size: $1" >&2
         usage
     fi
 }
 
 # Reading command line parameters
-append_memory=false
+APPEND_MEMORY=false
 while getopts ":f:t:m:a:" opt; do
   case $opt in
-    f)
-      function_name=$OPTARG
-      ;;
-    t)
-      timeout=$OPTARG
-      ;;
-    m)
-      memory_size=$OPTARG
-      ;;
-    a)
-      append_memory=$OPTARG
-      ;;
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      usage
-      ;;
-    :)
-      echo "Option -$OPTARG requires an argument." >&2
+    f) FUNCTION_NAME=$OPTARG ;;
+    t) TIMEOUT=$OPTARG ;;
+    m) MEMORY_SIZE=$OPTARG ;;
+    a) APPEND_MEMORY=$OPTARG ;;
+    *)
+      echo "Invalid option or missing argument." >&2
       usage
       ;;
   esac
@@ -87,14 +76,14 @@ done
 
 
 # Validate parameters
-validate_function_name "$function_name"
-validate_timeout "$timeout"
-validate_memory_size "$memory_size"
+validate_function_name "$FUNCTION_NAME"
+validate_timeout "$TIMEOUT"
+validate_memory_size "$MEMORY_SIZE"
 
-echo "Deploying function: $function_name"
-echo "Timeout: $timeout"
-echo "Memory size: $memory_size"
-echo "Append memory to function name: $append_memory"
+echo "Deploying function: $FUNCTION_NAME"
+echo "Timeout: $TIMEOUT"
+echo "Memory size: $MEMORY_SIZE"
+echo "Append memory to function name: $APPEND_MEMORY"
 
 ##################################################################################
 ##################################################################################
@@ -113,11 +102,8 @@ echo "Append memory to function name: $append_memory"
 SLEEP_DURATION=10
 
 DENETHOR_DIR="/home/marcello/Documents/denethor"
-AWS_ACCOUNT_ID="058264090960"
 PYTHON_VERSION="3.10"
 PYTHON_RUNTIME="python$PYTHON_VERSION"
-AWS_REGION="sa-east-1"
-IAM_ROLE="Lambda_S3_access_role"
 
 BASE_LAYER_NAME="base_layer"
 DENETHOR_LAYER_NAME="denethor_layer"
@@ -135,8 +121,8 @@ DENETHOR_LAYER_VERSION=$(get_latest_layer_version "$DENETHOR_LAYER_NAME")
 echo "Base Layer Version: $BASE_LAYER_VERSION"
 echo "Denethor Layer Version: $DENETHOR_LAYER_VERSION"
 
-BASE_LAYER="arn:aws:lambda:$AWS_REGION:$AWS_ACCOUNT_ID:layer:$BASE_LAYER_NAME:$BASE_LAYER_VERSION"
-DENETHOR_LAYER="arn:aws:lambda:$AWS_REGION:$AWS_ACCOUNT_ID:layer:$DENETHOR_LAYER_NAME:$DENETHOR_LAYER_VERSION"
+BASE_LAYER="arn:aws:lambda:$aws_region:$aws_account_id:layer:$BASE_LAYER_NAME:$BASE_LAYER_VERSION"
+DENETHOR_LAYER="arn:aws:lambda:$aws_region:$aws_account_id:layer:$DENETHOR_LAYER_NAME:$DENETHOR_LAYER_VERSION"
 
 LAYERS="$BASE_LAYER $DENETHOR_LAYER"
 
@@ -151,25 +137,25 @@ dependencies["maf_database_aggregator"]="maf_database_creator_core.py"
 # Store the current working directory
 ORIGINAL_DIR=$(pwd)
 
-# Change to the required directory
+cd $DENETHOR_DIR || { echo "Error: Cannot change to required directory $DENETHOR_DIR" >&2; exit 1; }
 cd $DENETHOR_DIR || { echo "Error: Cannot change to required directory $DENETHOR_DIR"; exit 1; }
 
-# Remove existing lambda function directory and recreate it
 rm -Rf .tmp/lambda/$function_name/
 mkdir -p .tmp/lambda/$function_name/
 
 # Copy lambda function files
-cp -R src/lambda/${function_name}* .tmp/lambda/$function_name/ || { echo "Error: Cannot copy $function_name files"; exit 1; }
+cp -R src/lambda/${function_name}* .tmp/lambda/$function_name/ || { echo "Error: Cannot copy $function_name files" >&2; exit 1; }
 
 # Copy additional dependency files if any
 for dep in ${dependencies[$function_name]}; do
-  cp src/lambda/$dep .tmp/lambda/$function_name/ || { echo "Error: Cannot copy dependency file $dep"; exit 1; }
+  cp src/lambda/$dep .tmp/lambda/$function_name/ || { echo "Error: Cannot copy dependency file $dep" >&2; exit 1; }
 done
-
+done
 # Change to the lambda function directory
 cd .tmp/lambda/$function_name/
 
 # Zip the lambda function
+zip ${function_name}.zip * || { echo "Error: Cannot zip lambda function" >&2; exit 1; }
 zip ${function_name}.zip * || { echo "Error: Cannot zip lambda function"; exit 1; }
 
 
@@ -223,10 +209,10 @@ else
   --zip-file fileb://${function_name}.zip \
   --handler ${function_name}.handler \
   --runtime $PYTHON_RUNTIME \
-  --role arn:aws:iam::$AWS_ACCOUNT_ID:role/service-role/$IAM_ROLE \
+  --role arn:aws:iam::$aws_account_id:role/service-role/$lambda_role \
   --timeout $timeout \
   --memory-size $memory_size \
-  --region $AWS_REGION \
+  --region $aws_region \
   --layers $LAYERS \
   || { echo -e "\n>>>> ERROR: Cannot create $function_name_aws function.\n"; exit 1; }
 fi

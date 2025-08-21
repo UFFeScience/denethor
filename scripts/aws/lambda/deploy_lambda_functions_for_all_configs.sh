@@ -10,7 +10,7 @@ function_names=("tree_constructor" "subtree_constructor" "maf_database_creator" 
 
 # Associating timeouts to functions
 declare -A timeouts
-timeouts=( ["tree_constructor"]=30 ["subtree_constructor"]=30 ["maf_database_creator"]=120 ["maf_database_aggregator"]=30 )
+timeouts=( ["tree_constructor"]=30 ["subtree_constructor"]=30 ["maf_database_creator"]=300 ["maf_database_aggregator"]=30 )
 
 # Variable to indicate appending memory size to function name
 append_memory=true
