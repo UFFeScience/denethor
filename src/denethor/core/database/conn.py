@@ -8,11 +8,11 @@ from sqlalchemy.exc import OperationalError
 load_dotenv()
 
 # Parâmetros de conexão a partir das variáveis de ambiente
-HOST = os.getenv('denethor_host')
-PORT = os.getenv('denethor_port')
-DATABASE = os.getenv('denethor_database')
-USER = os.getenv('denethor_user')
-PASSWORD = os.getenv('denethor_password')
+HOST = os.getenv('denethor_db_host')
+PORT = os.getenv('denethor_db_port')
+DATABASE = os.getenv('denethor_db_database')
+USER = os.getenv('denethor_db_user')
+PASSWORD = os.getenv('denethor_db_password')
 
 class Connection:
     def __init__(self):
