@@ -1,41 +1,63 @@
 #!/bin/bash
 
-export local_path="/home/marcello/Documents/denethor/"
 
-# Load environment variables from .env file
-echo "Loading environment variables..." ${local_path}.env
-source ${local_path}.env
+env_file="/home/marcello/Documents/denethor/.env"
 
-# Check for required environment variables
+# Lista das variáveis obrigatórias
 required_vars=(
-    aws_region
-    lambda_memory_sizes
-    lambda_function_names
-    lambda_s3_access_role
-    denethor_db_host
-    denethor_db_port
-    denethor_db_database
-    denethor_db_user
-    denethor_db_password
-    aws_account_id
-    aws_access_key_id
-    aws_secret_access_key
-    key_name
-    key_path
-    ec2_instance_id
-    ec2_instance_name
-    ec2_instance_type
-    ec2_path
-    ec2_user
-    vpc_id
-    sg_id
-    sg_name
-    sg_description
-    ami_id
-    ami_name
+    DENETHOR_PATH
+    PYTHON_VERSION
+    PYTHON_RUNTIME
+    SLEEP_DURATION
+    AWS_REGION
+    LAMBDA_FUNCTION_NAMES
+    LAMBDA_DEFAULT_TIMEOUTS
+    LAMBDA_DEFAULT_MEMORY
+    LAMBDA_MEMORY_SIZES
+    BASE_LAYER_NAME
+    DENETHOR_LAYER_NAME
+    LAMBDA_S3_ACCESS_ROLE
+    DENETHOR_DB_HOST
+    DENETHOR_DB_PORT
+    DENETHOR_DB_DATABASE
+    DENETHOR_DB_USER
+    DENETHOR_DB_PASSWORD
+    AWS_ACCOUNT_ID
+    AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY
+    KEY_NAME
+    KEY_PATH
+    EC2_INSTANCE_ID
+    EC2_INSTANCE_NAME
+    EC2_INSTANCE_TYPE
+    EC2_PATH
+    EC2_USER
+    VPC_ID
+    SG_ID
+    SG_NAME
+    SG_DESCRIPTION
+    AMI_ID
+    AMI_NAME
 )
 
-# Check if any required environment variable is empty or undefined
+
+# Função para imprimir variáveis de ambiente de um array passado por parâmetro
+print_vars() {
+    local arr=("${@}")
+    echo "------------------------------------"
+    echo "Variables:"
+    echo "------------------------------------"
+    for var in "${arr[@]}"; do
+        echo "$var=${!var}"
+    done
+    echo "------------------------------------"
+    echo ""
+}
+
+echo "Loading environment variables... ${env_file}"
+source ${env_file}
+
+# Final check if any required environment variable is empty or undefined
 missing_vars=()
 for var in "${required_vars[@]}"; do
     if [ -z "${!var}" ]; then
@@ -44,22 +66,11 @@ for var in "${required_vars[@]}"; do
 done
 
 if [ ${#missing_vars[@]} -ne 0 ]; then
-    echo "WARNING: The following environment variables are not defined or are empty:"
-    for var in "${missing_vars[@]}"; do
-        echo "  - $var"
-    done
-    echo "------------------------------------"
+    echo "Some required environment variables are missing:"
+    print_vars "${missing_vars[@]}"
+    exit 1
 else
-    echo "All required environment variables are defined."
-    echo "------------------------------------"
+    echo -e "All required environment variables are defined.\n"
 fi
 
-# print the environment variables
-echo "------------------------------------"
-echo "Environment variables loaded:"
-echo "------------------------------------"
-for var in $(compgen -A variable | grep -E '^(aws_|ec2_|sg_|vpc_|ami_|key_)'); do
-    echo "$var=${!var}"
-done
-echo "------------------------------------"
-echo ""
+

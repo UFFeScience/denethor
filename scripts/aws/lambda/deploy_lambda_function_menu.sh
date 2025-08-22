@@ -3,95 +3,118 @@
 # Load environment variables
 source ../load_env_vars.sh
 
-# Associating timeouts to functions
-declare -A timeouts
-timeouts=( ["tree_constructor"]=30 ["subtree_constructor"]=30 ["maf_database_creator"]=300 ["maf_database_aggregator"]=30 )
 
+# Parallel arrays for default timeout and memory (defined in .env)
+# LAMBDA_FUNCTION_NAMES, LAMBDA_DEFAULT_TIMEOUTS, LAMBDA_DEFAULT_MEMORY
+
+if [[ ${#LAMBDA_FUNCTION_NAMES[@]} -ne ${#LAMBDA_DEFAULT_TIMEOUTS[@]} || ${#LAMBDA_FUNCTION_NAMES[@]} -ne ${#LAMBDA_DEFAULT_MEMORY[@]} ]]; then
+  echo "Array size mismatch in .env. Check LAMBDA_FUNCTION_NAMES, LAMBDA_DEFAULT_TIMEOUTS, and LAMBDA_DEFAULT_MEMORY."
+  exit 1
+fi
 
 # Function to display the menu and get the user's choice for function name
 function choose_function_name() {
   echo "Please choose the function name for deployment:"
-  for i in "${!lambda_function_names[@]}"; do
-    echo "$((i+1)). ${lambda_function_names[$i]}"
+  for i in "${!LAMBDA_FUNCTION_NAMES[@]}"; do
+    echo "$((i+1)). ${LAMBDA_FUNCTION_NAMES[$i]}"
   done
   read -p "Enter the number corresponding to your choice: " choice
 
-  case $choice in
-    1) FUNCTION_NAME=${lambda_function_names[0]}; DEFAULT_TIMEOUT=30; DEFAULT_MEMORY_SIZE=256 ;;
-    2) FUNCTION_NAME=${lambda_function_names[1]}; DEFAULT_TIMEOUT=45; DEFAULT_MEMORY_SIZE=512 ;;
-    3) FUNCTION_NAME=${lambda_function_names[2]}; DEFAULT_TIMEOUT=300; DEFAULT_MEMORY_SIZE=1024 ;;
-    4) FUNCTION_NAME=${lambda_function_names[3]}; DEFAULT_TIMEOUT=30; DEFAULT_MEMORY_SIZE=128 ;;
-    *) echo "Invalid choice. Exiting."; exit 1 ;;
-  esac
-  echo "You chose: $FUNCTION_NAME"
+  # Validate the input
+  if ! [[ "$choice" =~ ^[0-9]+$ ]]; then
+    echo "Invalid input. Exiting."
+    exit 1
+  fi
+
+  idx=$((choice-1))
+  if [[ $idx -ge 0 && $idx -lt ${#LAMBDA_FUNCTION_NAMES[@]} ]]; then
+    function_name=${LAMBDA_FUNCTION_NAMES[$idx]}
+    default_timeout=${LAMBDA_DEFAULT_TIMEOUTS[$idx]}
+    default_memory_size=${LAMBDA_DEFAULT_MEMORY[$idx]}
+    echo ""
+  else
+    echo "Invalid choice. Exiting."
+    exit 1
+  fi
 }
 
 # Function to get the deployment type from the user
 function choose_deployment_type() {
-  echo "Please choose the deployment type:"
-  echo "1. Deploy one configuration"
-  echo "2. Deploy all configurations"
-  read -p "Enter your choice (1 or 2): " deployment_choice
+  echo "Choose the deployment type:"
+  echo "1. One configuration"
+  echo "2. All configurations"
+  read -p "Enter the number corresponding to your choice: " deployment_choice
   case $deployment_choice in
-    1) DEPLOYMENT_TYPE="single" ;;
-    2) DEPLOYMENT_TYPE="all" ;;
+    1) deployment_type="one" ;;
+    2) deployment_type="all" ;;
     *) echo "Invalid choice. Exiting."; exit 1 ;;
   esac
-  echo "You chose: $DEPLOYMENT_TYPE"
+  echo ""
 }
 
 # Function to get the timeout value from the user
 function choose_timeout() {
-  read -p "Enter the timeout value (default is $DEFAULT_TIMEOUT): " timeout
-  TIMEOUT=${timeout:-$DEFAULT_TIMEOUT}
-  echo "You chose: $TIMEOUT"
+  read -p "Enter the timeout value (default is $default_timeout): " timeout
+  timeout=${timeout:-$default_timeout}
+  echo ""
 }
 
 # Function to get the memory size from the user
 function choose_memory_size() {
-  read -p "Enter the memory size (default is $DEFAULT_MEMORY_SIZE): " memory_size
-  MEMORY_SIZE=${memory_size:-$DEFAULT_MEMORY_SIZE}
-  echo "You chose: $MEMORY_SIZE"
+  read -p "Enter the memory size (default is $default_memory_size): " memory_size
+  memory_size=${memory_size:-$default_memory_size}
+  echo ""
 }
 
 # Function to ask if the user wants to append memory size to the function name
 function choose_append_memory() {
   read -p "Append memory size to function name? (y/n): " append_memory
-  if [[ "$append_memory" =~ ^[Yy]$ ]]; then
-    APPEND_MEMORY=true
+  if [[ $append_memory =~ ^[Yy]$ ]]; then
+    append_memory=true
   else
-    APPEND_MEMORY=false
+    append_memory=false
   fi
-  echo "You chose: $APPEND_MEMORY"
+  echo ""
 }
 
 # Call the functions to get user inputs
 choose_function_name
 choose_deployment_type
 
-if [[ "$DEPLOYMENT_TYPE" == "single" ]]; then
+if [[ "$deployment_type" == "one" ]]; then
   choose_timeout
   choose_memory_size
   choose_append_memory
   # Call the deploy_lambda.sh script with the user inputs
-  ./deploy_lambda_function.sh -f $FUNCTION_NAME -t $TIMEOUT -m $MEMORY_SIZE -a $APPEND_MEMORY
+  ./deploy_lambda_function.sh -f "$function_name" -t "$timeout" -m "$memory_size" -a "$append_memory"
 
 else
-  # For deploying all configurations
-  # Get the timeout for the current function
-  TIMEOUT=${timeouts[$FUNCTION_NAME]}
-  APPEND_MEMORY=true
+  # Para deploy de todas as configurações
+  # Pega o índice da função escolhida
+  idx=-1
+  for i in "${!LAMBDA_FUNCTION_NAMES[@]}"; do
+    if [[ "${LAMBDA_FUNCTION_NAMES[$i]}" == "$function_name" ]]; then
+      idx=$i
+      break
+    fi
+  done
+  if [[ $idx -eq -1 ]]; then
+    echo "Function name not found in LAMBDA_FUNCTION_NAMES. Exiting."
+    exit 1
+  fi
+  timeout=${LAMBDA_DEFAULT_TIMEOUTS[$idx]}
+  append_memory=true
 
-  # Iterate over each memory size
-  for MEMORY_SIZE in "${lambda_memory_sizes[@]}"; do
-    echo -e "\n>>>> Memory size: $MEMORY_SIZE\n"
+  # Itera sobre cada memória
+  for memory_size in "${LAMBDA_MEMORY_SIZES[@]}"; do
+    echo -e "\n>>>> Memory size: $memory_size\n"
 
-    # Call deploy_lambda.sh with the current configuration
-    ./deploy_lambda_function.sh -f "$FUNCTION_NAME" -t "$TIMEOUT" -m "$MEMORY_SIZE" -a "$APPEND_MEMORY"
+    # Chama o deploy com a configuração atual
+    ./deploy_lambda_function.sh -f "$function_name" -t "$timeout" -m "$memory_size" -a "$append_memory"
 
-    # Check the exit code of the script
+    # Checa o código de saída
     if [ $? -ne 0 ]; then
-      echo ">>>> ERROR: Deploy failed for function $FUNCTION_NAME with memory size $MEMORY_SIZE. Exiting..."
+      echo ">>>> ERROR: Deploy failed for function $function_name with memory size $memory_size. Exiting..."
       exit 1
     fi
   done
