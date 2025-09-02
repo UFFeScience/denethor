@@ -1,5 +1,9 @@
 #!/bin/bash
 
+
+# Load environment variables
+source ../load_env_vars.sh
+
 # Initialize variables
 function_name=""
 region=""

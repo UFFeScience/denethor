@@ -40,15 +40,18 @@ function choose_function_name() {
 
 # Function to get the deployment type from the user
 function choose_deployment_type() {
-  echo "Choose the deployment type:"
-  echo "1. One configuration"
-  echo "2. All configurations"
-  read -p "Enter the number corresponding to your choice: " deployment_choice
-  case $deployment_choice in
-    1) deployment_type="one" ;;
-    2) deployment_type="all" ;;
-    *) echo "Invalid choice. Exiting."; exit 1 ;;
-  esac
+  read -p "Enter your choice [single or all] (default is single): " deployment_type
+  deployment_type=${deployment_type:-"single"}
+  if [[ "$deployment_type" != "single" && "$deployment_type" != "all" ]]; then
+    echo "Invalid choice. Exiting."
+    exit 1
+  fi
+  echo ""
+}
+
+function choose_region() {
+  read -p "Enter the AWS region (default is $AWS_REGION): " region
+  region=${region:-$AWS_REGION}
   echo ""
 }
 
@@ -68,7 +71,7 @@ function choose_memory_size() {
 
 # Function to ask if the user wants to append memory size to the function name
 function choose_append_memory() {
-  read -p "Append memory size to function name? (y/n): " append_memory
+  read -p "Append memory size to function name? [y/n] (default is n): " append_memory
   if [[ $append_memory =~ ^[Yy]$ ]]; then
     append_memory=true
   else
@@ -81,16 +84,17 @@ function choose_append_memory() {
 choose_function_name
 choose_deployment_type
 
-if [[ "$deployment_type" == "one" ]]; then
+if [[ "$deployment_type" == "single" ]]; then
+  choose_region
   choose_timeout
   choose_memory_size
   choose_append_memory
   # Call the deploy_lambda.sh script with the user inputs
-  ./deploy_lambda_function.sh -f "$function_name" -t "$timeout" -m "$memory_size" -a "$append_memory"
+  ./deploy_lambda_function.sh -f "$function_name" -r "$region" -t "$timeout" -m "$memory_size" -a "$append_memory"
 
 else
-  # Para deploy de todas as configurações
-  # Pega o índice da função escolhida
+  # For deploying all configurations
+  # Get the index of the selected function
   idx=-1
   for i in "${!LAMBDA_FUNCTION_NAMES[@]}"; do
     if [[ "${LAMBDA_FUNCTION_NAMES[$i]}" == "$function_name" ]]; then
@@ -102,6 +106,7 @@ else
     echo "Function name not found in LAMBDA_FUNCTION_NAMES. Exiting."
     exit 1
   fi
+  region=$AWS_REGION
   timeout=${LAMBDA_DEFAULT_TIMEOUTS[$idx]}
   append_memory=true
 
@@ -110,7 +115,7 @@ else
     echo -e "\n>>>> Memory size: $memory_size\n"
 
     # Chama o deploy com a configuração atual
-    ./deploy_lambda_function.sh -f "$function_name" -t "$timeout" -m "$memory_size" -a "$append_memory"
+    ./deploy_lambda_function.sh -f "$function_name" -r "$region" -t "$timeout" -m "$memory_size" -a "$append_memory"
 
     # Checa o código de saída
     if [ $? -ne 0 ]; then

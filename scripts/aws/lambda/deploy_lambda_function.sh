@@ -4,6 +4,7 @@
 
 # Script to deploy a lambda function to AWS based on command line parameters:
 # - function_name
+# - region
 # - timeout
 # - memory_size
 # - append_memory flag
@@ -27,8 +28,9 @@ source ../load_env_vars.sh
 
 # Function to display script usage
 usage() {
-    echo "Usage: $0 -f function_name -t timeout -m memory_size [-a append_memory]"
+    echo "Usage: $0 -f function_name -r region -t timeout -m memory_size [-a append_memory]"
     echo "  -f function_name: ${LAMBDA_FUNCTION_NAMES[@]}"
+    echo "  -r region: AWS region (default: $AWS_REGION)"
     echo "  -t timeout: integer between 30 and 300"
     echo "  -m memory_size: ${LAMBDA_MEMORY_SIZES[@]}"
     echo "  -a append_memory: boolean to append memory size to function name"
@@ -39,6 +41,13 @@ usage() {
 validate_function_name() {
     if [[ ! " ${LAMBDA_FUNCTION_NAMES[*]} " =~ " $1 " ]]; then
         echo "Invalid function_name: $1" >&2
+        usage
+    fi
+}
+
+validate_region() {
+    if [[ -z "$1" ]]; then
+        echo "Region is required." >&2
         usage
     fi
 }
@@ -61,14 +70,15 @@ validate_memory_size() {
 
 # Reading command line parameters
 append_memory=false
-while getopts ":f:t:m:a:" opt; do
+while getopts ":f:r:t:m:a:" opt; do
   case $opt in
     f) function_name=$OPTARG ;;
+    r) region=$OPTARG ;;
     t) timeout=$OPTARG ;;
     m) memory_size=$OPTARG ;;
     a) append_memory=$OPTARG ;;
     *)
-      echo "Invalid option or missing argument." >&2
+      echo "Invalid option [opt=$opt] or missing argument." >&2
       usage
       ;;
   esac
@@ -78,10 +88,12 @@ append_memory=$(echo "$append_memory" | tr '[:upper:]' '[:lower:]')
 
 # Validate parameters
 validate_function_name "$function_name"
+validate_region "$region"
 validate_timeout "$timeout"
 validate_memory_size "$memory_size"
 
 echo "Deploying function: $function_name"
+echo "Region: $region"
 echo "Timeout: $timeout"
 echo "Memory size: $memory_size"
 echo "Append memory to function name: $append_memory"
@@ -112,8 +124,8 @@ denethor_layer_version=$(get_latest_layer_version "$DENETHOR_LAYER_NAME")
 echo "Base Layer Version: $base_layer_version"
 echo "Denethor Layer Version: $denethor_layer_version"
 
-base_layer="arn:aws:lambda:$aws_region:$aws_account_id:layer:$BASE_LAYER_NAME:$base_layer_version"
-denethor_layer="arn:aws:lambda:$aws_region:$aws_account_id:layer:$DENETHOR_LAYER_NAME:$denethor_layer_version"
+base_layer="arn:aws:lambda:$region:$AWS_ACCOUNT_ID:layer:$BASE_LAYER_NAME:$base_layer_version"
+denethor_layer="arn:aws:lambda:$region:$AWS_ACCOUNT_ID:layer:$DENETHOR_LAYER_NAME:$denethor_layer_version"
 
 layers="$base_layer $denethor_layer"
 
@@ -159,18 +171,18 @@ fi
 function_exists=$( \
   aws lambda list-functions \
   --query "Functions[?FunctionName=='$function_name_final'].FunctionName" \
-  --region $AWS_REGION \
+  --region $region \
   --output text)
 
 if [ "$function_exists" = "$function_name_final" ]; then
 
   echo -e "\n>>>>Function $function_name_final already exists! Updating the function code..."
 
-  # aws lambda update-function-code \
-  # --function-name $function_name_final \
-  # --zip-file fileb://${function_name}.zip \
-  # --region $AWS_REGION \
-  # || { echo -e "\n>>>> ERROR: Cannot update $function_name_final function code.\n"; exit 1; }
+  aws lambda update-function-code \
+  --function-name $function_name_final \
+  --zip-file fileb://${function_name}.zip \
+  --region $region \
+  || { echo -e "\n>>>> ERROR: Cannot update $function_name_final function code.\n"; exit 1; }
 
 
   echo -e "\n>>>>Updating the $function_name_final function configuration..."
@@ -179,35 +191,38 @@ if [ "$function_exists" = "$function_name_final" ]; then
   echo -e "\n>>>>Waiting $SLEEP_DURATION seconds to ensure the update-function-code operation completes"
   sleep $SLEEP_DURATION
 
-  # aws lambda update-function-configuration \
-  # --function-name $function_name_final \
-  # --layers $layers \
-  # --timeout $timeout \
-  # --memory-size $memory_size \
-  # --region $AWS_REGION \
-  # || { echo -e "\n>>>> ERROR: Cannot update $function_name_final function configuration.\n"; exit 1; }
+  aws lambda update-function-configuration \
+  --function-name $function_name_final \
+  --timeout $timeout \
+  --memory-size $memory_size \
+  --region $region \
+  --layers $layers \
+  || { echo -e "\n>>>> ERROR: Cannot update $function_name_final function configuration.\n"; exit 1; }
 
 else
   # Create the lambda function on AWS
   echo -e "\n>>>>Function $function_name_final does not exist. Creating the function."
 
-  # aws lambda create-function \
-  # --function-name $function_name_final \
-  # --zip-file fileb://${function_name}.zip \
-  # --handler ${function_name}.handler \
-  # --runtime $PYTHON_RUNTIME \
-  # --role arn:aws:iam::$AWS_ACCOUNT_ID:role/service-role/$LAMBDA_S3_ACCESS_ROLE \
-  # --timeout $timeout \
-  # --memory-size $memory_size \
-  # --region $AWS_REGION \
-  # --layers $layers \
-  # || { echo -e "\n>>>> ERROR: Cannot create $function_name_final function.\n"; exit 1; }
+  echo -e "arn:aws:iam::$AWS_ACCOUNT_ID:role/$LAMBDA_S3_ACCESS_ROLE"
+
+  aws lambda create-function \
+  --function-name $function_name_final \
+  --zip-file fileb://${function_name}.zip \
+  --handler ${function_name}.handler \
+  --runtime $PYTHON_RUNTIME \
+  --role arn:aws:iam::$AWS_ACCOUNT_ID:role/$LAMBDA_S3_ACCESS_ROLE \
+  --timeout $timeout \
+  --memory-size $memory_size \
+  --region $region \
+  --layers $layers \
+  || { echo -e "\n>>>> ERROR: Cannot create $function_name_final function.\n"; exit 1; }
 fi
 
 # Return to the original directory
 cd $original_dir
 
 # End of script
-echo -e "\n-----------------------------------------------------------------------------------------------\n"
-echo -e "Deployment completed successfully for function $function_name_final! with memory size $memory_size and timeout $timeout seconds."
-echo -e "\n-----------------------------------------------------------------------------------------------\n"
+echo -e "\n------------------------------------------------------------------------------------\n"
+echo -e "Deployment completed successfully for function $function_name_final!"
+echo -e "Region=$region | Memory=$memory_size MB | Timeout=$timeout seconds."
+echo -e "\n------------------------------------------------------------------------------------\n"

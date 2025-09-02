@@ -50,11 +50,12 @@ def main():
     #################################################################
 
     PROVIDER = const.AWS_LAMBDA
-    # MEMORY_LIST = [128, 256, 512, 1024, 2048]
-    MEMORY_LIST = [128]
+    MEMORY_LIST = [128, 256, 512, 1024, 2048]
+    #MEMORY_LIST = [128]
     ACTIVE_STEPS = None  # dont update active steps
-    # FILE_COUNT_LIST = [60, 70, 80, 90, 100]
-    FILE_COUNT_LIST = [4]
+    # FILE_COUNT_LIST = [4]
+    FILE_COUNT_LIST = [110, 120, 130, 140, 150]
+    # 160, 170, 180, 190, 200]
     FILE_SELECTION_MODE = "first"  #  "first" or "random"
 
     workflow_input_files_by_count = select_input_files_for_workflow(
