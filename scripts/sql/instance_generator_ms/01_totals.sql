@@ -1,30 +1,25 @@
---#<#tasks> <#config> <#data> <#vms> <#buckets> <#bucket_ranges> <max_running_time> <max_financial_cost>
+--#<#tasks> <#config> <#data> <#vms> <#buckets> <#bucket_ranges> <max_running_time_ms> <max_financial_cost>
 SELECT 
-	
 	(SELECT count(distinct st.task_id) AS _tasks_count
 		FROM service_execution se
 		JOIN workflow_execution we ON se.we_id = we.we_id
 		JOIN vw_service_execution_task st ON se.se_id = st.se_id
 		WHERE we.[we_column] in ([we_values])
 	),
-	
 	(SELECT count(pc.conf_id) AS _configs_count
 		FROM provider_configuration pc
 		JOIN provider pr on pc.provider_id = pr.provider_id
 		WHERE pr.provider_tag = 'aws_lambda'
 	),
-	
 	(SELECT count(distinct ef.file_id ) AS _files_count
 		FROM service_execution se
 		JOIN workflow_execution we ON se.we_id = we.we_id 
 		JOIN execution_file ef ON ef.se_id = se.se_id 
 		WHERE we.[we_column] in ([we_values])
 	),
-	
 	(SELECT count(*) AS _vms_count
 		FROM vm_configurations
 	),
-	
 	(SELECT count(distinct fi.file_bucket ) AS _buckets_count
 		FROM service_execution se
 		JOIN workflow_execution we ON se.we_id = we.we_id
@@ -32,55 +27,23 @@ SELECT
 		JOIN file fi ON fi.file_id = ef.file_id
 		WHERE we.[we_column] in ([we_values])
 	),
-	
 	(SELECT count(*) AS _bucket_ranges_count
 		FROM bucket_ranges
 	),
-	
-	(WITH workflow_duration AS (
-		SELECT 
-			we.we_id,
-			se.provider_conf_id,
-			SUM(se.duration*0.001 + COALESCE(se.init_duration*0.001, 0)) AS max_workflow_duration,
-			COUNT(*) AS task_count
-		FROM service_execution se
-		JOIN workflow_execution we ON se.we_id = we.we_id
-		WHERE we.[we_column] in ([we_values])
-		GROUP BY we.we_id, se.provider_conf_id
-		ORDER BY we.we_id
-	),
-	transfer_duration_vm AS (
-		SELECT
-			SUM(max_transfer_duration*0.001) FILTER (WHERE transfer_type = 'consumed') AS consumed_total_max,
-			SUM(max_transfer_duration*0.001) FILTER (WHERE transfer_type = 'produced') AS produced_total_max
+	(SELECT max(t.max_workflow_duration_ms) AS _max_running_time_ms
 		FROM (
-			SELECT DISTINCT
-				ef.file_id,
-				ef.transfer_type,
-				MAX(ef.transfer_duration) AS max_transfer_duration 
-			FROM service_execution se
-			JOIN workflow_execution we ON se.we_id = we.we_id 
-			JOIN execution_file ef ON ef.se_id = se.se_id 
-			WHERE we.[we_column] in ([we_values])
-			GROUP BY ef.file_id, ef.transfer_type
-		)
-	)
-	SELECT MAX(t.max_workflow_duration) 
-		FROM (	
-			SELECT *
-			FROM workflow_duration
-			WHERE [we_column] in ([we_values_fx])
-			UNION ALL
 			SELECT 
-				we_id, provider_conf_id,
-				max_workflow_duration +
-				(SELECT consumed_total_max + produced_total_max FROM transfer_duration_vm),
-				task_count
-			FROM workflow_duration
-			WHERE [we_column] in ([we_values_vm])
+				we.we_id,
+				se.provider_conf_id,
+				sum(se.duration) AS max_workflow_duration_ms,
+				count(*) AS task_count
+			FROM service_execution se
+			JOIN workflow_execution we ON se.we_id = we.we_id
+			WHERE we.[we_column] in ([we_values])
+			GROUP BY we.we_id, se.provider_conf_id
+			ORDER BY we.we_id
 		) t
 	),
-	
 	(SELECT max(t.max_workflow_cost) AS _max_financial_cost
 		FROM (
 			SELECT 

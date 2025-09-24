@@ -1,0 +1,32 @@
+#<#tasks>	<#config>	<#data>	<#vms>	<#buckets>	<#bucket_ranges>	<max_running_time>	<max_financial_cost>
+4	1	6	3	1	3	19	0.00005000000000
+
+#<task_id>	<activity_id>	<task_type__0-VM__1-VM_FX>	<vm_cpu_time>	<n_input>	[<id_input>...]	<n_output>	[<id_output>...]
+1	1	1	1.00000	1	[1]	1	[2]
+2	1	1	1.00000	1	[3]	1	[4]
+9	2	1	1.00000	1	[2]	1	[567]
+10	2	1	1.00000	1	[4]	1	[815]
+
+#<data_id>	<data_size_bytes>	<read_time_avg>	<write_time_avg	<is_static>	<n_source_devices>	[<device_id>...]
+1	1662	2.00000	None	1	1	[denethor_bucket]
+2	0339	1.00000	1.00000	0	0	[denethor_bucket]
+3	2666	2.00000	None	1	1	[denethor_bucket]
+4	0640	1.00000	1.00000	0	0	[denethor_bucket]
+567	0185	1.00000	1.00000	0	0	[denethor_bucket]
+815	0187	1.00000	1.00000	0	0	[denethor_bucket]
+
+#<vm_id>	<cpu_slowdown>	<cost_per_second>	<storage_bytes>	<bandwidth_mbps>
+1	1.00000	0.0000051670	8589934592	1250
+2	0.50000	0.0000206670	8589934592	1250
+3	0.25000	0.0000826720	8589934592	5000
+
+#<task_id>	<activity_id>	<conf_id>	<task_cost>	<task_time_duration>	<task_time_init>	<task_time_cpu>	<task_time_read>	<task_time_write>	<task_count>
+1	1	1	0.00000142148161	5.00000	0.00000	2.00000	2.00000	1.00000	1
+2	1	1	0.00000200685778	7.00000	0.00000	4.00000	2.00000	1.00000	1
+9	2	1	0.00000133327310	3.00000	0.00000	1.00000	1.00000	1.00000	1
+10	2	1	0.00000183658661	4.00000	0.00000	2.00000	1.00000	1.00000	1
+
+#<bucket_range_id>	<size1_bytes>	<size2_bytes>	<cost_per_byte>
+1	0	54975581388800	0.0000000000377185642719268799
+2	54975581388800	494780232499200	0.0000000000363215804100036621
+3	494780232499200	999999999999999	0.0000000000344589352607727051

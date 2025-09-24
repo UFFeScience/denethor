@@ -1,4 +1,4 @@
---#<data_id> <data_size_bytes> <read_time_avg> <write_time_avg> <is_static> <n_source_devices> [<device_id>...]
+--#<data_id> <data_size_bytes> <read_time_avg_ms> <write_time_avg_ms <is_static> <n_source_devices> [<device_id>...]
 --is_static: 0-dynamic / 1-static
 --n_source_devices: 0 if dynamic
 WITH 
@@ -6,31 +6,31 @@ produced_file AS (
 	SELECT
 		ef.file_id AS produced_file_id,
 		CAST(avg(f.file_size) AS INTEGER) AS produced_file_size,
-		avg(ef.transfer_duration)*0.001 AS write_time_avg_sec
+		avg(ef.transfer_duration) AS write_time_avg_ms
 	FROM execution_file ef
 	JOIN file f ON f.file_id = ef.file_id
 	JOIN service_execution se ON se.se_id = ef.se_id
 	JOIN workflow_execution we ON se.we_id = we.we_id
-	WHERE ef.transfer_type = 'produced' AND we.[we_column] in ([we_values_fx])
+	WHERE ef.transfer_type = 'produced' AND we.[we_column] in ([we_values])
 	GROUP BY ef.file_id
 ),
 consumed_files AS (
 	SELECT
 		ef.file_id AS consumed_file_id,
 		CAST(avg(f.file_size) AS INTEGER) AS consumed_file_size,
-		avg(ef.transfer_duration)*0.001 AS read_time_avg_sec
+		avg(ef.transfer_duration) AS read_time_avg_ms
 	FROM execution_file ef
 	JOIN file f ON f.file_id = ef.file_id
 	JOIN service_execution se ON se.se_id = ef.se_id
 	JOIN workflow_execution we ON se.we_id = we.we_id
-	WHERE ef.transfer_type = 'consumed' AND we.[we_column] in ([we_values_fx])
+	WHERE ef.transfer_type = 'consumed' AND we.[we_column] in ([we_values])
 	GROUP BY ef.file_id
 )
 SELECT 
 	COALESCE(consumed_file_id, produced_file_id) AS data_id,
 	COALESCE(consumed_file_size, produced_file_size) AS data_size_bytes,
-	read_time_avg_sec,
-	write_time_avg_sec,
+	read_time_avg_ms,
+	write_time_avg_ms,
 	CASE 
 		WHEN produced_file_id IS NOT NULL THEN 0 --dynamic
 		WHEN produced_file_id IS NULL AND consumed_file_id IS NOT NULL THEN 1 --static
