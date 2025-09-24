@@ -31,11 +31,13 @@ def download_files_and_collect_metrics(bucket_name, prefix, local_dir):
                     file_size = os.path.getsize(file_path)
                     download_time = download_end_time - download_start_time
 
-                    file_metrics.append({
+                    metric = {
                         "file_name": key,
                         "file_size": file_size,
                         "download_duration_ms": download_time * 1000
-                    })
+                    }
+                    file_metrics.append(metric)
+                    print(f"Downloaded: {metric['file_name']}, Size: {metric['file_size']} bytes, Duration: {metric['download_duration_ms']:.2f} ms")
                 except Exception as e:
                     print(f"Error downloading {key}: {e}")
 
@@ -58,7 +60,6 @@ def calculate_summary(file_metrics):
         "total_files_downloaded": downloaded_count,
         "average_download_duration_ms": average_duration_ms,
         "average_download_rate_bps": average_rate_bps,
-        "files": file_metrics
     }
 
 def save_json(data, path):
@@ -69,24 +70,33 @@ def save_json(data, path):
         json.dump(data, f, indent=4)
 
 def measure_download_rate_boto3(bucket_name, prefix, local_dir):
+
+    start_time_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
     print(f"Starting download from s3://{bucket_name}/{prefix}* to {local_dir}...")
 
     try:
+        print("Step 1: Starting file download and metrics collection...")
         file_metrics, total_duration = download_files_and_collect_metrics(
             bucket_name, prefix, local_dir
         )
 
+        print("Step 2: Starting summary calculation...")
         summary = calculate_summary(file_metrics)
 
-        # Unifica a saída em um único arquivo JSON
-        date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-        json_file = os.path.join(local_dir, f"download_report_{date_str}.json")
+        end_time_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        json_file = os.path.join(local_dir, f"download_report_{start_time_str}.json")
         json_data = {
+            "start_time": start_time_str,
+            "end_time": end_time_str,
             "summary": summary,
             "files": file_metrics
         }
+        
+        print(f"Step 3: Saving report to {json_file}...")
         save_json(json_data, json_file)
-        print(f"Relatório salvo em {json_file}")
+
         print("\n--- Download Summary ---")
         print(f"Total files downloaded: {summary['total_files_downloaded']}")
         print(f"Total size downloaded: {summary['total_files_size'] / (1024 * 1024):.2f} MB")

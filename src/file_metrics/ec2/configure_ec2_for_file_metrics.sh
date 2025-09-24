@@ -14,17 +14,18 @@ fi
 
 echo "Conectando na instância: $instance_dns"
 
-# Cria diretório file_metrics na home do usuário remoto
-ssh -i "$KEY_PATH" "$EC2_USER@$instance_dns" "mkdir -p ~/file_metrics"
 
-# Copia o arquivo file_metrics_ec2.py para a instância
-scp -i "$KEY_PATH" file_metrics_ec2.py "$EC2_USER@$instance_dns:~/file_metrics/file_metrics.py"
-
-# Verifica e instala pip e dependências
-ssh -i "$KEY_PATH" "$EC2_USER@$instance_dns" << 'EOF'
+# Verifica e instala pip e dependências, e configura o AWS CLI
+ssh -i "$KEY_PATH" "$EC2_USER@$instance_dns" "
 set -e
-echo "Atualizando pacotes..."
-if [ -f /etc/os-release ] && grep -qi "amazon linux" /etc/os-release; then
+echo \"Configurando AWS CLI...\"
+aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+aws configure set region $AWS_REGION
+echo \"AWS CLI configurado.\"
+
+echo \"Atualizando pacotes...\"
+if [ -f /etc/os-release ] && grep -qi \"amazon linux\" /etc/os-release; then
   sudo yum update -y
   sudo yum install python3-pip -y
 else
@@ -32,8 +33,8 @@ else
   sudo apt install python3-pip -y
 fi
 
-echo "Instalando boto3..."
+echo \"Instalando boto3...\"
 python3 -m pip install --user boto3
-EOF
+"
 
-echo "Arquivo file_metrics.py
+echo "Configuração da instância EC2 concluída."
