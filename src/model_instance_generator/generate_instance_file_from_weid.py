@@ -22,8 +22,13 @@ WRITE_COMMENTS_TO_FILE = True
 # INPUT_WEIDS_VM = [257,258,259,260,261,262,263,264,265,266,267]
 
 # run4 | n_inputs (first n): 60,70,80,90,100
-INPUT_WEIDS_FX = [269,270,271,272,273,274,275,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,297]
-INPUT_WEIDS_VM = [298,299,300,301,302]
+# INPUT_WEIDS_FX = [269,270,271,272,273,274,275,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,297]
+# INPUT_WEIDS_VM = [298,299,300,301,302]
+
+
+# teste com ms
+INPUT_WEIDS_FX = [68]
+INPUT_WEIDS_VM = [124]
 
 # Connect to the PostgreSQL database
 session = Connection().get_session()
@@ -116,7 +121,7 @@ def execute_sql_and_save_results(
     # replace wetag
     sql_to_execute = (
         sql_to_execute.replace("[we_column]", "we_id")
-        .replace("[we_values]", ",".join(map(str, weids_fx)))
+        .replace("[we_values]", ",".join(map(str, weids_fx + weids_vm)))
         .replace("[we_values_vm]", ",".join(map(str, weids_vm)))
         .replace("[we_values_fx]", ",".join(map(str, weids_fx)))
     )
