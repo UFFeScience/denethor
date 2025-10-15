@@ -61,9 +61,13 @@ class WorkflowGenerator:
     def generate_vms_section(self):
         """ Gera a seção de VMs, usando os dados pré-definidos. """
         header = "#<vm_id> <cpu_slowdown> <cost_per_second> <storage_bytes> <bandwidth_mbps>"
-        lines = random.sample(self.DEFAULT_VMS, self.num_vms)
-        # Reajusta o ID para ser sequencial
-        lines = [f"{i+1}\t{line.split(maxsplit=1)[1]}" for i, line in enumerate(sorted(lines))]
+        # Garante que o VM com id 1 sempre esteja presente
+        vm1 = self.DEFAULT_VMS[0]
+        remaining_vms = self.DEFAULT_VMS[1:]
+        if self.num_vms == 1:
+            lines = [vm1]
+        else:
+            lines = [vm1] + random.sample(remaining_vms, self.num_vms - 1)
         return f"{header}\n" + "\n".join(lines) + "\n"
 
     def generate_execution_results_section(self):
