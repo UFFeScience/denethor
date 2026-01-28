@@ -1,0 +1,138 @@
+graph LR
+    %% Apenas definindo as formas pela sintaxe
+    %% (( )) = Círculo (Dados)
+    %% ( )   = Retângulo Arredondado (Tarefas)
+
+    subgraph Synthetic_7
+        direction LR
+        S7_d0((d0)) --> S7_t0(t0)
+        S7_t0 --> S7_d1((d1))
+        
+        S7_d1 --> S7_t1(t1)
+        S7_t1 --> S7_d2((d2))
+        
+        S7_d1 --> S7_t2(t2)
+        S7_t2 --> S7_d3((d3))
+    end
+
+    subgraph Synthetic_11
+        direction LR
+        %% Conexões diretas definindo formas
+        S11_d0((d0)) --> S11_t0(t0)
+        S11_d1((d1)) --> S11_t0
+        S11_t0 --> S11_d2((d2))
+
+        S11_d0 --> S11_t1(t1)
+        S11_d1 --> S11_t1
+        S11_t1 --> S11_d3((d3))
+
+        S11_d1 --> S11_t2(t2)
+        S11_t2 --> S11_d4((d4))
+        S11_t2 --> S11_d5((d5))
+
+        S11_d2 --> S11_t3(t3)
+        S11_d3((d3)) --> S11_t3
+        S11_d4 --> S11_t3
+        S11_d5 --> S11_t3
+        S11_t3 --> S11_d6((d6))
+    end
+
+    subgraph Synthetic_12
+        direction LR
+        
+        %% t0: d0 -> d2
+        S12_d0((d0)) --> S12_t0(t0)
+        S12_t0 --> S12_d2((d2))
+
+        %% t1: d1 -> d3
+        S12_d1((d1)) --> S12_t1(t1)
+        S12_t1 --> S12_d3((d3))
+
+        %% t2: d2 -> d4
+        S12_d2 --> S12_t2(t2)
+        S12_t2 --> S12_d4((d4))
+
+        %% t3: d2,d3 -> d5
+        S12_d2 --> S12_t3(t3)
+        S12_d3 --> S12_t3
+        S12_t3 --> S12_d5((d5))
+
+        %% t4: d3 -> d6
+        S12_d3 --> S12_t4(t4)
+        S12_t4 --> S12_d6((d6))
+    end
+
+
+    subgraph Synthetic_13
+        direction LR
+
+        %% t0: d0 -> d1
+        S13_d0((d0)) --> S13_t0(t0)
+        S13_t0 --> S13_d1((d1))
+
+        %% t1: d1 -> d2,d3
+        S13_d1 --> S13_t1(t1)
+        S13_t1 --> S13_d2((d2))
+        S13_t1 --> S13_d3((d3))
+
+        %% t2: d2 -> d4,d5
+        S13_d2 --> S13_t2(t2)
+        S13_t2 --> S13_d4((d4))
+        S13_t2 --> S13_d5((d5))
+
+        %% t3: d3 -> d6
+        S13_d3 --> S13_t3(t3)
+        S13_t3 --> S13_d6((d6))
+
+        %% t4: d4,d5,d6 -> d7
+        S13_d4 --> S13_t4(t4)
+        S13_d5 --> S13_t4
+        S13_d6 --> S13_t4
+        S13_t4 --> S13_d7((d7))
+    end
+
+    subgraph Synthetic_22
+        direction LR
+
+        %% t0: d0 -> d2
+        S22_d0((d0)) --> S22_t0(t0)
+        S22_t0 --> S22_d2((d2))
+
+        %% t1: d2 -> d3
+        S22_d2 --> S22_t1(t1)
+        S22_t1 --> S22_d3((d3))
+
+        %% t2: d1 -> d4
+        S22_d1((d1)) --> S22_t2(t2)
+        S22_t2 --> S22_d4((d4))
+
+        %% t3: d1 -> d5,d6
+        S22_d1 --> S22_t3(t3)
+        S22_t3 --> S22_d5((d5))
+        S22_t3 --> S22_d6((d6))
+
+        %% t4: d3 -> d7,d8,d9,d10
+        S22_d3 --> S22_t4(t4)
+        S22_t4 --> S22_d7((d7))
+        S22_t4 --> S22_d8((d8))
+        S22_t4 --> S22_d9((d9))
+        S22_t4 --> S22_d10((d10))
+
+        %% t5: d4 -> d11
+        S22_d4 --> S22_t5(t5)
+        S22_t5 --> S22_d11((d11))
+
+        %% t6: d5,d6 -> d12
+        S22_d5 --> S22_t6(t6)
+        S22_d6 --> S22_t6
+        S22_t6 --> S22_d12((d12))
+
+        %% t7: d7...d12 -> d13
+        S22_d7 --> S22_t7(t7)
+        S22_d8 --> S22_t7
+        S22_d9 --> S22_t7
+        S22_d10 --> S22_t7
+        S22_d11 --> S22_t7
+        S22_d12 --> S22_t7
+        S22_t7 --> S22_d13((d13))
+    end

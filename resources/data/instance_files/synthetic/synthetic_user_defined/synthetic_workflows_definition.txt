@@ -2,8 +2,8 @@ WORKFLOW_ID: Synthetic_7
 TASKS: 3
 DATA: 4
 ---
-t1: d0 -> d1
-t0: d1 -> d2
+t0: d0 -> d1
+t1: d1 -> d2
 t2: d1 -> d3
 
 --------------------------------
@@ -12,10 +12,10 @@ WORKFLOW_ID: Synthetic_11
 TASKS: 4
 DATA: 7
 ---
-t1: d0,d1 -> d2
-t2: d0,d1 -> d3
-t3: d1 -> d4,d6
-t0: d2,d3,d4,d6 -> d5
+t0: d0,d1 -> d2
+t1: d0,d1 -> d3
+t2: d1 -> d4,d5
+t3: d2,d3,d4,d5 -> d6
 
 --------------------------------
 
@@ -23,11 +23,11 @@ WORKFLOW_ID: Synthetic_12
 TASKS: 5
 DATA: 7
 ---
-t4: d0 -> d1
-t3: d4 -> d5
-t1: d1 -> d2
-t0: d1,d5 -> d3
-t2: d5 -> d6
+t0: d0 -> d2
+t1: d1 -> d3
+t2: d2 -> d4
+t3: d2,d3 -> d5
+t4: d3 -> d6
 
 --------------------------------
 
@@ -35,11 +35,11 @@ WORKFLOW_ID: Synthetic_13
 TASKS: 5
 DATA: 8
 ---
-t4: d7 -> d5
-t3: d5 -> d3,d4
-t1: d3 -> d0,d1
-t2: d4 -> d2
-t0: d0,d1,d2 -> d6
+t0: d0 -> d1
+t1: d1 -> d2,d3
+t2: d2 -> d4,d5
+t3: d3 -> d6
+t4: d4,d5,d6 -> d7
 
 --------------------------------
 
@@ -47,14 +47,14 @@ WORKFLOW_ID: Synthetic_22
 TASKS: 8
 DATA: 14
 ---
-t0: d0 -> d1
-t1: d1 -> d2
-t2: d2 -> d3,d5,d9,d10
-t3: d6 -> d7
-t4: d7 -> d8
-t5: d6 -> d11,d12
-t7: d11,d12 -> d13
-t6: d3,d5,d8,d9,d10,d13 -> d4
+t0: d0 -> d2
+t1: d2 -> d3
+t2: d1 -> d4
+t3: d1 -> d5,d6
+t4: d3 -> d7,d8,d9,d10
+t5: d4 -> d11
+t6: d5,d6 -> d12
+t7: d7,d8,d9,d10,d11,d12 -> d13
 
 
 
