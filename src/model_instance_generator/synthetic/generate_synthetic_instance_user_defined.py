@@ -14,6 +14,11 @@ NUM_BUCKET_RANGES = 3
 # Atributo para escolher o tipo de tempo
 USE_INTEGER_TIME = True
 
+# Parâmetros para substituir prefixos de IDs
+# Deixe None para não fazer substituição
+TASK_PREFIX_REPLACE = {'old': 't', 'new': '1'} # para trocar t1, t2, etc por 11, 12, etc
+DATA_PREFIX_REPLACE = {'old': 'd', 'new': '9'} # para trocar d1, d2, etc por 91, 92, etc
+
 # --- FIM DOS PARÂMETROS ---
 
 def main():
@@ -31,7 +36,9 @@ def main():
             num_vms=NUM_VMS,
             num_configs=NUM_CONFIGS,
             num_bucket_ranges=NUM_BUCKET_RANGES,
-            use_integer_time=USE_INTEGER_TIME
+            use_integer_time=USE_INTEGER_TIME,
+            task_prefix_replace=TASK_PREFIX_REPLACE,
+            data_prefix_replace=DATA_PREFIX_REPLACE
         )
         file_base = f"{wf['workflow_id']}_T{wf['num_tasks']}_D{wf['num_data']}_C{NUM_CONFIGS}"
         file_ext = ".txt"

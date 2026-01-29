@@ -108,7 +108,7 @@ class WorkflowGenerator:
                 task_count = random.randint(1, 10)
 
                 lines.append(
-                    f"{task['id']}\t{task['activity_id']}\t{conf_id}\t{task_cost:.10f}\t{task_time_duration:.4f}\t{task_time_init}\t{scaled_cpu_time:.4f}\t{task_time_read:.4f}\t{task_time_write:.4f}\t{task_count}"
+                    f"{task['id']}\t{task['activity_id']}\t{conf_id}\t{task_cost:.10f}\t{task_time_duration:.4f}\t{task_time_init:.4f}\t{scaled_cpu_time:.4f}\t{task_time_read:.4f}\t{task_time_write:.4f}\t{task_count}"
                 )
 
         return f"{header}\n" + "\n".join(lines) + "\n"
