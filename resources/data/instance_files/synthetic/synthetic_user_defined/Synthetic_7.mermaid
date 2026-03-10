@@ -1,0 +1,22 @@
+---
+config:
+  layout: dagre
+---
+flowchart LR
+ subgraph Synthetic_7["Synthetic_7"]
+    direction LR
+        S7_d0(("d0"))
+        S7_t0("t0")
+        S7_d1(("d1"))
+        S7_t1("t1")
+        S7_d2(("d2"))
+        S7_t2("t2")
+        S7_d3(("d3"))
+  end
+    S7_d0 --> S7_t0
+    S7_t0 --> S7_d1
+    S7_d1 --> S7_t1 & S7_t2
+    S7_t1 --> S7_d2
+    S7_t2 --> S7_d3
+    TASK_TIMES["Tarefas<br/>t0 (task10) | 3.000 s<br/>t1 (task11) | 4.000 s<br/>t2 (task12) | 1.000 s"]
+    FILE_TIMES["Arquivos<br/>d0 (data90) | read 2.000 s | write 0.000 s<br/>d1 (data91) | read 2.000 s | write 3.000 s<br/>d2 (data92) | read 3.000 s | write 1.000 s<br/>d3 (data93) | read 2.000 s | write 2.000 s"]

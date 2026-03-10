@@ -1,0 +1,36 @@
+---
+config:
+  layout: dagre
+---
+flowchart LR
+ subgraph Synthetic_13["Synthetic_13"]
+    direction LR
+        S13_t0("t0")
+        S13_d0(("d0"))
+        S13_d1(("d1"))
+        S13_t1("t1")
+        S13_d2(("d2"))
+        S13_d3(("d3"))
+        S13_t2("t2")
+        S13_d4(("d4"))
+        S13_d5(("d5"))
+        S13_t3("t3")
+        S13_d6(("d6"))
+        S13_t4("t4")
+        S13_d7(("d7"))
+  end
+    S13_d0 --> S13_t0
+    S13_t0 --> S13_d1
+    S13_d1 --> S13_t1
+    S13_t1 --> S13_d2 & S13_d3
+    S13_d2 --> S13_t2
+    S13_t2 --> S13_d4 & S13_d5
+    S13_d3 --> S13_t3
+    S13_t3 --> S13_d6
+    S13_d4 --> S13_t4
+    S13_d5 --> S13_t4
+    S13_d6 --> S13_t4
+    S13_t4 --> S13_d7
+
+    TASK_TIMES["Tarefas<br/>t0 (task10) | 1.000 s<br/>t1 (task11) | 7.000 s<br/>t2 (task12) | 4.000 s<br/>t3 (task13) | 3.000 s<br/>t4 (task14) | 2.000 s"]
+    FILE_TIMES["Arquivos<br/>d0 (data90) | read 2.000 s | write 3.000 s<br/>d1 (data91) | read 2.000 s | write 1.000 s<br/>d2 (data92) | read 4.000 s | write 1.000 s<br/>d3 (data93) | read 1.000 s | write 3.000 s<br/>d4 (data94) | read 5.000 s | write 2.000 s<br/>d5 (data95) | read 2.000 s | write 2.000 s<br/>d6 (data96) | read 4.000 s | write 3.000 s<br/>d7 (data97) | read 2.000 s | write 3.000 s"]

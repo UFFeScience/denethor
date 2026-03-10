@@ -1,0 +1,68 @@
+---
+config:
+  layout: dagre
+---
+flowchart LR
+    %% (( )) = Circulo (Dados)
+    %% ( )   = Retangulo Arredondado (Tarefas)
+
+    subgraph Synthetic_22["Synthetic_22"]
+        direction LR
+        S22_d0(("d0"))
+        S22_t0("t0")
+        S22_d2(("d2"))
+        S22_t1("t1")
+        S22_d3(("d3"))
+        S22_d1(("d1"))
+        S22_t2("t2")
+        S22_d4(("d4"))
+        S22_t3("t3")
+        S22_d5(("d5"))
+        S22_d6(("d6"))
+        S22_t4("t4")
+        S22_d7(("d7"))
+        S22_d8(("d8"))
+        S22_d9(("d9"))
+        S22_d10(("d10"))
+        S22_t5("t5")
+        S22_d11(("d11"))
+        S22_t6("t6")
+        S22_d12(("d12"))
+        S22_t7("t7")
+        S22_d13(("d13"))
+    end
+
+    %% t0: d0 -> d2
+    S22_d0 --> S22_t0
+    S22_t0 --> S22_d2
+
+    %% t1: d2 -> d3
+    S22_d2 --> S22_t1
+    S22_t1 --> S22_d3
+
+    %% t2: d1 -> d4
+    S22_d1 --> S22_t2
+    S22_t2 --> S22_d4
+
+    %% t3: d1 -> d5,d6
+    S22_d1 --> S22_t3
+    S22_t3 --> S22_d5 & S22_d6
+
+    %% t4: d3 -> d7,d8,d9,d10
+    S22_d3 --> S22_t4
+    S22_t4 --> S22_d7 & S22_d8 & S22_d9 & S22_d10
+
+    %% t5: d4 -> d11
+    S22_d4 --> S22_t5
+    S22_t5 --> S22_d11
+
+    %% t6: d5,d6 -> d12
+    S22_d5 & S22_d6 --> S22_t6
+    S22_t6 --> S22_d12
+
+    %% t7: d7...d12 -> d13
+    S22_d7 & S22_d8 & S22_d9 & S22_d10 & S22_d11 & S22_d12 --> S22_t7
+    S22_t7 --> S22_d13
+
+    TASK_TIMES["Tarefas<br/>t0 (task10) | 4.000 s<br/>t1 (task11) | 9.000 s<br/>t2 (task12) | 1.000 s<br/>t3 (task13) | 1.000 s<br/>t4 (task14) | 3.000 s<br/>t5 (task15) | 10.000 s<br/>t6 (task16) | 6.000 s<br/>t7 (task17) | 2.000 s"]
+    FILE_TIMES["Arquivos<br/>d0 (data90) | read 5.000 s | write 3.000 s<br/>d1 (data91) | read 4.000 s | write 1.000 s<br/>d2 (data92) | read 2.000 s | write 1.000 s<br/>d3 (data93) | read 1.000 s | write 1.000 s<br/>d4 (data94) | read 2.000 s | write 2.000 s<br/>d5 (data95) | read 4.000 s | write 3.000 s<br/>d6 (data96) | read 1.000 s | write 3.000 s<br/>d7 (data97) | read 1.000 s | write 3.000 s<br/>d8 (data98) | read 4.000 s | write 1.000 s<br/>d9 (data99) | read 4.000 s | write 2.000 s<br/>d10 (data910) | read 2.000 s | write 1.000 s<br/>d11 (data911) | read 1.000 s | write 3.000 s<br/>d12 (data912) | read 3.000 s | write 2.000 s<br/>d13 (data913) | read 4.000 s | write 2.000 s"]
