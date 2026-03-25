@@ -1,56 +1,38 @@
-# AWS Environment Setup
-
-For the execution of the commands below, we assume that the user already has an AWS account and is in possession of the `AWS Access Key ID` and `AWS Secret Access Key`. Otherwise, it will be necessary to create an AWS account and obtain the access credentials.
-
-## Configure access via AWS CLI on the local machine
-
-To configure access via AWS CLI on the local machine, it is necessary to download the application zip and unzip it:
-
-```bash
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-
-aws --version
-# aws-cli/2.13.37 Python/3.11.6 Linux/6.2.0-36-generic exe/x86_64.ubuntu.22 prompt/off
-# aws-cli/2.14.5 Python/3.11.6 Windows/10 exe/AMD64 prompt/off
-```
-
-```bash
-aws configure
-```
-
-Expected output:
-
-```bash
-AWS Access Key ID: ...............
-AWS Secret Access Key: ...........................
-Default region name: sa-east-1
-Default output format: json
-```
-
-## Create S3 Buckets
-
-It will be necessary to create one S3 bucket to store the input and output files of the Lambda functions.
-
-```bash
-aws s3api create-bucket --bucket denethor --region sa-east-1 --create-bucket-configuration LocationConstraint=sa-east-1
-
-```
-
-Verify that the bucket was created correctly:
-
-```bash
-aws s3api list-buckets
-```
-
-Copy the input data to the bucket:
-
-```bash
-aws s3 cp data/full_dataset s3://denethor/data/full_dataset --recursive
-```
-
 ## Lambda Functions Preparation
+
+## Create the necessary IAM role
+Create a JSON file named lambda_trust_policy. This policy allows the Lambda service to assume the role you are about to create.
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+
+Create the role named Lambda_S3_access_role using the trust policy file from the previous step.
+
+```bash
+aws iam create-role --role-name Lambda_S3_access_role --assume-role-policy-document ../scripts/iam/lambda_trust_policy.json
+```
+
+
+Attach an AWS-managed policy to the role to grant it read and write permissions for S3. We will use AmazonS3FullAccess.
+
+```bash
+aws iam attach-role-policy --role-name Lambda_S3_access_role --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
+```
+
+
 
 ### Create a base layer for the lambda function
 
