@@ -60,3 +60,13 @@ Each execution mode has its own specific instructions and configurations. They a
 ## Denethor
 
 The file **[denethor](docs/denethor.md)** explains how the workflow execution monitoring system was implemented and which configuration files are used in the execution of activities. Execution by `Denethor` assumes that the AWS environment setup steps have already been completed.
+
+## Repository Domains
+
+This repository intentionally keeps four operational domains in one place. The domain map and ownership boundaries are documented in **[repository_domains](docs/repository_domains.md)**.
+
+For synthetic instance tooling, use:
+
+- `src/instance_modeling/instance_io.py`
+- `src/instance_modeling/validate_instance_file.py`
+- `src/instance_modeling/instance_cost_analysis.py`
