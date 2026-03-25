@@ -27,12 +27,11 @@ class WorkflowGeneratorUserDefined(WorkflowGenerator):
             return new_prefix + id_str[len(old_prefix):]
         return id_str
 
-    def _generate_dag_and_data(self):
-        tasks_lines = []
-        data_lines = []
-        self.tasks = []
-        self.data_artifacts = {}
+    def _build_tasks_and_data_model(self):
+        tasks = []
+        data_artifacts = {}
         used_data_ids = set()
+        produced_data_ids = set()
         
         # Tasks
         for task in self.task_defs:
@@ -45,25 +44,33 @@ class WorkflowGeneratorUserDefined(WorkflowGenerator):
             inputs = [self._replace_id_prefix(d, self.data_prefix_replace) for d in task['inputs']]
             outputs = [self._replace_id_prefix(d, self.data_prefix_replace) for d in task['outputs']]
             
-            self.tasks.append({
+            tasks.append({
                 'id': task_id,
                 'activity_id': activity_id,
                 'cpu_time': cpu_time,
                 'inputs': inputs,
                 'outputs': outputs
             })
-            tasks_lines.append(
-                f"{task_id}\t{activity_id}\t1\t{cpu_time:.4f}\t{len(inputs)}\t[{','.join(inputs)}]\t{len(outputs)}\t[{','.join(outputs)}]"
-            )
-            for did in inputs + outputs:
-                if did not in used_data_ids:
-                    used_data_ids.add(did)
-                    read_time = self._get_time(1, 5) if self.use_integer_time else self._get_time(0.1, 0.5)
-                    write_time = self._get_time(1, 3) if self.use_integer_time else self._get_time(0.05, 0.2)
-                    self.data_artifacts[did] = {'read_time': read_time, 'write_time': write_time}
-                    data_lines.append(f"{did}\t{random.randint(100, 2000)}\t{read_time:.4f}\t{write_time:.4f}\t0\t0\t[denethor_bucket]")
-        
-        return tasks_lines, data_lines
+
+            used_data_ids.update(inputs)
+            used_data_ids.update(outputs)
+            produced_data_ids.update(outputs)
+
+        # Constrói os metadados com semântica explícita:
+        # dados produzidos -> dinâmicos (write_time>0)
+        # dados apenas consumidos -> estáticos (write_time=None)
+        for did in used_data_ids:
+            read_time = self._get_time(1, 5) if self.use_integer_time else self._get_time(0.1, 0.5)
+            write_time = (
+                self._get_time(1, 3) if self.use_integer_time else self._get_time(0.05, 0.2)
+            ) if did in produced_data_ids else None
+            data_artifacts[did] = {
+                "size_bytes": random.randint(100, 2000),
+                "read_time": read_time,
+                "write_time": write_time,
+            }
+
+        return tasks, data_artifacts
 
 def parse_user_defined_workflows(input_file):
     workflows = []

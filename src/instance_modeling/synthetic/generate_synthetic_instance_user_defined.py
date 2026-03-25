@@ -3,8 +3,11 @@ from workflow_generator_user_defined import WorkflowGeneratorUserDefined, parse_
 
 # --- PARÂMETROS DE ENTRADA ---
 
-INPUT_FILE = "resources/data/instance_files/synthetic/synthetic_user_defined/synthetic_workflows_definition.txt"
+INPUT_FILE = "resources/data/instance_files/synthetic/synthetic_user_defined/my_synthetic_instances_definition.txt"
 OUTPUT_DIR = "resources/data/instance_files/synthetic/synthetic_user_defined"
+
+# IDs de workflow a pular (não regenerar)
+SKIP_WORKFLOW_IDS = {"Synthetic_7"}
 
 # Seção de resumo
 NUM_VMS = 2
@@ -26,7 +29,11 @@ def main():
 
     workflows = parse_user_defined_workflows(INPUT_FILE)
     os.makedirs(OUTPUT_DIR, exist_ok=True)
+    generated = 0
     for idx, wf in enumerate(workflows, 1):
+        if wf['workflow_id'] in SKIP_WORKFLOW_IDS:
+            print(f"Pulando workflow '{wf['workflow_id']}' (na lista SKIP_WORKFLOW_IDS).")
+            continue
         generator = WorkflowGeneratorUserDefined(
             workflow_id=wf['workflow_id'],
             num_tasks=wf['num_tasks'],
@@ -47,8 +54,9 @@ def main():
         with open(output_path, 'w') as f:
             f.write(generator.generate_workflow_file_content())
         print(f"Arquivo '{output_path}' gerado com sucesso!")
+        generated += 1
         
-    print("Total de arquivos gerados:", len(workflows))
+    print("Total de arquivos gerados:", generated)
 
 if __name__ == "__main__":
     main()

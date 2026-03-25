@@ -51,7 +51,7 @@ def main():
     print(f"Resumo da Geração:")
     print(f"  - Tarefas: {NUM_TASKS}")
     print(f"  - Configs por Tarefa: {NUM_CONFIGS}")
-    print(f"  - Dados: {generator.params['data']} (ajustado se necessário)")
+    print(f"  - Dados: {generator.num_data} (ajustado se necessário)")
     print(f"  - VMs: {NUM_VMS}")
     print(f"  - Tempos como {'Inteiros' if USE_INTEGER_TIME else 'Fracionários'}")
     print("-" * 50)
