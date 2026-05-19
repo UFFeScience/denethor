@@ -1,7 +1,7 @@
 import random, textwrap
 import re
 
-class WorkflowGenerator:
+class WorkflowGeneratorModel:
     DEFAULT_VMS = [
         "1\t1.00000\t0.0000051670\t8589934592\t1250",
         "2\t0.50000\t0.0000206670\t8589934592\t1250",
@@ -53,7 +53,9 @@ class WorkflowGenerator:
 
     def _extract_num(self, id_str):
         match = re.search(r"(\d+)$", id_str)
-        return int(match.group(1)) if match else 0
+        if match:
+            return (id_str[:match.start()], int(match.group(1)))
+        return (id_str, 0)
 
     def _sort_ids(self, ids):
         return sorted(ids, key=self._extract_num)

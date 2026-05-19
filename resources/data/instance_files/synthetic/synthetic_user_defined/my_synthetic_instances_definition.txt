@@ -1,4 +1,4 @@
-WORKFLOW_ID: Synthetic_7
+WORKFLOW_ID: Synthetic_007
 TASKS: 3
 DATA: 4
 ---
@@ -8,7 +8,7 @@ t2: d1 -> d3
 
 --------------------------------
 
-WORKFLOW_ID: Synthetic_11
+WORKFLOW_ID: Synthetic_011
 TASKS: 4
 DATA: 7
 ---
@@ -19,7 +19,7 @@ t3: d2,d3,d4,d5 -> d6
 
 --------------------------------
 
-WORKFLOW_ID: Synthetic_12
+WORKFLOW_ID: Synthetic_012
 TASKS: 5
 DATA: 7
 ---
@@ -31,7 +31,7 @@ t4: d3 -> d6
 
 --------------------------------
 
-WORKFLOW_ID: Synthetic_13
+WORKFLOW_ID: Synthetic_013
 TASKS: 5
 DATA: 8
 ---
@@ -43,7 +43,7 @@ t4: d4,d5,d6 -> d7
 
 --------------------------------
 
-WORKFLOW_ID: Synthetic_22
+WORKFLOW_ID: Synthetic_022
 TASKS: 8
 DATA: 14
 ---
@@ -56,16 +56,74 @@ t5: d4 -> d11
 t6: d5,d6 -> d12
 t7: d7,d8,d9,d10,d11,d12 -> d13
 
+--------------------------------
 
+WORKFLOW_ID: Synthetic_015
+TASKS: 5
+DATA: 10
+---
+t0: d0 -> d1,d2
+t1: d1 -> d3,d4
+t2: d2 -> d5,d6
+t3: d3,d4 -> d7
+t4: d5,d6,d7 -> d8,d9
 
+--------------------------------
 
+WORKFLOW_ID: Synthetic_016
+TASKS: 6
+DATA: 10
+---
+t0: d0 -> d1,d2
+t1: d1 -> d3
+t2: d2 -> d4
+t3: d3,d4 -> d5,d6
+t4: d5 -> d7,d8
+t5: d6,d7,d8 -> d9
 
+--------------------------------
 
+WORKFLOW_ID: Synthetic_020
+TASKS: 7
+DATA: 13
+---
+t0: d0,d1 -> d2,d3
+t1: d2 -> d4,d5
+t2: d3 -> d6,d7
+t3: d4 -> d8
+t4: d5,d6 -> d9,d10
+t5: d7,d8 -> d11
+t6: d9,d10,d11 -> d12
 
+--------------------------------
 
+WORKFLOW_ID: Synthetic_025
+TASKS: 9
+DATA: 16
+---
+t0: d0 -> d1,d2
+t1: d1 -> d3,d4,d5
+t2: d2 -> d6,d7
+t3: d3 -> d8
+t4: d4,d5 -> d9
+t5: d6 -> d10,d11
+t6: d7,d8 -> d12
+t7: d9,d10 -> d13,d14
+t8: d11,d12,d13,d14 -> d15
 
+--------------------------------
 
-
-
-
-
+WORKFLOW_ID: Synthetic_029
+TASKS: 10
+DATA: 19
+---
+t0: d0 -> d1,d2,d3
+t1: d1 -> d4,d5
+t2: d2 -> d6,d7
+t3: d3 -> d8,d9
+t4: d4 -> d10,d11
+t5: d5,d6 -> d12,d13
+t6: d7,d8 -> d14
+t7: d9,d10 -> d15,d16
+t8: d11,d12,d13,d14 -> d17
+t9: d15,d16,d17 -> d19

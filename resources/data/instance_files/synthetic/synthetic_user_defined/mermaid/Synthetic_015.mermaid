@@ -1,0 +1,38 @@
+---
+config:
+  layout: dagre
+  theme: redux
+  look: neo
+---
+flowchart LR
+ subgraph Synthetic_15["Synthetic_015"]
+    direction LR
+        S15_d0(("d_90"))
+        S15_d1(("d_91"))
+        S15_d2(("d_92"))
+        S15_d3(("d_93"))
+        S15_d4(("d_94"))
+        S15_d5(("d_95"))
+        S15_d6(("d_96"))
+        S15_d7(("d_97"))
+        S15_d8(("d_98"))
+        S15_d9(("d_99"))
+        S15_t0("t_10")
+        S15_t1("t_11")
+        S15_t2("t_12")
+        S15_t3("t_13")
+        S15_t4("t_14")
+  end
+    S15_d0 --> S15_t0
+    S15_d1 --> S15_t1
+    S15_d2 --> S15_t2
+    S15_d3 --> S15_t3
+    S15_d4 --> S15_t3
+    S15_d5 --> S15_t4
+    S15_d6 --> S15_t4
+    S15_d7 --> S15_t4
+    S15_t0 --> S15_d1 & S15_d2
+    S15_t1 --> S15_d3 & S15_d4
+    S15_t2 --> S15_d5 & S15_d6
+    S15_t3 --> S15_d7
+    S15_t4 --> S15_d8 & S15_d9

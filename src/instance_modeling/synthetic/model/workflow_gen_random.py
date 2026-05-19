@@ -1,7 +1,7 @@
 import random
-from workflow_generator import WorkflowGenerator
+from .workflow_gen_model import WorkflowGeneratorModel
 
-class WorkflowGeneratorRandom(WorkflowGenerator):
+class WorkflowGeneratorRandom(WorkflowGeneratorModel):
     """
     Gera instâncias de workflow artificiais baseadas em parâmetros definidos.
     """
@@ -93,4 +93,3 @@ class WorkflowGeneratorRandom(WorkflowGenerator):
             next_data_id += 1
 
         return tasks, data_artifacts
-

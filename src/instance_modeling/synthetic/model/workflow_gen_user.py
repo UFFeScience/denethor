@@ -1,7 +1,8 @@
 import os, random
-from workflow_generator import WorkflowGenerator
+import re
+from .workflow_gen_model import WorkflowGeneratorModel
 
-class WorkflowGeneratorUserDefined(WorkflowGenerator):
+class WorkflowGeneratorUserDefined(WorkflowGeneratorModel):
     def __init__(self, workflow_id, num_tasks, num_data, task_defs, output_dir, num_vms=2, num_configs=2, num_bucket_ranges=3, use_integer_time=True, task_prefix_replace=None, data_prefix_replace=None):
         super().__init__(
             num_tasks=num_tasks,
@@ -37,8 +38,10 @@ class WorkflowGeneratorUserDefined(WorkflowGenerator):
         for task in self.task_defs:
             cpu_time = self._get_time(1, 10) if self.use_integer_time else self._get_time(0.01, 0.5)
             task_id = self._replace_id_prefix(task['id'], self.task_prefix_replace)
-            tid_num = int(task_id[1:]) if task_id[1:].isdigit() else task_id
-            activity_id = (int(tid_num) // 2) + 1 if isinstance(tid_num, int) else 1
+            
+            match = re.search(r"(\d+)$", task_id)
+            tid_num = int(match.group(1)) if match else None
+            activity_id = (tid_num // 2) + 1 if tid_num is not None else 1
             
             # Replace prefixes in inputs and outputs
             inputs = [self._replace_id_prefix(d, self.data_prefix_replace) for d in task['inputs']]

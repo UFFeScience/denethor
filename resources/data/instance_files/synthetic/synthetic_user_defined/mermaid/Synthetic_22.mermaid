@@ -1,68 +1,53 @@
 ---
 config:
   layout: dagre
+  theme: redux
+  look: neo
 ---
 flowchart LR
-    %% (( )) = Circulo (Dados)
-    %% ( )   = Retangulo Arredondado (Tarefas)
-
-    subgraph Synthetic_22["Synthetic_22"]
-        direction LR
-        S22_d0(("d0"))
-        S22_t0("t0")
-        S22_d2(("d2"))
-        S22_t1("t1")
-        S22_d3(("d3"))
-        S22_d1(("d1"))
-        S22_t2("t2")
-        S22_d4(("d4"))
-        S22_t3("t3")
-        S22_d5(("d5"))
-        S22_d6(("d6"))
-        S22_t4("t4")
-        S22_d7(("d7"))
-        S22_d8(("d8"))
-        S22_d9(("d9"))
-        S22_d10(("d10"))
-        S22_t5("t5")
-        S22_d11(("d11"))
-        S22_t6("t6")
-        S22_d12(("d12"))
-        S22_t7("t7")
-        S22_d13(("d13"))
-    end
-
-    %% t0: d0 -> d2
+ subgraph Synthetic_22["Synthetic_022"]
+    direction LR
+        S22_d0(("d_90"))
+        S22_d1(("d_91"))
+        S22_d2(("d_92"))
+        S22_d3(("d_93"))
+        S22_d4(("d_94"))
+        S22_d5(("d_95"))
+        S22_d6(("d_96"))
+        S22_d7(("d_97"))
+        S22_d8(("d_98"))
+        S22_d9(("d_99"))
+        S22_d10(("d_910"))
+        S22_d11(("d_911"))
+        S22_d12(("d_912"))
+        S22_d13(("d_913"))
+        S22_t0("t_10")
+        S22_t1("t_11")
+        S22_t2("t_12")
+        S22_t3("t_13")
+        S22_t4("t_14")
+        S22_t5("t_15")
+        S22_t6("t_16")
+        S22_t7("t_17")
+  end
     S22_d0 --> S22_t0
-    S22_t0 --> S22_d2
-
-    %% t1: d2 -> d3
+    S22_d1 --> S22_t2 & S22_t3
     S22_d2 --> S22_t1
-    S22_t1 --> S22_d3
-
-    %% t2: d1 -> d4
-    S22_d1 --> S22_t2
-    S22_t2 --> S22_d4
-
-    %% t3: d1 -> d5,d6
-    S22_d1 --> S22_t3
-    S22_t3 --> S22_d5 & S22_d6
-
-    %% t4: d3 -> d7,d8,d9,d10
     S22_d3 --> S22_t4
-    S22_t4 --> S22_d7 & S22_d8 & S22_d9 & S22_d10
-
-    %% t5: d4 -> d11
     S22_d4 --> S22_t5
+    S22_d5 --> S22_t6
+    S22_d6 --> S22_t6
+    S22_d7 --> S22_t7
+    S22_d8 --> S22_t7
+    S22_d9 --> S22_t7
+    S22_d10 --> S22_t7
+    S22_d11 --> S22_t7
+    S22_d12 --> S22_t7
+    S22_t0 --> S22_d2
+    S22_t1 --> S22_d3
+    S22_t2 --> S22_d4
+    S22_t3 --> S22_d5 & S22_d6
+    S22_t4 --> S22_d7 & S22_d8 & S22_d9 & S22_d10
     S22_t5 --> S22_d11
-
-    %% t6: d5,d6 -> d12
-    S22_d5 & S22_d6 --> S22_t6
     S22_t6 --> S22_d12
-
-    %% t7: d7...d12 -> d13
-    S22_d7 & S22_d8 & S22_d9 & S22_d10 & S22_d11 & S22_d12 --> S22_t7
     S22_t7 --> S22_d13
-
-    TASK_TIMES["Tarefas<br/>t0 (task10) | 9.0 s<br/>t1 (task11) | 10.0 s<br/>t2 (task12) | 4.0 s<br/>t3 (task13) | 4.0 s<br/>t4 (task14) | 7.0 s<br/>t5 (task15) | 3.0 s<br/>t6 (task16) | 6.0 s<br/>t7 (task17) | 4.0 s"]
-    FILE_TIMES["Arquivos<br/>d0 (data90) | read 4.0 s | write None<br/>d1 (data91) | read 1.0 s | write None<br/>d2 (data92) | read 5.0 s | write 2.0 s<br/>d3 (data93) | read 1.0 s | write 3.0 s<br/>d4 (data94) | read 1.0 s | write 1.0 s<br/>d5 (data95) | read 1.0 s | write 1.0 s<br/>d6 (data96) | read 2.0 s | write 2.0 s<br/>d7 (data97) | read 1.0 s | write 3.0 s<br/>d8 (data98) | read 2.0 s | write 3.0 s<br/>d9 (data99) | read 4.0 s | write 3.0 s<br/>d10 (data910) | read 2.0 s | write 3.0 s<br/>d11 (data911) | read 5.0 s | write 3.0 s<br/>d12 (data912) | read 5.0 s | write 1.0 s<br/>d13 (data913) | read 5.0 s | write 1.0 s"]
