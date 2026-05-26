@@ -187,15 +187,21 @@ class WorkflowGeneratorModel:
         lines = []
         num_configs = self.num_configs
         base_cost_per_second = 0.000005 # Custo de referência por segundo
+        
+        
+
 
         for task in self.tasks:
             # Tempos de I/O são os mesmos para todas as configs da mesma tarefa
             task_time_read = sum(self.data_artifacts[did]['read_time'] for did in task['inputs'])
             task_time_write = sum((self.data_artifacts[did]['write_time'] or 0) for did in task['outputs'])
             base_cpu_time = task['cpu_time']
+            
+            # A Fx da config 1 deve ser de 2x a 50x mais lenta que a VM base
+            fx_base_time = base_cpu_time * random.uniform(2.0, 50.0)
 
             for conf_id in range(1, num_configs + 1):
-                scaled_cpu_time = base_cpu_time
+                scaled_cpu_time = fx_base_time
                 cost_multiplier = 1.0
 
                 # Aplica fator de aceleração e de custo para configs > 1
@@ -203,10 +209,14 @@ class WorkflowGeneratorModel:
 
                     # CPU fica mais rápida conforme conf_id aumenta
                     speedup_factor = 1.0 + (conf_id - 1) * random.uniform(0.4, 0.8)
-                    scaled_cpu_time = base_cpu_time / speedup_factor
+                    scaled_cpu_time = fx_base_time / speedup_factor
 
                     # Custo por segundo aumenta conforme conf_id aumenta
                     cost_multiplier = 1.0 + (conf_id - 1) * random.uniform(0.9, 1.5)
+
+                # Se estiver usando tempos inteiros, arredondar para manter a consistência
+                if self.use_integer_time:
+                    scaled_cpu_time = round(scaled_cpu_time)
 
                 # Calcula o custo e duração total para esta configuração específica
                 task_cost = scaled_cpu_time * (base_cost_per_second * cost_multiplier)

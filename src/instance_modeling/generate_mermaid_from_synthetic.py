@@ -1,7 +1,7 @@
 import os
 import re
 
-input_file = "/home/marcello/Documents/denethor/resources/data/instance_files/synthetic/synthetic_user_defined/my_synthetic_instances_definition.txt"
+input_file = "/home/marcello/Documents/denethor/resources/data/instance_files/synthetic/synthetic_user_defined/synthetic_instances_definition.txt"
 output_dir = "/home/marcello/Documents/denethor/resources/data/instance_files/synthetic/synthetic_user_defined/mermaid"
 
 os.makedirs(output_dir, exist_ok=True)
@@ -40,9 +40,20 @@ for wf in workflows:
     edges_from_data = {} # dX -> list of tY
     edges_from_task = {} # tX -> list of dY
     
+    pattern_val = None
+    comment_val = None
+    
     for line in lines:
         line = line.strip()
         if not line or line.startswith('---') or line.startswith('WORKFLOW_ID') or line.startswith('TASKS') or line.startswith('DATA'):
+            continue
+            
+        if line.startswith('PATTERN:'):
+            pattern_val = line.split(':', 1)[1].strip()
+            continue
+            
+        if line.startswith('COMMENT:'):
+            comment_val = line.split(':', 1)[1].strip()
             continue
             
         # e.g., t0: d0,d1 -> d2
@@ -74,6 +85,12 @@ for wf in workflows:
     mermaid_lines.append("  layout: dagre")
     mermaid_lines.append("  theme: redux")
     mermaid_lines.append("  look: neo")
+    if pattern_val or comment_val:
+        mermaid_lines.append("notes: |")
+        if pattern_val:
+            mermaid_lines.append(f"  PATTERN: {pattern_val}")
+        if comment_val:
+            mermaid_lines.append(f"  COMMENT: {comment_val}")
     mermaid_lines.append("---")
     mermaid_lines.append("flowchart LR")
     mermaid_lines.append(f' subgraph Synthetic_{num}["{wf_id}"]')
@@ -81,12 +98,14 @@ for wf in workflows:
     
     # Note: formatting dX and tX
     for d in sorted(data, key=lambda x: int(x[1:])):
-        d_num = d[1:]
-        mermaid_lines.append(f'        {prefix}_{d}(("d_9{d_num}"))')
+        d_num = int(d[1:])
+        # Somando 900 ao ID do dado
+        mermaid_lines.append(f'        {prefix}_{d}(("d_{d_num + 900}"))')
         
     for t in sorted(tasks, key=lambda x: int(x[1:])):
-        t_num = t[1:]
-        mermaid_lines.append(f'        {prefix}_{t}("t_1{t_num}")')
+        t_num = int(t[1:])
+        # Somando 100 ao ID da tarefa
+        mermaid_lines.append(f'        {prefix}_{t}("t_{t_num + 100}")')
 
     mermaid_lines.append("  end")
     

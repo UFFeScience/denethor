@@ -1,6 +1,7 @@
 WORKFLOW_ID: Synthetic_007
 TASKS: 3
 DATA: 4
+PATTERN: Map, Split
 ---
 t0: d0 -> d1
 t1: d1 -> d2
@@ -11,6 +12,7 @@ t2: d1 -> d3
 WORKFLOW_ID: Synthetic_011
 TASKS: 4
 DATA: 7
+PATTERN: Map, Split, Merge
 ---
 t0: d0,d1 -> d2
 t1: d0,d1 -> d3
@@ -22,6 +24,7 @@ t3: d2,d3,d4,d5 -> d6
 WORKFLOW_ID: Synthetic_012
 TASKS: 5
 DATA: 7
+PATTERN: Map, Split, Merge
 ---
 t0: d0 -> d2
 t1: d1 -> d3
@@ -34,6 +37,7 @@ t4: d3 -> d6
 WORKFLOW_ID: Synthetic_013
 TASKS: 5
 DATA: 8
+PATTERN: Map, Split, Merge
 ---
 t0: d0 -> d1
 t1: d1 -> d2,d3
@@ -46,6 +50,7 @@ t4: d4,d5,d6 -> d7
 WORKFLOW_ID: Synthetic_022
 TASKS: 8
 DATA: 14
+PATTERN: Independent Branches | Map, Split, Merge
 ---
 t0: d0 -> d2
 t1: d2 -> d3

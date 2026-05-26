@@ -16,7 +16,7 @@ GENERATION_MODE = "user" # random or user
 
 # Para o caso de geração de instância em modo definido pelo usuário, 
 # escolhe quais workflows serão considerados para geração
-USER_TARGET_WORKFLOW_IDS = ["Synthetic_007"]  # Ex: ["Synthetic_007", "Synthetic_011"]. Se vazio, não gera nenhum.
+USER_TARGET_WORKFLOW_IDS = ["Synthetic_030"]  # Ex: ["Synthetic_007", "Synthetic_011"]. Se vazio, não gera nenhum.
 
 # ==========================================
 # --- PARÂMETROS COMPARTILHADOS ---
@@ -36,10 +36,12 @@ RANDOM_NUM_DATA_ARTIFACTS = 8
 # ==========================================
 # --- PARÂMETROS PARA MODO 'USER' ---
 # ==========================================
-USER_INPUT_FILE = "resources/data/instance_files/synthetic/synthetic_user_defined/my_synthetic_instances_definition.txt"
+USER_INPUT_FILE = "resources/data/instance_files/synthetic/synthetic_user_defined/synthetic_instances_definition.txt"
 USER_OUTPUT_DIR = "resources/data/instance_files/synthetic/synthetic_user_defined"
-TASK_PREFIX_REPLACE = {'old': 't', 'new': '1'}
-DATA_PREFIX_REPLACE = {'old': 'd', 'new': '9'}
+TASK_PREFIX_REPLACE = {'old': 't', 'new': ''}
+DATA_PREFIX_REPLACE = {'old': 'd', 'new': ''}
+TASK_ID_OFFSET = 100
+DATA_ID_OFFSET = 900
 
 
 def build_filename(base_id, num_tasks, num_configs, num_data, num_vms):
@@ -105,7 +107,9 @@ def generate_user_contents(target_ids=None):
             num_bucket_ranges=NUM_BUCKET_RANGES,
             use_integer_time=USE_INTEGER_TIME,
             task_prefix_replace=TASK_PREFIX_REPLACE,
-            data_prefix_replace=DATA_PREFIX_REPLACE
+            data_prefix_replace=DATA_PREFIX_REPLACE,
+            task_id_offset=TASK_ID_OFFSET,
+            data_id_offset=DATA_ID_OFFSET
         )
         
         content = generator.generate_workflow_file_content()

@@ -1,0 +1,94 @@
+---
+config:
+  layout: dagre
+  theme: redux
+  look: neo
+notes: |
+  PATTERN: Compute Intensive / Deep Sequence
+  COMMENT: Apresenta uma topologia estritamente linear e profunda, composta por 20 tarefas sequenciais em cadeia (sem paralelismo). Totaliza 20 tarefas e 21 arquivos de dados.
+---
+flowchart LR
+ subgraph Synthetic_41["Synthetic_041"]
+    direction LR
+        S41_d0(("d_900"))
+        S41_d1(("d_901"))
+        S41_d2(("d_902"))
+        S41_d3(("d_903"))
+        S41_d4(("d_904"))
+        S41_d5(("d_905"))
+        S41_d6(("d_906"))
+        S41_d7(("d_907"))
+        S41_d8(("d_908"))
+        S41_d9(("d_909"))
+        S41_d10(("d_910"))
+        S41_d11(("d_911"))
+        S41_d12(("d_912"))
+        S41_d13(("d_913"))
+        S41_d14(("d_914"))
+        S41_d15(("d_915"))
+        S41_d16(("d_916"))
+        S41_d17(("d_917"))
+        S41_d18(("d_918"))
+        S41_d19(("d_919"))
+        S41_d20(("d_920"))
+        S41_t0("t_100")
+        S41_t1("t_101")
+        S41_t2("t_102")
+        S41_t3("t_103")
+        S41_t4("t_104")
+        S41_t5("t_105")
+        S41_t6("t_106")
+        S41_t7("t_107")
+        S41_t8("t_108")
+        S41_t9("t_109")
+        S41_t10("t_110")
+        S41_t11("t_111")
+        S41_t12("t_112")
+        S41_t13("t_113")
+        S41_t14("t_114")
+        S41_t15("t_115")
+        S41_t16("t_116")
+        S41_t17("t_117")
+        S41_t18("t_118")
+        S41_t19("t_119")
+  end
+    S41_d0 --> S41_t0
+    S41_d1 --> S41_t1
+    S41_d2 --> S41_t2
+    S41_d3 --> S41_t3
+    S41_d4 --> S41_t4
+    S41_d5 --> S41_t5
+    S41_d6 --> S41_t6
+    S41_d7 --> S41_t7
+    S41_d8 --> S41_t8
+    S41_d9 --> S41_t9
+    S41_d10 --> S41_t10
+    S41_d11 --> S41_t11
+    S41_d12 --> S41_t12
+    S41_d13 --> S41_t13
+    S41_d14 --> S41_t14
+    S41_d15 --> S41_t15
+    S41_d16 --> S41_t16
+    S41_d17 --> S41_t17
+    S41_d18 --> S41_t18
+    S41_d19 --> S41_t19
+    S41_t0 --> S41_d1
+    S41_t1 --> S41_d2
+    S41_t2 --> S41_d3
+    S41_t3 --> S41_d4
+    S41_t4 --> S41_d5
+    S41_t5 --> S41_d6
+    S41_t6 --> S41_d7
+    S41_t7 --> S41_d8
+    S41_t8 --> S41_d9
+    S41_t9 --> S41_d10
+    S41_t10 --> S41_d11
+    S41_t11 --> S41_d12
+    S41_t12 --> S41_d13
+    S41_t13 --> S41_d14
+    S41_t14 --> S41_d15
+    S41_t15 --> S41_d16
+    S41_t16 --> S41_d17
+    S41_t17 --> S41_d18
+    S41_t18 --> S41_d19
+    S41_t19 --> S41_d20

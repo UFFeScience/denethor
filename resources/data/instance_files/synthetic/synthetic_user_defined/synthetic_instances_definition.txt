@@ -1,0 +1,267 @@
+WORKFLOW_ID: Synthetic_007
+TASKS: 3
+DATA: 4
+PATTERN: Map, Split
+COMMENT:
+---
+t0: d0 -> d1
+t1: d1 -> d2
+t2: d1 -> d3
+
+--------------------------------
+
+WORKFLOW_ID: Synthetic_011
+TASKS: 4
+DATA: 7
+PATTERN: Map, Split, Merge
+COMMENT:
+---
+t0: d0,d1 -> d2
+t1: d0,d1 -> d3
+t2: d1 -> d4,d5
+t3: d2,d3,d4,d5 -> d6
+
+--------------------------------
+
+WORKFLOW_ID: Synthetic_012
+TASKS: 5
+DATA: 7
+PATTERN: Map, Split, Merge
+COMMENT:
+---
+t0: d0 -> d2
+t1: d1 -> d3
+t2: d2 -> d4
+t3: d2,d3 -> d5
+t4: d3 -> d6
+
+--------------------------------
+
+WORKFLOW_ID: Synthetic_013
+TASKS: 5
+DATA: 8
+PATTERN: Map, Split, Merge
+COMMENT:
+---
+t0: d0 -> d1
+t1: d1 -> d2,d3
+t2: d2 -> d4,d5
+t3: d3 -> d6
+t4: d4,d5,d6 -> d7
+
+--------------------------------
+
+WORKFLOW_ID: Synthetic_022
+TASKS: 8
+DATA: 14
+PATTERN: Independent Branches | Map, Split, Merge
+COMMENT:
+---
+t0: d0 -> d2
+t1: d2 -> d3
+t2: d1 -> d4
+t3: d1 -> d5,d6
+t4: d3 -> d7,d8,d9,d10
+t5: d4 -> d11
+t6: d5,d6 -> d12
+t7: d7,d8,d9,d10,d11,d12 -> d13
+
+--------------------------------
+
+WORKFLOW_ID: Synthetic_015
+TASKS: 5
+DATA: 10
+PATTERN: Map, Multiple Splits, Multiple Merges (Fork-Join)
+COMMENT:
+---
+t0: d0 -> d1,d2
+t1: d1 -> d3,d4
+t2: d2 -> d5,d6
+t3: d3,d4 -> d7
+t4: d5,d6,d7 -> d8,d9
+
+--------------------------------
+
+WORKFLOW_ID: Synthetic_016
+TASKS: 6
+DATA: 10
+PATTERN: Map, Split, Merge (Cascading Diamonds)
+COMMENT:
+---
+t0: d0 -> d1,d2
+t1: d1 -> d3
+t2: d2 -> d4
+t3: d3,d4 -> d5,d6
+t4: d5 -> d7,d8
+t5: d6,d7,d8 -> d9
+
+--------------------------------
+
+WORKFLOW_ID: Synthetic_020
+TASKS: 7
+DATA: 13
+PATTERN: Map, Split, Cross-Branch Merge
+COMMENT:
+---
+t0: d0,d1 -> d2,d3
+t1: d2 -> d4,d5
+t2: d3 -> d6,d7
+t3: d4 -> d8
+t4: d5,d6 -> d9,d10
+t5: d7,d8 -> d11
+t6: d9,d10,d11 -> d12
+
+--------------------------------
+
+WORKFLOW_ID: Synthetic_025
+TASKS: 9
+DATA: 16
+PATTERN: Highly Coupled DAG (Map, Split, Merge)
+COMMENT:
+---
+t0: d0 -> d1,d2
+t1: d1 -> d3,d4,d5
+t2: d2 -> d6,d7
+t3: d3 -> d8
+t4: d4,d5 -> d9
+t5: d6 -> d10,d11
+t6: d7,d8 -> d12
+t7: d9,d10 -> d13,d14
+t8: d11,d12,d13,d14 -> d15
+
+--------------------------------
+
+WORKFLOW_ID: Synthetic_029
+TASKS: 10
+DATA: 19
+PATTERN: Dense Pipeline with Cross-Talk
+COMMENT:
+---
+t0: d0 -> d1,d2,d3
+t1: d1 -> d4,d5
+t2: d2 -> d6,d7
+t3: d3 -> d8,d9
+t4: d4 -> d10,d11
+t5: d5,d6 -> d12,d13
+t6: d7,d8 -> d14
+t7: d9,d10 -> d15,d16
+t8: d11,d12,d13,d14 -> d17
+t9: d15,d16,d17 -> d19
+
+--------------------------------
+
+WORKFLOW_ID: Synthetic_064
+TASKS: 22
+DATA: 42
+PATTERN: Massive Scatter-Gather
+COMMENT: O workflow inicia com uma tarefa de distribuição (t0) que processa um dado de entrada raiz (d0) e gera 20 partições independentes. Estas partições acionam simultaneamente 20 tarefas paralelas (t1 a t20), ideal para avaliar a alocação elástica em instâncias de Funções Serverless. A etapa final (t21) atua como um severo ponto de sincronização (barrier/merge), exigindo a conclusão de todas as ramificações anteriores. Totaliza 22 tarefas e 42 arquivos de dados.
+A tarefa t0 processa o dado de entrada d0 e gera as partições de d1 a d20. Essa etapa aciona simultaneamente 20 tarefas independentes (t1 a t20). Ao final, a tarefa t21 aguarda os resultados de todas essas 20 execuções, atuando como um grande gargalo de sincronização. Total: 22 tarefas, 42 dados.
+---
+t0: d0 -> d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15,d16,d17,d18,d19,d20
+t1: d1 -> d21
+t2: d2 -> d22
+t3: d3 -> d23
+t4: d4 -> d24
+t5: d5 -> d25
+t6: d6 -> d26
+t7: d7 -> d27
+t8: d8 -> d28
+t9: d9 -> d29
+t10: d10 -> d30
+t11: d11 -> d31
+t12: d12 -> d32
+t13: d13 -> d33
+t14: d14 -> d34
+t15: d15 -> d35
+t16: d16 -> d36
+t17: d17 -> d37
+t18: d18 -> d38
+t19: d19 -> d39
+t20: d20 -> d40
+t21: d21,d22,d23,d24,d25,d26,d27,d28,d29,d30,d31,d32,d33,d34,d35,d36,d37,d38,d39,d40 -> d41
+
+--------------------------------
+
+WORKFLOW_ID: Synthetic_055
+TASKS: 4
+DATA: 51
+PATTERN: Data Intensive
+COMMENT: Caracterizado por uma baixa complexidade computacional estrutural (apenas 4 tarefas) em contraste com um alto volume dados (I/O bound). A tarefa inicial (t0) produz simultaneamente 25 arquivos distintos, que são subsequentemente processados em grandes lotes pelas etapas intermediárias e finais. Esta topologia testa o comportamento do escalonador frente a gargalos de transferência de rede e estrangulamento de leitura/escrita em buckets de armazenamento persistente. Totaliza 4 tarefas e 51 arquivos de dados.
+Composto por apenas 4 tarefas lógicas (t0 a t3), este workflow é focado na manipulação de um volume massivo de dados. A tarefa inicial t0 produz 25 arquivos distintos simultaneamente, que são processados em grandes lotes pelas etapas subsequentes. É uma estrutura ideal para testar a resiliência do escalonador frente a gargalos de I/O (leitura e transferência de rede). Total: 4 tarefas, 51 dados.
+---
+t0: d0 -> d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25
+t1: d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12 -> d26,d27,d28,d29,d30,d31,d32,d33,d34,d35
+t2: d13,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25 -> d36,d37,d38,d39,d40,d41,d42,d43,d44,d45
+t3: d26,d27,d28,d29,d30,d31,d32,d33,d34,d35,d36,d37,d38,d39,d40,d41,d42,d43,d44,d45 -> d46,d47,d48,d49,d50
+
+--------------------------------
+
+WORKFLOW_ID: Synthetic_041
+TASKS: 20
+DATA: 21
+PATTERN: Compute Intensive / Deep Sequence
+COMMENT: Apresenta uma topologia estritamente linear e profunda, composta por 20 tarefas sequenciais em cadeia (sem paralelismo). Totaliza 20 tarefas e 21 arquivos de dados.
+Apresenta uma topologia estritamente linear composta por 20 tarefas sequenciais, onde o resultado de t0 alimenta t1, que por sua vez alimenta t2, e assim sucessivamente. A completa ausência de ramificações força o orquestrador a gerenciar a alocação e desalocação de recursos repetidamente em um cenário com nulo grau de paralelismo.
+---
+t0: d0 -> d1
+t1: d1 -> d2
+t2: d2 -> d3
+t3: d3 -> d4
+t4: d4 -> d5
+t5: d5 -> d6
+t6: d6 -> d7
+t7: d7 -> d8
+t8: d8 -> d9
+t9: d9 -> d10
+t10: d10 -> d11
+t11: d11 -> d12
+t12: d12 -> d13
+t13: d13 -> d14
+t14: d14 -> d15
+t15: d15 -> d16
+t16: d16 -> d17
+t17: d17 -> d18
+t18: d18 -> d19
+t19: d19 -> d20
+
+--------------------------------
+
+WORKFLOW_ID: Synthetic_032
+TASKS: 8
+DATA: 24
+PATTERN: All-to-All / Bipartite (Shuffle)
+workflow estruturado em um modelo bipartido complexo, o fluxo possui um estágio de execução paralelo (t0 a t3) e um estágio subsequente de consolidação cruzada (t4 a t7). A complexidade reside na matriz de dependência de dados, onde cada tarefa do segundo estágio exige frações de dados produzidas por todas as tarefas do primeiro estágio. Este cenário avalia a resiliência da infraestrutura de comunicação e dependência entre tarefas distribuídas. Totaliza 8 tarefas e 24 arquivos de dados.
+Estruturado com 4 tarefas no Estágio A (t0 a t3) e 4 tarefas no Estágio B (t4 a t7). A complexidade reside na matriz de dependência: cada tarefa do segundo estágio precisa consumir partições de dados geradas por todas as tarefas do primeiro estágio. Este padrão avalia a capacidade do modelo em lidar com um cenário de alta complexidade de comunicação em rede e dependências cruzadas.
+---
+t0: d0 -> d4,d5,d6,d7
+t1: d1 -> d8,d9,d10,d11
+t2: d2 -> d12,d13,d14,d15
+t3: d3 -> d16,d17,d18,d19
+t4: d4,d8,d12,d16 -> d20
+t5: d5,d9,d13,d17 -> d21
+t6: d6,d10,d14,d18 -> d22
+t7: d7,d11,d15,d19 -> d23
+
+--------------------------------
+
+WORKFLOW_ID: Synthetic_030
+TASKS: 14
+DATA: 16
+PATTERN: Unbalanced Branches
+COMMENT: Workflow com fluxo de dados altamente assimétrico. Após o desmembramento inicial em t0, o grafo ramifica-se em um caminho de processamento curto (resolvido por t1) e um caminho profundo e sequencial (encadeamento de t2 a t12). A junção tardia em t13 avalia rigorosamente a capacidade da heurística em reduzir a penalidade de ociosidade (idle time), forçando a otimização e a liberação de recursos dedicados do ramo mais rápido enquanto o ramo moroso segue em execução. Totaliza 14 tarefas e 16 arquivos de dados.
+O fluxo inicia com uma bifurcação assimétrica em t0. O Ramo A é concluído por uma única tarefa de curta duração (t1), enquanto o Ramo B consiste em uma longa sequência de 10 tarefas encadeadas (t2 a t11). A etapa final, t12, atua como o ponto de consolidação dos dois caminhos. Esta estrutura testa rigorosamente a mitigação de ociosidade (idle time), uma vez que os recursos dedicados ao Ramo A concluirão seu processamento muito antes do Ramo B terminar.
+---
+t0: d0 -> d1,d2
+t1: d1 -> d3
+t2: d2 -> d4
+t3: d4 -> d5
+t4: d5 -> d6
+t5: d6 -> d7
+t6: d7 -> d8
+t7: d8 -> d9
+t8: d9 -> d10
+t9: d10 -> d11
+t10: d11 -> d12
+t11: d12 -> d13
+t12: d13 -> d14
+t13: d3,d14 -> d15

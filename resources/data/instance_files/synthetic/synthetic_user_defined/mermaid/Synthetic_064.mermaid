@@ -1,0 +1,140 @@
+---
+config:
+  layout: dagre
+  theme: redux
+  look: neo
+notes: |
+  PATTERN: Massive Scatter-Gather
+  COMMENT: O workflow inicia com uma tarefa de distribuição (t0) que processa um dado de entrada raiz (d0) e gera 20 partições independentes. Estas partições acionam simultaneamente 20 tarefas paralelas (t1 a t20), ideal para avaliar a alocação elástica em instâncias de Funções Serverless. A etapa final (t21) atua como um severo ponto de sincronização (barrier/merge), exigindo a conclusão de todas as ramificações anteriores. Totaliza 22 tarefas e 42 arquivos de dados.
+---
+flowchart LR
+ subgraph Synthetic_64["Synthetic_064"]
+    direction LR
+        S64_d0(("d_900"))
+        S64_d1(("d_901"))
+        S64_d2(("d_902"))
+        S64_d3(("d_903"))
+        S64_d4(("d_904"))
+        S64_d5(("d_905"))
+        S64_d6(("d_906"))
+        S64_d7(("d_907"))
+        S64_d8(("d_908"))
+        S64_d9(("d_909"))
+        S64_d10(("d_910"))
+        S64_d11(("d_911"))
+        S64_d12(("d_912"))
+        S64_d13(("d_913"))
+        S64_d14(("d_914"))
+        S64_d15(("d_915"))
+        S64_d16(("d_916"))
+        S64_d17(("d_917"))
+        S64_d18(("d_918"))
+        S64_d19(("d_919"))
+        S64_d20(("d_920"))
+        S64_d21(("d_921"))
+        S64_d22(("d_922"))
+        S64_d23(("d_923"))
+        S64_d24(("d_924"))
+        S64_d25(("d_925"))
+        S64_d26(("d_926"))
+        S64_d27(("d_927"))
+        S64_d28(("d_928"))
+        S64_d29(("d_929"))
+        S64_d30(("d_930"))
+        S64_d31(("d_931"))
+        S64_d32(("d_932"))
+        S64_d33(("d_933"))
+        S64_d34(("d_934"))
+        S64_d35(("d_935"))
+        S64_d36(("d_936"))
+        S64_d37(("d_937"))
+        S64_d38(("d_938"))
+        S64_d39(("d_939"))
+        S64_d40(("d_940"))
+        S64_d41(("d_941"))
+        S64_t0("t_100")
+        S64_t1("t_101")
+        S64_t2("t_102")
+        S64_t3("t_103")
+        S64_t4("t_104")
+        S64_t5("t_105")
+        S64_t6("t_106")
+        S64_t7("t_107")
+        S64_t8("t_108")
+        S64_t9("t_109")
+        S64_t10("t_110")
+        S64_t11("t_111")
+        S64_t12("t_112")
+        S64_t13("t_113")
+        S64_t14("t_114")
+        S64_t15("t_115")
+        S64_t16("t_116")
+        S64_t17("t_117")
+        S64_t18("t_118")
+        S64_t19("t_119")
+        S64_t20("t_120")
+        S64_t21("t_121")
+  end
+    S64_d0 --> S64_t0
+    S64_d1 --> S64_t1
+    S64_d2 --> S64_t2
+    S64_d3 --> S64_t3
+    S64_d4 --> S64_t4
+    S64_d5 --> S64_t5
+    S64_d6 --> S64_t6
+    S64_d7 --> S64_t7
+    S64_d8 --> S64_t8
+    S64_d9 --> S64_t9
+    S64_d10 --> S64_t10
+    S64_d11 --> S64_t11
+    S64_d12 --> S64_t12
+    S64_d13 --> S64_t13
+    S64_d14 --> S64_t14
+    S64_d15 --> S64_t15
+    S64_d16 --> S64_t16
+    S64_d17 --> S64_t17
+    S64_d18 --> S64_t18
+    S64_d19 --> S64_t19
+    S64_d20 --> S64_t20
+    S64_d21 --> S64_t21
+    S64_d22 --> S64_t21
+    S64_d23 --> S64_t21
+    S64_d24 --> S64_t21
+    S64_d25 --> S64_t21
+    S64_d26 --> S64_t21
+    S64_d27 --> S64_t21
+    S64_d28 --> S64_t21
+    S64_d29 --> S64_t21
+    S64_d30 --> S64_t21
+    S64_d31 --> S64_t21
+    S64_d32 --> S64_t21
+    S64_d33 --> S64_t21
+    S64_d34 --> S64_t21
+    S64_d35 --> S64_t21
+    S64_d36 --> S64_t21
+    S64_d37 --> S64_t21
+    S64_d38 --> S64_t21
+    S64_d39 --> S64_t21
+    S64_d40 --> S64_t21
+    S64_t0 --> S64_d1 & S64_d2 & S64_d3 & S64_d4 & S64_d5 & S64_d6 & S64_d7 & S64_d8 & S64_d9 & S64_d10 & S64_d11 & S64_d12 & S64_d13 & S64_d14 & S64_d15 & S64_d16 & S64_d17 & S64_d18 & S64_d19 & S64_d20
+    S64_t1 --> S64_d21
+    S64_t2 --> S64_d22
+    S64_t3 --> S64_d23
+    S64_t4 --> S64_d24
+    S64_t5 --> S64_d25
+    S64_t6 --> S64_d26
+    S64_t7 --> S64_d27
+    S64_t8 --> S64_d28
+    S64_t9 --> S64_d29
+    S64_t10 --> S64_d30
+    S64_t11 --> S64_d31
+    S64_t12 --> S64_d32
+    S64_t13 --> S64_d33
+    S64_t14 --> S64_d34
+    S64_t15 --> S64_d35
+    S64_t16 --> S64_d36
+    S64_t17 --> S64_d37
+    S64_t18 --> S64_d38
+    S64_t19 --> S64_d39
+    S64_t20 --> S64_d40
+    S64_t21 --> S64_d41

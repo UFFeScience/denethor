@@ -1,0 +1,72 @@
+---
+config:
+  layout: dagre
+  theme: redux
+  look: neo
+notes: |
+  PATTERN: Unbalanced Branches
+  COMMENT: Workflow com fluxo de dados altamente assimétrico. Após o desmembramento inicial em t0, o grafo ramifica-se em um caminho de processamento curto (resolvido por t1) e um caminho profundo e sequencial (encadeamento de t2 a t12). A junção tardia em t13 avalia rigorosamente a capacidade da heurística em reduzir a penalidade de ociosidade (idle time), forçando a otimização e a liberação de recursos dedicados do ramo mais rápido enquanto o ramo moroso segue em execução. Totaliza 14 tarefas e 16 arquivos de dados.
+---
+flowchart LR
+ subgraph Synthetic_30["Synthetic_030"]
+    direction LR
+        S30_d0(("d_900"))
+        S30_d1(("d_901"))
+        S30_d2(("d_902"))
+        S30_d3(("d_903"))
+        S30_d4(("d_904"))
+        S30_d5(("d_905"))
+        S30_d6(("d_906"))
+        S30_d7(("d_907"))
+        S30_d8(("d_908"))
+        S30_d9(("d_909"))
+        S30_d10(("d_910"))
+        S30_d11(("d_911"))
+        S30_d12(("d_912"))
+        S30_d13(("d_913"))
+        S30_d14(("d_914"))
+        S30_d15(("d_915"))
+        S30_t0("t_100")
+        S30_t1("t_101")
+        S30_t2("t_102")
+        S30_t3("t_103")
+        S30_t4("t_104")
+        S30_t5("t_105")
+        S30_t6("t_106")
+        S30_t7("t_107")
+        S30_t8("t_108")
+        S30_t9("t_109")
+        S30_t10("t_110")
+        S30_t11("t_111")
+        S30_t12("t_112")
+        S30_t13("t_113")
+  end
+    S30_d0 --> S30_t0
+    S30_d1 --> S30_t1
+    S30_d2 --> S30_t2
+    S30_d3 --> S30_t13
+    S30_d4 --> S30_t3
+    S30_d5 --> S30_t4
+    S30_d6 --> S30_t5
+    S30_d7 --> S30_t6
+    S30_d8 --> S30_t7
+    S30_d9 --> S30_t8
+    S30_d10 --> S30_t9
+    S30_d11 --> S30_t10
+    S30_d12 --> S30_t11
+    S30_d13 --> S30_t12
+    S30_d14 --> S30_t13
+    S30_t0 --> S30_d1 & S30_d2
+    S30_t1 --> S30_d3
+    S30_t2 --> S30_d4
+    S30_t3 --> S30_d5
+    S30_t4 --> S30_d6
+    S30_t5 --> S30_d7
+    S30_t6 --> S30_d8
+    S30_t7 --> S30_d9
+    S30_t8 --> S30_d10
+    S30_t9 --> S30_d11
+    S30_t10 --> S30_d12
+    S30_t11 --> S30_d13
+    S30_t12 --> S30_d14
+    S30_t13 --> S30_d15

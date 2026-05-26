@@ -1,0 +1,118 @@
+---
+config:
+  layout: dagre
+  theme: redux
+  look: neo
+notes: |
+  PATTERN: Data Intensive
+  COMMENT: Caracterizado por uma baixa complexidade computacional estrutural (apenas 4 tarefas) em contraste com um alto volume dados (I/O bound). A tarefa inicial (t0) produz simultaneamente 25 arquivos distintos, que são subsequentemente processados em grandes lotes pelas etapas intermediárias e finais. Esta topologia testa o comportamento do escalonador frente a gargalos de transferência de rede e estrangulamento de leitura/escrita em buckets de armazenamento persistente. Totaliza 4 tarefas e 51 arquivos de dados.
+---
+flowchart LR
+ subgraph Synthetic_55["Synthetic_055"]
+    direction LR
+        S55_d0(("d_900"))
+        S55_d1(("d_901"))
+        S55_d2(("d_902"))
+        S55_d3(("d_903"))
+        S55_d4(("d_904"))
+        S55_d5(("d_905"))
+        S55_d6(("d_906"))
+        S55_d7(("d_907"))
+        S55_d8(("d_908"))
+        S55_d9(("d_909"))
+        S55_d10(("d_910"))
+        S55_d11(("d_911"))
+        S55_d12(("d_912"))
+        S55_d13(("d_913"))
+        S55_d14(("d_914"))
+        S55_d15(("d_915"))
+        S55_d16(("d_916"))
+        S55_d17(("d_917"))
+        S55_d18(("d_918"))
+        S55_d19(("d_919"))
+        S55_d20(("d_920"))
+        S55_d21(("d_921"))
+        S55_d22(("d_922"))
+        S55_d23(("d_923"))
+        S55_d24(("d_924"))
+        S55_d25(("d_925"))
+        S55_d26(("d_926"))
+        S55_d27(("d_927"))
+        S55_d28(("d_928"))
+        S55_d29(("d_929"))
+        S55_d30(("d_930"))
+        S55_d31(("d_931"))
+        S55_d32(("d_932"))
+        S55_d33(("d_933"))
+        S55_d34(("d_934"))
+        S55_d35(("d_935"))
+        S55_d36(("d_936"))
+        S55_d37(("d_937"))
+        S55_d38(("d_938"))
+        S55_d39(("d_939"))
+        S55_d40(("d_940"))
+        S55_d41(("d_941"))
+        S55_d42(("d_942"))
+        S55_d43(("d_943"))
+        S55_d44(("d_944"))
+        S55_d45(("d_945"))
+        S55_d46(("d_946"))
+        S55_d47(("d_947"))
+        S55_d48(("d_948"))
+        S55_d49(("d_949"))
+        S55_d50(("d_950"))
+        S55_t0("t_100")
+        S55_t1("t_101")
+        S55_t2("t_102")
+        S55_t3("t_103")
+  end
+    S55_d0 --> S55_t0
+    S55_d1 --> S55_t1
+    S55_d2 --> S55_t1
+    S55_d3 --> S55_t1
+    S55_d4 --> S55_t1
+    S55_d5 --> S55_t1
+    S55_d6 --> S55_t1
+    S55_d7 --> S55_t1
+    S55_d8 --> S55_t1
+    S55_d9 --> S55_t1
+    S55_d10 --> S55_t1
+    S55_d11 --> S55_t1
+    S55_d12 --> S55_t1
+    S55_d13 --> S55_t2
+    S55_d14 --> S55_t2
+    S55_d15 --> S55_t2
+    S55_d16 --> S55_t2
+    S55_d17 --> S55_t2
+    S55_d18 --> S55_t2
+    S55_d19 --> S55_t2
+    S55_d20 --> S55_t2
+    S55_d21 --> S55_t2
+    S55_d22 --> S55_t2
+    S55_d23 --> S55_t2
+    S55_d24 --> S55_t2
+    S55_d25 --> S55_t2
+    S55_d26 --> S55_t3
+    S55_d27 --> S55_t3
+    S55_d28 --> S55_t3
+    S55_d29 --> S55_t3
+    S55_d30 --> S55_t3
+    S55_d31 --> S55_t3
+    S55_d32 --> S55_t3
+    S55_d33 --> S55_t3
+    S55_d34 --> S55_t3
+    S55_d35 --> S55_t3
+    S55_d36 --> S55_t3
+    S55_d37 --> S55_t3
+    S55_d38 --> S55_t3
+    S55_d39 --> S55_t3
+    S55_d40 --> S55_t3
+    S55_d41 --> S55_t3
+    S55_d42 --> S55_t3
+    S55_d43 --> S55_t3
+    S55_d44 --> S55_t3
+    S55_d45 --> S55_t3
+    S55_t0 --> S55_d1 & S55_d2 & S55_d3 & S55_d4 & S55_d5 & S55_d6 & S55_d7 & S55_d8 & S55_d9 & S55_d10 & S55_d11 & S55_d12 & S55_d13 & S55_d14 & S55_d15 & S55_d16 & S55_d17 & S55_d18 & S55_d19 & S55_d20 & S55_d21 & S55_d22 & S55_d23 & S55_d24 & S55_d25
+    S55_t1 --> S55_d26 & S55_d27 & S55_d28 & S55_d29 & S55_d30 & S55_d31 & S55_d32 & S55_d33 & S55_d34 & S55_d35
+    S55_t2 --> S55_d36 & S55_d37 & S55_d38 & S55_d39 & S55_d40 & S55_d41 & S55_d42 & S55_d43 & S55_d44 & S55_d45
+    S55_t3 --> S55_d46 & S55_d47 & S55_d48 & S55_d49 & S55_d50
